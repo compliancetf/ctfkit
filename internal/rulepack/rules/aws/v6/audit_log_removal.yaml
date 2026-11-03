@@ -1,0 +1,32 @@
+# Class 3: a change removes or narrows audit logging.
+class: audit_log_removal
+rules:
+  - types: [aws_cloudtrail, aws_config_configuration_recorder, aws_config_delivery_channel, aws_flow_log, aws_s3_bucket_logging]
+    predicate: deleted
+    level: error
+    message: "{address} is deleted, which stops the audit trail it records"
+
+  - types: [aws_cloudtrail]
+    attributes: [enable_logging, include_global_service_events, is_multi_region_trail]
+    predicate: turned_off
+    level: error
+  - types: [aws_guardduty_detector]
+    attribute: enable
+    predicate: turned_off
+    level: error
+
+  - types: [aws_eks_cluster]
+    attribute: enabled_cluster_log_types
+    predicate: narrowed
+    level: error
+  - types: [aws_rds_cluster]
+    attribute: enabled_cloudwatch_logs_exports
+    predicate: narrowed
+    level: error
+
+  # 0 is never expire, so a move away from 0 is a decrease too.
+  - types: [aws_cloudwatch_log_group]
+    attribute: retention_in_days
+    predicate: shortened
+    zero_is_unlimited: true
+    level: warning

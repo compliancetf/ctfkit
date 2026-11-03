@@ -1,0 +1,14 @@
+{
+  "format": "ctfkit.migrate-wal/1",
+  "run_id": "run-20261020T090000Z-bobthecorp",
+  "seq": 1,
+  "operation_id": "op-0001",
+  "unit": "live/prod",
+  "workspace": "default",
+  "step": "rebind",
+  "action": "replace_provider",
+  "status": "intent",
+  "before_image": [{ "kind": "state", "path": "images/live-prod-default.tfstate", "sha256": "3e23e8160039594a33894f6564e1b1348bbd7a0088d42c4acb73eeaed59c009d" }],
+  "lookup": { "serial": 41, "lineage": "3f1c2e5a-0000-4000-8000-bobthecorp01" },
+  "at": "2026-10-20T09:02:05Z"
+}

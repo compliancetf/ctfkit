@@ -1,0 +1,74 @@
+{
+  "description": "a grant naming another control never covers it",
+  "decisions": {
+    "instances": [
+      {
+        "address": "fake_thing.a",
+        "type": "fake_thing",
+        "action": "create",
+        "prior_identity_kind": "none",
+        "refreshed": "true",
+        "unknown_paths": [],
+        "decisions": [
+          {
+            "control": "c",
+            "version": "1.0.0",
+            "result": "provisional",
+            "action": "deny"
+          }
+        ],
+        "not_evaluable": [],
+        "exceptions": [
+          "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "baselines": [],
+        "break_glass": [],
+        "instance_key": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    ],
+    "required": {
+      "fake_thing": {
+        "decisions": [
+          {
+            "id": "c",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": [
+              "grant"
+            ]
+          }
+        ],
+        "delete_decisions": []
+      }
+    }
+  },
+  "mode": {
+    "run_mode": "hard_fail"
+  },
+  "exceptions": [
+    {
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "kind": "grant",
+      "controls": [
+        "x"
+      ]
+    }
+  ],
+  "baselines": [],
+  "receipts": [],
+  "want": {
+    "refuse": true,
+    "rows": [
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "exemption_unproven",
+        "severity": "error",
+        "final": "fail",
+        "control": "c",
+        "version": "1.0.0",
+        "state": "provisional"
+      }
+    ]
+  }
+}

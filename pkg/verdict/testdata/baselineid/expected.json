@@ -1,0 +1,417 @@
+{
+  "bases": [
+    {
+      "name": "s3",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2"
+    },
+    {
+      "name": "kms",
+      "identity_kind": "id",
+      "identity": {
+        "id": "1234abcd-12ab-34cd-56ef-1234567890ab"
+      },
+      "instance_key": "sha256:f0bdb2a2feadbcee133f0943f05fab15c53d7b84e9ef03a6badb1a6838c76481",
+      "read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "planned_read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "control_manifest_digest": "sha256:60cd6d8502ab87a4145fb7e87a1fbb9c3839daf6bd14e5d814adab4b1ee4ac65",
+      "control_major": "1"
+    }
+  ],
+  "cases": [
+    {
+      "name": "s3-match",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": true
+    },
+    {
+      "name": "s3-new-run-secret",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:50c69543bab0452683cc98b176132cad796026f95165e08970e93ecb795f2f24",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": true
+    },
+    {
+      "name": "s3-unrelated-change",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:dc8b0604d3f146961d1d7b8cc774b31b3a006fe27b5009cc315ac3cdd30dac00",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": true
+    },
+    {
+      "name": "s3-read-change",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:e6b9cca4e463f384714061e90d824e196c07077d431cb92f4a5b1062af40d4a7",
+      "read_digest": "sha256:28fc5f55f00af2f55c2d20a6ec86be1dbefffda962f0b2c5aced61254abd8265",
+      "planned_read_digest": "sha256:28fc5f55f00af2f55c2d20a6ec86be1dbefffda962f0b2c5aced61254abd8265",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-nested-read-change",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:7345432eec3717f1156445d4ae9726d36ea1a8856419648a1bcc14ba81865198",
+      "read_digest": "sha256:7aa4785b6c7666c44266a94c7b3b197ed451895a4b255e493eda0622741aa407",
+      "planned_read_digest": "sha256:7aa4785b6c7666c44266a94c7b3b197ed451895a4b255e493eda0622741aa407",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-planned-read-change",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:fa2c06e91544febaee81eab9087ef5996588983244c622f8fad6ea1ceef2c365",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:85f89b0aecb033a9292914f41392c44056e28dd1aaee47f19ff8f2b5a41aafe4",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-identity-change",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs-2",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:0d2ba29b065036f34f1fbe2e66f8ce8d83e18997131a89d9d9f4431ec22ffe96",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-identity-null-member",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs"
+      },
+      "instance_key": "sha256:059f4ba14da5b58ff069c3db6a588d2e8bf0d552a45d20a5e890f6aceb961198",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-precedence-all-null-identity",
+      "identity_kind": "id",
+      "identity": {
+        "id": "bobthecorp-logs"
+      },
+      "instance_key": "sha256:e7b7dfb9100645fb714d81f1ac63b8debce289b57b5bab64124d2d6588e6bb7f",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-precedence-no-identity",
+      "identity_kind": "id",
+      "identity": {
+        "id": "bobthecorp-logs"
+      },
+      "instance_key": "sha256:e7b7dfb9100645fb714d81f1ac63b8debce289b57b5bab64124d2d6588e6bb7f",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-control-message",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:48faf3e4a7efb833103ac18444f78279c0e991b0186b5b6227dfc208d213ce6d",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-control-reads",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:894046c2d3e9bef3eea1585759a229fa3cb3eac22988398a7344e028439070a8",
+      "planned_read_digest": "sha256:894046c2d3e9bef3eea1585759a229fa3cb3eac22988398a7344e028439070a8",
+      "control_manifest_digest": "sha256:81d698e085b6bfec498c6aece9d2a5b36664a26d36721ebc97cc6865ca5ac3e4",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-control-expr",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:0277cc83c197e8190912c9acabd7d683bd3fef2e8b2ee6b5e11092e7656d1e55",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-control-minor",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:4c33713b61907ce0523136da4344576ed382b3856709041f2700ab3934476537",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-control-major",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:098b8974ebb4065214574bcdf59d48fac831647f5cf8cfc7c7a2a9c0c7d15f12",
+      "control_major": "3",
+      "grandfathered": false,
+      "reason": "baseline entry for s3_acl_private approved at major 2, bundle has 3: re-baseline"
+    },
+    {
+      "name": "s3-control-id",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:03e4531760b16ac0f71b333cfa4a35a3b91867de78959b8eb35a179170d59869",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-scope-account",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-scope-region",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-workspace",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "s3-org",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-logs",
+        "region": "us-east-1"
+      },
+      "instance_key": "sha256:1af23cab30a5b189200f73e1e94936e85a27785a31843dc7188982c0a6624929",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "planned_read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "control_manifest_digest": "sha256:a802ac8e8ce0e190e6b491d4a4464b1e403398200b7ebe2715daa55ebaaa5bff",
+      "control_major": "2",
+      "grandfathered": false
+    },
+    {
+      "name": "kms-match",
+      "identity_kind": "id",
+      "identity": {
+        "id": "1234abcd-12ab-34cd-56ef-1234567890ab"
+      },
+      "instance_key": "sha256:f0bdb2a2feadbcee133f0943f05fab15c53d7b84e9ef03a6badb1a6838c76481",
+      "read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "planned_read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "control_manifest_digest": "sha256:60cd6d8502ab87a4145fb7e87a1fbb9c3839daf6bd14e5d814adab4b1ee4ac65",
+      "control_major": "1",
+      "grandfathered": true
+    },
+    {
+      "name": "kms-new-run-secret",
+      "identity_kind": "id",
+      "identity": {
+        "id": "1234abcd-12ab-34cd-56ef-1234567890ab"
+      },
+      "instance_key": "sha256:d4c1c464e619de3c8e4270c7a6a70332140dfe097b60b701ee796ba22e15d54e",
+      "read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "planned_read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "control_manifest_digest": "sha256:60cd6d8502ab87a4145fb7e87a1fbb9c3839daf6bd14e5d814adab4b1ee4ac65",
+      "control_major": "1",
+      "grandfathered": true
+    },
+    {
+      "name": "kms-unrelated-change",
+      "identity_kind": "id",
+      "identity": {
+        "id": "1234abcd-12ab-34cd-56ef-1234567890ab"
+      },
+      "instance_key": "sha256:92920a1a35e2704405988d80a85472c9fe7d593b1a36f39a1f7bb75cc275d926",
+      "read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "planned_read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "control_manifest_digest": "sha256:60cd6d8502ab87a4145fb7e87a1fbb9c3839daf6bd14e5d814adab4b1ee4ac65",
+      "control_major": "1",
+      "grandfathered": true
+    },
+    {
+      "name": "kms-read-change",
+      "identity_kind": "id",
+      "identity": {
+        "id": "1234abcd-12ab-34cd-56ef-1234567890ab"
+      },
+      "instance_key": "sha256:edab80b64fbcea85b23e90c2b5b98dcb3fb3f7f6dbf95df7de6a689291f038d4",
+      "read_digest": "sha256:28d69f92b935cee7c8cf1044dca679b2112407dcbf9d00011f8ee7d1221eaf0a",
+      "planned_read_digest": "sha256:28d69f92b935cee7c8cf1044dca679b2112407dcbf9d00011f8ee7d1221eaf0a",
+      "control_manifest_digest": "sha256:60cd6d8502ab87a4145fb7e87a1fbb9c3839daf6bd14e5d814adab4b1ee4ac65",
+      "control_major": "1",
+      "grandfathered": false
+    },
+    {
+      "name": "kms-id-change",
+      "identity_kind": "id",
+      "identity": {
+        "id": "5678efgh-56ef-78gh-90ij-567890abcdef"
+      },
+      "instance_key": "sha256:e9986cc2504f4e51a654d91e71cba7715f59027c0572b50620e4270b1ba12cd5",
+      "read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "planned_read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "control_manifest_digest": "sha256:60cd6d8502ab87a4145fb7e87a1fbb9c3839daf6bd14e5d814adab4b1ee4ac65",
+      "control_major": "1",
+      "grandfathered": false
+    },
+    {
+      "name": "kms-planned-id-change",
+      "identity_kind": "id",
+      "identity": {
+        "id": "1234abcd-12ab-34cd-56ef-1234567890ab"
+      },
+      "instance_key": "sha256:cc12ab097448ecf2723cd84a7ab6cfdb0529719d03cb604a3026ca1f193e515f",
+      "read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "planned_read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "control_manifest_digest": "sha256:60cd6d8502ab87a4145fb7e87a1fbb9c3839daf6bd14e5d814adab4b1ee4ac65",
+      "control_major": "1",
+      "grandfathered": false
+    },
+    {
+      "name": "kms-precedence-none",
+      "identity_kind": "",
+      "identity": null,
+      "instance_key": "",
+      "read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "planned_read_digest": "sha256:c652e73562a6b41ac5d57b2c91c97543f5a3b235fe54ea7774f644a579c43896",
+      "control_manifest_digest": "sha256:60cd6d8502ab87a4145fb7e87a1fbb9c3839daf6bd14e5d814adab4b1ee4ac65",
+      "control_major": "1",
+      "grandfathered": false
+    }
+  ]
+}

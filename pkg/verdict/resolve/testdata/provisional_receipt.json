@@ -1,0 +1,83 @@
+{
+  "description": "a listed receipt naming the control and the instance key proves it",
+  "decisions": {
+    "instances": [
+      {
+        "address": "fake_thing.a",
+        "type": "fake_thing",
+        "action": "create",
+        "prior_identity_kind": "none",
+        "refreshed": "true",
+        "unknown_paths": [],
+        "decisions": [
+          {
+            "control": "c",
+            "version": "1.0.0",
+            "result": "provisional",
+            "action": "deny"
+          }
+        ],
+        "not_evaluable": [],
+        "exceptions": [],
+        "baselines": [],
+        "break_glass": [
+          "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ],
+        "instance_key": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    ],
+    "required": {
+      "fake_thing": {
+        "decisions": [
+          {
+            "id": "c",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": [
+              "break_glass"
+            ]
+          }
+        ],
+        "delete_decisions": []
+      }
+    }
+  },
+  "mode": {
+    "run_mode": "hard_fail"
+  },
+  "exceptions": [],
+  "baselines": [],
+  "receipts": [
+    {
+      "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "override_id": "ovr-1",
+      "controls": [
+        "c"
+      ],
+      "action_keys": [
+        "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      ]
+    }
+  ],
+  "want": {
+    "refuse": false,
+    "rows": [
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "excepted",
+        "severity": "none",
+        "final": "pass",
+        "control": "c",
+        "version": "1.0.0",
+        "state": "provisional",
+        "proof": {
+          "kind": "break_glass",
+          "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+          "override_id": "ovr-1"
+        }
+      }
+    ]
+  }
+}

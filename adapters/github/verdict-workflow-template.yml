@@ -1,0 +1,196 @@
+# Copyable workflow for a governed apply (preview): ctfkit gate plan, ctfkit gate sign and ctfkit
+# apply in three jobs, the artifact set moved between them as one GitHub artifact. Copy it to
+# .github/workflows/ctfkit-apply.yml in your infrastructure repository and edit the env block and
+# the repository variables it reads. It is a template, not a reusable workflow.
+#
+# The artifact set moves unchanged. gate plan writes planfile, schema.json, ctfkit-run.key,
+# findings.sarif and candidate.json; gate sign adds verdict.json. ctfkit checks every file against
+# the digests in candidate.json, and the verdict signature against the signed org profile, so a
+# changed, missing or extra file stops the next job. The artifact transfer drops file modes; the
+# action restores 0700 and 0600 before ctfkit reads the set.
+#
+# Each artifact is named after the run attempt. Re-running only a failed job looks for an
+# artifact of the new attempt, which does not exist, so it fails: re-run all jobs, which plans
+# again. ctfkit apply consumes the set on its runner; a set is applied at most once.
+#
+# Credentials: every job assumes its own AWS role through GitHub OIDC, so no access key is stored.
+# The plan role reads state and the resources the plan refreshes. The sign role may use kms:Sign
+# on the verdict key, plus state read for init. The apply role changes resources; bind its trust
+# policy to the production environment subject. The action downloads the ctfkit release with
+# the default job token, which the contents: read grant of each job allows.
+#
+# Third-party actions are pinned by commit SHA. Dependabot does not scan this file, so those pins
+# are bumped by hand. Pin compliancetf/ctfkit-action to the commit of the release you reviewed;
+# plan, sign and apply ship in the first action release after v0.2.1.
+name: ctfkit governed apply
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: {}
+
+# One governed apply per branch at a time; a queued run waits rather than cancelling one that is
+# applying.
+concurrency:
+  group: ctfkit-apply-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CTFKIT_VERSION: v0.3.0
+  TOFU_VERSION: 1.12.6
+  INFRA_ROOT: infra/prod
+  INFRA_WORKSPACE: default
+  CTFKIT_ENVIRONMENT: prod
+  CTFKIT_PROFILE: compliance/profile.dsse.json
+  CTFKIT_FLOOR: compliance/floor.dsse.json
+  CTFKIT_BUNDLES: compliance/bundles
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # No wrapper: ctfkit hashes the binary and runs it itself.
+      - uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+        with:
+          tofu_version: ${{ env.TOFU_VERSION }}
+          tofu_wrapper: false
+
+      - name: Locate tofu
+        id: tofu
+        run: echo "bin=$(command -v tofu)" >> "${GITHUB_OUTPUT}"
+
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.CTFKIT_PLAN_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Plan the candidate
+        uses: compliancetf/ctfkit-action@v0.3.0 # replace with the reviewed release commit SHA
+        with:
+          command: plan
+          artifacts: ${{ runner.temp }}/ctfkit-artifacts
+          chdir: ${{ env.INFRA_ROOT }}
+          workspace: ${{ env.INFRA_WORKSPACE }}
+          environment: ${{ env.CTFKIT_ENVIRONMENT }}
+          tf-bin: ${{ steps.tofu.outputs.bin }}
+          org: ${{ vars.CTFKIT_ORG }}
+          profile: ${{ env.CTFKIT_PROFILE }}
+          floor: ${{ env.CTFKIT_FLOOR }}
+          bundle-dir: ${{ env.CTFKIT_BUNDLES }}
+          version: ${{ env.CTFKIT_VERSION }}
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ctfkit-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/ctfkit-artifacts
+          if-no-files-found: error
+          retention-days: 1
+
+  sign:
+    needs: plan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+        with:
+          tofu_version: ${{ env.TOFU_VERSION }}
+          tofu_wrapper: false
+
+      - name: Locate tofu
+        id: tofu
+        run: echo "bin=$(command -v tofu)" >> "${GITHUB_OUTPUT}"
+
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.CTFKIT_SIGN_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ctfkit-candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/ctfkit-artifacts
+
+      - name: Sign the verdict
+        uses: compliancetf/ctfkit-action@v0.3.0 # replace with the reviewed release commit SHA
+        with:
+          command: sign
+          artifacts: ${{ runner.temp }}/ctfkit-artifacts
+          signer: awskms:${{ vars.CTFKIT_VERDICT_KEY_ARN }}
+          chdir: ${{ env.INFRA_ROOT }}
+          workspace: ${{ env.INFRA_WORKSPACE }}
+          environment: ${{ env.CTFKIT_ENVIRONMENT }}
+          tf-bin: ${{ steps.tofu.outputs.bin }}
+          org: ${{ vars.CTFKIT_ORG }}
+          profile: ${{ env.CTFKIT_PROFILE }}
+          floor: ${{ env.CTFKIT_FLOOR }}
+          bundle-dir: ${{ env.CTFKIT_BUNDLES }}
+          version: ${{ env.CTFKIT_VERSION }}
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ctfkit-signed-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/ctfkit-artifacts
+          if-no-files-found: error
+          retention-days: 1
+
+  apply:
+    needs: sign
+    runs-on: ubuntu-latest
+    # Required reviewers on this environment hold the apply until someone approves it.
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+        with:
+          tofu_version: ${{ env.TOFU_VERSION }}
+          tofu_wrapper: false
+
+      - name: Locate tofu
+        id: tofu
+        run: echo "bin=$(command -v tofu)" >> "${GITHUB_OUTPUT}"
+
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.CTFKIT_APPLY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ctfkit-signed-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/ctfkit-artifacts
+
+      - name: Apply the signed set
+        uses: compliancetf/ctfkit-action@v0.3.0 # replace with the reviewed release commit SHA
+        with:
+          command: apply
+          artifacts: ${{ runner.temp }}/ctfkit-artifacts
+          chdir: ${{ env.INFRA_ROOT }}
+          workspace: ${{ env.INFRA_WORKSPACE }}
+          environment: ${{ env.CTFKIT_ENVIRONMENT }}
+          tf-bin: ${{ steps.tofu.outputs.bin }}
+          org: ${{ vars.CTFKIT_ORG }}
+          profile: ${{ env.CTFKIT_PROFILE }}
+          floor: ${{ env.CTFKIT_FLOOR }}
+          bundle-dir: ${{ env.CTFKIT_BUNDLES }}
+          version: ${{ env.CTFKIT_VERSION }}

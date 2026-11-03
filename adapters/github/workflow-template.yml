@@ -1,0 +1,72 @@
+# Copyable workflow for a module author. Copy it to .github/workflows/ctfkit.yml in your module
+# repository and edit the matrix and the pinned versions. It is a template, not a reusable
+# workflow: ctfkit does not own your init, test, release or README policy.
+#
+# The action lives in the public compliancetf/ctfkit-action repository and downloads the binary
+# from the public compliancetf/ctfkit releases with the default job token.
+#
+# The third-party actions below are pinned by commit SHA. Dependabot does not scan this file, so
+# those pins are bumped by hand.
+name: ctfkit
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        root:
+          - examples/complete
+          - examples/simple
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: opentofu/setup-opentofu@a1320f892987e89d278cc92dc5adc984fb93aca4 # v2.0.2
+        with:
+          tofu_version: 1.12.6
+
+      - name: Initialize the configuration
+        working-directory: ${{ matrix.root }}
+        env:
+          # The registry token is yours; ctfkit never reads it and never calls the registry.
+          TF_TOKEN_bobthecorp_compliance_tf: ${{ secrets.CTF_REGISTRY_TOKEN }}
+        run: tofu init -input=false -upgrade
+
+      - name: Run the module test suite
+        working-directory: ${{ matrix.root }}
+        run: tofu test -json > tests.json
+        continue-on-error: true
+
+      # command: report reads the module cache that init populated.
+      - name: Report on the initialized root
+        uses: compliancetf/ctfkit-action@v0.2.1
+        with:
+          command: report
+          path: ${{ matrix.root }}
+          version: v0.2.1
+          fail-on: error
+
+      # command: scan reads plan JSON instead. Drop these two steps if the root cannot be planned
+      # in CI, for example because it needs credentials this workflow does not have.
+      - name: Produce the plan JSON
+        working-directory: ${{ matrix.root }}
+        run: |
+          tofu plan -input=false -out=tfplan
+          tofu show -json tfplan > plan.json
+
+      - name: Scan the plan
+        uses: compliancetf/ctfkit-action@v0.2.1
+        with:
+          command: scan
+          plan: ${{ matrix.root }}/plan.json
+          version: v0.2.1
+          fail-on: error

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compliance.tf/schema/catalog-1.schema.json",
+  "title": "ctf.catalog/1",
+  "description": "The control catalog file, the file backend of ControlCatalog. It is what lets ctf.coverage.module_source name a compliance.tf replacement with no registry token. The release catalog is embedded in the binary and also published per release for vendoring. Written as YAML; this schema describes the document, whatever the serialisation. Unknown fields are ignored, so an additive minor bump needs no change here; a schema other than ctf.catalog/1 is refused.",
+  "type": "object",
+  "required": ["schema", "version", "hosts", "defaultHost", "controls", "modules"],
+  "properties": {
+    "schema": { "const": "ctf.catalog/1" },
+    "version": {
+      "$ref": "#/$defs/semver",
+      "description": "The catalog version, the value Catalog.Version() returns and the run-level ctf.catalogVersion property reports. It is compared between a vendored file and the embedded release to detect staleness, so it has to be well formed."
+    },
+    "hosts": {
+      "type": "object",
+      "minProperties": 1,
+      "description": "Framework id to the host label of its registry endpoint, which is what {host} in a module source is replaced with. pci_dss maps to pcidss, so pcidss.compliance.tf. A label is not a framework id, which is why this map exists.",
+      "propertyNames": { "$ref": "#/$defs/frameworkId" },
+      "additionalProperties": { "$ref": "#/$defs/hostLabel" }
+    },
+    "defaultHost": {
+      "$ref": "#/$defs/frameworkId",
+      "description": "The framework id whose host label is used when --remediation-host names none. It must be a key of hosts, which schemacheck enforces."
+    },
+    "controls": {
+      "type": "array",
+      "description": "Every control the catalog knows, keyed by id. ControlsFor(resourceType) answers from resourceTypes.",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "resourceTypes", "clausesByFramework"],
+        "properties": {
+          "id": { "$ref": "#/$defs/controlId" },
+          "name": { "type": "string", "minLength": 1 },
+          "resourceTypes": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "$ref": "#/$defs/resourceType" }
+          },
+          "clausesByFramework": {
+            "type": "object",
+            "description": "Framework ids are the control catalog ids (soc_2, pci_dss_v40), the same spelling manifests use; hosts maps each to its host label.",
+            "propertyNames": { "$ref": "#/$defs/frameworkId" },
+            "additionalProperties": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "description": "Which compliance.tf module covers which resource types. ModuleFor(resourceType) answers from here, and each resource type appears in at most one entry so there is no tie-break. Uniqueness across entries, and every other rule that relates one part of this document to another, is beyond what JSON Schema can state, so schemacheck enforces those in Go.",
+      "items": {
+        "type": "object",
+        "required": ["resourceTypes", "source", "version", "controls"],
+        "properties": {
+          "resourceTypes": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/resourceType" }
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The module source template. ModuleFor returns it unsubstituted; the renderer replaces a {host} placeholder with the host label of --remediation-host, else of defaultHost."
+          },
+          "version": { "type": "string", "minLength": 1 },
+          "controls": {
+            "type": "array",
+            "description": "The control ids this module enforces. Every id should also appear in controls[].",
+            "items": { "$ref": "#/$defs/controlId" }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "controlId": { "type": "string", "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$" },
+    "hostLabel": { "type": "string", "pattern": "^[a-z0-9]([a-z0-9-]*[a-z0-9])?$" },
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$",
+      "description": "The semver.org grammar, so a numeric identifier carries no leading zero and every version here orders under a conforming comparison."
+    },
+    "resourceType": { "type": "string", "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$" },
+    "frameworkId": { "type": "string", "pattern": "^[a-z0-9_-]+$" }
+  }
+}

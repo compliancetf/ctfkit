@@ -1,0 +1,32 @@
+# Stack configuration for this sample. The two hooks write separate metadata keys, ctfkit and
+# ctfkit-scan, so they never overwrite each other, and the plan policy in
+# adapters/spacelift/policy.rego renders the verdict each one computed.
+#
+# Every flag that decides an outcome is pinned here and reads from the runner image, never from this
+# repository: --fail-on, --format, --config, --exceptions, --catalog. `embedded` pins the release
+# catalog compiled into the binary. A format list of exactly
+# spacelift exits 0 on findings, so neither hook can fail the run; exit 2, a tool error, still does.
+version: "1"
+
+runner_image: <your-registry>/ctfkit-runner:1.0.0
+
+after_init:
+  - >-
+    ctfkit report
+    --fail-on error
+    --format spacelift
+    --config /opt/ctfkit/ctfkit.yaml
+    --exceptions /opt/ctfkit/exceptions.yaml
+    --catalog embedded
+
+after_plan:
+  # Replace <plan-file> with the name Spacelift gives the plan file in the run working directory;
+  # it is not yet confirmed against a live run.
+  - tofu show -json <plan-file> > plan.json
+  - >-
+    ctfkit scan --plan plan.json
+    --fail-on error
+    --format spacelift
+    --config /opt/ctfkit/ctfkit.yaml
+    --exceptions /opt/ctfkit/exceptions.yaml
+    --catalog embedded

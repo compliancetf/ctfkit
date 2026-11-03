@@ -1,0 +1,22 @@
+# The catalog example from the scan specification, kept here so schemacheck has something
+# to validate catalog-1.schema.json against until a release catalog lands in the
+# repository. It is an example, not the release catalog.
+schema: ctf.catalog/1
+version: "2026.9.0"
+hosts:                         # framework id -> host label substituted for {host}
+  soc_2: soc2
+  pci_dss_v40: pcidss
+  hipaa: hipaa
+defaultHost: soc_2
+controls:
+  - id: s3_bucket_versioning_enabled
+    name: S3 bucket versioning enabled
+    resourceTypes: [aws_s3_bucket]
+    clausesByFramework:
+      soc_2: [CC6.1]
+      pci_dss_v40: ["3.4"]
+modules:
+  - resourceTypes: [aws_s3_bucket]
+    source: "{host}.compliance.tf/terraform-aws-modules/s3-bucket/aws"
+    version: "~> 4.6"
+    controls: [s3_bucket_versioning_enabled]

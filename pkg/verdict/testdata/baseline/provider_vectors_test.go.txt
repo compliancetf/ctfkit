@@ -1,0 +1,284 @@
+package baseline
+
+// Generator of the ctfkit baseline vectors (ctfkit pkg/verdict/testdata). Run
+// against a provider checkout at the commit that SOURCE.json names, with
+// this file copied into internal/baseline:
+//
+//	CTFKIT_VECTORS=/path/to/ctfkit/pkg/verdict/testdata go test ./internal/baseline/ -run CtfkitVectors
+//
+// It fills readdigest/cases.json digests, writes controlmanifest/expected.json
+// and baseline/valid/{baseline.json,expected.json}, all computed by this
+// package. The baseline is signed with fresh in-memory keys (no private key
+// is written) and must pass Load.
+
+import (
+	"bytes"
+	"crypto/hkdf"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
+
+	"github.com/compliancetf/terraform-provider-aws/internal/bundle"
+	"github.com/compliancetf/terraform-provider-aws/internal/profile"
+	"github.com/compliancetf/terraform-provider-aws/internal/trust"
+	"github.com/compliancetf/terraform-provider-aws/internal/verdict"
+	"github.com/compliancetf/terraform-provider-aws/internal/verdict/verdicttest"
+)
+
+type rdCase struct {
+	Name    string          `json:"name"`
+	Reads   []string        `json:"reads"`
+	Value   json.RawMessage `json:"value"`
+	Unknown [][]string      `json:"unknown"`
+	KeyHex  string          `json:"key_hex,omitempty"`
+	Digest  string          `json:"digest"`
+}
+
+type rdFile struct {
+	KeyHex   string          `json:"key_hex"`
+	KReadHex string          `json:"k_read_hex"`
+	Type     json.RawMessage `json:"type"`
+	Cases    []rdCase        `json:"cases"`
+}
+
+func TestCtfkitVectors(t *testing.T) {
+	root := os.Getenv("CTFKIT_VECTORS")
+	if root == "" {
+		t.Skip("CTFKIT_VECTORS not set")
+	}
+	rd := readDigestVectors(t, filepath.Join(root, "readdigest", "cases.json"))
+	ctls := controlVectors(t, filepath.Join(root, "controlmanifest"))
+	baselineVector(t, filepath.Join(root, "baseline", "valid"), rd, ctls[0])
+}
+
+func readDigestVectors(t *testing.T, path string) map[string]string {
+	raw, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var f rdFile
+	if err := json.Unmarshal(raw, &f); err != nil {
+		t.Fatal(err)
+	}
+	typ, err := tftypes.ParseJSONType(f.Type) //nolint:staticcheck // cty JSON type syntax
+	if err != nil {
+		t.Fatal(err)
+	}
+	k, _ := hex.DecodeString(f.KeyHex)
+	kr, err := hkdf.Key(sha256.New, k, nil, infoReadDigest, 32)
+	if err != nil {
+		t.Fatal(err)
+	}
+	f.KReadHex = hex.EncodeToString(kr)
+	out := map[string]string{}
+	for i := range f.Cases {
+		c := &f.Cases[i]
+		key := k
+		if c.KeyHex != "" {
+			key, _ = hex.DecodeString(c.KeyHex)
+		}
+		v, err := tftypes.ValueFromJSON(c.Value, typ) //nolint:staticcheck // test input
+		if err != nil {
+			t.Fatalf("%s: %v", c.Name, err)
+		}
+		v = markUnknown(t, v, c.Unknown)
+		d, ok := ReadDigest(key, c.Reads, v)
+		if !ok {
+			d = ""
+		}
+		c.Digest, out[c.Name] = d, d
+	}
+	writeIndented(t, path, f)
+	return out
+}
+
+// markUnknown replaces the value at each path with an unknown; a "*" step
+// matches every element of a list, set or tuple.
+func markUnknown(t *testing.T, v tftypes.Value, paths [][]string) tftypes.Value {
+	v, err := tftypes.Transform(v, func(p *tftypes.AttributePath, x tftypes.Value) (tftypes.Value, error) {
+		for _, want := range paths {
+			if stepsMatch(p.Steps(), want) {
+				return tftypes.NewValue(x.Type(), tftypes.UnknownValue), nil
+			}
+		}
+		return x, nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	return v
+}
+
+func stepsMatch(steps []tftypes.AttributePathStep, want []string) bool {
+	if len(steps) != len(want) {
+		return false
+	}
+	for i, s := range steps {
+		var got string
+		switch s := s.(type) {
+		case tftypes.AttributeName:
+			got = string(s)
+		case tftypes.ElementKeyString:
+			got = string(s)
+		case tftypes.ElementKeyInt:
+			got = strconv.FormatInt(int64(s), 10)
+		case tftypes.ElementKeyValue:
+			got = "*"
+		}
+		if want[i] != "*" && got != want[i] || want[i] == "*" && got != "*" && strings.Trim(got, "0123456789") != "" {
+			return false
+		}
+	}
+	return true
+}
+
+type ctlExpected struct {
+	Index  int    `json:"index"`
+	ID     string `json:"id"`
+	Digest string `json:"digest"`
+}
+
+func controlVectors(t *testing.T, dir string) []bundle.Control {
+	raw, err := os.ReadFile(filepath.Join(dir, "controls.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var each []json.RawMessage
+	if err := json.Unmarshal(raw, &each); err != nil {
+		t.Fatal(err)
+	}
+	var exp []ctlExpected
+	var ctls []bundle.Control
+	for i, c := range each {
+		got, err := bundle.ParseControls(append(append([]byte("["), c...), ']'))
+		if err != nil {
+			t.Fatalf("control %d: %v", i, err)
+		}
+		d, err := digestJSON(&got[0])
+		if err != nil {
+			t.Fatal(err)
+		}
+		exp = append(exp, ctlExpected{i, got[0].ID, d})
+		ctls = append(ctls, got[0])
+	}
+	writeIndented(t, filepath.Join(dir, "expected.json"), exp)
+	return ctls
+}
+
+type keyOut struct {
+	Kid       string `json:"kid"`
+	SPKIB64   string `json:"spki_b64"`
+	Use       string `json:"use"`
+	NotBefore string `json:"not_before"`
+	NotAfter  string `json:"not_after"`
+}
+
+type baselineExpected struct {
+	Now             string   `json:"now"`
+	BaselineKey     keyOut   `json:"baseline_key"`
+	StatementKey    keyOut   `json:"statement_key"`
+	SignedSHA256    string   `json:"signed_sha256"`
+	StatementSHA256 []string `json:"statement_signed_sha256"`
+	EntryDigests    []string `json:"entry_digests"`
+}
+
+func baselineVector(t *testing.T, dir string, rd map[string]string, ctl bundle.Control) {
+	vnow := time.Date(2026, 10, 19, 12, 0, 0, 0, time.UTC)
+	bl, rc := verdicttest.NewKey(t, vnow.Add(-24*time.Hour)), verdicttest.NewKey(t, vnow.Add(-24*time.Hour))
+	bl.Signer.Use, rc.Signer.Use = verdict.UseBaseline, verdict.UseReceipt
+	prof := &profile.Profile{OrgID: "bobthecorp", Baseline: &profile.Baseline{PublicKeys: []profile.SignerKey{bl.Signer}, MaxDays: 90},
+		BreakGlass: &profile.BreakGlass{ReceiptKeys: []profile.SignerKey{rc.Signer}}}
+	manifest, err := digestJSON(&ctl)
+	if err != nil {
+		t.Fatal(err)
+	}
+	content := "sha256:" + strings.Repeat("3", 64)
+	plan := "sha256:" + strings.Repeat("4", 64)
+	issued := vnow.Add(-time.Hour).Format(time.RFC3339)
+	entries := []Entry{
+		{Workspace: "prod", Scope: Scope{"111111111111", "us-east-1"}, Type: "aws_s3_bucket", IdentityKind: "id",
+			Identity: map[string]string{"id": "bkt-1"}, Address: "aws_s3_bucket.logs", Control: ctl.ID, ControlMajor: "2",
+			ControlManifestDigest: manifest, ReadDigest: rd["base"], Approver: "alice@bobthecorp.example",
+			Expires: "2026-12-01T00:00:00Z", Ticket: "BOB-123"},
+		{Workspace: "prod", Scope: Scope{"111111111111", "us-east-1"}, Type: "aws_s3_bucket", IdentityKind: "identity",
+			Identity: map[string]string{"bucket": "bobthecorp-ünïcode\t<b>", "account_id": "111111111111"}, Address: `module.m["a"].aws_s3_bucket.this[0]`,
+			Control: ctl.ID, ControlMajor: "2", ControlManifestDigest: manifest, ReadDigest: rd["set order a"],
+			Approver: "bob@bobthecorp.example", Expires: "2026-11-15T00:00:00Z", Ticket: ""},
+	}
+	var stSums []string
+	for i := range entries {
+		e := &entries[i]
+		st := Statement{Format: StatementFormat, OrgID: "bobthecorp", Role: RoleApprover, Subject: e.Approver, Workspace: e.Workspace,
+			Scope: e.Scope, RunID: "run-obs-1", PlanDigest: plan, ContentDigest: content, IssuedAt: issued}
+		signed := signDoc(t, rc, st)
+		if err := json.Unmarshal(signed, &e.ApproverStatement); err != nil {
+			t.Fatal(err)
+		}
+		_, sb, _ := verdict.SignedBytes(signed)
+		stSums = append(stSums, sum(sb))
+	}
+	doc := Document{Format: Format, OrgID: "bobthecorp", IssuedAt: issued, ContentDigest: content, Entries: entries}
+	body := signDoc(t, bl, doc)
+	var pretty bytes.Buffer
+	if err := json.Indent(&pretty, body, "", "  "); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(dir, "baseline.json")
+	if err := os.WriteFile(path, append(pretty.Bytes(), '\n'), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	keyPath := filepath.Join(t.TempDir(), "baseline.key")
+	if err := os.WriteFile(keyPath, []byte(strings.Repeat("ab", 32)+"\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	s, err := Load(LoadInput{Path: path, KeyPath: keyPath, Profile: prof, Revocations: trust.NoRevocations(),
+		Coverable: func(string) bool { return true }, Now: vnow})
+	if err != nil {
+		t.Fatalf("provider Load refuses the vector: %v", err)
+	}
+	_, sb, _ := verdict.SignedBytes(body)
+	ko := func(k profile.SignerKey) keyOut {
+		return keyOut{k.KID, k.SPKIB64, k.Use, k.NotBefore.Format(time.RFC3339), k.NotAfter.Format(time.RFC3339)}
+	}
+	writeIndented(t, filepath.Join(dir, "expected.json"), baselineExpected{Now: vnow.Format(time.RFC3339),
+		BaselineKey: ko(bl.Signer), StatementKey: ko(rc.Signer), SignedSHA256: sum(sb), StatementSHA256: stSums, EntryDigests: s.digests})
+}
+
+func signDoc(t *testing.T, k verdicttest.Key, v any) []byte {
+	b, _ := json.Marshal(v)
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(b, &m); err != nil {
+		t.Fatal(err)
+	}
+	delete(m, "signature")
+	sig, _ := json.Marshal(verdicttest.Signature(t, k.Priv, k.Signer.KID, m))
+	m["signature"] = sig
+	out, _ := json.Marshal(m)
+	return out
+}
+
+func sum(b []byte) string {
+	s := sha256.Sum256(b)
+	return hex.EncodeToString(s[:])
+}
+
+func writeIndented(t *testing.T, path string, v any) {
+	b, err := json.MarshalIndent(v, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, append(b, '\n'), 0o644); err != nil {
+		t.Fatal(err)
+	}
+}

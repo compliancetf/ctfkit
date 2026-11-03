@@ -1,0 +1,23 @@
+name: Feature request
+description: Something ctfkit should check, report or support.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What you are trying to do, and where ctfkit falls short today.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: What you would like ctfkit to do, for example a command, flag, finding or output format.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: CI system, Terraform or OpenTofu version, and anything else that matters.

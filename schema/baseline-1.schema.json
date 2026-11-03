@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compliance.tf/schema/baseline-1.schema.json",
+  "title": "compliancetf.baseline/v1",
+  "description": "The customer-signed grandfather baseline that ctfkit baseline sign writes and the compliance.tf terraform provider matches at apply. Every value is a string, array or object. The signature member covers the RFC 8785 (JCS) form of the document without it, and is made with a profile key of use baseline; each approver_statement is signed the same way with a compliance.tf receipt key. pkg/verdict.ParseBaseline is the reference reader. Validating against this schema checks the shape only: signatures, expiry and the approver bindings are checked by the reader.",
+  "type": "object",
+  "required": ["format", "org_id", "issued_at", "content_digest", "entries", "signature"],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "compliancetf.baseline/v1" },
+    "org_id": { "type": "string", "minLength": 1 },
+    "issued_at": { "$ref": "#/$defs/time" },
+    "content_digest": { "$ref": "#/$defs/digest" },
+    "entries": { "type": "array", "items": { "$ref": "#/$defs/entry" } },
+    "signature": { "$ref": "#/$defs/signature" }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "time": {
+      "description": "RFC 3339 in UTC",
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?Z$"
+    },
+    "nonempty": { "type": "string", "minLength": 1 },
+    "scope": {
+      "type": "object",
+      "required": ["account_id", "region"],
+      "additionalProperties": false,
+      "properties": {
+        "account_id": { "$ref": "#/$defs/nonempty" },
+        "region": { "$ref": "#/$defs/nonempty" }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["kid", "alg", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "kid": { "$ref": "#/$defs/digest" },
+        "alg": { "description": "ES256; Ed25519 appears only in test builds and release readers refuse it.", "enum": ["ES256", "Ed25519"] },
+        "value": { "description": "base64url without padding of the ASN.1 DER signature", "type": "string", "pattern": "^[A-Za-z0-9_-]+$" }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "required": [
+        "workspace", "scope", "type", "identity_kind", "identity", "address", "control", "control_major",
+        "control_manifest_digest", "read_digest", "approver_statement", "approver", "expires", "ticket"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "workspace": { "$ref": "#/$defs/nonempty" },
+        "scope": { "$ref": "#/$defs/scope" },
+        "type": { "$ref": "#/$defs/nonempty" },
+        "identity_kind": { "enum": ["identity", "id"] },
+        "identity": {
+          "description": "The plaintext native identity: the resource identity object (kind identity) or {\"id\": <id>} (kind id).",
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": { "$ref": "#/$defs/nonempty" }
+        },
+        "address": { "description": "Informational; a moved instance matches only through the verdict's previous_address.", "$ref": "#/$defs/nonempty" },
+        "control": { "$ref": "#/$defs/nonempty" },
+        "control_major": { "type": "string", "pattern": "^(0|[1-9][0-9]{0,17})$" },
+        "control_manifest_digest": { "description": "sha256 over the JCS form of the control as loaded from the signed bundle (pkg/verdict.ControlManifestDigest).", "$ref": "#/$defs/digest" },
+        "read_digest": { "description": "Spec B4, keyed by the org baseline key (pkg/verdict/readdigest).", "$ref": "#/$defs/digest" },
+        "approver_statement": { "$ref": "#/$defs/statement" },
+        "approver": { "description": "Equals approver_statement.subject.", "$ref": "#/$defs/nonempty" },
+        "expires": { "$ref": "#/$defs/time" },
+        "ticket": { "type": "string" }
+      },
+      "if": { "properties": { "identity_kind": { "const": "id" } } },
+      "then": {
+        "properties": {
+          "identity": { "required": ["id"], "maxProperties": 1 }
+        }
+      }
+    },
+    "statement": {
+      "description": "compliancetf.baseline-approval/v1: the app-signed baseline_approver statement, bound to the observation run.",
+      "type": "object",
+      "required": [
+        "format", "org_id", "role", "subject", "workspace", "scope", "run_id", "plan_digest", "content_digest",
+        "issued_at", "signature"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "format": { "const": "compliancetf.baseline-approval/v1" },
+        "org_id": { "$ref": "#/$defs/nonempty" },
+        "role": { "const": "baseline_approver" },
+        "subject": { "$ref": "#/$defs/nonempty" },
+        "workspace": { "$ref": "#/$defs/nonempty" },
+        "scope": { "$ref": "#/$defs/scope" },
+        "run_id": { "$ref": "#/$defs/nonempty" },
+        "plan_digest": { "$ref": "#/$defs/digest" },
+        "content_digest": { "$ref": "#/$defs/digest" },
+        "issued_at": { "$ref": "#/$defs/time" },
+        "signature": { "$ref": "#/$defs/signature" }
+      }
+    }
+  }
+}

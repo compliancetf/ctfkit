@@ -1,0 +1,39 @@
+{
+  "third_party_metadata": {
+    "custom": {
+      "ctfkit": {
+        "schema": "ctfkit.spacelift/1",
+        "stage": "post_init",
+        "verdict": "pass",
+        "summary": {
+          "error": 0,
+          "warning": 0,
+          "note": 0
+        },
+        "findings": []
+      },
+      "ctfkit-scan": {
+        "schema": "ctfkit.spacelift/1",
+        "stage": "post_plan",
+        "verdict": "fail",
+        "summary": {
+          "error": 2,
+          "warning": 0,
+          "note": 0
+        },
+        "findings": [
+          {
+            "ruleId": "ctf.coverage.module_source",
+            "level": "error",
+            "message": "Planned resource aws_iam_role.replication is not covered by a compliance.tf module; the catalog names bobthecorp.compliance.tf/terraform-aws-modules/iam/aws as the replacement"
+          },
+          {
+            "ruleId": "ctf.coverage.module_source",
+            "level": "error",
+            "message": "Planned resource aws_s3_bucket.raw is not covered by a compliance.tf module; the catalog names bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws as the replacement"
+          }
+        ]
+      }
+    }
+  }
+}

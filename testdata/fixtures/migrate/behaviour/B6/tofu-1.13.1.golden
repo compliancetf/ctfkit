@@ -1,0 +1,77 @@
+{
+  "behavior": "B6",
+  "assumption": "An override file with backend \"local\" replaces the root's backend for a scratch copy, a cloud block included (the design table expected an error for cloud)",
+  "cli": {
+    "name": "tofu",
+    "version": "1.13.1",
+    "platform": "darwin_arm64",
+    "binary_sha256": "56b267df2cbe6498d6b1deedb9cbff038954dfc20830dfd51abea658fabbe586",
+    "release_archive": "tofu_1.13.1_darwin_arm64.zip",
+    "release_archive_sha256": "81aebe6453223bcb3ce3c28424b36d009ebfddd3ad65ad1ec3eed0d0d574a77b"
+  },
+  "fake_provider_sha256": "dcb0571f6084f1d074a3ae02e0a8df62158e5eeb49b80e32d921e1b424eb9437",
+  "upstream": "registry.opentofu.org/hashicorp/aws",
+  "inputs_sha256": "0b5af35681fa7f8e396bad5db62a159ac94f572f6a5bca2803d54ba85e724ab6",
+  "steps": [
+    {
+      "dir": "backend",
+      "run": [
+        "tofu",
+        "init",
+        "-input=false",
+        "-no-color"
+      ],
+      "exit": 0,
+      "output": [
+        "",
+        "Initializing the backend...",
+        "",
+        "Successfully configured the backend \"local\"! OpenTofu will automatically",
+        "use this backend unless the backend configuration changes.",
+        "",
+        "Initializing provider plugins...",
+        "",
+        "OpenTofu has been successfully initialized!"
+      ]
+    },
+    {
+      "dir": "backend",
+      "cat": ".terraform/terraform.tfstate",
+      "filter": "backend_type",
+      "exit": 0,
+      "output": [
+        "backend local path=\"scratch.tfstate\""
+      ]
+    },
+    {
+      "dir": "cloud",
+      "run": [
+        "tofu",
+        "init",
+        "-input=false",
+        "-no-color"
+      ],
+      "exit": 0,
+      "output": [
+        "",
+        "Initializing the backend...",
+        "",
+        "Successfully configured the backend \"local\"! OpenTofu will automatically",
+        "use this backend unless the backend configuration changes.",
+        "",
+        "Initializing provider plugins...",
+        "",
+        "OpenTofu has been successfully initialized!"
+      ]
+    },
+    {
+      "dir": "cloud",
+      "cat": ".terraform/terraform.tfstate",
+      "filter": "backend_type",
+      "exit": 0,
+      "output": [
+        "backend local path=\"scratch.tfstate\""
+      ]
+    }
+  ]
+}

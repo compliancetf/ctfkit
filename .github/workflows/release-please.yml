@@ -1,0 +1,52 @@
+name: Release Please
+
+# Every push to master updates one release pull request (version bump in
+# .release-please-manifest.json plus the CHANGELOG.md entry) from the conventional commits
+# since the last release. Merging that pull request makes this workflow create the tag and
+# the GitHub release with its notes, then start release.yml on the tag.
+#
+# Configuration: release-please-config.json. A pull request or tag created with the job token
+# starts no other workflow, so the release pull request runs no Test or PR title check, and the
+# tag push does not start release.yml. The last step starts it through workflow_dispatch on the
+# tag, the one event the job token may trigger. The build then runs as release.yml on
+# refs/tags/vX.Y.Z, which is the signer workflow and source ref `gh attestation verify` expects.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: Release Please
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # tag, GitHub release, release branch
+      pull-requests: write # the release pull request
+      issues: write # labels on the release pull request
+      actions: write # dispatch release.yml on the new tag
+    steps:
+      - name: Update the release pull request or create the release
+        id: release
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      - name: Build and publish the release assets
+        if: ${{ steps.release.outputs.release_created == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ steps.release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+          [[ $TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]] || { echo "::error::unexpected tag name: $TAG"; exit 1; }
+          gh api -X POST "repos/$REPO/actions/workflows/release.yml/dispatches" -f ref="$TAG"
+          echo "::notice::release.yml started on $TAG"

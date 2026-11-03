@@ -1,0 +1,3 @@
+# Only aws_s3_bucket is allowed, so the fixture's aws_iam_role must be reported.
+allowed_resources:
+  - aws_s3_bucket

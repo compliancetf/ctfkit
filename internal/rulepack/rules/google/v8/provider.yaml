@@ -1,0 +1,8 @@
+# The hashicorp/google provider, major version 8. A proof pack: a few rules
+# written with the generic predicates only, so it needs no dialect and no Go.
+source: hashicorp/google
+resource_prefix: google_
+tags:
+  attribute: labels
+  effective: effective_labels
+  provider_default: default_labels

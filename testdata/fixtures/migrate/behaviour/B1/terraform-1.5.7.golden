@@ -1,0 +1,46 @@
+{
+  "behavior": "B1",
+  "assumption": "A child module whose required_providers names hashicorp/aws cannot receive a compliancetf/aws configuration through providers = {} (type-mismatch error)",
+  "cli": {
+    "name": "terraform",
+    "version": "1.5.7",
+    "platform": "darwin_arm64",
+    "binary_sha256": "9659560f277521478fced6a3351a5675bcb941a7a5f50d06dc3908ef573e0d61",
+    "release_archive": "terraform_1.5.7_darwin_arm64.zip",
+    "release_archive_sha256": "db7c33eb1a446b73a443e2c55b532845f7b70cd56100bec4c96f15cfab5f50cb"
+  },
+  "fake_provider_sha256": "dcb0571f6084f1d074a3ae02e0a8df62158e5eeb49b80e32d921e1b424eb9437",
+  "upstream": "registry.terraform.io/hashicorp/aws",
+  "inputs_sha256": "e04f99e63aea51193e8dfb752c45b7eb78b63cddd65f705aa67e9cbd56e47c6a",
+  "steps": [
+    {
+      "dir": "root",
+      "run": [
+        "terraform",
+        "init",
+        "-input=false",
+        "-no-color"
+      ],
+      "exit": 1,
+      "output": [
+        "",
+        "Initializing the backend...",
+        "Initializing modules...",
+        "- child in child",
+        "",
+        "Error: Provider type mismatch",
+        "",
+        "  on main.tf line 18, in module \"child\":",
+        "  18:   providers = { aws = aws }",
+        "",
+        "The local name \"aws\" in the root module represents provider",
+        "\"registry.compliance.tf/compliancetf/aws\", but \"aws\" in module.child",
+        "represents \"hashicorp/aws\".",
+        "",
+        "Each provider has its own distinct configuration schema and provider types,",
+        "so this module's \"aws\" can be assigned only a configuration for",
+        "hashicorp/aws, which is not required by module.child."
+      ]
+    }
+  ]
+}

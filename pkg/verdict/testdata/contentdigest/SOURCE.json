@@ -1,0 +1,16 @@
+{
+  "commit": "8eba94b574714c49ee68e12aa4415bccdbadcb27",
+  "copied": {
+    "base/controls.json": "74ed5b349b09829757347a5f75cdcc3d88e93163dd9e72fd718c9c961a10098e",
+    "base/iam-actions.json": "293f473153904b10e1aafa97a3c8e3e8b10f27e5b871f6fd51af2aa68bd0dfa5",
+    "coverable-changed/controls.json": "c3827b502ef5fe17b88cda16db8ad1c8385340ea505513f588d34cdd6bc779a6",
+    "coverable-changed/iam-actions.json": "293f473153904b10e1aafa97a3c8e3e8b10f27e5b871f6fd51af2aa68bd0dfa5",
+    "swap-graph/controls.json": "74ed5b349b09829757347a5f75cdcc3d88e93163dd9e72fd718c9c961a10098e",
+    "swap-graph/graph.json": "c6ba1c6d579b9146827df12f056b6f0ea8c59cff8b7aef32c337845791150c75",
+    "swap-graph/iam-actions.json": "293f473153904b10e1aafa97a3c8e3e8b10f27e5b871f6fd51af2aa68bd0dfa5"
+  },
+  "expected_json_sha256": "319c2166816b0ea35262213f9d87c7dcb5e0fbbf3d6c97c56a5469ab05debd16",
+  "note": "copied files are byte for byte. expected.json holds the digests ctfkit's TestContentDigestVectors computed from these files, and they equal the provider's verdictVectors in internal/bundlegen/contentdigest_test.go at commit: base, swap-graph and coverable-changed are each archive alone as soc2-aws, controls-only is base controls.json alone, two-bundles is base as soc2-aws plus swap-graph as soc2-aws-graph. The provider's TestContentDigestBundleOnly checks that ControlSet.ContentDigest of each signed bundle.tar.gz equals the first three.",
+  "path": "internal/bundlegen/testdata/contentdigest/{base,swap-graph,coverable-changed}",
+  "source": "github.com/compliancetf/terraform-provider-aws"
+}

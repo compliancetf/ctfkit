@@ -1,0 +1,30 @@
+{
+  "payload_version": 1,
+  "stage": "post_plan",
+  "access_token": "fixture-token.atlasv1.bobthecorp-not-a-real-token",
+  "capabilities": {
+    "outcomes": true
+  },
+  "configuration_version_download_url": "https://app.terraform.io/api/v2/configuration-versions/cv-bobthecorp0001/download",
+  "configuration_version_id": "cv-bobthecorp0001",
+  "is_speculative": false,
+  "organization_name": "bobthecorp",
+  "plan_json_api_url": "https://app.terraform.io/api/v2/plans/plan-bobthecorp0001/json-output",
+  "run_app_url": "https://app.terraform.io/app/bobthecorp/storage/runs/run-bobthecorp0001",
+  "run_created_at": "2026-10-27T12:00:00.000Z",
+  "run_created_by": "bobthecorp-ci",
+  "run_id": "run-bobthecorp0001",
+  "run_message": "Triggered via API",
+  "task_result_callback_url": "https://app.terraform.io/api/v2/task-results/5ea8d46c-2ceb-42cd-83f2-82e54697bddd/callback",
+  "task_result_enforcement_level": "mandatory",
+  "task_result_id": "taskrs-bobthecorp0001",
+  "vcs_branch": "main",
+  "vcs_commit_url": null,
+  "vcs_commit_hash": null,
+  "vcs_pull_request_url": null,
+  "vcs_repo_url": null,
+  "workspace_app_url": "https://app.terraform.io/app/bobthecorp/storage",
+  "workspace_id": "ws-bobthecorp0001",
+  "workspace_name": "storage",
+  "workspace_working_directory": ""
+}

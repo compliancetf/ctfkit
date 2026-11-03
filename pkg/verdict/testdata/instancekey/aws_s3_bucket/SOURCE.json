@@ -1,0 +1,40 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_s3_bucket.new",
+      "form": "create",
+      "recorded_name": "aws_s3_bucket.62a35dc4500cc625",
+      "sha256": {
+        "apply/aws_s3_bucket.new.create.msgpack": "a66fed13437ff6574de296b2c62624d3d429051fc8182c4ae92a79c81e8aac39",
+        "apply/aws_s3_bucket.new.create.type.json": "e140d58858d2c01bbc584a7302fd4e3ab464e815edf5cb7f8c157a2461a18505",
+        "envelope/aws_s3_bucket.new.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_s3_bucket.old",
+      "form": "delete",
+      "recorded_name": "aws_s3_bucket.7dc80e6be008585a",
+      "sha256": {
+        "apply/aws_s3_bucket.old.delete.msgpack": "e4ff5e7d7a7f08e9800a3e25cb774533cb20040df30b6ba10f956f9acd0eb3f7",
+        "apply/aws_s3_bucket.old.delete.type.json": "e140d58858d2c01bbc584a7302fd4e3ab464e815edf5cb7f8c157a2461a18505",
+        "envelope/aws_s3_bucket.old.delete.json": "379aa5b7871d2d0991356610d2a568c5ef1a1a24709830aa2fd68f42963c4765"
+      }
+    },
+    {
+      "address": "aws_s3_bucket.this",
+      "form": "update",
+      "recorded_name": "aws_s3_bucket.268e6a59acdd10da",
+      "sha256": {
+        "apply/aws_s3_bucket.this.update.msgpack": "398cd7042ad99410c8c5e664fcd8e4f7157e738f3123c9ba0777b6d7ba9d882a",
+        "apply/aws_s3_bucket.this.update.type.json": "e140d58858d2c01bbc584a7302fd4e3ab464e815edf5cb7f8c157a2461a18505",
+        "envelope/aws_s3_bucket.this.update.json": "7644126280364afc46a5fcd4cf420473cfbdfe3832f62cc52d6afacc43489461"
+      }
+    }
+  ]
+}

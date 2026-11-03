@@ -1,0 +1,732 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.12.6",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_cloudtrail.security",
+          "mode": "managed",
+          "type": "aws_cloudtrail",
+          "name": "security",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "schema_version": 1,
+          "values": {
+            "advanced_event_selector": [],
+            "arn": "arn:aws:cloudtrail:eu-west-1:111111111111:security",
+            "cloud_watch_logs_group_arn": null,
+            "cloud_watch_logs_role_arn": null,
+            "enable_log_file_validation": false,
+            "enable_logging": true,
+            "event_selector": [],
+            "home_region": "",
+            "id": "bobthecorp-security",
+            "include_global_service_events": true,
+            "insight_selector": [],
+            "is_multi_region_trail": true,
+            "is_organization_trail": false,
+            "kms_key_id": null,
+            "name": "bobthecorp-security",
+            "region": "eu-west-1",
+            "s3_bucket_name": "bobthecorp-trail-logs",
+            "s3_key_prefix": null,
+            "sns_topic_arn": "",
+            "sns_topic_name": null,
+            "tags": null,
+            "tags_all": {}
+          },
+          "sensitive_values": {
+            "advanced_event_selector": [],
+            "event_selector": [],
+            "insight_selector": [],
+            "tags_all": {}
+          }
+        },
+        {
+          "address": "aws_eks_cluster.platform",
+          "mode": "managed",
+          "type": "aws_eks_cluster",
+          "name": "platform",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "schema_version": 1,
+          "values": {
+            "access_config": [],
+            "arn": "arn:aws:eks:eu-west-1:111111111111:platform",
+            "bootstrap_self_managed_addons": true,
+            "certificate_authority": [],
+            "cluster_id": "",
+            "compute_config": [],
+            "control_plane_scaling_config": [],
+            "created_at": "",
+            "deletion_protection": false,
+            "enabled_cluster_log_types": [
+              "api"
+            ],
+            "encryption_config": [],
+            "endpoint": "",
+            "force_update_version": null,
+            "id": "bobthecorp-platform",
+            "identity": [],
+            "kube_api_server_config": [],
+            "kube_controller_manager_config": [],
+            "kube_scheduler_config": [],
+            "kubernetes_network_config": [],
+            "name": "bobthecorp-platform",
+            "outpost_config": [],
+            "platform_version": "",
+            "region": "eu-west-1",
+            "remote_network_config": [],
+            "role_arn": "arn:aws:iam::111111111111:role/bobthecorp-eks-cluster",
+            "status": "",
+            "storage_config": [],
+            "tags": null,
+            "tags_all": {},
+            "timeouts": null,
+            "upgrade_policy": [],
+            "version": "",
+            "vpc_config": [
+              {
+                "cluster_security_group_id": "",
+                "control_plane_egress_mode": "",
+                "endpoint_private_access": false,
+                "endpoint_public_access": true,
+                "public_access_cidrs": [],
+                "security_group_ids": [],
+                "subnet_ids": [
+                  "subnet-11111111111111111",
+                  "subnet-22222222222222222"
+                ],
+                "vpc_id": ""
+              }
+            ],
+            "zonal_shift_config": []
+          },
+          "sensitive_values": {
+            "access_config": [],
+            "certificate_authority": [],
+            "compute_config": [],
+            "control_plane_scaling_config": [],
+            "enabled_cluster_log_types": [
+              false
+            ],
+            "encryption_config": [],
+            "identity": [],
+            "kube_api_server_config": [],
+            "kube_controller_manager_config": [],
+            "kube_scheduler_config": [],
+            "kubernetes_network_config": [],
+            "outpost_config": [],
+            "remote_network_config": [],
+            "storage_config": [],
+            "tags_all": {},
+            "upgrade_policy": [],
+            "vpc_config": [
+              {
+                "public_access_cidrs": [],
+                "security_group_ids": [],
+                "subnet_ids": [
+                  false,
+                  false
+                ]
+              }
+            ],
+            "zonal_shift_config": []
+          },
+          "identity": {
+            "account_id": null,
+            "name": null,
+            "region": null
+          },
+          "identity_schema_version": 0
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_cloudtrail.org",
+      "mode": "managed",
+      "type": "aws_cloudtrail",
+      "name": "org",
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "advanced_event_selector": [],
+          "arn": "arn:aws:cloudtrail:eu-west-1:111111111111:org",
+          "cloud_watch_logs_group_arn": null,
+          "cloud_watch_logs_role_arn": null,
+          "enable_log_file_validation": false,
+          "enable_logging": true,
+          "event_selector": [],
+          "home_region": "",
+          "id": "bobthecorp-org",
+          "include_global_service_events": true,
+          "insight_selector": [],
+          "is_multi_region_trail": true,
+          "is_organization_trail": false,
+          "kms_key_id": null,
+          "name": "bobthecorp-org",
+          "region": "eu-west-1",
+          "s3_bucket_name": "bobthecorp-trail-logs",
+          "s3_key_prefix": null,
+          "sns_topic_arn": "",
+          "sns_topic_name": null,
+          "tags": null,
+          "tags_all": {}
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {
+          "advanced_event_selector": [],
+          "event_selector": [],
+          "insight_selector": [],
+          "tags_all": {}
+        },
+        "after_sensitive": false
+      },
+      "action_reason": "delete_because_no_resource_config"
+    },
+    {
+      "address": "aws_cloudtrail.security",
+      "mode": "managed",
+      "type": "aws_cloudtrail",
+      "name": "security",
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "advanced_event_selector": [],
+          "arn": "arn:aws:cloudtrail:eu-west-1:111111111111:security",
+          "cloud_watch_logs_group_arn": null,
+          "cloud_watch_logs_role_arn": null,
+          "enable_log_file_validation": false,
+          "enable_logging": true,
+          "event_selector": [],
+          "home_region": "",
+          "id": "bobthecorp-security",
+          "include_global_service_events": true,
+          "insight_selector": [],
+          "is_multi_region_trail": true,
+          "is_organization_trail": false,
+          "kms_key_id": null,
+          "name": "bobthecorp-security",
+          "region": "eu-west-1",
+          "s3_bucket_name": "bobthecorp-trail-logs",
+          "s3_key_prefix": null,
+          "sns_topic_arn": "",
+          "sns_topic_name": null,
+          "tags": null,
+          "tags_all": {}
+        },
+        "after": {
+          "advanced_event_selector": [],
+          "arn": "arn:aws:cloudtrail:eu-west-1:111111111111:security",
+          "cloud_watch_logs_group_arn": null,
+          "cloud_watch_logs_role_arn": null,
+          "enable_log_file_validation": false,
+          "enable_logging": true,
+          "event_selector": [],
+          "home_region": "",
+          "id": "bobthecorp-security",
+          "include_global_service_events": true,
+          "insight_selector": [],
+          "is_multi_region_trail": true,
+          "is_organization_trail": false,
+          "kms_key_id": null,
+          "name": "bobthecorp-security",
+          "region": "eu-west-1",
+          "s3_bucket_name": "bobthecorp-trail-logs",
+          "s3_key_prefix": null,
+          "sns_topic_arn": "",
+          "sns_topic_name": null,
+          "tags": null,
+          "tags_all": {}
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "advanced_event_selector": [],
+          "event_selector": [],
+          "insight_selector": [],
+          "tags_all": {}
+        },
+        "after_sensitive": {
+          "advanced_event_selector": [],
+          "event_selector": [],
+          "insight_selector": [],
+          "tags_all": {}
+        }
+      }
+    },
+    {
+      "address": "aws_eks_cluster.platform",
+      "mode": "managed",
+      "type": "aws_eks_cluster",
+      "name": "platform",
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "access_config": [],
+          "arn": "arn:aws:eks:eu-west-1:111111111111:platform",
+          "bootstrap_self_managed_addons": true,
+          "certificate_authority": [],
+          "cluster_id": "",
+          "compute_config": [],
+          "control_plane_scaling_config": [],
+          "created_at": "",
+          "deletion_protection": false,
+          "enabled_cluster_log_types": [
+            "api",
+            "audit",
+            "authenticator"
+          ],
+          "encryption_config": [],
+          "endpoint": "",
+          "force_update_version": null,
+          "id": "bobthecorp-platform",
+          "identity": [],
+          "kube_api_server_config": [],
+          "kube_controller_manager_config": [],
+          "kube_scheduler_config": [],
+          "kubernetes_network_config": [],
+          "name": "bobthecorp-platform",
+          "outpost_config": [],
+          "platform_version": "",
+          "region": "eu-west-1",
+          "remote_network_config": [],
+          "role_arn": "arn:aws:iam::111111111111:role/bobthecorp-eks-cluster",
+          "status": "",
+          "storage_config": [],
+          "tags": null,
+          "tags_all": {},
+          "timeouts": null,
+          "upgrade_policy": [],
+          "version": "",
+          "vpc_config": [
+            {
+              "cluster_security_group_id": "",
+              "control_plane_egress_mode": "",
+              "endpoint_private_access": false,
+              "endpoint_public_access": true,
+              "public_access_cidrs": [],
+              "security_group_ids": [],
+              "subnet_ids": [
+                "subnet-11111111111111111",
+                "subnet-22222222222222222"
+              ],
+              "vpc_id": ""
+            }
+          ],
+          "zonal_shift_config": []
+        },
+        "after": {
+          "access_config": [],
+          "arn": "arn:aws:eks:eu-west-1:111111111111:platform",
+          "bootstrap_self_managed_addons": true,
+          "certificate_authority": [],
+          "cluster_id": "",
+          "compute_config": [],
+          "control_plane_scaling_config": [],
+          "created_at": "",
+          "deletion_protection": false,
+          "enabled_cluster_log_types": [
+            "api"
+          ],
+          "encryption_config": [],
+          "endpoint": "",
+          "force_update_version": null,
+          "id": "bobthecorp-platform",
+          "identity": [],
+          "kube_api_server_config": [],
+          "kube_controller_manager_config": [],
+          "kube_scheduler_config": [],
+          "kubernetes_network_config": [],
+          "name": "bobthecorp-platform",
+          "outpost_config": [],
+          "platform_version": "",
+          "region": "eu-west-1",
+          "remote_network_config": [],
+          "role_arn": "arn:aws:iam::111111111111:role/bobthecorp-eks-cluster",
+          "status": "",
+          "storage_config": [],
+          "tags": null,
+          "tags_all": {},
+          "timeouts": null,
+          "upgrade_policy": [],
+          "version": "",
+          "vpc_config": [
+            {
+              "cluster_security_group_id": "",
+              "control_plane_egress_mode": "",
+              "endpoint_private_access": false,
+              "endpoint_public_access": true,
+              "public_access_cidrs": [],
+              "security_group_ids": [],
+              "subnet_ids": [
+                "subnet-11111111111111111",
+                "subnet-22222222222222222"
+              ],
+              "vpc_id": ""
+            }
+          ],
+          "zonal_shift_config": []
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "access_config": [],
+          "certificate_authority": [],
+          "compute_config": [],
+          "control_plane_scaling_config": [],
+          "enabled_cluster_log_types": [
+            false,
+            false,
+            false
+          ],
+          "encryption_config": [],
+          "identity": [],
+          "kube_api_server_config": [],
+          "kube_controller_manager_config": [],
+          "kube_scheduler_config": [],
+          "kubernetes_network_config": [],
+          "outpost_config": [],
+          "remote_network_config": [],
+          "storage_config": [],
+          "tags_all": {},
+          "upgrade_policy": [],
+          "vpc_config": [
+            {
+              "public_access_cidrs": [],
+              "security_group_ids": [],
+              "subnet_ids": [
+                false,
+                false
+              ]
+            }
+          ],
+          "zonal_shift_config": []
+        },
+        "after_sensitive": {
+          "access_config": [],
+          "certificate_authority": [],
+          "compute_config": [],
+          "control_plane_scaling_config": [],
+          "enabled_cluster_log_types": [
+            false
+          ],
+          "encryption_config": [],
+          "identity": [],
+          "kube_api_server_config": [],
+          "kube_controller_manager_config": [],
+          "kube_scheduler_config": [],
+          "kubernetes_network_config": [],
+          "outpost_config": [],
+          "remote_network_config": [],
+          "storage_config": [],
+          "tags_all": {},
+          "upgrade_policy": [],
+          "vpc_config": [
+            {
+              "public_access_cidrs": [],
+              "security_group_ids": [],
+              "subnet_ids": [
+                false,
+                false
+              ]
+            }
+          ],
+          "zonal_shift_config": []
+        },
+        "after_identity": {
+          "account_id": null,
+          "name": null,
+          "region": null
+        }
+      }
+    }
+  ],
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.12.6",
+    "values": {
+      "root_module": {
+        "resources": [
+          {
+            "address": "aws_cloudtrail.org",
+            "mode": "managed",
+            "type": "aws_cloudtrail",
+            "name": "org",
+            "provider_name": "registry.opentofu.org/hashicorp/aws",
+            "schema_version": 1,
+            "values": {
+              "advanced_event_selector": [],
+              "arn": "arn:aws:cloudtrail:eu-west-1:111111111111:org",
+              "cloud_watch_logs_group_arn": null,
+              "cloud_watch_logs_role_arn": null,
+              "enable_log_file_validation": false,
+              "enable_logging": true,
+              "event_selector": [],
+              "home_region": "",
+              "id": "bobthecorp-org",
+              "include_global_service_events": true,
+              "insight_selector": [],
+              "is_multi_region_trail": true,
+              "is_organization_trail": false,
+              "kms_key_id": null,
+              "name": "bobthecorp-org",
+              "region": "eu-west-1",
+              "s3_bucket_name": "bobthecorp-trail-logs",
+              "s3_key_prefix": null,
+              "sns_topic_arn": "",
+              "sns_topic_name": null,
+              "tags": null,
+              "tags_all": {}
+            },
+            "sensitive_values": {
+              "advanced_event_selector": [],
+              "event_selector": [],
+              "insight_selector": [],
+              "tags_all": {}
+            }
+          },
+          {
+            "address": "aws_cloudtrail.security",
+            "mode": "managed",
+            "type": "aws_cloudtrail",
+            "name": "security",
+            "provider_name": "registry.opentofu.org/hashicorp/aws",
+            "schema_version": 1,
+            "values": {
+              "advanced_event_selector": [],
+              "arn": "arn:aws:cloudtrail:eu-west-1:111111111111:security",
+              "cloud_watch_logs_group_arn": null,
+              "cloud_watch_logs_role_arn": null,
+              "enable_log_file_validation": false,
+              "enable_logging": true,
+              "event_selector": [],
+              "home_region": "",
+              "id": "bobthecorp-security",
+              "include_global_service_events": true,
+              "insight_selector": [],
+              "is_multi_region_trail": true,
+              "is_organization_trail": false,
+              "kms_key_id": null,
+              "name": "bobthecorp-security",
+              "region": "eu-west-1",
+              "s3_bucket_name": "bobthecorp-trail-logs",
+              "s3_key_prefix": null,
+              "sns_topic_arn": "",
+              "sns_topic_name": null,
+              "tags": null,
+              "tags_all": {}
+            },
+            "sensitive_values": {
+              "advanced_event_selector": [],
+              "event_selector": [],
+              "insight_selector": [],
+              "tags_all": {}
+            }
+          },
+          {
+            "address": "aws_eks_cluster.platform",
+            "mode": "managed",
+            "type": "aws_eks_cluster",
+            "name": "platform",
+            "provider_name": "registry.opentofu.org/hashicorp/aws",
+            "schema_version": 1,
+            "values": {
+              "access_config": [],
+              "arn": "arn:aws:eks:eu-west-1:111111111111:platform",
+              "bootstrap_self_managed_addons": true,
+              "certificate_authority": [],
+              "cluster_id": "",
+              "compute_config": [],
+              "control_plane_scaling_config": [],
+              "created_at": "",
+              "deletion_protection": false,
+              "enabled_cluster_log_types": [
+                "api",
+                "audit",
+                "authenticator"
+              ],
+              "encryption_config": [],
+              "endpoint": "",
+              "force_update_version": null,
+              "id": "bobthecorp-platform",
+              "identity": [],
+              "kube_api_server_config": [],
+              "kube_controller_manager_config": [],
+              "kube_scheduler_config": [],
+              "kubernetes_network_config": [],
+              "name": "bobthecorp-platform",
+              "outpost_config": [],
+              "platform_version": "",
+              "region": "eu-west-1",
+              "remote_network_config": [],
+              "role_arn": "arn:aws:iam::111111111111:role/bobthecorp-eks-cluster",
+              "status": "",
+              "storage_config": [],
+              "tags": null,
+              "tags_all": {},
+              "timeouts": null,
+              "upgrade_policy": [],
+              "version": "",
+              "vpc_config": [
+                {
+                  "cluster_security_group_id": "",
+                  "control_plane_egress_mode": "",
+                  "endpoint_private_access": false,
+                  "endpoint_public_access": true,
+                  "public_access_cidrs": [],
+                  "security_group_ids": [],
+                  "subnet_ids": [
+                    "subnet-11111111111111111",
+                    "subnet-22222222222222222"
+                  ],
+                  "vpc_id": ""
+                }
+              ],
+              "zonal_shift_config": []
+            },
+            "sensitive_values": {
+              "access_config": [],
+              "certificate_authority": [],
+              "compute_config": [],
+              "control_plane_scaling_config": [],
+              "enabled_cluster_log_types": [
+                false,
+                false,
+                false
+              ],
+              "encryption_config": [],
+              "identity": [],
+              "kube_api_server_config": [],
+              "kube_controller_manager_config": [],
+              "kube_scheduler_config": [],
+              "kubernetes_network_config": [],
+              "outpost_config": [],
+              "remote_network_config": [],
+              "storage_config": [],
+              "tags_all": {},
+              "upgrade_policy": [],
+              "vpc_config": [
+                {
+                  "public_access_cidrs": [],
+                  "security_group_ids": [],
+                  "subnet_ids": [
+                    false,
+                    false
+                  ]
+                }
+              ],
+              "zonal_shift_config": []
+            }
+          }
+        ]
+      }
+    }
+  },
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.opentofu.org/hashicorp/aws",
+        "version_constraint": "~> 6.0",
+        "expressions": {
+          "access_key": {
+            "constant_value": "mock_access_key"
+          },
+          "region": {
+            "constant_value": "eu-west-1"
+          },
+          "secret_key": {
+            "constant_value": "mock_secret_key"
+          },
+          "skip_credentials_validation": {
+            "constant_value": true
+          },
+          "skip_metadata_api_check": {
+            "constant_value": true
+          },
+          "skip_region_validation": {
+            "constant_value": true
+          },
+          "skip_requesting_account_id": {
+            "constant_value": true
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_cloudtrail.security",
+          "mode": "managed",
+          "type": "aws_cloudtrail",
+          "name": "security",
+          "provider_config_key": "aws",
+          "expressions": {
+            "enable_logging": {
+              "constant_value": true
+            },
+            "include_global_service_events": {
+              "constant_value": true
+            },
+            "is_multi_region_trail": {
+              "constant_value": true
+            },
+            "name": {
+              "constant_value": "bobthecorp-security"
+            },
+            "s3_bucket_name": {
+              "constant_value": "bobthecorp-trail-logs"
+            }
+          },
+          "schema_version": 1
+        },
+        {
+          "address": "aws_eks_cluster.platform",
+          "mode": "managed",
+          "type": "aws_eks_cluster",
+          "name": "platform",
+          "provider_config_key": "aws",
+          "expressions": {
+            "enabled_cluster_log_types": {
+              "constant_value": [
+                "api"
+              ]
+            },
+            "name": {
+              "constant_value": "bobthecorp-platform"
+            },
+            "role_arn": {
+              "constant_value": "arn:aws:iam::111111111111:role/bobthecorp-eks-cluster"
+            },
+            "vpc_config": [
+              {
+                "security_group_ids": {
+                  "constant_value": []
+                },
+                "subnet_ids": {
+                  "constant_value": [
+                    "subnet-11111111111111111",
+                    "subnet-22222222222222222"
+                  ]
+                }
+              }
+            ]
+          },
+          "schema_version": 1
+        }
+      ]
+    }
+  },
+  "timestamp": "2026-09-20T00:00:00Z",
+  "errored": false
+}

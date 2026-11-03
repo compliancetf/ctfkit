@@ -1,0 +1,65 @@
+{
+  "comment": "Phase 3 env table (F8) vectors. parent is ctfkit's own env; want is the child env of the call (owned paths as <owned>/...), or refused when the session refuses the names",
+  "parent": {
+    "PATH": "/opt/evil/bin:/usr/bin",
+    "HOME": "/Users/dev",
+    "TF_WORKSPACE": "parent-ws",
+    "TF_CLI_CONFIG_FILE": "/Users/dev/.terraformrc",
+    "TF_DATA_DIR": "/tmp/parent-data",
+    "TF_PLUGIN_CACHE_DIR": "/tmp/cache",
+    "TF_REATTACH_PROVIDERS": "{\"registry.terraform.io/hashicorp/aws\":{\"Protocol\":\"grpc\",\"Pid\":1,\"Test\":true,\"Addr\":{\"Network\":\"unix\",\"String\":\"/tmp/evil.sock\"}}}",
+    "TF_CLI_ARGS": "-target=a",
+    "TF_CLI_ARGS_plan": "-refresh=false",
+    "TF_LOG": "trace",
+    "TERRAFORM_CONFIG": "/Users/dev/.terraformrc",
+    "LD_PRELOAD": "/tmp/evil.so",
+    "LD_AUDIT": "/tmp/evil.so",
+    "DYLD_INSERT_LIBRARIES": "/tmp/evil.dylib",
+    "SSL_CERT_FILE": "/tmp/evil.pem",
+    "SSL_CERT_DIR": "/tmp/evil",
+    "AWS_CA_BUNDLE": "/tmp/evil.pem",
+    "HTTPS_PROXY": "http://proxy.bobthecorp.example:3128",
+    "no_proxy": "localhost",
+    "AWS_ACCESS_KEY_ID": "AKIAEXAMPLE",
+    "AWS_SECRET_ACCESS_KEY": "example-secret",
+    "COMPLIANCETF_VERDICT": "/tmp/forged.json"
+  },
+  "cases": [
+    {"name": "no names", "call": "A2", "want": [
+      "HOME=<owned>/home", "PATH=/usr/bin:/bin", "TF_CLI_CONFIG_FILE=<owned>/empty.tfrc", "TF_DATA_DIR=<owned>/data",
+      "TF_IN_AUTOMATION=1", "TF_WORKSPACE=default", "TMPDIR=<owned>/tmp"]},
+    {"name": "backend credentials", "call": "A2", "credentials": ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_SESSION_TOKEN"], "want": [
+      "AWS_ACCESS_KEY_ID=AKIAEXAMPLE", "AWS_SECRET_ACCESS_KEY=example-secret",
+      "HOME=<owned>/home", "PATH=/usr/bin:/bin", "TF_CLI_CONFIG_FILE=<owned>/empty.tfrc", "TF_DATA_DIR=<owned>/data",
+      "TF_IN_AUTOMATION=1", "TF_WORKSPACE=default", "TMPDIR=<owned>/tmp"]},
+    {"name": "proxy named by the profile", "call": "A2", "proxy": ["HTTPS_PROXY", "no_proxy", "HTTP_PROXY"], "want": [
+      "HOME=<owned>/home", "HTTPS_PROXY=http://proxy.bobthecorp.example:3128", "PATH=/usr/bin:/bin",
+      "TF_CLI_CONFIG_FILE=<owned>/empty.tfrc", "TF_DATA_DIR=<owned>/data",
+      "TF_IN_AUTOMATION=1", "TF_WORKSPACE=default", "TMPDIR=<owned>/tmp", "no_proxy=localhost"]},
+    {"name": "workspace list unsets TF_WORKSPACE", "call": "A9", "want": [
+      "HOME=<owned>/home", "PATH=/usr/bin:/bin", "TF_CLI_CONFIG_FILE=<owned>/mirror.tfrc", "TF_DATA_DIR=<owned>/data",
+      "TF_IN_AUTOMATION=1", "TMPDIR=<owned>/tmp"]},
+    {"name": "later call under the mirror config", "call": "A3", "want": [
+      "HOME=<owned>/home", "PATH=/usr/bin:/bin", "TF_CLI_CONFIG_FILE=<owned>/mirror.tfrc", "TF_DATA_DIR=<owned>/data",
+      "TF_IN_AUTOMATION=1", "TF_WORKSPACE=default", "TMPDIR=<owned>/tmp"]},
+    {"name": "LD_PRELOAD named", "credentials": ["LD_PRELOAD"], "want": "refused"},
+    {"name": "LD_AUDIT named", "credentials": ["LD_AUDIT"], "want": "refused"},
+    {"name": "DYLD_INSERT_LIBRARIES named", "credentials": ["DYLD_INSERT_LIBRARIES"], "want": "refused"},
+    {"name": "TF_CLI_ARGS_plan named", "credentials": ["TF_CLI_ARGS_plan"], "want": "refused"},
+    {"name": "TF_REATTACH_PROVIDERS named", "credentials": ["TF_REATTACH_PROVIDERS"], "want": "refused"},
+    {"name": "SSL_CERT_FILE named", "credentials": ["SSL_CERT_FILE"], "want": "refused"},
+    {"name": "AWS_CA_BUNDLE named", "credentials": ["AWS_CA_BUNDLE"], "want": "refused"},
+    {"name": "TERRAFORM_CONFIG named", "credentials": ["TERRAFORM_CONFIG"], "want": "refused"},
+    {"name": "COMPLIANCETF_VERDICT named", "credentials": ["COMPLIANCETF_VERDICT"], "want": "refused"},
+    {"name": "proxy named as a credential", "credentials": ["HTTPS_PROXY"], "want": "refused"},
+    {"name": "credential named as a proxy", "proxy": ["AWS_ACCESS_KEY_ID"], "want": "refused"},
+    {"name": "malformed name", "credentials": ["AWS_ACCESS_KEY_ID=x"], "want": "refused"},
+    {"name": "GIT_SSH_COMMAND named", "credentials": ["GIT_SSH_COMMAND"], "want": "refused"},
+    {"name": "GIT_CONFIG_COUNT named", "credentials": ["GIT_CONFIG_COUNT"], "want": "refused"},
+    {"name": "SSH_ASKPASS named", "credentials": ["SSH_ASKPASS"], "want": "refused"},
+    {"name": "TOFU_ENABLE_STATIC_ENCRYPTION named", "credentials": ["TOFU_ENABLE_STATIC_ENCRYPTION"], "want": "refused"},
+    {"name": "BASH_ENV named", "credentials": ["BASH_ENV"], "want": "refused"},
+    {"name": "AWS_CONFIG_FILE named", "credentials": ["AWS_CONFIG_FILE"], "want": "refused"},
+    {"name": "AWS_SHARED_CREDENTIALS_FILE named", "credentials": ["AWS_SHARED_CREDENTIALS_FILE"], "want": "refused"}
+  ]
+}

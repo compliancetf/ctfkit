@@ -1,0 +1,23 @@
+{
+  "authored": {
+    "sidecar/duplicates-a.hcl": "4400a641481ef3d8bfa714afee90f28d26d192a1b843321aa09f2ed029a055a5",
+    "sidecar/duplicates-b.hcl": "1f888c084cc4b9160a4b28eae0fbf95911ab3fa6b433500981c97c6eb473e631",
+    "sidecar/reordered-a.hcl": "a2503c192269efbbf754679c2fe86e113b3a113a19245a1d66b97856a16ffb11",
+    "sidecar/reordered-b.hcl": "6eab943239c4ec2c1abb32d5bcd45e378a99fff8263aa154b4b171317c60d3ed",
+    "sidecar/unicode.hcl": "dfe93bebedd70c2ac3b4c51bdd8bcb556f64ce79190988da56cdd5b01acad70c"
+  },
+  "commit": "2faaff8f89df8b518f7f82521a8f7ef90d529416",
+  "copied": {
+    "grants/bound-current.dsse.json": "c392a74245f76802b669eae91175fc6ebbec83b33292d4845ee7259f54c24a8a",
+    "grants/customer-kms.dsse.json": "0448dc0cdb59080eb65af7daedbefc3ec19e5d8db31c03b76dcc9b6ad0c5f6f1",
+    "grants/good.dsse.json": "76cdd14657fcbc6abacebc801a83e177964ba92362525d225a275b2bf74295e4",
+    "sidecar/alias.hcl": "cc4485111c8f79865771780f4bbaf8e38a3092945162813cc4520e557d98ae5e",
+    "sidecar/applied.hcl": "93601a183df0979b1122cbe842e48ad4d9828783e8679ac785f04bd15ea3e427",
+    "sidecar/expired.hcl": "1c76ba8290f966bceab155a2290f4db2af122153c7286c05046bf05c7c2c3295",
+    "sidecar/wrong_environment.hcl": "bcfb68548287bff8e1a68f15f41c86578b1613c9bad630d740692aff356fe488"
+  },
+  "expected_json_sha256": "c6c0ee4b6ddd074c2addacbd225e976f53bd99f5d56b8ef048ec277bd5203988",
+  "note": "copied files are byte for byte; authored sidecar files are bobthecorp-only. expected.json was written by a throwaway test in a /tmp copy of the provider at commit: grant digests by internal/exceptions digest() (the one VerifyGrant and the grant loader use), sidecar entries decoded by the provider's HCL decoder into exceptions.Entry, checked with Entry.validate, projected per B8 and canonicalized with bundle.DigestJSON (the provider's own RFC 8785 code). At this commit the provider records one whole-file sha256 for every sidecar entry, not this per-entry digest.",
+  "path": "internal/exceptions/testdata (grants/ and *.hcl)",
+  "source": "github.com/compliancetf/terraform-provider-aws"
+}

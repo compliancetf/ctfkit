@@ -1,0 +1,9 @@
+# The hashicorp/aws provider, major version 6.
+source: hashicorp/aws
+resource_prefix: aws_
+# IAM policy documents: the Principal "AWS" key and the Statement grammar.
+dialect: aws
+tags:
+  attribute: tags
+  effective: tags_all
+  provider_default: default_tags.tags

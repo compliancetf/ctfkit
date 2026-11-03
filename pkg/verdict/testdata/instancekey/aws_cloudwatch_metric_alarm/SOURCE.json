@@ -1,0 +1,50 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_cloudwatch_metric_alarm.big1",
+      "form": "create",
+      "recorded_name": "aws_cloudwatch_metric_alarm.91219ae920967545",
+      "sha256": {
+        "apply/aws_cloudwatch_metric_alarm.big1.create.msgpack": "e6c124c4f2d89914523e862dd0ec560d03dc57692005687497b02766205d1e89",
+        "apply/aws_cloudwatch_metric_alarm.big1.create.type.json": "efef282dc9191cfafa35e92f1620f197f48bacc2cb5bfc894a2bb67f987170bd",
+        "envelope/aws_cloudwatch_metric_alarm.big1.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_cloudwatch_metric_alarm.big2",
+      "form": "create",
+      "recorded_name": "aws_cloudwatch_metric_alarm.18a40df71c3b5ae5",
+      "sha256": {
+        "apply/aws_cloudwatch_metric_alarm.big2.create.msgpack": "cbbcb429ce9db632deaa34a7323ae21575066fddd6dfd90ea7457f108fe61ac5",
+        "apply/aws_cloudwatch_metric_alarm.big2.create.type.json": "efef282dc9191cfafa35e92f1620f197f48bacc2cb5bfc894a2bb67f987170bd",
+        "envelope/aws_cloudwatch_metric_alarm.big2.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_cloudwatch_metric_alarm.frac",
+      "form": "update",
+      "recorded_name": "aws_cloudwatch_metric_alarm.7ea35394b02b99eb",
+      "sha256": {
+        "apply/aws_cloudwatch_metric_alarm.frac.update.msgpack": "a12a7ad6fdb517653f1fb3e9fe1bf2c864165e1a24867615471982a2724b12e8",
+        "apply/aws_cloudwatch_metric_alarm.frac.update.type.json": "efef282dc9191cfafa35e92f1620f197f48bacc2cb5bfc894a2bb67f987170bd",
+        "envelope/aws_cloudwatch_metric_alarm.frac.update.json": "1005a9ac0fa4d0383f3ea9a224a8f7366ac478622d4495e4fdbc303efb22fb73"
+      }
+    },
+    {
+      "address": "aws_cloudwatch_metric_alarm.tenth",
+      "form": "create",
+      "recorded_name": "aws_cloudwatch_metric_alarm.516f0dc79cb96a66",
+      "sha256": {
+        "apply/aws_cloudwatch_metric_alarm.tenth.create.msgpack": "7be81b53f2a7f628b4e181e3d0dfe294f25113a6b0f46bb5de1906c05b6ff095",
+        "apply/aws_cloudwatch_metric_alarm.tenth.create.type.json": "efef282dc9191cfafa35e92f1620f197f48bacc2cb5bfc894a2bb67f987170bd",
+        "envelope/aws_cloudwatch_metric_alarm.tenth.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    }
+  ]
+}

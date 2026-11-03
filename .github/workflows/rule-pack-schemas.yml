@@ -1,0 +1,153 @@
+name: Rule pack schemas
+
+# Weekly: regenerate each rule pack's provider schema snapshot, validate every pack against it,
+# and open (or update) one pull request with the snapshots, the validation result and draft rules
+# for tracked attributes that are new. A person reviews and merges it; nothing here merges.
+# docs/rule-packs.md describes the flow.
+#
+# Two jobs, so the job that runs third-party provider binaries holds no write scope: generate
+# runs Terraform with a read-only token and uploads the rules directory and the pull request body
+# as an artifact; pull-request only copies those files in and opens the pull request. A pull
+# request opened with the job token does not start the Test workflow, so the validation result is
+# in its body and a failure fails this run.
+on:
+  schedule:
+    - cron: '23 4 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: rule-pack-schemas
+  cancel-in-progress: false
+
+env:
+  # The Terraform release the snapshots are generated with. Bump it deliberately.
+  TERRAFORM_VERSION: 1.16.3
+
+jobs:
+  generate:
+    name: Generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    outputs:
+      validation: ${{ steps.validate.outputs.exit }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: '1.25.x'
+          cache: true
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+
+      - name: Regenerate the schema snapshots
+        run: scripts/refresh-rule-pack-schemas.sh "${RUNNER_TEMP}/proposals"
+
+      - name: Validate the packs against the snapshots
+        id: validate
+        run: |
+          set +e
+          go test ./internal/analyzer/sensitivechange/ -run Schema > "${RUNNER_TEMP}/validation.txt" 2>&1
+          echo "exit=$?" >> "${GITHUB_OUTPUT}"
+
+      - name: Write the pull request body
+        env:
+          VALIDATION_EXIT: ${{ steps.validate.outputs.exit }}
+        run: |
+          set -euo pipefail
+          proposals="${RUNNER_TEMP}/proposals"
+          out="${RUNNER_TEMP}/out"
+          mkdir -p "${out}"
+          {
+            echo "Weekly refresh of the rule pack schema snapshots by scripts/refresh-rule-pack-schemas.sh."
+            echo "Review before merging: drafts are starting points, and nothing merges this automatically."
+            echo
+            if [ -f "${proposals}/new-majors.md" ]; then
+              echo "### New provider majors"
+              echo
+              cat "${proposals}/new-majors.md"
+              echo
+            fi
+            echo "### Validation"
+            echo
+            if [ "${VALIDATION_EXIT}" = 0 ]; then
+              echo "Every resource type and attribute the packs name exists in the new snapshots with a kind its predicate reads."
+            else
+              echo "A pack names a resource type or attribute the provider no longer has. Fix the rule before merging:"
+              echo
+              echo '```'
+              tail -c 20000 "${RUNNER_TEMP}/validation.txt"
+              echo '```'
+            fi
+            echo
+            for f in "${proposals}"/*-v*.md; do
+              cat "${f}"
+              echo
+            done
+          } > "${RUNNER_TEMP}/body.full.md"
+          # A pull request body holds at most 65536 characters.
+          head -c 60000 "${RUNNER_TEMP}/body.full.md" > "${out}/body.md"
+          cp -R internal/rulepack/rules "${out}/rules"
+
+      - name: Upload the generated files
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: rule-packs
+          path: ${{ runner.temp }}/out
+          retention-days: 1
+          if-no-files-found: error
+
+  pull-request:
+    name: Pull request
+    needs: generate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write # push the pull request branch
+      pull-requests: write # open or update the pull request
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download the generated files
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: rule-packs
+          path: ${{ runner.temp }}/out
+
+      # Only the rules directory is taken from the artifact; nothing in it is executed.
+      - name: Replace the rules directory
+        run: |
+          set -euo pipefail
+          rm -rf internal/rulepack/rules
+          cp -R "${RUNNER_TEMP}/out/rules" internal/rulepack/rules
+
+      - name: Open or update the pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          branch: chore/rule-pack-schemas
+          delete-branch: true
+          add-paths: internal/rulepack/rules
+          commit-message: 'chore(rulepack): refresh provider schema snapshots'
+          title: 'chore(rulepack): refresh provider schema snapshots'
+          body-path: ${{ runner.temp }}/out/body.md
+
+      - name: Fail when a pack no longer matches its provider
+        if: needs.generate.outputs.validation != '0'
+        run: |
+          echo "::error::a rule pack names a resource type or attribute its provider no longer has; see the pull request"
+          exit 1

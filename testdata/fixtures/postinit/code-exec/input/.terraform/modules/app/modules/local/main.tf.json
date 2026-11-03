@@ -1,0 +1,15 @@
+{
+  "resource": {
+    "terraform_data": {
+      "hook": {
+        "provisioner": [
+          {
+            "remote-exec": {
+              "inline": ["CANARY-codeexec-nested-inline"]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

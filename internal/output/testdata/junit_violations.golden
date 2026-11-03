@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="ctfkit validation" tests="3" failures="1" errors="1" skipped="1" time="0">
+  <testsuite name="main.tf" tests="2" failures="1" errors="1" skipped="0" time="0.001" timestamp="SCRUBBED">
+    <testcase name="ctf-001 - bucket" classname="main.tf" time="0.001">
+      <error message="Module source is not an approved compliance.tf endpoint" type="ctf-001">Location: main.tf:12&#xA;Module source is not an approved compliance.tf endpoint&#xA;Remediation: Use soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws</error>
+    </testcase>
+    <testcase name="ctf-003 - line 41" classname="main.tf" time="0.001">
+      <failure message="Variable name suggests a control bypass" type="ctf-003">Location: main.tf:41&#xA;Variable name suggests a control bypass</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="network/vpc.tf" tests="1" failures="0" errors="0" skipped="1" time="0.001" timestamp="SCRUBBED">
+    <testcase name="ctf-004 - vpc" classname="network/vpc.tf" time="0.001">
+      <skipped message="Resource type is outside the configured allowlist">Location: network/vpc.tf:7&#xA;Resource type is outside the configured allowlist</skipped>
+    </testcase>
+  </testsuite>
+</testsuites>

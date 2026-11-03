@@ -1,0 +1,40 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_secretsmanager_secret_version.new",
+      "form": "create",
+      "recorded_name": "aws_secretsmanager_secret_version.41f7b3b2b25140b1",
+      "sha256": {
+        "apply/aws_secretsmanager_secret_version.new.create.msgpack": "58f74a6b083d9809daf169d56446e7a87c5c91cde24b2213af9ecc583510c3a8",
+        "apply/aws_secretsmanager_secret_version.new.create.type.json": "c8de88fded038bf3397eda51095e73db00e40c020e78875d4109f588ed5feed2",
+        "envelope/aws_secretsmanager_secret_version.new.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_secretsmanager_secret_version.this",
+      "form": "delete",
+      "recorded_name": "aws_secretsmanager_secret_version.26fe611910f52c15",
+      "sha256": {
+        "apply/aws_secretsmanager_secret_version.this.delete.msgpack": "e4ff5e7d7a7f08e9800a3e25cb774533cb20040df30b6ba10f956f9acd0eb3f7",
+        "apply/aws_secretsmanager_secret_version.this.delete.type.json": "c8de88fded038bf3397eda51095e73db00e40c020e78875d4109f588ed5feed2",
+        "envelope/aws_secretsmanager_secret_version.this.delete.json": "23947a500e3041c7de1c62395a8e06d8020ae8be50f3c50e81af5b947e2767bf"
+      }
+    },
+    {
+      "address": "aws_secretsmanager_secret_version.this",
+      "form": "create",
+      "recorded_name": "aws_secretsmanager_secret_version.204deecd42527d8a",
+      "sha256": {
+        "apply/aws_secretsmanager_secret_version.this.create.msgpack": "fe0463aa86c21184803072aa299b22f84f26fc88536b2113b24d19c91de1766f",
+        "apply/aws_secretsmanager_secret_version.this.create.type.json": "c8de88fded038bf3397eda51095e73db00e40c020e78875d4109f588ed5feed2",
+        "envelope/aws_secretsmanager_secret_version.this.create.json": "23947a500e3041c7de1c62395a8e06d8020ae8be50f3c50e81af5b947e2767bf"
+      }
+    }
+  ]
+}

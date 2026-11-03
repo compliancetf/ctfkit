@@ -1,0 +1,8 @@
+# Default exception registry bundled with the action.
+#
+# The action passes this file as --exceptions so ctfkit never discovers a .ctf-exceptions.yaml from
+# the repository being analyzed. A repository therefore cannot grant itself an exception.
+#
+# Empty on purpose: no exception is granted by default. Exceptions are an organization decision, so
+# fork this action or point the `exceptions` input at a file your workflow controls.
+exceptions: []

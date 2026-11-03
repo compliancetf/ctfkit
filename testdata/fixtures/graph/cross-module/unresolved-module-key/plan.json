@@ -1,0 +1,100 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.13.0",
+  "resource_changes": [
+    {
+      "address": "module.legacy.aws_s3_bucket.this",
+      "module_address": "module.legacy",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "this",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "region": "eu-west-1",
+          "force_destroy": false,
+          "bucket": "bobthecorp-legacy"
+        },
+        "after_unknown": {
+          "id": true,
+          "arn": true
+        }
+      }
+    },
+    {
+      "address": "module.legacy.aws_s3_bucket_public_access_block.this",
+      "module_address": "module.legacy",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "this",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "region": "eu-west-1",
+          "bucket": "bobthecorp-legacy"
+        },
+        "after_unknown": {
+          "id": true
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "module_calls": {
+        "legacy": {
+          "source": "./modules/x",
+          "module": {
+            "resources": [
+              {
+                "address": "aws_s3_bucket.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket",
+                "name": "this",
+                "provider_config_key": "module.legacy:aws",
+                "schema_version": 0
+              },
+              {
+                "address": "aws_s3_bucket_public_access_block.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_public_access_block",
+                "name": "this",
+                "provider_config_key": "module.legacy:aws",
+                "schema_version": 0,
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this.id",
+                      "aws_s3_bucket.this"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

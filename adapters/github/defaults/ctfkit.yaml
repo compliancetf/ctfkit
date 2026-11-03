@@ -1,0 +1,14 @@
+# Default ctfkit settings bundled with the action.
+#
+# The action passes this file as --config so ctfkit never discovers a .ctfkit.yaml from the
+# repository being analyzed. A repository therefore cannot lower the threshold, widen the endpoint
+# allowlist or change the resource allowlist the workflow asked for.
+#
+# To use your organization's own settings, fork this action or point the `config` input at a file
+# your workflow controls, for example one checked out from a central repository.
+#
+# Deliberately empty: every key is left at the ctfkit default. Add keys here, not in the analyzed
+# repository.
+
+# An empty mapping rather than an empty document, so the file always parses.
+{}

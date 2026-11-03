@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compliance.tf/schema/override-1.schema.json",
+  "title": "compliancetf.override/v1",
+  "description": "A break-glass override: the request the compliance.tf app signs with both approvals embedded, which ctfkit gate sign verifies before it consumes it. Every value is a string, array or object. The signature member covers the RFC 8785 (JCS) form of the document without it; each approval's signature covers pkg/verdict.ApprovalStatement. Both are signed by a key of the profile's break_glass.receipt_keys. pkg/verdict.ParseOverride is the reference reader and also checks what no schema states: expires_at after issued_at by at most 24h, each approval expiring no later than the override, two distinct approvers, neither the requester.",
+  "type": "object",
+  "required": [
+    "format", "override_id", "org_id", "workspace", "environment", "requester", "plan_digest", "content_digest",
+    "floor_epoch", "instance_keys", "controls", "approvals", "reason", "ticket", "issued_at", "expires_at", "signature"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "compliancetf.override/v1" },
+    "override_id": { "$ref": "consume-receipt-1.schema.json#/$defs/token" },
+    "org_id": { "type": "string", "minLength": 1 },
+    "workspace": { "type": "string", "minLength": 1 },
+    "environment": { "type": "string", "minLength": 1 },
+    "requester": { "type": "string", "minLength": 1 },
+    "plan_digest": { "$ref": "consume-receipt-1.schema.json#/$defs/digest" },
+    "content_digest": { "$ref": "consume-receipt-1.schema.json#/$defs/digest" },
+    "floor_epoch": { "type": "string", "minLength": 1 },
+    "instance_keys": {
+      "description": "Action keys: instance_key, or delete_key for a destroy half.",
+      "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "consume-receipt-1.schema.json#/$defs/digest" }
+    },
+    "controls": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "consume-receipt-1.schema.json#/$defs/token" } },
+    "approvals": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["approver", "role", "approved_at", "expires_at", "signature"],
+        "additionalProperties": false,
+        "properties": {
+          "approver": { "type": "string", "minLength": 1 },
+          "role": { "type": "string", "minLength": 1 },
+          "approved_at": { "$ref": "consume-receipt-1.schema.json#/$defs/time" },
+          "expires_at": { "$ref": "consume-receipt-1.schema.json#/$defs/time" },
+          "signature": { "$ref": "consume-receipt-1.schema.json#/$defs/signature" }
+        }
+      }
+    },
+    "reason": { "type": "string" },
+    "ticket": { "type": "string" },
+    "issued_at": { "$ref": "consume-receipt-1.schema.json#/$defs/time" },
+    "expires_at": { "$ref": "consume-receipt-1.schema.json#/$defs/time" },
+    "predecessor_receipt_digest": { "$ref": "consume-receipt-1.schema.json#/$defs/digest" },
+    "signature": { "$ref": "consume-receipt-1.schema.json#/$defs/signature" }
+  }
+}

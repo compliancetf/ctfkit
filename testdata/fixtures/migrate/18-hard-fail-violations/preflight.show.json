@@ -1,0 +1,42 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.16.6",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.assets",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "assets",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {"actions": ["no-op"], "before": {"id": "bobthecorp-assets", "bucket": "bobthecorp-assets"}, "after": {"id": "bobthecorp-assets", "bucket": "bobthecorp-assets"}, "after_unknown": {}}
+    },
+    {
+      "address": "aws_s3_bucket.logs",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "logs",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {"actions": ["no-op"], "before": {"id": "bobthecorp-logs", "bucket": "bobthecorp-logs"}, "after": {"id": "bobthecorp-logs", "bucket": "bobthecorp-logs"}, "after_unknown": {}}
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.assets",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "assets",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {"actions": ["no-op"], "before": {"bucket": "bobthecorp-assets", "block_public_acls": true}, "after": {"bucket": "bobthecorp-assets", "block_public_acls": true}, "after_unknown": {}}
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {"name": "aws", "full_name": "registry.terraform.io/hashicorp/aws", "expressions": {"region": {"constant_value": "eu-west-1"}}}
+    },
+    "root_module": {
+      "resources": [
+        {"address": "aws_s3_bucket.assets", "mode": "managed", "type": "aws_s3_bucket", "name": "assets", "provider_config_key": "aws"},
+        {"address": "aws_s3_bucket.logs", "mode": "managed", "type": "aws_s3_bucket", "name": "logs", "provider_config_key": "aws"},
+        {"address": "aws_s3_bucket_public_access_block.assets", "mode": "managed", "type": "aws_s3_bucket_public_access_block", "name": "assets", "provider_config_key": "aws"}
+      ]
+    }
+  }
+}

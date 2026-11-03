@@ -1,0 +1,1 @@
+[{"id":"cis_s3_bucket_versioning","version":"1.0.0","kind":"resource","resource_type":"aws_s3_bucket","reads":["versioning"],"presence_mode":"effective","on":["create","update"],"expr":"has(resource.versioning)","action":"deny","severity":"medium","message":"S3 bucket has no versioning.","exemption_coverable":["grant","self_service"]}]

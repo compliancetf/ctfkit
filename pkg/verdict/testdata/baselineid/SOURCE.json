@@ -1,0 +1,27 @@
+{
+  "repository": "github.com/compliancetf/terraform-provider-aws",
+  "commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "note": "Computed by the provider at this commit: internal/baseline Load, ReadDigest, digestJSON, instanceIdentity and Set.Grandfathered, internal/verdict Key, and the prior identity kind rule of the conformance gate stand-in (test/conformance/harness PriorIdentity). Rerun: copy provider_vectors_test.go.txt to internal/baseline/zz_ctfkit_baselineid_test.go in a provider checkout at the commit (git archive into a scratch directory), then CTFKIT_BASELINEID=<ctfkit>/pkg/verdict/testdata/baselineid go test -tags conformance ./internal/baseline/ -run CtfkitBaselineID. The baseline is signed with fresh in-memory keys on every run; expected.json does not depend on them. Update the sha256 values after a rerun.",
+  "files": [
+    {
+      "path": "pkg/verdict/testdata/baselineid/schema.json",
+      "role": "input, written by hand: a subset of terraform providers schema -json (aws_s3_bucket with its identity schema, aws_kms_key without one)",
+      "sha256": "53f3681da01903cc57d9011a67729a1f1f5cedc92245e042703475a2b7124896"
+    },
+    {
+      "path": "pkg/verdict/testdata/baselineid/cases.json",
+      "role": "inputs, written by hand: two base observations and 27 apply-time update cases with the outcome each must have",
+      "sha256": "71c515ff8bb40a1a4d14ce7c820e477ca7ac0028c110f391c52a96f4b7899ec1"
+    },
+    {
+      "path": "pkg/verdict/testdata/baselineid/expected.json",
+      "role": "written by the generator from the provider's code",
+      "sha256": "c37bf83bb123f8f5e015469ce8dda68dfa9bd25695cec71a1ce6930a650854b2"
+    },
+    {
+      "path": "pkg/verdict/testdata/baselineid/provider_vectors_test.go.txt",
+      "role": "the generator; copy into internal/baseline as a _test.go file to rerun",
+      "sha256": "6d2fbdad2eca05945d532182c1d54f3815dc8280487147ad3d3dd835a2feb7c4"
+    }
+  ]
+}

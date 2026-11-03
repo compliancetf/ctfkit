@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.exec.external_data",
+              "shortDescription": {
+                "text": "The configuration or a module it installs declares a data source that runs a local program"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "ctf.exec.provisioner",
+              "shortDescription": {
+                "text": "The configuration or a module it installs declares a provisioner"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.exec.external_data",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Data source check.health.data.external.probe runs a local program when this configuration is planned, with the access of the machine that plans it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 15,
+                  "endLine": 17
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "check.health.data.external.probe",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "7b6bf474bcf7d1ca6e7de0d790ed3173ea25717e1b538f1c22b9fda978ab796b"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "pre_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.external_data",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Data source module.hook.data.external.probe runs a local program when this configuration is planned, with the access of the machine that plans it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "modules/hook/main.tf.json"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 6
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.hook.data.external.probe",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "cd0b5410b414845ebcea26dc1bfe879cfb4970f35c4a4212c56148a021b12678"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "pre_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.provisioner",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Provisioner local-exec in terraform_data.bootstrap runs when this configuration is applied, with the access of the machine that applies it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 6
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "terraform_data.bootstrap",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "f54aaba243aa0be62fb73840af8bda1ff0fc257532a817c4ca0b868d7684ac2d"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "pre_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

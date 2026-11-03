@@ -1,0 +1,42 @@
+{
+  "repository": "github.com/compliancetf/terraform-provider-aws",
+  "commit": "5d4d48d7266dd2bf7e8b6e8f2d1fb59442d6b225",
+  "note": "Copied byte for byte; refresh by copying again at a newer commit and updating this file. internal/evidence/verify.go ports the provider's internal/evidence/verify.go at the same commit.",
+  "files": [
+    {
+      "path": "schema/evidence-record-1.schema.json",
+      "source": "schema/evidence-record-1.schema.json",
+      "sha256": "858ab8941f17e2c88ddcd43f78a358eb87c922cf17896ab098bbaf8b6fe806e0"
+    },
+    {
+      "path": "schema/testdata/provider-evidence/chain-break.jsonl",
+      "source": "internal/evidence/testdata/chain-break.jsonl",
+      "sha256": "0f61671b48cc76592ca58f11a061209b479b666939d279d56ba28c4e4fb836e0"
+    },
+    {
+      "path": "schema/testdata/provider-evidence/chain-edited.jsonl",
+      "source": "internal/evidence/testdata/chain-edited.jsonl",
+      "sha256": "b8514bd848cc20831cb2312a8b830f2897a5544b25495f8a3495644677dd9023"
+    },
+    {
+      "path": "schema/testdata/provider-evidence/chain-good.jsonl",
+      "source": "internal/evidence/testdata/chain-good.jsonl",
+      "sha256": "9a24b5329037cb9441d49440912203cfead2d7f1c82f1963f37bb8ebb7559ea1"
+    },
+    {
+      "path": "schema/testdata/provider-evidence/chain-segment.jsonl",
+      "source": "internal/evidence/testdata/chain-segment.jsonl",
+      "sha256": "b8f17ff8cafbb8628c1bc34f143a19c71847cd2b586df82ffce4bc6b37f402e7"
+    },
+    {
+      "path": "schema/testdata/provider-evidence/plan-read-digest.jsonl",
+      "source": "internal/evidence/testdata/records/plan_read_digest.json",
+      "sha256": "bb917cace4c8ea9d3a13a59fd6c98a999efeef730ba8bd7bcea0e92bfc18ba70"
+    },
+    {
+      "path": "schema/testdata/provider-evidence/chain-truncated.jsonl",
+      "source": "internal/evidence/testdata/chain-truncated.jsonl",
+      "sha256": "c0fc4b7db4f297f3fd98ab6f9b4c6257ece79f42888d9c2938e6bf75cdfdbd48"
+    }
+  ]
+}

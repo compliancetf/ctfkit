@@ -1,0 +1,101 @@
+{
+  "format_version": "1.0",
+  "provider_schemas": {
+    "registry.terraform.io/hashicorp/aws": {
+      "resource_schemas": {
+        "aws_s3_bucket": {
+          "version": 0,
+          "block": {
+            "attributes": {
+              "id": {
+                "type": "string",
+                "computed": true
+              },
+              "bucket": {
+                "type": "string",
+                "optional": true
+              },
+              "acl": {
+                "type": "string",
+                "optional": true
+              },
+              "force_destroy": {
+                "type": "bool",
+                "optional": true
+              },
+              "region": {
+                "type": "string",
+                "optional": true
+              },
+              "tags": {
+                "type": [
+                  "map",
+                  "string"
+                ],
+                "optional": true
+              }
+            },
+            "block_types": {
+              "versioning": {
+                "nesting_mode": "single",
+                "block": {
+                  "attributes": {
+                    "enabled": {
+                      "type": "bool",
+                      "optional": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "aws_kms_key": {
+          "version": 0,
+          "block": {
+            "attributes": {
+              "id": {
+                "type": "string",
+                "computed": true
+              },
+              "description": {
+                "type": "string",
+                "optional": true
+              },
+              "enable_key_rotation": {
+                "type": "bool",
+                "optional": true
+              },
+              "tags": {
+                "type": [
+                  "map",
+                  "string"
+                ],
+                "optional": true
+              }
+            }
+          }
+        }
+      },
+      "resource_identity_schemas": {
+        "aws_s3_bucket": {
+          "version": 0,
+          "attributes": {
+            "account_id": {
+              "type": "string",
+              "optional_for_import": true
+            },
+            "bucket": {
+              "type": "string",
+              "required_for_import": true
+            },
+            "region": {
+              "type": "string",
+              "optional_for_import": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+# Tag attributes for a provider that no pack describes: the tags map with its
+# provider-computed tags_all and default_tags block, the convention most
+# providers follow. A pack's provider.yaml overrides these for its provider.
+tags:
+  attribute: tags
+  effective: tags_all
+  provider_default: default_tags.tags
+
+# Providers that manage no infrastructure, so no pack is expected for them:
+# scan does not note their resources as unchecked. Each is namespace/type,
+# matched whatever the registry host.
+no_rules:
+  - builtin/terraform
+  - hashicorp/archive
+  - hashicorp/cloudinit
+  - hashicorp/external
+  - hashicorp/http
+  - hashicorp/local
+  - hashicorp/null
+  - hashicorp/random
+  - hashicorp/time
+  - hashicorp/tls
+
+# Data source types that run a program on the machine that plans the
+# configuration: ctf.exec.external_data reports every data block of one of
+# these types, at post_init, before plan would run it. Each is a data source
+# type as a data block writes it.
+program_data_sources:
+  - external

@@ -1,0 +1,3 @@
+module "hook" {
+  source = "./hook"
+}

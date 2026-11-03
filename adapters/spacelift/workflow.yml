@@ -1,0 +1,76 @@
+# Custom workflow for a governed apply with ctfkit by compliance.tf (preview).
+#
+# Precondition: the org profile sets verdict_required. The ctfkit-gate metadata this workflow
+# writes is a marker that any planning-time command could write, not evidence of a verdict; see
+# README.md, "Governed apply".
+#
+# Set the stack's workflow tool to Custom and mount this file at
+# /mnt/workspace/source/.spacelift/workflow.yml from a context only a platform admin can change,
+# not as a committed .spacelift/workflow.yml: a file in the repository is editable by the same pull
+# request that changes the plan [verify which file wins when both exist].
+#
+# ctfkit gate plan is the plan command. It writes the candidate artifact set to .ctfkit-artifacts,
+# copies its planfile to the plan file Spacelift shows and stores, and only then writes the
+# ctfkit-gate metadata the plan policy requires. The before_apply hook in config.gate.yml signs the
+# candidate, and the apply command runs ctfkit apply on that same set. The set stays in the
+# workspace from plan to apply [verify that Spacelift keeps .ctfkit-artifacts and its modes].
+#
+# Every command runs tofu; replace it with terraform throughout on a Terraform stack. The stack
+# environment, set by an admin, carries CTFKIT_ORG, CTFKIT_ENVIRONMENT, CTFKIT_PROFILE,
+# CTFKIT_FLOOR, CTFKIT_BUNDLE_DIR and, for config.gate.yml, CTFKIT_SIGNER; a variable that is not
+# set stops the command. --workspace is the workspace Spacelift selected.
+init: tofu init -input=false
+workspaceSelect: tofu workspace select "{{ .WorkspaceName }}"
+workspaceNew: tofu workspace new "{{ .WorkspaceName }}"
+# gate plan accepts no terraform flags: a targeted or refresh-off plan is refused, never widened.
+plan: |
+  set -eu
+  {{- if or .Targets (not .Refresh) }}
+  echo "ctfkit: gate plan refuses targeted and refresh-off plans" >&2
+  exit 2
+  {{- else }}
+  rm -f ctfkit-gate.custom.spacelift.json
+  # Assigned first: a failing $(...) inside an argument list would not stop set -e.
+  tf="$(command -v tofu)" || tf=
+  ws="$(tofu workspace show)" || ws=
+  if [ -z "$tf" ] || [ -z "$ws" ]; then
+    echo "ctfkit: tofu is not on PATH or tofu workspace show gave no workspace" >&2
+    exit 2
+  fi
+  ctfkit gate plan --out .ctfkit-artifacts --tf-bin "$tf" \
+    --workspace "$ws" --environment "$CTFKIT_ENVIRONMENT" \
+    --org "$CTFKIT_ORG" --profile "$CTFKIT_PROFILE" --floor "$CTFKIT_FLOOR" \
+    --bundle-dir "$CTFKIT_BUNDLE_DIR"
+  cp .ctfkit-artifacts/planfile "{{ .PlanFileName }}"
+  echo '{"schema":"ctfkit.spacelift-gate/1"}' > ctfkit-gate.custom.spacelift.json
+  {{- end }}
+showState: tofu show -json
+showPlan: tofu show -json "{{ .PlanFileName }}"
+getOutputs: tofu output -json
+# The plan Spacelift showed the plan policy and the reviewers must be the candidate's planfile,
+# byte for byte; ctfkit apply then applies its own sealed copy of the signed set, never this file.
+# A set that is a symlink or not a directory is refused, as in the before_apply hook.
+apply: |
+  set -eu
+  if [ -L .ctfkit-artifacts ] || [ ! -d .ctfkit-artifacts ]; then
+    echo "ctfkit: no artifact set at .ctfkit-artifacts, or it is a symlink" >&2
+    exit 2
+  fi
+  if ! cmp -s "{{ .PlanFileName }}" .ctfkit-artifacts/planfile; then
+    echo "ctfkit: {{ .PlanFileName }} is not the planfile of the candidate in .ctfkit-artifacts; a regenerated plan is refused" >&2
+    exit 2
+  fi
+  tf="$(command -v tofu)" || tf=
+  ws="$(tofu workspace show)" || ws=
+  if [ -z "$tf" ] || [ -z "$ws" ]; then
+    echo "ctfkit: tofu is not on PATH or tofu workspace show gave no workspace" >&2
+    exit 2
+  fi
+  ctfkit apply --artifacts .ctfkit-artifacts --tf-bin "$tf" \
+    --workspace "$ws" --environment "$CTFKIT_ENVIRONMENT" \
+    --org "$CTFKIT_ORG" --profile "$CTFKIT_PROFILE" --floor "$CTFKIT_FLOOR" \
+    --bundle-dir "$CTFKIT_BUNDLE_DIR"
+# There is no governed destroy yet, so a destroy through this workflow is refused.
+destroy: |
+  echo "ctfkit: this workflow has no governed destroy; remove the resources through a reviewed plan first" >&2
+  exit 2

@@ -1,0 +1,3 @@
+# Providers this organisation approves.
+allowed_providers:
+  - registry.terraform.io/hashicorp/aws

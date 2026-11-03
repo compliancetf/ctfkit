@@ -1,0 +1,35 @@
+{
+  "summary": {
+    "errors": 1,
+    "total": 3,
+    "warnings": 1
+  },
+  "violations": [
+    {
+      "rule": "ctf-001",
+      "severity": "error",
+      "message": "Module source is not an approved compliance.tf endpoint",
+      "file": "main.tf",
+      "line": 12,
+      "column": 3,
+      "module": "bucket",
+      "remediation": "Use soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws"
+    },
+    {
+      "rule": "ctf-003",
+      "severity": "warning",
+      "message": "Variable name suggests a control bypass",
+      "file": "main.tf",
+      "line": 41
+    },
+    {
+      "rule": "ctf-004",
+      "severity": "info",
+      "message": "Resource type is outside the configured allowlist",
+      "file": "network/vpc.tf",
+      "line": 7,
+      "module": "vpc",
+      "resource": "aws_flow_log"
+    }
+  ]
+}

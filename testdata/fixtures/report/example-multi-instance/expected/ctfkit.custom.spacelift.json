@@ -1,0 +1,27 @@
+{
+  "schema": "ctfkit.spacelift/1",
+  "stage": "post_init",
+  "verdict": "fail",
+  "summary": {
+    "error": 1,
+    "warning": 2,
+    "note": 0
+  },
+  "findings": [
+    {
+      "ruleId": "ctf.coverage.tests_failed",
+      "level": "error",
+      "message": "Imported test results report 1 failed and 0 errored run(s) of 3"
+    },
+    {
+      "ruleId": "ctf.coverage.delegation_unresolved",
+      "level": "warning",
+      "message": "Control s3_bucket_event_notifications_enabled is delegated to scope modules/notification of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced"
+    },
+    {
+      "ruleId": "ctf.coverage.delegation_unresolved",
+      "level": "warning",
+      "message": "Control s3_public_access_block_account is delegated to scope modules/account-public-access of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced"
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+{
+  "description": "every decision state under grandfather: not_evaluable equals fail, provisional without proof blocks in every mode, pending at most warns, missing and unknown states take the fail row",
+  "decisions": {
+    "instances": [
+      {
+        "address": "fake_thing.a",
+        "type": "fake_thing",
+        "action": "create",
+        "prior_identity_kind": "none",
+        "refreshed": "true",
+        "unknown_paths": [],
+        "decisions": [
+          {
+            "control": "p",
+            "version": "1.0.0",
+            "result": "pass",
+            "action": "deny"
+          },
+          {
+            "control": "f",
+            "version": "1.0.0",
+            "result": "fail",
+            "action": "deny"
+          },
+          {
+            "control": "n",
+            "version": "1.0.0",
+            "result": "not_evaluable",
+            "action": "deny"
+          },
+          {
+            "control": "v",
+            "version": "1.0.0",
+            "result": "provisional",
+            "action": "deny"
+          },
+          {
+            "control": "q",
+            "version": "1.0.0",
+            "result": "pending",
+            "action": "deny"
+          },
+          {
+            "control": "u",
+            "version": "1.0.0",
+            "result": "unknown",
+            "action": "deny"
+          },
+          {
+            "control": "fw",
+            "version": "1.0.0",
+            "result": "fail",
+            "action": "deny"
+          },
+          {
+            "control": "nw",
+            "version": "1.0.0",
+            "result": "not_evaluable",
+            "action": "deny"
+          }
+        ],
+        "not_evaluable": [],
+        "exceptions": [],
+        "baselines": [],
+        "break_glass": [],
+        "instance_key": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    ],
+    "required": {
+      "fake_thing": {
+        "decisions": [
+          {
+            "id": "p",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          },
+          {
+            "id": "f",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          },
+          {
+            "id": "n",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          },
+          {
+            "id": "v",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          },
+          {
+            "id": "q",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          },
+          {
+            "id": "m",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          },
+          {
+            "id": "u",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          },
+          {
+            "id": "fw",
+            "version": "1.0.0",
+            "action": "warn",
+            "coverable": []
+          },
+          {
+            "id": "nw",
+            "version": "1.0.0",
+            "action": "warn",
+            "coverable": []
+          }
+        ],
+        "delete_decisions": []
+      }
+    }
+  },
+  "mode": {
+    "run_mode": "grandfather"
+  },
+  "exceptions": [],
+  "baselines": [],
+  "receipts": [],
+  "want": {
+    "refuse": true,
+    "rows": [
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "pass",
+        "severity": "none",
+        "final": "pass",
+        "control": "p",
+        "version": "1.0.0",
+        "state": "pass"
+      },
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "fail",
+        "severity": "error",
+        "final": "fail",
+        "control": "f",
+        "version": "1.0.0",
+        "state": "fail"
+      },
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "not_evaluable",
+        "severity": "error",
+        "final": "fail",
+        "control": "n",
+        "version": "1.0.0",
+        "state": "not_evaluable"
+      },
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "exemption_unproven",
+        "severity": "error",
+        "final": "fail",
+        "control": "v",
+        "version": "1.0.0",
+        "state": "provisional"
+      },
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "pending",
+        "severity": "warning",
+        "final": "",
+        "control": "q",
+        "version": "1.0.0",
+        "state": "pending"
+      },
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "missing_decision",
+        "severity": "error",
+        "final": "fail",
+        "control": "m",
+        "version": "1.0.0"
+      },
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "not_evaluable",
+        "severity": "error",
+        "final": "fail",
+        "control": "u",
+        "version": "1.0.0",
+        "state": "unknown"
+      },
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "fail",
+        "severity": "warning",
+        "final": "fail",
+        "control": "fw",
+        "version": "1.0.0",
+        "state": "fail"
+      },
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "not_evaluable",
+        "severity": "warning",
+        "final": "fail",
+        "control": "nw",
+        "version": "1.0.0",
+        "state": "not_evaluable"
+      }
+    ]
+  }
+}

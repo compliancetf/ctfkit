@@ -1,0 +1,113 @@
+{
+  "schema_version": "3.3",
+  "controls_scope": "subtree",
+  "scope_path": "modules/notification",
+  "generated_at": "2026-09-20T16:16:47.186224+00:00",
+  "module": {
+    "registry_source": "bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws",
+    "frameworks": [
+      "soc_2"
+    ],
+    "framework_names": {
+      "soc_2": "SOC 2"
+    },
+    "version": "5.16.1-1e4b692ae5e0a847",
+    "upstream_source": "terraform-aws-modules/s3-bucket/aws",
+    "upstream_version": "5.16.1-1e4b692ae5e0a847"
+  },
+  "controls": [
+    {
+      "control_id": "s3_bucket_event_notifications_enabled",
+      "name": "S3 buckets should have event notifications enabled",
+      "description": "This control checks whether S3 Event Notifications are enabled on an AWS S3 bucket. This control fails if S3 Event Notifications are not enabled on a bucket.",
+      "status": "enforced",
+      "clauses_by_framework": {
+        "soc_2": [
+          "CC7.3 The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives (security incidents) and, if so, takes actions to prevent or address such failures"
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_EVENT_NOTIFICATIONS_ENABLED"
+        ],
+        "checkov": [
+          "CKV2_AWS_62"
+        ],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_event_notifications_enabled"
+        ]
+      },
+      "files_modified": [
+        "modules/notification/main.tf",
+        "modules/notification/variables.tf"
+      ],
+      "applies_in": [
+        "modules/notification"
+      ]
+    }
+  ],
+  "build": {
+    "files_modified": [
+      "modules/notification/main.tf",
+      "modules/notification/variables.tf"
+    ],
+    "unattributed_modifications": [],
+    "dual_touch": [],
+    "controls_applied_count": 1
+  },
+  "operational_rules": [],
+  "posture": {
+    "rules_hash": "1e4b692ae5e0a847",
+    "snapshot_id": "01a0141f-be44-7065-bccf-fd10c1f1949d",
+    "degraded": []
+  },
+  "scope": {
+    "proves": [
+      "which compliance controls were enforced at module build time",
+      "which files and resources were modified",
+      "mapping to framework clauses and external check IDs"
+    ],
+    "does_not_prove": [
+      {
+        "token": "no_evaluation_record",
+        "statement": "This document does not establish which controls were evaluated for this scope, nor that none apply.",
+        "consumer_obligation": "Must not read an empty controls[] as coverage."
+      },
+      {
+        "token": "no_per_rule_attribution",
+        "statement": "Per-rule attribution is unavailable; files in unattributed_modifications[] and dual_touch[] may be rule-caused.",
+        "consumer_obligation": "Must not attribute those files to any listed control."
+      },
+      {
+        "token": "rules_are_package_scoped",
+        "statement": "operational_rules[] describes the whole package, not this scope.",
+        "consumer_obligation": "Must not report rules as scope-local."
+      },
+      {
+        "token": "runtime_state",
+        "statement": "This document does not prove runtime state in AWS.",
+        "consumer_obligation": "Must verify runtime state with AWS Config or Audit Manager."
+      },
+      {
+        "token": "organizational_controls",
+        "statement": "This document does not prove organizational or process controls.",
+        "consumer_obligation": "Must evidence organizational and process controls separately."
+      },
+      {
+        "token": "ongoing_operation",
+        "statement": "This document does not prove ongoing operation after deployment.",
+        "consumer_obligation": "Must monitor deployed state independently of this document."
+      },
+      {
+        "token": "child_not_self_validating",
+        "statement": "This document cannot be validated alone.",
+        "consumer_obligation": "Must resolve package_manifest, confirm this scope_path is in that root's transitive child set, then verify manifest_set_hash."
+      }
+    ]
+  },
+  "package_manifest": {
+    "package_id": "terraform-aws-modules/s3-bucket/aws@5.16.1-1e4b692ae5e0a847",
+    "path": "../../compliancetf-manifest.json"
+  },
+  "child_manifests": []
+}

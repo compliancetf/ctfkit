@@ -1,0 +1,30 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_security_group.new",
+      "form": "create",
+      "recorded_name": "aws_security_group.ca55416250d89838",
+      "sha256": {
+        "apply/aws_security_group.new.create.msgpack": "d2a27cc73456d8ae6326241a1e1e81f0488efac0ed45e51d590988a11a2b46bf",
+        "apply/aws_security_group.new.create.type.json": "594f6c001ad078096db60de38785e07144afcab56d1a7304765e37a7f6874bbf",
+        "envelope/aws_security_group.new.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_security_group.this",
+      "form": "update",
+      "recorded_name": "aws_security_group.368998929324d95d",
+      "sha256": {
+        "apply/aws_security_group.this.update.msgpack": "04969f78fda5d9af7da692889174071908d5528aaaf2fd32a329685faaae8fe0",
+        "apply/aws_security_group.this.update.type.json": "594f6c001ad078096db60de38785e07144afcab56d1a7304765e37a7f6874bbf",
+        "envelope/aws_security_group.this.update.json": "a86f6e2e246e697698038bd3c3c2b3f03563daa93e7e3ed76a5eb59b350e9d0e"
+      }
+    }
+  ]
+}

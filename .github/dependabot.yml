@@ -1,0 +1,44 @@
+version: 2
+updates:
+  # Workflow and composite-action steps are pinned by commit SHA with a version comment;
+  # Dependabot moves both together. ci: keeps these bumps out of the release notes.
+  # adapters/github/workflow-template.yml is not at a path Dependabot scans; its pins are
+  # bumped by hand.
+  - package-ecosystem: github-actions
+    directories:
+      - /
+      - /adapters/github
+      - /adapters/sample-repo
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    # Minor and patch bumps share one PR; a major bump arrives on its own.
+    groups:
+      github-actions:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  # Go modules ship in the binary, so deps: puts them in the release notes
+  # (release-please-config.json) and the next release picks them up.
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+    # A release must be a week old before Dependabot proposes it.
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: deps
+    groups:
+      go-patch-minor:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  # The distroless base image of the release container, pinned by digest in Dockerfile.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: deps

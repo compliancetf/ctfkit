@@ -1,0 +1,118 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.13.0",
+  "resource_changes": [
+    {
+      "address": "module.audit.aws_s3_bucket.this",
+      "module_address": "module.audit",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "this",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "region": "eu-west-1",
+          "force_destroy": false,
+          "bucket": "bobthecorp-audit"
+        },
+        "after_unknown": {
+          "id": true,
+          "arn": true
+        }
+      }
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.audit",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "audit",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "region": "eu-west-1",
+          "bucket": "bobthecorp-audit"
+        },
+        "after_unknown": {
+          "id": true
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          }
+        }
+      },
+      "aws.audit": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "alias": "audit",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          },
+          "assume_role": [
+            {
+              "role_arn": {
+                "constant_value": "arn:aws:iam::111111111111:role/bobthecorp-audit"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket_public_access_block.audit",
+          "mode": "managed",
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "audit",
+          "provider_config_key": "aws",
+          "schema_version": 0,
+          "expressions": {
+            "bucket": {
+              "references": [
+                "module.audit.bucket",
+                "module.audit"
+              ]
+            }
+          }
+        }
+      ],
+      "module_calls": {
+        "audit": {
+          "source": "./modules/x",
+          "module": {
+            "resources": [
+              {
+                "address": "aws_s3_bucket.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket",
+                "name": "this",
+                "provider_config_key": "aws.audit",
+                "schema_version": 0
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

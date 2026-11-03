@@ -1,0 +1,41 @@
+# Per resource type and attribute, the catalog controls that are about that
+# attribute. A finding carries one only when the loaded catalog covers the
+# resource type with it; a list holds the ids of both catalog generations
+# where they differ.
+controls:
+  aws_db_instance:
+    storage_encrypted: [rds_instance_encryption_enabled, rds_db_instance_encryption_at_rest_enabled]
+    deletion_protection: [rds_instance_deletion_protection_enabled, rds_db_instance_deletion_protection_enabled]
+    publicly_accessible: [rds_instance_not_publicly_accessible, rds_db_instance_prohibit_public_access]
+  aws_rds_cluster:
+    storage_encrypted: [rds_db_cluster_encryption_at_rest_enabled]
+    deletion_protection: [rds_db_cluster_deletion_protection_enabled]
+  aws_dynamodb_table:
+    deletion_protection_enabled: [dynamodb_table_deletion_protection_enabled]
+  aws_docdb_cluster:
+    deletion_protection: [docdb_cluster_deletion_protection_enabled]
+  aws_neptune_cluster:
+    deletion_protection: [neptune_db_cluster_deletion_protection_enabled]
+  aws_redshift_cluster:
+    publicly_accessible: [redshift_cluster_prohibit_public_access]
+  aws_dms_replication_instance:
+    publicly_accessible: [dms_replication_instance_not_publicly_accessible]
+  aws_instance:
+    associate_public_ip_address: [ec2_instance_no_public_ip, ec2_instance_not_publicly_accessible]
+  aws_eks_cluster:
+    enabled_cluster_log_types: [eks_cluster_logging_enabled, eks_cluster_control_plane_audit_logging_enabled]
+    encryption_config: [eks_cluster_secrets_encryption_enabled, eks_cluster_secrets_encrypted]
+  aws_cloudtrail:
+    enable_logging: [cloudtrail_trail_enabled]
+  aws_ebs_volume:
+    encrypted: [ebs_volume_encryption_at_rest_enabled]
+  aws_efs_file_system:
+    encrypted: [efs_file_system_encrypt_data_at_rest]
+  aws_sqs_queue:
+    kms_master_key_id: [sqs_queue_encrypted_with_kms_cmk]
+  aws_sns_topic:
+    kms_master_key_id: [sns_topic_encrypted_at_rest]
+  aws_kms_key:
+    enable_key_rotation: [kms_cmk_rotation_enabled]
+  aws_cloudwatch_log_group:
+    retention_in_days: [cloudwatch_log_group_retention_period_365]

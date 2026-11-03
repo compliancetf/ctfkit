@@ -1,0 +1,45 @@
+# Pinned tool versions for this repository: `mise install`.
+#
+# `core:` tools come from the vendor's own download host (go.dev, nodejs.org). Anything on
+# GitHub releases uses the `http:` backend with an explicit URL and checksum, so an install
+# needs no GitHub API call.
+
+[tools]
+
+# go.mod says `go 1.25`; CI tests and lints on 1.25.x only.
+"core:go" = "1.25"
+
+# `make lint` runs golangci-lint and .golangci.yml declares `version: 2`, so it must be
+# a v2.x. This version MUST equal the `golangci-lint-action` pin in
+# .github/workflows/test.yml - a linter built against a different Go release cannot read
+# this module's export data and reports every package as a `typecheck` failure.
+[tools."http:golangci-lint"]
+version = "2.6.1"
+strip_components = 1
+checksum_url = 'https://github.com/golangci/golangci-lint/releases/download/v{{version}}/golangci-lint-{{version}}-checksums.txt'
+
+[tools."http:golangci-lint".platforms]
+linux-x64 = { url = 'https://github.com/golangci/golangci-lint/releases/download/v{{version}}/golangci-lint-{{version}}-linux-amd64.tar.gz' }
+macos-arm64 = { url = 'https://github.com/golangci/golangci-lint/releases/download/v{{version}}/golangci-lint-{{version}}-darwin-arm64.tar.gz' }
+
+# `go test ./adapters/...` runs the Spacelift and sample-repo policy checks with `opa`,
+# and skips them when it is not on PATH. This version and the linux-x64 checksum MUST
+# equal the `Install OPA` step in .github/workflows/test.yml, which is what makes those
+# tests run in CI.
+[tools."http:opa"]
+version = "1.20.2"
+bin = "opa"
+
+[tools."http:opa".platforms]
+linux-x64 = { url = 'https://github.com/open-policy-agent/opa/releases/download/v{{version}}/opa_linux_amd64_static', checksum = 'sha256:69da5179ee403d10fa11bab6cfb4ffb0d23dba5f9b682fa977db772a1da5670f' }
+macos-arm64 = { url = 'https://github.com/open-policy-agent/opa/releases/download/v{{version}}/opa_darwin_arm64_static', checksum = 'sha256:54e7008e696d39e8e4f96594e2b71bcbe45fd9a4f838102bcf1240638bf3fbe1' }
+
+# scripts/record-report-fixtures.sh re-records the report fixture pack with this tofu and
+# refuses any other version, so the pinned pack names the tofu that wrote it. Maintainers
+# only: CI never runs tofu. The checksums are the release's tofu_<version>_SHA256SUMS lines.
+[tools."http:tofu"]
+version = "1.12.6"
+
+[tools."http:tofu".platforms]
+linux-x64 = { url = 'https://github.com/opentofu/opentofu/releases/download/v{{version}}/tofu_{{version}}_linux_amd64.tar.gz', checksum = 'sha256:50a6106fa4de523d09c87af85f3db1dd47535fc005727fdca6852146476b88ec' }
+macos-arm64 = { url = 'https://github.com/opentofu/opentofu/releases/download/v{{version}}/tofu_{{version}}_darwin_arm64.tar.gz', checksum = 'sha256:f958ec5e511063be9feb180ca015a4cb7977566a9cf6a8550bba8c2a9b5aba74' }

@@ -1,0 +1,135 @@
+{
+  "behavior": "B2",
+  "assumption": "With implicit inheritance, that child module gets its own unconfigured hashicorp/aws instance; its resources bypass the wrapper",
+  "cli": {
+    "name": "tofu",
+    "version": "1.13.1",
+    "platform": "darwin_arm64",
+    "binary_sha256": "56b267df2cbe6498d6b1deedb9cbff038954dfc20830dfd51abea658fabbe586",
+    "release_archive": "tofu_1.13.1_darwin_arm64.zip",
+    "release_archive_sha256": "81aebe6453223bcb3ce3c28424b36d009ebfddd3ad65ad1ec3eed0d0d574a77b"
+  },
+  "fake_provider_sha256": "dcb0571f6084f1d074a3ae02e0a8df62158e5eeb49b80e32d921e1b424eb9437",
+  "upstream": "registry.opentofu.org/hashicorp/aws",
+  "inputs_sha256": "9836b88997da7ec2e389a25a21b5d2e1f8441e714aa2d060dc0f878dbd9f229c",
+  "steps": [
+    {
+      "dir": "root",
+      "run": [
+        "tofu",
+        "init",
+        "-input=false",
+        "-no-color"
+      ],
+      "exit": 0,
+      "output": [
+        "",
+        "Initializing the backend...",
+        "Initializing modules...",
+        "- child in child",
+        "",
+        "Initializing provider plugins...",
+        "- Finding latest version of hashicorp/aws...",
+        "- Finding latest version of registry.compliance.tf/compliancetf/aws...",
+        "- Installing registry.compliance.tf/compliancetf/aws v2.0.0...",
+        "- Installing hashicorp/aws v6.0.0...",
+        "- Installed hashicorp/aws v6.0.0 (unauthenticated)",
+        "- Installed registry.compliance.tf/compliancetf/aws v2.0.0 (unauthenticated)",
+        "",
+        "OpenTofu has created a lock file .terraform.lock.hcl to record the provider",
+        "selections it made above. Include this file in your version control repository",
+        "so that OpenTofu can guarantee to make the same selections by default when",
+        "you run \"tofu init\" in the future.",
+        "",
+        "",
+        "Warning: Incomplete lock file information for providers",
+        "",
+        "Due to your customized provider installation methods, OpenTofu was forced to",
+        "calculate lock file checksums locally for the following providers:",
+        "  - hashicorp/aws",
+        "  - registry.compliance.tf/compliancetf/aws",
+        "",
+        "The current .terraform.lock.hcl file only includes checksums for",
+        "darwin_arm64, so OpenTofu running on another platform will fail to install",
+        "these providers.",
+        "",
+        "To calculate additional checksums for another platform, run:",
+        "  tofu providers lock -platform=linux_amd64",
+        "(where linux_amd64 is the platform to generate)",
+        "",
+        "OpenTofu has been successfully initialized!"
+      ]
+    },
+    {
+      "dir": "root",
+      "run": [
+        "tofu",
+        "providers",
+        "-no-color"
+      ],
+      "exit": 0,
+      "output": [
+        "",
+        "Providers required by configuration:",
+        ".",
+        "├── provider[registry.compliance.tf/compliancetf/aws]",
+        "└── module.child",
+        "    └── provider[registry.opentofu.org/hashicorp/aws]"
+      ]
+    },
+    {
+      "dir": "root",
+      "run": [
+        "tofu",
+        "plan",
+        "-input=false",
+        "-no-color",
+        "-lock=false",
+        "-out=p.tfplan"
+      ],
+      "exit": 0,
+      "output": [
+        "",
+        "OpenTofu used the selected providers to generate the following execution",
+        "plan. Resource actions are indicated with the following symbols:",
+        "  + create",
+        "",
+        "OpenTofu will perform the following actions:",
+        "",
+        "  # fake_thing.r will be created",
+        "  + resource \"fake_thing\" \"r\" {",
+        "      + id   = (known after apply)",
+        "      + name = \"r\"",
+        "      + size = 1",
+        "    }",
+        "",
+        "  # module.child.fake_thing.c will be created",
+        "  + resource \"fake_thing\" \"c\" {",
+        "      + id   = (known after apply)",
+        "      + name = \"c\"",
+        "      + size = 1",
+        "    }",
+        "",
+        "Plan: 2 to add, 0 to change, 0 to destroy."
+      ]
+    },
+    {
+      "dir": "root",
+      "run": [
+        "tofu",
+        "show",
+        "-json",
+        "-no-color",
+        "p.tfplan"
+      ],
+      "filter": "plan_providers",
+      "exit": 0,
+      "output": [
+        "provider_config aws full_name=registry.compliance.tf/compliancetf/aws configured=true",
+        "provider_config module.child:aws full_name=registry.opentofu.org/hashicorp/aws configured=false",
+        "resource fake_thing.r provider=registry.compliance.tf/compliancetf/aws",
+        "resource module.child.fake_thing.c provider=registry.opentofu.org/hashicorp/aws"
+      ]
+    }
+  ]
+}

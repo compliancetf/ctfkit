@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"naming","Source":"./modules/naming","Dir":"modules/naming"},{"Key":"s3_bucket_notification","Source":"bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws//modules/notification","Version":"5.16.1","Dir":".terraform/modules/s3_bucket_notification/modules/notification"}]}

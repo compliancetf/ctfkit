@@ -1,0 +1,4 @@
+# Tags every resource in this configuration must carry.
+required_tags:
+  - Environment
+  - Owner

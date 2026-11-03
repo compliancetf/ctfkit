@@ -1,0 +1,1 @@
+{"epoch":1,"format":"compliancetf.revocations/v1","revoked_bundles":[],"revoked_controls":[],"revoked_keys":[{"kid":"sha256:7d1e94f282fdbd7eb8942cddd359ba75824af844ddf68cb11fb55ee3883ab8e4","revoked_at":"2026-10-15T00:00:00Z"}]}

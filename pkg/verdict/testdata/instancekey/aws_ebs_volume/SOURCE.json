@@ -1,0 +1,30 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_ebs_volume.new",
+      "form": "create",
+      "recorded_name": "aws_ebs_volume.0e3814f3eb71054b",
+      "sha256": {
+        "apply/aws_ebs_volume.new.create.msgpack": "106680bc3858da12e27a3e535e8bd15a6225839b2987cebac94ae803c476a182",
+        "apply/aws_ebs_volume.new.create.type.json": "b303e768ef1aba47b0569cd3979625f3f96700d4b6e754b58c60def4f67bdb17",
+        "envelope/aws_ebs_volume.new.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_ebs_volume.this",
+      "form": "update",
+      "recorded_name": "aws_ebs_volume.782a09b07170b318",
+      "sha256": {
+        "apply/aws_ebs_volume.this.update.msgpack": "acd7503717e66d76bd51c4a372c8b9df99e6bd3185743db4addd1f4adaac7b83",
+        "apply/aws_ebs_volume.this.update.type.json": "b303e768ef1aba47b0569cd3979625f3f96700d4b6e754b58c60def4f67bdb17",
+        "envelope/aws_ebs_volume.this.update.json": "3188d2ea0d9571a5c9f133cfbba64b20deb02bb2edf060e4518039bd0ca13d89"
+      }
+    }
+  ]
+}

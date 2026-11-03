@@ -1,0 +1,6 @@
+[
+  {"manifest_digests": ["sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"], "digest": "sha256:9f447b1b473d359884f2b8541a1ad0b7d194ed59b79e8eee48047ec4830564fd"},
+  {"manifest_digests": ["sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"], "digest": "sha256:f8b6f42787c99eeb4cc5daccd8b8972aec59ebf7266b6a1b230c2dc2ec58ce91"},
+  {"manifest_digests": ["sha256:fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210", "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"], "digest": "sha256:4edc6bb89dff6dbfba99806c25841848f3870731dd3820ebbf346ce893a533a7"},
+  {"manifest_digests": [], "digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"}
+]

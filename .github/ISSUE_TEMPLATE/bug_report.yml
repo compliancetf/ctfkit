@@ -1,0 +1,55 @@
+name: Bug report
+description: ctfkit did something wrong or failed.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Strip secrets, account ids, resource names and anything else from your estate before
+        you paste. A small configuration that shows the problem helps more than a real one.
+        Security problems go to the private report linked on the new issue page, not here.
+  - type: input
+    id: version
+    attributes:
+      label: ctfkit version
+      description: The output of `ctfkit version`.
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: The exact command you ran, with its flags, or the CI step that ran it.
+      render: shell
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Stage
+      options:
+        - pre_plan (scan of configuration files)
+        - post_init (report after init)
+        - post_plan (scan of a plan JSON)
+        - other or not sure
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+      description: What you expected ctfkit to do or report.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+      description: What happened, with the relevant output and exit code.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Configuration that reproduces it
+      description: The smallest configuration, plan excerpt or settings file that shows the problem.

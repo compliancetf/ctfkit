@@ -1,0 +1,116 @@
+{
+  "format": "compliancetf.verdict/v1",
+  "org_id": "bobthecorp",
+  "workspace": "default",
+  "environment": "prod",
+  "run_id": "run-fixture",
+  "caller": {
+    "account_id": "",
+    "role_arn": "",
+    "region": ""
+  },
+  "plan_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "provenance": {},
+  "plan_format_version": "1.2",
+  "profile_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "bundle_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "content_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "floor_epoch": "7",
+  "provider_versions": {
+    "compliancetf/aws": "2.0.0",
+    "hashicorp/aws": "6.0.0"
+  },
+  "terraform_version": "1.16.3",
+  "nonce": "AAAAAAAAAAAAAAAAAAAAAA",
+  "issued_at": "2026-10-19T12:00:00Z",
+  "expires_at": "2026-10-20T12:00:00Z",
+  "instance_key_check": "0000000000000000000000000000000000000000000000000000000000000000",
+  "instances": [
+    {
+      "address": "aws_s3_bucket.a",
+      "type": "aws_s3_bucket",
+      "action": "create",
+      "instance_key": "sha256:6b3aa767f9857c63f3f8f0e644ffe8ea116e515f9fc80a0057eb27617017fbf4",
+      "prior_identity_kind": "none",
+      "refreshed": "true",
+      "unknown_paths": [
+        [
+          "id"
+        ]
+      ],
+      "decisions": [
+        {
+          "control": "s3_bucket_public_access_block_present",
+          "version": "1.0.0",
+          "result": "not_evaluable",
+          "action": "deny"
+        }
+      ],
+      "not_evaluable": [
+        {
+          "control": "s3_bucket_public_access_block_present",
+          "reason": "identity_alias"
+        }
+      ],
+      "exceptions": [],
+      "baselines": [],
+      "break_glass": []
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.a",
+      "type": "aws_s3_bucket_public_access_block",
+      "action": "create",
+      "instance_key": "sha256:108c77137da2c397b8a7e060b004aa7fbbcbd2ef59094b17822cbfa3259ac144",
+      "prior_identity_kind": "none",
+      "refreshed": "true",
+      "unknown_paths": [
+        [
+          "id"
+        ]
+      ],
+      "decisions": [],
+      "not_evaluable": [],
+      "exceptions": [],
+      "baselines": [],
+      "break_glass": []
+    },
+    {
+      "address": "aws_s3_bucket.w",
+      "type": "aws_s3_bucket",
+      "action": "create",
+      "instance_key": "sha256:dbd21c4ca5a888bda9ebd4221cee968f053b7fa2ad08ecc90ee48d14a3fad6a3",
+      "prior_identity_kind": "none",
+      "refreshed": "true",
+      "unknown_paths": [
+        [
+          "id"
+        ]
+      ],
+      "decisions": [
+        {
+          "control": "s3_bucket_public_access_block_present",
+          "version": "1.0.0",
+          "result": "not_evaluable",
+          "action": "deny"
+        }
+      ],
+      "not_evaluable": [
+        {
+          "control": "s3_bucket_public_access_block_present",
+          "reason": "wildcard"
+        }
+      ],
+      "exceptions": [],
+      "baselines": [],
+      "break_glass": []
+    }
+  ],
+  "exceptions": [],
+  "baselines": [],
+  "break_glass_receipts": [],
+  "signature": {
+    "kid": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "alg": "ES256",
+    "value": "AA"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_instance.new",
+      "form": "create",
+      "recorded_name": "aws_instance.6d36766f73c0a14b",
+      "sha256": {
+        "apply/aws_instance.new.create.msgpack": "a146bb6b29089fcae7ef0696fa903b4b1526d4a52c7f6e8022296fd447614c8a",
+        "apply/aws_instance.new.create.type.json": "f4e62a8ba3d1cd140fa4b13f888a4d118b096a80b59f393f9a83cf7a95ce2589",
+        "envelope/aws_instance.new.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_instance.tainted",
+      "form": "delete",
+      "recorded_name": "aws_instance.f6d55601baed4063",
+      "sha256": {
+        "apply/aws_instance.tainted.delete.msgpack": "e4ff5e7d7a7f08e9800a3e25cb774533cb20040df30b6ba10f956f9acd0eb3f7",
+        "apply/aws_instance.tainted.delete.type.json": "f4e62a8ba3d1cd140fa4b13f888a4d118b096a80b59f393f9a83cf7a95ce2589",
+        "envelope/aws_instance.tainted.delete.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_instance.tainted",
+      "form": "create",
+      "recorded_name": "aws_instance.7632616cf8901349",
+      "sha256": {
+        "apply/aws_instance.tainted.create.msgpack": "300ab312c486a76c21812020ebf57e09766fdb4d34de8b9187314f62e0c20ba7",
+        "apply/aws_instance.tainted.create.type.json": "f4e62a8ba3d1cd140fa4b13f888a4d118b096a80b59f393f9a83cf7a95ce2589",
+        "envelope/aws_instance.tainted.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_instance.this",
+      "form": "update",
+      "recorded_name": "aws_instance.6a4391cb0798c9c0",
+      "sha256": {
+        "apply/aws_instance.this.update.msgpack": "a2787482f0c09e71e5dcf7ae6c7380da0d3d4fed7b830fd8db44c8244d15495c",
+        "apply/aws_instance.this.update.type.json": "f4e62a8ba3d1cd140fa4b13f888a4d118b096a80b59f393f9a83cf7a95ce2589",
+        "envelope/aws_instance.this.update.json": "58784d2d66009a06c8edf5c722a916c375e1534b28a0f4f99b1257fd5b114159"
+      }
+    }
+  ]
+}

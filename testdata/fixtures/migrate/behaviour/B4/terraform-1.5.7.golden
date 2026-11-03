@@ -1,0 +1,101 @@
+{
+  "behavior": "B4",
+  "assumption": "state replace-provider rewrites aliased (provider[\"...\"].west) and module-scoped resource provider addresses",
+  "cli": {
+    "name": "terraform",
+    "version": "1.5.7",
+    "platform": "darwin_arm64",
+    "binary_sha256": "9659560f277521478fced6a3351a5675bcb941a7a5f50d06dc3908ef573e0d61",
+    "release_archive": "terraform_1.5.7_darwin_arm64.zip",
+    "release_archive_sha256": "db7c33eb1a446b73a443e2c55b532845f7b70cd56100bec4c96f15cfab5f50cb"
+  },
+  "fake_provider_sha256": "dcb0571f6084f1d074a3ae02e0a8df62158e5eeb49b80e32d921e1b424eb9437",
+  "upstream": "registry.terraform.io/hashicorp/aws",
+  "inputs_sha256": "4b3f0c51604ff7a8c69705f2da295776e5e3363320dcfc048dee9993d5a58a5e",
+  "steps": [
+    {
+      "dir": "root",
+      "run": [
+        "terraform",
+        "init",
+        "-input=false",
+        "-no-color"
+      ],
+      "exit": 0,
+      "output": [
+        "",
+        "Initializing the backend...",
+        "",
+        "Initializing provider plugins...",
+        "- Finding latest version of hashicorp/aws...",
+        "- Installing hashicorp/aws v6.0.0...",
+        "- Installed hashicorp/aws v6.0.0 (unauthenticated)",
+        "",
+        "Terraform has created a lock file .terraform.lock.hcl to record the provider",
+        "selections it made above. Include this file in your version control repository",
+        "so that Terraform can guarantee to make the same selections by default when",
+        "you run \"terraform init\" in the future.",
+        "",
+        "",
+        "Warning: Incomplete lock file information for providers",
+        "",
+        "Due to your customized provider installation methods, Terraform was forced to",
+        "calculate lock file checksums locally for the following providers:",
+        "  - hashicorp/aws",
+        "",
+        "The current .terraform.lock.hcl file only includes checksums for",
+        "darwin_arm64, so Terraform running on another platform will fail to install",
+        "these providers.",
+        "",
+        "To calculate additional checksums for another platform, run:",
+        "  terraform providers lock -platform=linux_amd64",
+        "(where linux_amd64 is the platform to generate)",
+        "",
+        "Terraform has been successfully initialized!"
+      ]
+    },
+    {
+      "dir": "root",
+      "run": [
+        "terraform",
+        "state",
+        "replace-provider",
+        "-auto-approve",
+        "-no-color",
+        "registry.terraform.io/hashicorp/aws",
+        "registry.compliance.tf/compliancetf/aws"
+      ],
+      "exit": 0,
+      "output": [
+        "Terraform will perform the following actions:",
+        "",
+        "  ~ Updating provider:",
+        "    - registry.terraform.io/hashicorp/aws",
+        "    + registry.compliance.tf/compliancetf/aws",
+        "",
+        "Changing 5 resources:",
+        "",
+        "  module.own.fake_thing.o",
+        "  module.own.fake_thing.oa",
+        "  fake_thing.plain",
+        "  fake_thing.aliased",
+        "  module.inherits.fake_thing.m",
+        "",
+        "Successfully replaced provider for 5 resources."
+      ]
+    },
+    {
+      "dir": "root",
+      "cat": "terraform.tfstate",
+      "filter": "state_providers",
+      "exit": 0,
+      "output": [
+        "fake_thing.aliased provider=provider[\"registry.compliance.tf/compliancetf/aws\"].west",
+        "fake_thing.plain provider=provider[\"registry.compliance.tf/compliancetf/aws\"]",
+        "module.inherits.fake_thing.m provider=provider[\"registry.compliance.tf/compliancetf/aws\"]",
+        "module.own.fake_thing.o provider=module.own.provider[\"registry.compliance.tf/compliancetf/aws\"]",
+        "module.own.fake_thing.oa provider=module.own.provider[\"registry.compliance.tf/compliancetf/aws\"].west"
+      ]
+    }
+  ]
+}

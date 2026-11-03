@@ -1,0 +1,132 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.13.0",
+  "resource_changes": [
+    {
+      "address": "module.a.aws_s3_bucket.this",
+      "module_address": "module.a",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "this",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "region": "eu-west-1",
+          "force_destroy": false,
+          "bucket": "bobthecorp-shared"
+        },
+        "after_unknown": {
+          "id": true,
+          "arn": true
+        }
+      }
+    },
+    {
+      "address": "module.b.aws_s3_bucket_public_access_block.this",
+      "module_address": "module.b",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "this",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "region": "eu-west-1",
+          "bucket": "bobthecorp-shared"
+        },
+        "after_unknown": {
+          "id": true
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          }
+        }
+      },
+      "aws.a": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "alias": "a",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          },
+          "profile": {
+            "constant_value": "bobthecorp"
+          }
+        }
+      },
+      "aws.b": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "alias": "b",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          },
+          "profile": {
+            "constant_value": "bobthecorp"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "module_calls": {
+        "a": {
+          "source": "./modules/x",
+          "module": {
+            "resources": [
+              {
+                "address": "aws_s3_bucket.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket",
+                "name": "this",
+                "provider_config_key": "aws.a",
+                "schema_version": 0
+              }
+            ]
+          }
+        },
+        "b": {
+          "source": "./modules/x",
+          "module": {
+            "resources": [
+              {
+                "address": "aws_s3_bucket_public_access_block.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_public_access_block",
+                "name": "this",
+                "provider_config_key": "aws.b",
+                "schema_version": 0,
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "var.bucket"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

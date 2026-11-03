@@ -1,0 +1,46 @@
+{
+  "behavior": "B1",
+  "assumption": "A child module whose required_providers names hashicorp/aws cannot receive a compliancetf/aws configuration through providers = {} (type-mismatch error)",
+  "cli": {
+    "name": "tofu",
+    "version": "1.13.1",
+    "platform": "darwin_arm64",
+    "binary_sha256": "56b267df2cbe6498d6b1deedb9cbff038954dfc20830dfd51abea658fabbe586",
+    "release_archive": "tofu_1.13.1_darwin_arm64.zip",
+    "release_archive_sha256": "81aebe6453223bcb3ce3c28424b36d009ebfddd3ad65ad1ec3eed0d0d574a77b"
+  },
+  "fake_provider_sha256": "dcb0571f6084f1d074a3ae02e0a8df62158e5eeb49b80e32d921e1b424eb9437",
+  "upstream": "registry.opentofu.org/hashicorp/aws",
+  "inputs_sha256": "e04f99e63aea51193e8dfb752c45b7eb78b63cddd65f705aa67e9cbd56e47c6a",
+  "steps": [
+    {
+      "dir": "root",
+      "run": [
+        "tofu",
+        "init",
+        "-input=false",
+        "-no-color"
+      ],
+      "exit": 1,
+      "output": [
+        "",
+        "Initializing the backend...",
+        "Initializing modules...",
+        "- child in child",
+        "",
+        "Error: Provider type mismatch",
+        "",
+        "  on main.tf line 18, in module \"child\":",
+        "  18:   providers = { aws = aws }",
+        "",
+        "The local name \"aws\" in the root module represents provider",
+        "\"registry.compliance.tf/compliancetf/aws\", but \"aws\" in module.child",
+        "represents \"hashicorp/aws\".",
+        "",
+        "Each provider has its own distinct configuration schema and provider types,",
+        "so this module's \"aws\" can be assigned only a configuration for",
+        "hashicorp/aws, which is not required by module.child."
+      ]
+    }
+  ]
+}

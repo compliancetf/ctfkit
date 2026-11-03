@@ -1,0 +1,54 @@
+{
+  "//": "Array forms, JSON comment properties and configuration_aliases, which the tf-json case does not use.",
+  "terraform": [
+    {
+      "required_providers": [
+        {
+          "//": "not a provider",
+          "aws": {
+            "source": "hashicorp/aws",
+            "version": ">= 6.0",
+            "configuration_aliases": ["aws.peer"]
+          }
+        }
+      ]
+    }
+  ],
+  "provider": [
+    {
+      "aws": [
+        {
+          "region": "eu-west-1"
+        }
+      ]
+    }
+  ],
+  "resource": [
+    {
+      "aws_instance": [
+        {
+          "web": [
+            {
+              "instance_type": "t3.micro"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "module": [
+    {
+      "branch": [
+        {
+          "source": "git::https://github.com/bobthecorp/tf-s3.git?ref=main"
+        }
+      ],
+      "open": [
+        {
+          "source": "terraform-aws-modules/vpc/aws",
+          "version": ">= 5.0"
+        }
+      ]
+    }
+  ]
+}

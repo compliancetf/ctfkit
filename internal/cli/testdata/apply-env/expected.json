@@ -1,0 +1,19 @@
+{
+  "argv": [
+    "version -json",
+    "-chdir=<dir> init -input=false -lockfile=readonly",
+    "-chdir=<dir> show -json <owned>/sealed/planfile",
+    "-chdir=<dir> apply -input=false <owned>/sealed/planfile"
+  ],
+  "env": [
+    "COMPLIANCETF_VERDICT",
+    "COMPLIANCETF_VERDICT_KEY_FILE",
+    "HOME",
+    "PATH",
+    "TF_CLI_CONFIG_FILE",
+    "TF_DATA_DIR",
+    "TF_IN_AUTOMATION",
+    "TF_WORKSPACE",
+    "TMPDIR"
+  ]
+}

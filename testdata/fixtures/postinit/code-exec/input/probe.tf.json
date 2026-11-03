@@ -1,0 +1,9 @@
+{
+  "data": {
+    "external": {
+      "probe": {
+        "program": ["CANARY-codeexec-root-program"]
+      }
+    }
+  }
+}

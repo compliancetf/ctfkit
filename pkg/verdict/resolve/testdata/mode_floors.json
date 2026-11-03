@@ -1,0 +1,110 @@
+{
+  "description": "a control floor and the deny floor raise the run mode; the deny floor skips warn controls",
+  "decisions": {
+    "instances": [
+      {
+        "address": "fake_thing.a",
+        "type": "fake_thing",
+        "action": "create",
+        "prior_identity_kind": "none",
+        "refreshed": "true",
+        "unknown_paths": [],
+        "decisions": [
+          {
+            "control": "f",
+            "version": "1.0.0",
+            "result": "fail",
+            "action": "deny"
+          },
+          {
+            "control": "g",
+            "version": "1.0.0",
+            "result": "fail",
+            "action": "deny"
+          },
+          {
+            "control": "w",
+            "version": "1.0.0",
+            "result": "fail",
+            "action": "deny"
+          }
+        ],
+        "not_evaluable": [],
+        "exceptions": [],
+        "baselines": [],
+        "break_glass": [],
+        "instance_key": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    ],
+    "required": {
+      "fake_thing": {
+        "decisions": [
+          {
+            "id": "f",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          },
+          {
+            "id": "g",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          },
+          {
+            "id": "w",
+            "version": "1.0.0",
+            "action": "warn",
+            "coverable": []
+          }
+        ],
+        "delete_decisions": []
+      }
+    }
+  },
+  "mode": {
+    "run_mode": "advisory",
+    "deny_floor": "soft_fail",
+    "control_floors": {
+      "f": "hard_fail"
+    }
+  },
+  "exceptions": [],
+  "baselines": [],
+  "receipts": [],
+  "want": {
+    "refuse": true,
+    "rows": [
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "fail",
+        "severity": "error",
+        "final": "fail",
+        "control": "f",
+        "version": "1.0.0",
+        "state": "fail"
+      },
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "fail",
+        "severity": "warning",
+        "final": "fail",
+        "control": "g",
+        "version": "1.0.0",
+        "state": "fail"
+      },
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "fail",
+        "severity": "none",
+        "final": "fail",
+        "control": "w",
+        "version": "1.0.0",
+        "state": "fail"
+      }
+    ]
+  }
+}

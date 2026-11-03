@@ -1,0 +1,141 @@
+[
+ {
+  "id": "s3_bucket_public_access_block_present",
+  "version": "1.0.0",
+  "kind": "graph",
+  "resource_type": "aws_s3_bucket",
+  "graph": {
+   "rule": "companion_present",
+   "companion_type": "aws_s3_bucket_public_access_block",
+   "link_attr": "bucket",
+   "target_attrs": [
+    "id",
+    "bucket"
+   ]
+  },
+  "action": "deny",
+  "severity": "high",
+  "message": "s3_bucket_public_access_block_present",
+  "exemption_coverable": [
+   "break_glass"
+  ]
+ },
+ {
+  "id": "s3_bucket_public_access_block_kept",
+  "version": "1.0.0",
+  "kind": "graph",
+  "resource_type": "aws_s3_bucket",
+  "graph": {
+   "rule": "companion_absent_forbidden",
+   "companion_type": "aws_s3_bucket_public_access_block",
+   "link_attr": "bucket",
+   "target_attrs": [
+    "id",
+    "bucket"
+   ]
+  },
+  "action": "deny",
+  "severity": "high",
+  "message": "s3_bucket_public_access_block_kept",
+  "exemption_coverable": []
+ },
+ {
+  "id": "s3_bucket_named",
+  "version": "1.0.0",
+  "kind": "resource",
+  "resource_type": "aws_s3_bucket",
+  "reads": [
+   "bucket"
+  ],
+  "expr": "true",
+  "action": "deny",
+  "severity": "medium",
+  "message": "s3_bucket_named",
+  "exemption_coverable": [
+   "grant",
+   "self_service"
+  ],
+  "presence_mode": "effective",
+  "on": [
+   "create",
+   "update"
+  ]
+ },
+ {
+  "id": "s3_bucket_baseline_only",
+  "version": "1.0.0",
+  "kind": "resource",
+  "resource_type": "aws_s3_bucket",
+  "reads": [
+   "bucket"
+  ],
+  "expr": "true",
+  "action": "deny",
+  "severity": "medium",
+  "message": "s3_bucket_baseline_only",
+  "exemption_coverable": [
+   "baseline"
+  ],
+  "presence_mode": "effective",
+  "on": [
+   "create",
+   "update"
+  ]
+ },
+ {
+  "id": "s3_bucket_not_coverable",
+  "version": "1.0.0",
+  "kind": "resource",
+  "resource_type": "aws_s3_bucket",
+  "reads": [
+   "bucket"
+  ],
+  "expr": "true",
+  "action": "deny",
+  "severity": "medium",
+  "message": "s3_bucket_not_coverable",
+  "exemption_coverable": [],
+  "presence_mode": "effective",
+  "on": [
+   "create",
+   "update"
+  ]
+ },
+ {
+  "id": "s3_bucket_advisory",
+  "version": "1.0.0",
+  "kind": "resource",
+  "resource_type": "aws_s3_bucket",
+  "reads": [
+   "bucket"
+  ],
+  "expr": "true",
+  "action": "warn",
+  "severity": "medium",
+  "message": "s3_bucket_advisory",
+  "exemption_coverable": [
+   "grant"
+  ],
+  "presence_mode": "effective",
+  "on": [
+   "create",
+   "update"
+  ]
+ },
+ {
+  "id": "s3_bucket_delete_guard",
+  "version": "1.0.0",
+  "kind": "deletion_guard",
+  "resource_type": "aws_s3_bucket",
+  "reads": [
+   "bucket"
+  ],
+  "expr": "true",
+  "action": "deny",
+  "severity": "medium",
+  "message": "s3_bucket_delete_guard",
+  "exemption_coverable": [
+   "grant"
+  ]
+ }
+]

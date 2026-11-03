@@ -1,0 +1,98 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.13.0",
+  "resource_changes": [
+    {
+      "address": "aws_lb.web",
+      "mode": "managed",
+      "type": "aws_lb",
+      "name": "web",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "name": "bobthecorp-web",
+          "region": "eu-west-1",
+          "load_balancer_type": "application"
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true
+        }
+      }
+    },
+    {
+      "address": "aws_wafv2_web_acl_association.web",
+      "mode": "managed",
+      "type": "aws_wafv2_web_acl_association",
+      "name": "web",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "web_acl_arn": "arn:aws:wafv2:eu-west-1:111122223333:regional/webacl/bobthecorp-web/a1b2c3d4-5678-90ab-cdef-111122223333",
+          "region": "eu-west-1"
+        },
+        "after_unknown": {
+          "id": true,
+          "resource_arn": true
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_lb.web",
+          "mode": "managed",
+          "type": "aws_lb",
+          "name": "web",
+          "provider_config_key": "aws",
+          "expressions": {
+            "name": {
+              "constant_value": "bobthecorp-web"
+            }
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "aws_wafv2_web_acl_association.web",
+          "mode": "managed",
+          "type": "aws_wafv2_web_acl_association",
+          "name": "web",
+          "provider_config_key": "aws",
+          "expressions": {
+            "resource_arn": {
+              "references": [
+                "aws_lb.web.arn",
+                "aws_lb.web"
+              ]
+            },
+            "web_acl_arn": {
+              "constant_value": "arn:aws:wafv2:eu-west-1:111122223333:regional/webacl/bobthecorp-web/a1b2c3d4-5678-90ab-cdef-111122223333"
+            }
+          },
+          "schema_version": 0
+        }
+      ]
+    }
+  }
+}

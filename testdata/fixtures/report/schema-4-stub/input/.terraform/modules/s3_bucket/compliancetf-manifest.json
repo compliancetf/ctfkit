@@ -1,0 +1,558 @@
+{
+  "schema_version": "4.0",
+  "controls_scope": "package",
+  "scope_path": ".",
+  "generated_at": "2026-09-20T16:16:47.186224+00:00",
+  "module": {
+    "registry_source": "bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws",
+    "frameworks": [
+      "soc_2"
+    ],
+    "framework_names": {
+      "soc_2": "SOC 2"
+    },
+    "version": "5.16.1-1e4b692ae5e0a847",
+    "upstream_source": "terraform-aws-modules/s3-bucket/aws",
+    "upstream_version": "5.16.1-1e4b692ae5e0a847"
+  },
+  "controls": [
+    {
+      "control_id": "s3_bucket_cross_region_replication_enabled",
+      "name": "S3 buckets should have cross-region replication enabled",
+      "description": "AWS Simple Storage Service (AWS S3) Cross-Region Replication (CRR) supports maintaining adequate capacity and availability.",
+      "status": "enforced",
+      "clauses_by_framework": {
+        "soc_2": [
+          "A1.2 The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives"
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_BUCKET_CROSS_REGION_REPLICATION_ENABLED"
+        ],
+        "checkov": [
+          "CKV_AWS_144"
+        ],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_cross_region_replication_enabled"
+        ]
+      },
+      "files_modified": [
+        "main.tf",
+        "variables.tf"
+      ],
+      "applies_in": [
+        "."
+      ]
+    },
+    {
+      "control_id": "s3_bucket_default_encryption_enabled_kms",
+      "name": "S3 buckets should have default encryption enabled using KMS",
+      "description": "To help protect data at rest, ensure encryption is enabled for your AWS Simple Storage Service (AWS S3) buckets.",
+      "status": "enforced",
+      "clauses_by_framework": {
+        "soc_2": [
+          "PI1.4 System outputs are complete, accurate, distributed only to intended parties, and retained to meet the entity's processing integrity commitments and system requirements",
+          "PI1.5 Stored data is maintained complete, accurate, and protected from unauthorized modification to meet the entity's processing integrity commitments and system requirements"
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_DEFAULT_ENCRYPTION_KMS"
+        ],
+        "checkov": [
+          "CKV_AWS_145"
+        ],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_default_encryption_enabled_kms"
+        ]
+      },
+      "files_modified": [
+        "main.tf",
+        "variables.tf"
+      ],
+      "applies_in": [
+        "."
+      ]
+    },
+    {
+      "control_id": "s3_bucket_event_notifications_enabled",
+      "name": "S3 buckets should have event notifications enabled",
+      "description": "This control checks whether S3 Event Notifications are enabled on an AWS S3 bucket. This control fails if S3 Event Notifications are not enabled on a bucket.",
+      "status": "delegated",
+      "clauses_by_framework": {
+        "soc_2": [
+          "CC7.3 The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives (security incidents) and, if so, takes actions to prevent or address such failures"
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_EVENT_NOTIFICATIONS_ENABLED"
+        ],
+        "checkov": [
+          "CKV2_AWS_62"
+        ],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_event_notifications_enabled"
+        ]
+      },
+      "files_modified": [],
+      "applies_in": [
+        "modules/notification"
+      ]
+    },
+    {
+      "control_id": "s3_bucket_logging_enabled",
+      "name": "S3 buckets should have logging enabled",
+      "description": "AWS Simple Storage Service (AWS S3) server access logging provides a method to monitor the network for potential cybersecurity events.",
+      "status": "enforced",
+      "clauses_by_framework": {
+        "soc_2": [
+          "A1.2 The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives",
+          "CC7.2: The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity's ability to meet its objectives; anomalies are analyzed to determine whether they represent security events.",
+          "CC7.3 The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives (security incidents) and, if so, takes actions to prevent or address such failures"
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_BUCKET_LOGGING_ENABLED"
+        ],
+        "checkov": [
+          "CKV_AWS_18"
+        ],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_logging_enabled"
+        ]
+      },
+      "files_modified": [
+        "main.tf",
+        "variables.tf"
+      ],
+      "applies_in": [
+        "."
+      ]
+    },
+    {
+      "control_id": "s3_bucket_not_accessible_to_all_authenticated_user",
+      "name": "S3 buckets should not be accessible to all authenticated users",
+      "description": "This control checks whether AWS S3 bucket ACL allow access to all authenticated users.",
+      "status": "enforced",
+      "clauses_by_framework": {
+        "soc_2": [
+          "CC6.1 The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives"
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_BUCKET_ACL_PROHIBITED"
+        ],
+        "checkov": [
+          "CKV2_AWS_43"
+        ],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_not_accessible_to_all_authenticated_user"
+        ]
+      },
+      "files_modified": [
+        "main.tf",
+        "variables.tf"
+      ],
+      "applies_in": [
+        "."
+      ]
+    },
+    {
+      "control_id": "s3_bucket_object_lock_enabled",
+      "name": "S3 buckets should have object lock enabled",
+      "description": "Ensure that your AWS Simple Storage Service (AWS S3) bucket has lock enabled, by default.",
+      "status": "enforced",
+      "clauses_by_framework": {
+        "soc_2": [
+          "C1.1 The entity identifies and maintains confidential information to meet the entity's objectives related to confidentiality",
+          "PI1.5 Stored data is maintained complete, accurate, and protected from unauthorized modification to meet the entity's processing integrity commitments and system requirements"
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_BUCKET_DEFAULT_LOCK_ENABLED"
+        ],
+        "checkov": [
+          "CKV_AWS_143"
+        ],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_object_lock_enabled"
+        ]
+      },
+      "files_modified": [
+        "main.tf",
+        "variables.tf"
+      ],
+      "applies_in": [
+        "."
+      ]
+    },
+    {
+      "control_id": "s3_bucket_policy_restrict_public_access",
+      "name": "S3 buckets should have policies that prohibit public access",
+      "description": "This control checks that the access granted by the S3 bucket is restricted by any of the principals, federated users, service principals, IP addresses, or VPCs that you provide. The rule is compliant if a bucket policy is not present.",
+      "status": "enforced",
+      "clauses_by_framework": {
+        "soc_2": [
+          "CC6.1 The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives",
+          "CC6.6: The entity implements logical access security measures to protect against threats from sources outside its system boundaries."
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_BUCKET_LEVEL_PUBLIC_ACCESS_PROHIBITED"
+        ],
+        "checkov": [
+          "CKV_AWS_70"
+        ],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_policy_restrict_public_access"
+        ]
+      },
+      "files_modified": [
+        "main.tf",
+        "variables.tf"
+      ],
+      "applies_in": [
+        "."
+      ]
+    },
+    {
+      "control_id": "s3_bucket_restrict_public_read_access",
+      "name": "S3 buckets should prohibit public read access",
+      "description": "Manage access to resources in the AWS Cloud by only allowing authorized users, processes, and devices access to AWS Simple Storage Service (AWS S3) buckets.",
+      "status": "enforced",
+      "clauses_by_framework": {
+        "soc_2": [
+          "CC6.1 The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives",
+          "CC6.6: The entity implements logical access security measures to protect against threats from sources outside its system boundaries."
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_BUCKET_PUBLIC_READ_PROHIBITED"
+        ],
+        "checkov": [
+          "CKV_AWS_20"
+        ],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_restrict_public_read_access"
+        ]
+      },
+      "files_modified": [
+        "main.tf",
+        "variables.tf"
+      ],
+      "applies_in": [
+        "."
+      ]
+    },
+    {
+      "control_id": "s3_bucket_restrict_public_write_access",
+      "name": "S3 buckets should prohibit public write access",
+      "description": "Manage access to resources in the AWS Cloud by only allowing authorized users, processes, and devices access to AWS Simple Storage Service (AWS S3) buckets.",
+      "status": "enforced",
+      "clauses_by_framework": {
+        "soc_2": [
+          "CC6.1 The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives",
+          "CC6.6: The entity implements logical access security measures to protect against threats from sources outside its system boundaries."
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_BUCKET_PUBLIC_WRITE_PROHIBITED"
+        ],
+        "checkov": [
+          "CKV_AWS_57"
+        ],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_restrict_public_write_access"
+        ]
+      },
+      "files_modified": [],
+      "applies_in": []
+    },
+    {
+      "control_id": "s3_bucket_versioning_and_lifecycle_policy_enabled",
+      "name": "S3 buckets with versioning enabled should have lifecycle policies configured",
+      "description": "This control checks if AWS Simple Storage Service (AWS S3) version enabled buckets have lifecycle policy configured. This rule fails if AWS S3 lifecycle policy is not enabled.",
+      "status": "enforced",
+      "clauses_by_framework": {
+        "soc_2": [
+          "C1.1 The entity identifies and maintains confidential information to meet the entity's objectives related to confidentiality"
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_VERSION_LIFECYCLE_POLICY_CHECK"
+        ],
+        "checkov": [],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_versioning_and_lifecycle_policy_enabled"
+        ]
+      },
+      "files_modified": [
+        "main.tf",
+        "variables.tf"
+      ],
+      "applies_in": [
+        "."
+      ]
+    },
+    {
+      "control_id": "s3_bucket_versioning_enabled",
+      "name": "S3 buckets should have versioning enabled",
+      "description": "AWS Simple Storage Service (AWS S3) bucket versioning helps keep multiple variants of an object in the same AWS S3 bucket.",
+      "status": "enforced",
+      "clauses_by_framework": {
+        "soc_2": [
+          "A1.2 The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives",
+          "C1.2 The entity disposes of confidential information to meet the entity's objectives related to confidentiality",
+          "CC7.4 The entity responds to identified security incidents by executing a defined incident response program to understand, contain, remediate, and communicate security incidents, as appropriate",
+          "PI1.5 Stored data is maintained complete, accurate, and protected from unauthorized modification to meet the entity's processing integrity commitments and system requirements"
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_BUCKET_VERSIONING_ENABLED"
+        ],
+        "checkov": [
+          "CKV_AWS_21"
+        ],
+        "powerpipe": [
+          "aws_compliance.control.s3_bucket_versioning_enabled"
+        ]
+      },
+      "files_modified": [
+        "main.tf",
+        "variables.tf"
+      ],
+      "applies_in": [
+        "."
+      ]
+    },
+    {
+      "control_id": "s3_public_access_block_account",
+      "name": "S3 public access should be blocked at account level",
+      "description": "Manage access to resources in the AWS Cloud by ensuring that AWS Simple Storage Service (AWS S3) buckets cannot be publicly accessed.",
+      "status": "delegated",
+      "clauses_by_framework": {
+        "soc_2": [
+          "CC6.6: The entity implements logical access security measures to protect against threats from sources outside its system boundaries."
+        ]
+      },
+      "tool_checks": {
+        "aws_config": [
+          "S3_ACCOUNT_LEVEL_PUBLIC_ACCESS_BLOCKS",
+          "S3_ACCOUNT_LEVEL_PUBLIC_ACCESS_BLOCKS_PERIODIC"
+        ],
+        "checkov": [],
+        "powerpipe": [
+          "aws_compliance.control.s3_public_access_block_account",
+          "aws_compliance.control.s3_public_access_block_bucket_account"
+        ]
+      },
+      "files_modified": [],
+      "applies_in": [
+        "modules/account-public-access"
+      ]
+    }
+  ],
+  "build": {
+    "files_modified": [
+      "main.tf",
+      "variables.tf"
+    ],
+    "unattributed_modifications": [],
+    "dual_touch": [],
+    "controls_applied_count": 12,
+    "controls_not_applicable": [
+      "apigateway_stage_cache_encryption_at_rest_enabled",
+      "apigateway_stage_logging_enabled",
+      "appsync_graphql_api_field_level_logging_enabled",
+      "athena_workgroup_logging_enabled",
+      "backup_plan_min_retention_35_days",
+      "cloudfront_distribution_encryption_in_transit_enabled",
+      "cloudfront_distribution_field_level_encryption_enabled",
+      "cloudfront_distribution_logging_enabled",
+      "cloudtrail_trail_enabled",
+      "cloudtrail_trail_integrated_with_logs",
+      "cloudtrail_trail_logs_encrypted_with_kms_cmk",
+      "cloudtrail_trail_validation_enabled",
+      "cloudwatch_alarm_action_enabled",
+      "cloudwatch_alarm_action_enabled_check",
+      "cloudwatch_log_group_retention_period_365",
+      "codebuild_project_logging_enabled",
+      "datasync_task_logging_enabled",
+      "dax_cluster_encryption_in_transit_enabled",
+      "dms_endpoint_redis_tls_enabled",
+      "dms_replication_instance_not_publicly_accessible",
+      "dynamodb_table_encrypted_with_kms",
+      "dynamodb_table_encryption_enabled",
+      "dynamodb_table_point_in_time_recovery_enabled",
+      "ebs_attached_volume_encryption_enabled",
+      "ebs_snapshot_encryption_enabled",
+      "ebs_volume_encryption_at_rest_enabled",
+      "ec2_client_vpn_endpoint_client_connection_logging_enabled",
+      "ec2_instance_detailed_monitoring_enabled",
+      "ec2_instance_ebs_optimized",
+      "ec2_instance_in_vpc",
+      "ec2_instance_not_publicly_accessible",
+      "ec2_instance_uses_imdsv2",
+      "ec2_launch_template_not_publicly_accessible",
+      "ec2_transit_gateway_auto_cross_account_attachment_disabled",
+      "ecr_repository_image_scan_on_push_enabled",
+      "efs_file_system_encrypt_data_at_rest",
+      "elasticache_redis_cluster_automatic_backup_retention_15_days",
+      "elasticache_replication_group_encryption_in_transit_enabled",
+      "elb_application_classic_lb_logging_enabled",
+      "elb_application_lb_drop_http_headers",
+      "elb_application_lb_http_drop_invalid_header_enabled",
+      "emr_cluster_kerberos_enabled",
+      "es_domain_audit_logging_enabled",
+      "es_domain_encryption_at_rest_enabled",
+      "es_domain_in_vpc",
+      "es_domain_logs_to_cloudwatch",
+      "es_domain_node_to_node_encryption_enabled",
+      "gatewayv2_stage_access_logging_enabled",
+      "glue_job_cloudwatch_logs_encryption_enabled",
+      "glue_job_s3_encryption_enabled",
+      "iam_account_password_policy_strong_min_reuse_24",
+      "kinesis_stream_encrypted_with_kms_cmk",
+      "kinesis_stream_retention_period_168_hours",
+      "kinesis_stream_server_side_encryption_enabled",
+      "kms_cmk_rotation_enabled",
+      "lambda_function_concurrent_execution_limit_configured",
+      "lambda_function_dead_letter_queue_configured",
+      "lambda_function_in_vpc",
+      "log_group_encryption_at_rest_enabled",
+      "mq_broker_audit_log_enabled",
+      "msk_cluster_encryption_in_transit_with_tls_enabled",
+      "mskconnect_connector_encryption_in_transit_with_tls_enabled",
+      "neptune_db_cluster_copy_tags_to_snapshot_enabled",
+      "opensearch_domain_audit_logging_enabled",
+      "opensearch_domain_logs_to_cloudwatch",
+      "rds_db_cluster_aurora_postgres_logging_enabled",
+      "rds_db_cluster_deletion_protection_enabled",
+      "rds_db_cluster_encrypted_with_cmk",
+      "rds_db_cluster_encryption_at_rest_enabled",
+      "rds_db_instance_backup_enabled",
+      "rds_db_instance_backup_retention_period_less_than_7",
+      "rds_db_instance_cloudwatch_logs_enabled",
+      "rds_db_instance_copy_tags_to_snapshot_enabled",
+      "rds_db_instance_deletion_protection_enabled",
+      "rds_db_instance_encryption_at_rest_enabled",
+      "rds_db_instance_iam_authentication_enabled",
+      "rds_db_instance_logging_enabled",
+      "rds_db_instance_mariadb_logging_enabled",
+      "rds_db_instance_no_public_subnet",
+      "rds_db_instance_postgres_logging_enabled",
+      "rds_db_instance_prohibit_public_access",
+      "rds_db_instance_sql_server_logging_enabled",
+      "redshift_cluster_audit_logging_enabled",
+      "redshift_cluster_automatic_snapshots_min_7_days",
+      "redshift_cluster_encryption_in_transit_enabled",
+      "redshift_cluster_encryption_logging_enabled",
+      "redshift_cluster_maintenance_settings_check",
+      "redshift_cluster_prohibit_public_access",
+      "s3_bucket_object_logging_enabled",
+      "sagemaker_endpoint_configuration_encryption_at_rest_enabled",
+      "sagemaker_notebook_instance_direct_internet_access_disabled",
+      "sagemaker_notebook_instance_encryption_at_rest_enabled",
+      "sfn_state_machine_logging_enabled",
+      "sns_topic_encrypted_at_rest",
+      "vpc_security_group_allows_ingress_to_cassandra_ports",
+      "vpc_subnet_auto_assign_public_ip_disabled",
+      "wafv2_rule_group_logging_enabled"
+    ],
+    "controls_superseded": {
+      "s3_bucket_default_encryption_enabled": "s3_bucket_default_encryption_enabled_kms",
+      "s3_bucket_lifecycle_policy_enabled": "s3_bucket_versioning_and_lifecycle_policy_enabled"
+    }
+  },
+  "operational_rules": [],
+  "posture": {
+    "rules_hash": "1e4b692ae5e0a847",
+    "snapshot_id": "01a0141f-be44-7065-bccf-fd10c1f1949d",
+    "degraded": []
+  },
+  "scope": {
+    "proves": [
+      "which compliance controls were enforced at module build time",
+      "which files and resources were modified",
+      "mapping to framework clauses and external check IDs"
+    ],
+    "does_not_prove": [
+      {
+        "token": "evaluation_record_partial",
+        "statement": "build.controls_not_applicable[] lists the controls this build evaluated and found no resource of their target type for in any declared module root (HCL configuration files only; files the parser could not read were not inspected). A control absent from both controls[] and controls_not_applicable[] was not evaluated or not classified. Per-subtree evaluation is not evidenced.",
+        "consumer_obligation": "Must not read an empty subtree controls[] as coverage; must not read controls[] together with controls_not_applicable[] as the requested framework set."
+      },
+      {
+        "token": "no_per_rule_attribution",
+        "statement": "Per-rule attribution is unavailable; files in unattributed_modifications[] and dual_touch[] may be rule-caused.",
+        "consumer_obligation": "Must not attribute those files to any listed control."
+      },
+      {
+        "token": "rules_are_package_scoped",
+        "statement": "operational_rules[] describes the whole package, not this scope.",
+        "consumer_obligation": "Must not report rules as scope-local."
+      },
+      {
+        "token": "runtime_state",
+        "statement": "This document does not prove runtime state in AWS.",
+        "consumer_obligation": "Must verify runtime state with AWS Config or Audit Manager."
+      },
+      {
+        "token": "organizational_controls",
+        "statement": "This document does not prove organizational or process controls.",
+        "consumer_obligation": "Must evidence organizational and process controls separately."
+      },
+      {
+        "token": "ongoing_operation",
+        "statement": "This document does not prove ongoing operation after deployment.",
+        "consumer_obligation": "Must monitor deployed state independently of this document."
+      },
+      {
+        "token": "delegated_controls_enforced_elsewhere",
+        "statement": "controls[] entries with status \"delegated\" are enforced by files governed by another scope's manifest - the scopes named in their applies_in - not by files in this scope.",
+        "consumer_obligation": "Must not report a delegated control as enforced by this scope's files; must resolve the applies_in scope's manifest for the enforcement evidence."
+      }
+    ]
+  },
+  "declared_module_roots": [
+    ".",
+    "modules/account-public-access",
+    "modules/notification",
+    "modules/object",
+    "modules/table-bucket",
+    "modules/vectors"
+  ],
+  "child_manifests": [
+    {
+      "scope_path": "modules/account-public-access",
+      "sha256": "60b4fe2301bd76fe43d0437f60a7b1e5cb74ccff2beb5d59d73c0353eff4db48"
+    },
+    {
+      "scope_path": "modules/notification",
+      "sha256": "940da15af7ebecd07c773928b21d9fe03099008dd74582c0a56ac19dcfb64c7c"
+    },
+    {
+      "scope_path": "modules/object",
+      "sha256": "df0f3b3bf0c8e55e0b907415ec3d99e2288e1fa2c924753401f3c7a58cd12748"
+    },
+    {
+      "scope_path": "modules/table-bucket",
+      "sha256": "1fd0fb8b380d61258d74fd3d5f1cb13026fa488eaee1984e154fb67b8c9f6c3c"
+    },
+    {
+      "scope_path": "modules/vectors",
+      "sha256": "2313a7021d3963202e3554068e6e183b6c90252162cdf37c4c57c1f5d756fb9d"
+    }
+  ],
+  "manifest_set_hash": "1ad636b9a28b034213416033d368cedc33e40b3ba86bf8fc7dcf040bedb8057e"
+}

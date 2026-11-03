@@ -1,0 +1,314 @@
+//go:build conformance
+
+package baseline
+
+// Generator of the ctfkit baseline identity goldens
+// (ctfkit pkg/verdict/testdata/baselineid). Run against a provider checkout
+// at the commit SOURCE.json names, with this file copied into
+// internal/baseline:
+//
+//	CTFKIT_BASELINEID=/path/to/ctfkit/pkg/verdict/testdata/baselineid \
+//	  go test -tags conformance ./internal/baseline/ -run CtfkitBaselineID
+//
+// It reads schema.json and cases.json and writes expected.json. Each base
+// observation becomes one entry of a signed baseline (fresh in-memory keys,
+// no private key written) that Load must accept. The prior identity kind is
+// the conformance gate stand-in's (harness.PriorIdentity, FORMAT.md v1);
+// identities, read digests, control manifest digests, instance keys and
+// the match outcome are this package's and internal/verdict's.
+
+import (
+	"crypto/hkdf"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"os"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/hashicorp/terraform-plugin-go/tfprotov5"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
+
+	"github.com/compliancetf/terraform-provider-aws/internal/bundle"
+	"github.com/compliancetf/terraform-provider-aws/internal/profile"
+	"github.com/compliancetf/terraform-provider-aws/internal/trust"
+	"github.com/compliancetf/terraform-provider-aws/internal/verdict"
+	"github.com/compliancetf/terraform-provider-aws/internal/verdict/verdicttest"
+	"github.com/compliancetf/terraform-provider-aws/test/conformance/harness"
+)
+
+type bidObservation struct {
+	Name         string          `json:"name"`
+	Base         string          `json:"base"`
+	OrgID        string          `json:"org_id"`
+	Workspace    string          `json:"workspace"`
+	Scope        Scope           `json:"scope"`
+	Control      json.RawMessage `json:"control"`
+	Change       json.RawMessage `json:"change"`
+	RunSecretHex string          `json:"run_secret_hex"`
+}
+
+type bidCases struct {
+	BaselineKeyHex string           `json:"baseline_key_hex"`
+	Now            string           `json:"now"`
+	Bases          []bidObservation `json:"bases"`
+	Cases          []bidObservation `json:"cases"`
+}
+
+type bidSchemaFile struct {
+	ProviderSchemas map[string]struct {
+		Resources  map[string]struct{ Block bidBlock } `json:"resource_schemas"`
+		Identities map[string]json.RawMessage          `json:"resource_identity_schemas"`
+	} `json:"provider_schemas"`
+}
+
+type bidBlock struct {
+	Attributes map[string]struct {
+		Type      json.RawMessage `json:"type"`
+		Sensitive bool            `json:"sensitive"`
+	} `json:"attributes"`
+	BlockTypes map[string]struct {
+		NestingMode string   `json:"nesting_mode"`
+		Block       bidBlock `json:"block"`
+	} `json:"block_types"`
+}
+
+// bidResult is what the provider computes for one observation.
+type bidResult struct {
+	Name                  string            `json:"name"`
+	IdentityKind          string            `json:"identity_kind"`
+	Identity              map[string]string `json:"identity"`
+	InstanceKey           string            `json:"instance_key"`
+	ReadDigest            string            `json:"read_digest"`
+	PlannedReadDigest     string            `json:"planned_read_digest"`
+	ControlManifestDigest string            `json:"control_manifest_digest"`
+	ControlMajor          string            `json:"control_major"`
+	Grandfathered         *bool             `json:"grandfathered,omitempty"`
+	Reason                string            `json:"reason,omitempty"`
+}
+
+type bidExpected struct {
+	Bases []bidResult `json:"bases"`
+	Cases []bidResult `json:"cases"`
+}
+
+func TestCtfkitBaselineID(t *testing.T) {
+	dir := os.Getenv("CTFKIT_BASELINEID")
+	if dir == "" {
+		t.Skip("CTFKIT_BASELINEID not set")
+	}
+	var in bidCases
+	bidRead(t, filepath.Join(dir, "cases.json"), &in)
+	var sf bidSchemaFile
+	bidRead(t, filepath.Join(dir, "schema.json"), &sf)
+	schemas, idents := map[string]*tfprotov5.Schema{}, map[string]harness.Schema{}
+	for _, p := range sf.ProviderSchemas {
+		for typ, r := range p.Resources {
+			schemas[typ] = &tfprotov5.Schema{Block: bidConvert(t, r.Block)}
+			_, has := p.Identities[typ]
+			idents[typ] = harness.Schema{Identity: has}
+		}
+	}
+	key, _ := hex.DecodeString(in.BaselineKeyHex)
+	now, err := time.Parse(time.RFC3339, in.Now)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var exp bidExpected
+	var entries []Entry
+	for _, b := range in.Bases {
+		r, ch, ctl, _, _ := bidObserve(t, b, schemas, idents, key)
+		exp.Bases = append(exp.Bases, r)
+		if r.IdentityKind == "" {
+			t.Fatalf("base %s has no identity", b.Name)
+		}
+		entries = append(entries, Entry{Workspace: b.Workspace, Scope: b.Scope, Type: ch.Type, IdentityKind: r.IdentityKind,
+			Identity: r.Identity, Address: ch.Address, Control: ctl.ID, ControlMajor: r.ControlMajor,
+			ControlManifestDigest: r.ControlManifestDigest, ReadDigest: r.ReadDigest, Approver: "alice@bobthecorp.example",
+			Expires: now.Add(30 * 24 * time.Hour).Format(time.RFC3339), Ticket: "BOB-46"})
+	}
+	s := bidLoad(t, entries, key, now)
+
+	for _, c := range in.Cases {
+		r, ch, ctl, kind, priorJSON := bidObserve(t, c, schemas, idents, key)
+		prior, planned := bidValue(t, schemas[ch.Type], ch.Change.Before), bidValue(t, schemas[ch.Type], ch.Change.After)
+		d := s.Grandfathered(&ctl, Instance{OrgID: c.OrgID, Workspace: c.Workspace, Address: ch.Address, Action: "update",
+			Refreshed: "true", Listed: s.digests, Matched: s.digests, AccountID: c.Scope.AccountID, Region: c.Scope.Region,
+			Type: ch.Type, IdentityKind: kind, PriorIdentity: priorJSON, Prior: prior, Planned: planned,
+			Schema: schemas[ch.Type], Now: now})
+		g := d.Grandfathered
+		r.Grandfathered, r.Reason = &g, d.Reason
+		if g && d.Entry != s.digests[bidBaseIndex(t, in.Bases, c.Base)] {
+			t.Fatalf("%s matched another base's entry", c.Name)
+		}
+		exp.Cases = append(exp.Cases, r)
+	}
+	bidWrite(t, filepath.Join(dir, "expected.json"), exp)
+}
+
+// bidObserve computes the identity, digests and instance key of one
+// observation. kind and priorJSON are empty when no identity can be
+// written.
+func bidObserve(t *testing.T, o bidObservation, schemas map[string]*tfprotov5.Schema, idents map[string]harness.Schema, key []byte) (bidResult, harness.PlanChange, bundle.Control, string, json.RawMessage) {
+	t.Helper()
+	var ch harness.PlanChange
+	if err := json.Unmarshal(o.Change, &ch); err != nil {
+		t.Fatal(err)
+	}
+	ctls, err := bundle.ParseControls(append(append([]byte("["), o.Control...), ']'))
+	if err != nil {
+		t.Fatalf("%s: control: %v", o.Name, err)
+	}
+	ctl := ctls[0]
+	sch, ok := schemas[ch.Type]
+	if !ok {
+		t.Fatalf("%s: no schema for %s", o.Name, ch.Type)
+	}
+	prior, planned := bidValue(t, sch, ch.Change.Before), bidValue(t, sch, ch.Change.After)
+	r := bidResult{Name: o.Name}
+	if r.ControlManifestDigest, err = digestJSON(&ctl); err != nil {
+		t.Fatal(err)
+	}
+	r.ControlMajor = fmtInt(major(ctl.Version))
+	var rok, pok bool
+	r.ReadDigest, rok = ReadDigest(key, ctl.Reads, prior)
+	r.PlannedReadDigest, pok = ReadDigest(key, ctl.Reads, planned)
+	if !rok || !pok {
+		t.Fatalf("%s: read digest refused", o.Name)
+	}
+	kind, priorJSON, err := harness.PriorIdentity(idents[ch.Type], ch)
+	if err != nil {
+		return r, ch, ctl, "", nil // no entry can be written
+	}
+	id, _ := instanceIdentity(Instance{IdentityKind: kind, PriorIdentity: priorJSON, Prior: prior, Planned: prior})
+	r.IdentityKind, r.Identity = kind, id
+	secret, _ := hex.DecodeString(o.RunSecretHex)
+	leaf, err := hkdf.Key(sha256.New, secret, nil, "compliancetf.verdict/v1 leaf", 32)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if r.InstanceKey, err = verdict.Key([32]byte(leaf), ch.Type, verdict.FormUpdate, planned, [][]string{}, priorJSON); err != nil {
+		t.Fatalf("%s: instance key: %v", o.Name, err)
+	}
+	return r, ch, ctl, kind, priorJSON
+}
+
+func bidValue(t *testing.T, s *tfprotov5.Schema, raw map[string]json.RawMessage) tftypes.Value {
+	t.Helper()
+	b, err := json.Marshal(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	v, err := tftypes.ValueFromJSON(b, s.ValueType()) //nolint:staticcheck // test input
+	if err != nil {
+		t.Fatal(err)
+	}
+	return v
+}
+
+// bidConvert is the schema JSON block as tfprotov5 (attributes and single
+// nested blocks: what schema.json holds).
+func bidConvert(t *testing.T, b bidBlock) *tfprotov5.SchemaBlock {
+	t.Helper()
+	out := &tfprotov5.SchemaBlock{}
+	for name, a := range b.Attributes {
+		typ, err := tftypes.ParseJSONType(a.Type) //nolint:staticcheck // cty JSON type syntax
+		if err != nil {
+			t.Fatal(err)
+		}
+		out.Attributes = append(out.Attributes, &tfprotov5.SchemaAttribute{Name: name, Type: typ, Optional: true, Sensitive: a.Sensitive})
+	}
+	for name, bt := range b.BlockTypes {
+		if bt.NestingMode != "single" {
+			t.Fatalf("%s: nesting %s", name, bt.NestingMode)
+		}
+		out.BlockTypes = append(out.BlockTypes, &tfprotov5.SchemaNestedBlock{TypeName: name,
+			Nesting: tfprotov5.SchemaNestedBlockNestingModeSingle, Block: bidConvert(t, bt.Block)})
+	}
+	return out
+}
+
+func bidLoad(t *testing.T, entries []Entry, key []byte, now time.Time) *Set {
+	t.Helper()
+	bl, rc := verdicttest.NewKey(t, now.Add(-24*time.Hour)), verdicttest.NewKey(t, now.Add(-24*time.Hour))
+	bl.Signer.Use, rc.Signer.Use = verdict.UseBaseline, verdict.UseReceipt
+	prof := &profile.Profile{OrgID: "bobthecorp", Baseline: &profile.Baseline{PublicKeys: []profile.SignerKey{bl.Signer}, MaxDays: 90},
+		BreakGlass: &profile.BreakGlass{ReceiptKeys: []profile.SignerKey{rc.Signer}}}
+	content := "sha256:" + strings.Repeat("3", 64)
+	issued := now.Add(-time.Hour).Format(time.RFC3339)
+	for i := range entries {
+		e := &entries[i]
+		st := Statement{Format: StatementFormat, OrgID: "bobthecorp", Role: RoleApprover, Subject: e.Approver, Workspace: e.Workspace,
+			Scope: e.Scope, RunID: "run-obs-46", PlanDigest: "sha256:" + strings.Repeat("4", 64), ContentDigest: content, IssuedAt: issued}
+		if err := json.Unmarshal(bidSign(t, rc, st), &e.ApproverStatement); err != nil {
+			t.Fatal(err)
+		}
+	}
+	dir := t.TempDir()
+	path, keyPath := filepath.Join(dir, "baseline.json"), filepath.Join(dir, "baseline.key")
+	doc := Document{Format: Format, OrgID: "bobthecorp", IssuedAt: issued, ContentDigest: content, Entries: entries}
+	if err := os.WriteFile(path, bidSign(t, bl, doc), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(keyPath, []byte(hex.EncodeToString(key)+"\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	s, err := Load(LoadInput{Path: path, KeyPath: keyPath, Profile: prof, Revocations: trust.NoRevocations(),
+		Coverable: func(string) bool { return true }, Now: now})
+	if err != nil {
+		t.Fatalf("Load refuses the base entries: %v", err)
+	}
+	return s
+}
+
+func bidSign(t *testing.T, k verdicttest.Key, v any) []byte {
+	t.Helper()
+	b, _ := json.Marshal(v)
+	var m map[string]json.RawMessage
+	if err := json.Unmarshal(b, &m); err != nil {
+		t.Fatal(err)
+	}
+	delete(m, "signature")
+	sig, _ := json.Marshal(verdicttest.Signature(t, k.Priv, k.Signer.KID, m))
+	m["signature"] = sig
+	out, _ := json.Marshal(m)
+	return out
+}
+
+func bidBaseIndex(t *testing.T, bases []bidObservation, name string) int {
+	t.Helper()
+	for i, b := range bases {
+		if b.Name == name {
+			return i
+		}
+	}
+	t.Fatalf("no base %q", name)
+	return -1
+}
+
+func fmtInt(n int64) string { b, _ := json.Marshal(n); return string(b) }
+
+func bidRead(t *testing.T, path string, v any) {
+	t.Helper()
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := json.Unmarshal(b, v); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func bidWrite(t *testing.T, path string, v any) {
+	t.Helper()
+	b, err := json.MarshalIndent(v, "", "  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, append(b, '\n'), 0o644); err != nil {
+		t.Fatal(err)
+	}
+}

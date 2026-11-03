@@ -1,0 +1,87 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.16.3",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.imported",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "imported",
+      "provider_name": "registry.compliance.tf/compliancetf/aws",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "id": "bobthecorp-imported",
+          "bucket": "bobthecorp-imported",
+          "region": "eu-west-1"
+        },
+        "after": {
+          "id": "bobthecorp-imported",
+          "bucket": "bobthecorp-imported",
+          "region": "eu-west-1"
+        },
+        "after_unknown": {},
+        "importing": {
+          "id": "bobthecorp-imported"
+        }
+      }
+    },
+    {
+      "address": "aws_s3_bucket.moved",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "moved",
+      "provider_name": "registry.compliance.tf/compliancetf/aws",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "id": "bobthecorp-moved",
+          "bucket": "bobthecorp-moved",
+          "region": "eu-west-1"
+        },
+        "after": {
+          "id": "bobthecorp-moved",
+          "bucket": "bobthecorp-moved",
+          "region": "eu-west-1"
+        },
+        "after_unknown": {}
+      },
+      "previous_address": "aws_s3_bucket.old"
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.compliance.tf/compliancetf/aws",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket.imported",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "imported",
+          "provider_config_key": "aws"
+        },
+        {
+          "address": "aws_s3_bucket.moved",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "moved",
+          "provider_config_key": "aws"
+        }
+      ]
+    }
+  }
+}

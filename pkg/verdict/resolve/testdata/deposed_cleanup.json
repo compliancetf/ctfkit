@@ -1,0 +1,72 @@
+{
+  "description": "a deposed destroy resolves its delete-scoped decisions",
+  "decisions": {
+    "instances": [
+      {
+        "address": "fake_thing.a",
+        "type": "fake_thing",
+        "action": "delete",
+        "prior_identity_kind": "none",
+        "refreshed": "true",
+        "unknown_paths": [],
+        "decisions": [],
+        "not_evaluable": [],
+        "exceptions": [],
+        "baselines": [],
+        "break_glass": [],
+        "delete_key": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "deposed": "00000001",
+        "delete_decisions": [
+          {
+            "control": "kept",
+            "version": "1.0.0",
+            "result": "pass",
+            "action": "deny"
+          }
+        ]
+      }
+    ],
+    "required": {
+      "fake_thing": {
+        "decisions": [
+          {
+            "id": "c",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          }
+        ],
+        "delete_decisions": [
+          {
+            "id": "kept",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          }
+        ]
+      }
+    }
+  },
+  "mode": {
+    "run_mode": "hard_fail"
+  },
+  "exceptions": [],
+  "baselines": [],
+  "receipts": [],
+  "want": {
+    "refuse": false,
+    "rows": [
+      {
+        "address": "fake_thing.a",
+        "half": "delete",
+        "result": "pass",
+        "severity": "none",
+        "final": "pass",
+        "control": "kept",
+        "version": "1.0.0",
+        "state": "pass",
+        "deposed": "00000001"
+      }
+    ]
+  }
+}

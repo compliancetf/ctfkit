@@ -1,0 +1,124 @@
+{
+  "description": "advisory run mode, but the control floor makes c blocking: not_evaluable wildcard and catalog_miss refuse",
+  "decisions": {
+    "instances": [
+      {
+        "address": "fake_thing.w",
+        "type": "fake_thing",
+        "action": "create",
+        "prior_identity_kind": "none",
+        "refreshed": "true",
+        "unknown_paths": [],
+        "decisions": [
+          {
+            "control": "c",
+            "version": "1.0.0",
+            "result": "not_evaluable",
+            "action": "deny"
+          }
+        ],
+        "not_evaluable": [
+          {
+            "control": "c",
+            "reason": "wildcard"
+          }
+        ],
+        "exceptions": [],
+        "baselines": [],
+        "break_glass": [],
+        "instance_key": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      {
+        "address": "fake_thing.m",
+        "type": "fake_thing",
+        "action": "create",
+        "prior_identity_kind": "none",
+        "refreshed": "true",
+        "unknown_paths": [],
+        "decisions": [
+          {
+            "control": "c",
+            "version": "1.0.0",
+            "result": "not_evaluable",
+            "action": "deny"
+          }
+        ],
+        "not_evaluable": [
+          {
+            "control": "c",
+            "reason": "catalog_miss"
+          }
+        ],
+        "exceptions": [],
+        "baselines": [],
+        "break_glass": [],
+        "instance_key": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    ],
+    "required": {
+      "fake_thing": {
+        "decisions": [
+          {
+            "id": "c",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": [
+              "baseline",
+              "break_glass",
+              "grant",
+              "self_service"
+            ]
+          }
+        ],
+        "delete_decisions": []
+      }
+    }
+  },
+  "mode": {
+    "run_mode": "advisory",
+    "control_floors": {
+      "c": "hard_fail"
+    }
+  },
+  "exceptions": [
+    {
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "kind": "grant",
+      "controls": [
+        "c"
+      ]
+    }
+  ],
+  "baselines": [
+    {
+      "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "control": "c"
+    }
+  ],
+  "receipts": [],
+  "want": {
+    "refuse": true,
+    "rows": [
+      {
+        "address": "fake_thing.w",
+        "half": "create",
+        "result": "not_evaluable",
+        "severity": "error",
+        "final": "fail",
+        "control": "c",
+        "version": "1.0.0",
+        "state": "not_evaluable"
+      },
+      {
+        "address": "fake_thing.m",
+        "half": "create",
+        "result": "not_evaluable",
+        "severity": "error",
+        "final": "fail",
+        "control": "c",
+        "version": "1.0.0",
+        "state": "not_evaluable"
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "format_version": "1.0",
+  "provider_schemas": {
+    "registry.compliance.tf/compliancetf/aws": {
+      "resource_schemas": {
+        "aws_s3_bucket": {
+          "version": 0,
+          "block": {
+            "attributes": {
+              "id": {
+                "type": "string",
+                "computed": true
+              },
+              "bucket": {
+                "type": "string",
+                "optional": true
+              },
+              "region": {
+                "type": "string",
+                "optional": true
+              }
+            }
+          }
+        },
+        "aws_s3_bucket_public_access_block": {
+          "version": 0,
+          "block": {
+            "attributes": {
+              "id": {
+                "type": "string",
+                "computed": true
+              },
+              "bucket": {
+                "type": "string",
+                "required": true
+              },
+              "region": {
+                "type": "string",
+                "optional": true
+              },
+              "block_public_acls": {
+                "type": "bool",
+                "optional": true
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

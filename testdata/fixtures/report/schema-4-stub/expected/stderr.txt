@@ -1,0 +1,1 @@
+ctfkit: .terraform/modules/s3_bucket/compliancetf-manifest.json declares schema_version 4.0; this release supports manifest schema major 3

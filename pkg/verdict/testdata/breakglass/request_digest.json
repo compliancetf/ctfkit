@@ -1,0 +1,122 @@
+[
+  {
+    "name": "provider_golden",
+    "input": {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "environment": "production",
+      "plan_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "content_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "floor_epoch": "3",
+      "override_id": "ovr-01",
+      "controls": [
+        "CTF.S3.2",
+        "CTF.S3.1"
+      ],
+      "instance_keys": [
+        "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ]
+    },
+    "request_digest": "sha256:ffcfba1425fc82016bc29d89371238c3dc661d79a738a1f80e0b7b61e0e12e56"
+  },
+  {
+    "name": "single",
+    "input": {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "environment": "production",
+      "plan_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "content_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "floor_epoch": "3",
+      "override_id": "ovr-01",
+      "controls": [
+        "CTF.S3.1"
+      ],
+      "instance_keys": [
+        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ]
+    },
+    "request_digest": "sha256:2b90be4c197b9c4a9383c425799f2289dc481f877e1e765561e821e82ae3022a"
+  },
+  {
+    "name": "byte_order_sort",
+    "input": {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "environment": "production",
+      "plan_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "content_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "floor_epoch": "12",
+      "override_id": "ovr.2_a-B",
+      "controls": [
+        "CTF.S3.2",
+        "CTF.S3.10",
+        "CTF.s3.1",
+        "AWS.IAM.1"
+      ],
+      "instance_keys": [
+        "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+        "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sha256:9999999999999999999999999999999999999999999999999999999999999999"
+      ]
+    },
+    "request_digest": "sha256:a157e675b573fd5531737a4cc9726d5bbc4743f59fdcf14690db3280db83bb05"
+  },
+  {
+    "name": "escaping_and_non_ascii",
+    "input": {
+      "org_id": "bobthecorp",
+      "workspace": "prod-ü\u003c\u0026\u003e\t\"\\/",
+      "environment": "pre\u2028prod 😀",
+      "plan_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "content_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "floor_epoch": "0",
+      "override_id": "ovr-03",
+      "controls": [
+        "CTF.S3.1"
+      ],
+      "instance_keys": [
+        "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+      ]
+    },
+    "request_digest": "sha256:f1870237607e95b8291a86c6bd381d7e4521fbea93ca6b33df14c7394efbe6b9"
+  },
+  {
+    "name": "duplicates_kept",
+    "input": {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "environment": "production",
+      "plan_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "content_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+      "floor_epoch": "3",
+      "override_id": "ovr-04",
+      "controls": [
+        "CTF.S3.1",
+        "CTF.S3.1"
+      ],
+      "instance_keys": [
+        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ]
+    },
+    "request_digest": "sha256:96c6df4731485f1996ddf9c4f6cb5918cc5cd6f570969b43e8649217d2218226"
+  },
+  {
+    "name": "empty_strings",
+    "input": {
+      "org_id": "",
+      "workspace": "",
+      "environment": "",
+      "plan_digest": "",
+      "content_digest": "",
+      "floor_epoch": "",
+      "override_id": "",
+      "controls": [],
+      "instance_keys": []
+    },
+    "request_digest": "sha256:32b5486d79c14864f4d374df501153a3ebcaf8a572ec117d4aca45f343cc921a"
+  }
+]

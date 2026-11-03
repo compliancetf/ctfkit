@@ -1,0 +1,136 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.12.6",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "local_file.bucket_policy",
+          "mode": "managed",
+          "type": "local_file",
+          "name": "bucket_policy",
+          "provider_name": "registry.opentofu.org/hashicorp/local",
+          "schema_version": 0,
+          "values": {
+            "content": "{\"Version\":\"2012-10-17\",\"Statement\":[]}",
+            "content_base64": null,
+            "directory_permission": "0777",
+            "file_permission": "0777",
+            "filename": "./bucket_policy.json",
+            "sensitive_content": null,
+            "source": null
+          },
+          "sensitive_values": {
+            "sensitive_content": true
+          }
+        }
+      ]
+    }
+  },
+  "resource_drift": [
+    {
+      "address": "local_file.bucket_policy",
+      "mode": "managed",
+      "type": "local_file",
+      "name": "bucket_policy",
+      "provider_name": "registry.opentofu.org/hashicorp/local",
+      "change": {
+        "actions": [
+          "delete"
+        ],
+        "before": {
+          "content": "{\"Version\":\"2012-10-17\",\"Statement\":[]}",
+          "content_base64": null,
+          "content_base64sha256": "j5B7SJUyrVb7fFLzrMibJ2gO1RKWvwOYTOeNK3uWB2o=",
+          "content_base64sha512": "a4YLejxJXomw2XLscXz/u8XEO2raT+N7QILaFrdT1nIecWAEGXvAUBCeNAjgeMAReEgjMfPUqJErt9u+uhoL7g==",
+          "content_md5": "ef2b1b7fdbb6cd1ee11e036a87804862",
+          "content_sha1": "68963a60b0f75f7405b7acc8837c607d107f25cb",
+          "content_sha256": "8f907b489532ad56fb7c52f3acc89b27680ed51296bf03984ce78d2b7b96076a",
+          "content_sha512": "6b860b7a3c495e89b0d972ec717cffbbc5c43b6ada4fe37b4082da16b753d6721e716004197bc050109e3408e078c01178482331f3d4a8912bb7dbbeba1a0bee",
+          "directory_permission": "0777",
+          "file_permission": "0777",
+          "filename": "./bucket_policy.json",
+          "id": "68963a60b0f75f7405b7acc8837c607d107f25cb",
+          "sensitive_content": null,
+          "source": null
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {
+          "sensitive_content": true
+        },
+        "after_sensitive": false
+      }
+    }
+  ],
+  "resource_changes": [
+    {
+      "address": "local_file.bucket_policy",
+      "mode": "managed",
+      "type": "local_file",
+      "name": "bucket_policy",
+      "provider_name": "registry.opentofu.org/hashicorp/local",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "content": "{\"Version\":\"2012-10-17\",\"Statement\":[]}",
+          "content_base64": null,
+          "directory_permission": "0777",
+          "file_permission": "0777",
+          "filename": "./bucket_policy.json",
+          "sensitive_content": null,
+          "source": null
+        },
+        "after_unknown": {
+          "content_base64sha256": true,
+          "content_base64sha512": true,
+          "content_md5": true,
+          "content_sha1": true,
+          "content_sha256": true,
+          "content_sha512": true,
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "sensitive_content": true
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "local": {
+        "name": "local",
+        "full_name": "registry.opentofu.org/hashicorp/local",
+        "version_constraint": "~> 2.5"
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "local_file.bucket_policy",
+          "mode": "managed",
+          "type": "local_file",
+          "name": "bucket_policy",
+          "provider_config_key": "local",
+          "expressions": {
+            "content": {
+              "constant_value": "{\"Version\":\"2012-10-17\",\"Statement\":[]}"
+            },
+            "filename": {
+              "references": [
+                "path.module"
+              ]
+            }
+          },
+          "schema_version": 0
+        }
+      ]
+    }
+  },
+  "timestamp": "2026-09-20T00:00:00Z",
+  "errored": false
+}

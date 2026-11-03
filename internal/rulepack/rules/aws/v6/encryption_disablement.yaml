@@ -1,0 +1,52 @@
+# Class 4: a change turns off encryption at rest.
+class: encryption_disablement
+rules:
+  - types: [aws_ebs_volume, aws_efs_file_system]
+    attribute: encrypted
+    predicate: turned_off
+    or_removed: true
+    level: error
+  # In v6 aws_redshift_cluster.encrypted is the string "true" or "false"; in
+  # v5 it was a bool, and as_string reads both.
+  - types: [aws_redshift_cluster]
+    attribute: encrypted
+    predicate: turned_off
+    as_string: true
+    or_removed: true
+    level: error
+  - types: [aws_db_instance, aws_rds_cluster]
+    attribute: storage_encrypted
+    predicate: turned_off
+    or_removed: true
+    level: error
+
+  - types: [aws_dynamodb_table]
+    attribute: server_side_encryption
+    predicate: block_removed
+    flag: enabled
+    level: error
+
+  - types: [aws_s3_bucket_server_side_encryption_configuration]
+    predicate: deleted
+    level: error
+    message: "{address} is deleted, which removes default encryption from its bucket"
+  - types: [aws_s3_bucket_server_side_encryption_configuration]
+    attribute: rule
+    predicate: block_removed
+    level: error
+
+  - types: [aws_eks_cluster]
+    attribute: encryption_config
+    predicate: block_removed
+    level: error
+
+  - types: [aws_sqs_queue, aws_sns_topic]
+    attribute: kms_master_key_id
+    predicate: removed
+    level: error
+
+  - types: [aws_kms_key]
+    attribute: enable_key_rotation
+    predicate: turned_off
+    or_removed: true
+    level: error

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.policy.floating_ref",
+              "shortDescription": {
+                "text": "A module source is not pinned to an immutable reference"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.policy.floating_ref",
+          "level": "warning",
+          "kind": "fail",
+          "message": {
+            "text": "Module source git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-policy has no ref, so the code that runs can change without a configuration change"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 6
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.iam_policy",
+                  "kind": "module"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "043b1c5509900a0816751526879daea40efa9656523bd05c050d44903c181598"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "pre_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

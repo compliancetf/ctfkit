@@ -1,0 +1,98 @@
+{
+  "description": "pending with every proof listed and every kind coverable stays pending: a warning, no proof, final decided after apply",
+  "decisions": {
+    "instances": [
+      {
+        "address": "fake_thing.a",
+        "type": "fake_thing",
+        "action": "create",
+        "prior_identity_kind": "none",
+        "refreshed": "true",
+        "unknown_paths": [],
+        "decisions": [
+          {
+            "control": "c",
+            "version": "1.0.0",
+            "result": "pending",
+            "action": "deny"
+          }
+        ],
+        "not_evaluable": [],
+        "exceptions": [
+          "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "baselines": [
+          "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        ],
+        "break_glass": [
+          "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ],
+        "instance_key": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    ],
+    "required": {
+      "fake_thing": {
+        "decisions": [
+          {
+            "id": "c",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": [
+              "baseline",
+              "break_glass",
+              "grant",
+              "self_service"
+            ]
+          }
+        ],
+        "delete_decisions": []
+      }
+    }
+  },
+  "mode": {
+    "run_mode": "grandfather"
+  },
+  "exceptions": [
+    {
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "kind": "grant",
+      "controls": [
+        "c"
+      ]
+    }
+  ],
+  "baselines": [
+    {
+      "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "control": "c"
+    }
+  ],
+  "receipts": [
+    {
+      "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "override_id": "ovr-1",
+      "controls": [
+        "c"
+      ],
+      "action_keys": [
+        "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      ]
+    }
+  ],
+  "want": {
+    "refuse": false,
+    "rows": [
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "pending",
+        "severity": "warning",
+        "final": "",
+        "control": "c",
+        "version": "1.0.0",
+        "state": "pending"
+      }
+    ]
+  }
+}

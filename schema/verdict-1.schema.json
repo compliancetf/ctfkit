@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compliance.tf/schema/verdict-1.schema.json",
+  "title": "compliancetf.verdict/v1",
+  "description": "The verdict ctfkit gate writes for one candidate plan and the compliance.tf terraform provider reads at apply. Every value is a string, array or object. The signature member covers the RFC 8785 (JCS) form of the document without it. pkg/verdict.Parse is the reference reader: a member it would drop on re-encoding (an empty optional string) is out of contract here too.",
+  "type": "object",
+  "required": [
+    "format", "org_id", "workspace", "environment", "run_id", "caller", "plan_digest", "provenance",
+    "plan_format_version", "profile_digest", "bundle_digest", "content_digest", "floor_epoch",
+    "provider_versions", "terraform_version", "nonce", "issued_at", "expires_at", "instance_key_check",
+    "instances", "exceptions", "baselines", "break_glass_receipts", "signature"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "compliancetf.verdict/v1" },
+    "org_id": { "type": "string" },
+    "workspace": { "type": "string" },
+    "environment": { "type": "string" },
+    "run_id": { "type": "string" },
+    "caller": {
+      "type": "object",
+      "required": ["account_id", "role_arn", "region"],
+      "additionalProperties": false,
+      "properties": {
+        "account_id": { "type": "string" },
+        "role_arn": { "type": "string" },
+        "region": { "type": "string" }
+      }
+    },
+    "plan_digest": { "$ref": "#/$defs/digest" },
+    "provenance": { "type": "object", "additionalProperties": { "$ref": "#/$defs/strings" } },
+    "plan_format_version": { "type": "string" },
+    "profile_digest": { "$ref": "#/$defs/digest" },
+    "bundle_digest": { "$ref": "#/$defs/digest" },
+    "content_digest": { "$ref": "#/$defs/digest" },
+    "floor_epoch": { "type": "string" },
+    "provider_versions": { "type": "object", "additionalProperties": { "type": "string" } },
+    "terraform_version": { "type": "string" },
+    "nonce": { "type": "string", "pattern": "^[A-Za-z0-9_-]{22}$" },
+    "issued_at": { "$ref": "#/$defs/time" },
+    "expires_at": { "$ref": "#/$defs/time" },
+    "instance_key_check": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "instances": { "type": "array", "items": { "$ref": "#/$defs/instance" } },
+    "exceptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["digest", "source", "expires"],
+        "additionalProperties": false,
+        "properties": {
+          "digest": { "$ref": "#/$defs/digest" },
+          "source": { "enum": ["grant", "self_service"] },
+          "expires": { "$ref": "#/$defs/time" }
+        }
+      }
+    },
+    "baselines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["digest"],
+        "additionalProperties": false,
+        "properties": { "digest": { "$ref": "#/$defs/digest" } }
+      }
+    },
+    "break_glass_receipts": {
+      "description": "Embedded compliancetf.consume-receipt/v1 documents (consume-receipt-1).",
+      "type": "array",
+      "items": { "$ref": "consume-receipt-1.schema.json" }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["kid", "alg", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "kid": { "$ref": "#/$defs/digest" },
+        "alg": { "description": "ES256; Ed25519 appears only in test builds and release readers refuse it.", "enum": ["ES256", "Ed25519"] },
+        "value": { "description": "base64url without padding of the ASN.1 DER signature", "type": "string", "pattern": "^[A-Za-z0-9_-]+$" }
+      }
+    }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "time": {
+      "description": "RFC 3339 in UTC",
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?Z$"
+    },
+    "strings": {
+      "description": "A string, or an array or object holding only such values.",
+      "anyOf": [
+        { "type": "string" },
+        { "type": "array", "items": { "$ref": "#/$defs/strings" } },
+        { "type": "object", "additionalProperties": { "$ref": "#/$defs/strings" } }
+      ]
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["control", "version", "result", "action"],
+        "additionalProperties": false,
+        "properties": {
+          "control": { "type": "string", "minLength": 1 },
+          "version": { "type": "string", "minLength": 1 },
+          "result": { "enum": ["pass", "fail", "not_evaluable", "provisional", "pending"] },
+          "action": { "enum": ["deny", "warn"] }
+        }
+      }
+    },
+    "instance": {
+      "type": "object",
+      "required": [
+        "address", "type", "action", "prior_identity_kind", "refreshed", "unknown_paths", "decisions",
+        "not_evaluable", "exceptions", "baselines", "break_glass"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "address": { "type": "string", "minLength": 1 },
+        "deposed": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "minLength": 1 },
+        "action": { "enum": ["create", "update", "replace", "delete", "no-op", "import", "move", "forget"] },
+        "previous_address": { "type": "string", "minLength": 1 },
+        "instance_key": { "$ref": "#/$defs/digest" },
+        "delete_key": { "$ref": "#/$defs/digest" },
+        "prior_identity_kind": { "enum": ["identity", "id", "none"] },
+        "refreshed": { "enum": ["true", "false"] },
+        "unknown_paths": {
+          "type": "array",
+          "items": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+        },
+        "decisions": { "$ref": "#/$defs/decisions" },
+        "delete_decisions": { "$ref": "#/$defs/decisions" },
+        "not_evaluable": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["control", "reason"],
+            "additionalProperties": false,
+            "properties": {
+              "control": { "type": "string", "minLength": 1 },
+              "reason": {
+                "enum": [
+                  "sensitive_input", "ambiguous_reference", "unknown_reference", "unknown_value", "identity_alias",
+                  "identity_conflict", "wildcard", "catalog_miss", "limit", "state_action"
+                ]
+              }
+            }
+          }
+        },
+        "exceptions": { "type": "array", "items": { "$ref": "#/$defs/digest" } },
+        "baselines": { "type": "array", "items": { "$ref": "#/$defs/digest" } },
+        "break_glass": { "type": "array", "items": { "$ref": "#/$defs/digest" } }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "action": { "enum": ["create", "update", "replace"] } } },
+          "then": { "required": ["instance_key"] },
+          "else": { "not": { "required": ["instance_key"] } }
+        },
+        {
+          "if": { "properties": { "action": { "enum": ["delete", "replace"] } } },
+          "then": { "required": ["delete_key", "delete_decisions"] },
+          "else": { "not": { "anyOf": [{ "required": ["delete_key"] }, { "required": ["delete_decisions"] }] } }
+        },
+        {
+          "if": { "properties": { "action": { "const": "create" } } },
+          "then": { "properties": { "prior_identity_kind": { "const": "none" } } }
+        },
+        {
+          "if": { "properties": { "action": { "enum": ["update", "delete", "replace"] } } },
+          "then": { "properties": { "prior_identity_kind": { "enum": ["identity", "id"] } } }
+        },
+        {
+          "if": { "properties": { "action": { "const": "delete" } } },
+          "then": { "properties": { "decisions": { "maxItems": 0 }, "unknown_paths": { "maxItems": 0 } } }
+        },
+        {
+          "if": { "required": ["deposed"] },
+          "then": { "properties": { "action": { "const": "delete" } } }
+        }
+      ]
+    }
+  }
+}

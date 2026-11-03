@@ -1,0 +1,100 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.13.0",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.app",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "app",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "region": "eu-west-1",
+          "force_destroy": false,
+          "bucket": "bobthecorp-app"
+        },
+        "after_unknown": {
+          "id": true,
+          "arn": true
+        }
+      }
+    },
+    {
+      "address": "module.guard.aws_s3_bucket_public_access_block.this",
+      "module_address": "module.guard",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "this",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "region": "eu-west-1",
+          "bucket": "bobthecorp-app"
+        },
+        "after_unknown": {
+          "id": true
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket.app",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "app",
+          "provider_config_key": "aws",
+          "schema_version": 0
+        }
+      ],
+      "module_calls": {
+        "guard": {
+          "source": "./modules/x",
+          "module": {
+            "resources": [
+              {
+                "address": "aws_s3_bucket_public_access_block.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_public_access_block",
+                "name": "this",
+                "provider_config_key": "aws",
+                "schema_version": 0,
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "var.bucket"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

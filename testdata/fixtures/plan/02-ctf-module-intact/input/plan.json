@@ -1,0 +1,4776 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.12.6",
+  "planned_values": {
+    "root_module": {
+      "child_modules": [
+        {
+          "resources": [
+            {
+              "address": "module.s3_bucket.aws_s3_bucket.this[0]",
+              "mode": "managed",
+              "type": "aws_s3_bucket",
+              "name": "this",
+              "index": 0,
+              "provider_name": "registry.opentofu.org/hashicorp/aws",
+              "schema_version": 0,
+              "values": {
+                "bucket": "bobthecorp-intact",
+                "force_destroy": false,
+                "object_lock_enabled": true,
+                "region": "eu-west-1",
+                "tags": null,
+                "timeouts": null
+              },
+              "sensitive_values": {
+                "cors_rule": [],
+                "grant": [],
+                "lifecycle_rule": [],
+                "logging": [],
+                "object_lock_configuration": [],
+                "replication_configuration": [],
+                "server_side_encryption_configuration": [],
+                "tags_all": {},
+                "versioning": [],
+                "website": []
+              },
+              "identity": {
+                "account_id": null,
+                "bucket": null,
+                "region": null
+              },
+              "identity_schema_version": 0
+            },
+            {
+              "address": "module.s3_bucket.aws_s3_bucket_lifecycle_configuration.this[0]",
+              "mode": "managed",
+              "type": "aws_s3_bucket_lifecycle_configuration",
+              "name": "this",
+              "index": 0,
+              "provider_name": "registry.opentofu.org/hashicorp/aws",
+              "schema_version": 1,
+              "values": {
+                "region": "eu-west-1",
+                "rule": [
+                  {
+                    "abort_incomplete_multipart_upload": [],
+                    "expiration": [],
+                    "filter": [
+                      {
+                        "and": [],
+                        "object_size_greater_than": null,
+                        "object_size_less_than": null,
+                        "prefix": "",
+                        "tag": []
+                      }
+                    ],
+                    "id": "expire-noncurrent",
+                    "noncurrent_version_expiration": [
+                      {
+                        "newer_noncurrent_versions": null,
+                        "noncurrent_days": 300
+                      }
+                    ],
+                    "noncurrent_version_transition": [],
+                    "prefix": "",
+                    "status": "Enabled",
+                    "transition": []
+                  }
+                ],
+                "timeouts": null,
+                "transition_default_minimum_object_size": "all_storage_classes_128K"
+              },
+              "sensitive_values": {
+                "rule": [
+                  {
+                    "abort_incomplete_multipart_upload": [],
+                    "expiration": [],
+                    "filter": [
+                      {
+                        "and": [],
+                        "tag": []
+                      }
+                    ],
+                    "noncurrent_version_expiration": [
+                      {}
+                    ],
+                    "noncurrent_version_transition": [],
+                    "transition": []
+                  }
+                ]
+              }
+            },
+            {
+              "address": "module.s3_bucket.aws_s3_bucket_logging.this[0]",
+              "mode": "managed",
+              "type": "aws_s3_bucket_logging",
+              "name": "this",
+              "index": 0,
+              "provider_name": "registry.opentofu.org/hashicorp/aws",
+              "schema_version": 0,
+              "values": {
+                "expected_bucket_owner": null,
+                "region": "eu-west-1",
+                "target_bucket": "bobthecorp-access-logs",
+                "target_grant": [],
+                "target_object_key_format": [],
+                "target_prefix": "s3/"
+              },
+              "sensitive_values": {
+                "target_grant": [],
+                "target_object_key_format": []
+              },
+              "identity": {
+                "account_id": null,
+                "bucket": null,
+                "region": null
+              },
+              "identity_schema_version": 1
+            },
+            {
+              "address": "module.s3_bucket.aws_s3_bucket_public_access_block.this[0]",
+              "mode": "managed",
+              "type": "aws_s3_bucket_public_access_block",
+              "name": "this",
+              "index": 0,
+              "provider_name": "registry.opentofu.org/hashicorp/aws",
+              "schema_version": 0,
+              "values": {
+                "block_public_acls": true,
+                "block_public_policy": true,
+                "ignore_public_acls": true,
+                "region": "eu-west-1",
+                "restrict_public_buckets": true,
+                "skip_destroy": true
+              },
+              "sensitive_values": {},
+              "identity": {
+                "account_id": null,
+                "bucket": null,
+                "region": null
+              },
+              "identity_schema_version": 0
+            },
+            {
+              "address": "module.s3_bucket.aws_s3_bucket_replication_configuration.this[0]",
+              "mode": "managed",
+              "type": "aws_s3_bucket_replication_configuration",
+              "name": "this",
+              "index": 0,
+              "provider_name": "registry.opentofu.org/hashicorp/aws",
+              "schema_version": 0,
+              "values": {
+                "region": "eu-west-1",
+                "role": "arn:aws:iam::111111111111:role/bobthecorp-replication",
+                "rule": [
+                  {
+                    "delete_marker_replication": [],
+                    "destination": [
+                      {
+                        "access_control_translation": [],
+                        "account": null,
+                        "bucket": "arn:aws:s3:::bobthecorp-intact-replica",
+                        "encryption_configuration": [],
+                        "metrics": [],
+                        "replication_time": [],
+                        "storage_class": null
+                      }
+                    ],
+                    "existing_object_replication": [],
+                    "filter": [
+                      {
+                        "and": [],
+                        "prefix": null,
+                        "tag": []
+                      }
+                    ],
+                    "id": "replicate-all",
+                    "prefix": null,
+                    "priority": null,
+                    "source_selection_criteria": [],
+                    "status": "Enabled"
+                  }
+                ],
+                "token": null
+              },
+              "sensitive_values": {
+                "rule": [
+                  {
+                    "delete_marker_replication": [],
+                    "destination": [
+                      {
+                        "access_control_translation": [],
+                        "encryption_configuration": [],
+                        "metrics": [],
+                        "replication_time": []
+                      }
+                    ],
+                    "existing_object_replication": [],
+                    "filter": [
+                      {
+                        "and": [],
+                        "tag": []
+                      }
+                    ],
+                    "source_selection_criteria": []
+                  }
+                ],
+                "token": true
+              }
+            },
+            {
+              "address": "module.s3_bucket.aws_s3_bucket_server_side_encryption_configuration.this[0]",
+              "mode": "managed",
+              "type": "aws_s3_bucket_server_side_encryption_configuration",
+              "name": "this",
+              "index": 0,
+              "provider_name": "registry.opentofu.org/hashicorp/aws",
+              "schema_version": 0,
+              "values": {
+                "expected_bucket_owner": null,
+                "region": "eu-west-1",
+                "rule": [
+                  {
+                    "apply_server_side_encryption_by_default": [
+                      {
+                        "kms_master_key_id": "arn:aws:kms:eu-west-1:111111111111:key/11111111-1111-1111-1111-111111111111",
+                        "sse_algorithm": "aws:kms"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "sensitive_values": {
+                "rule": [
+                  {
+                    "apply_server_side_encryption_by_default": [
+                      {}
+                    ],
+                    "blocked_encryption_types": []
+                  }
+                ]
+              },
+              "identity": {
+                "account_id": null,
+                "bucket": null,
+                "region": null
+              },
+              "identity_schema_version": 1
+            },
+            {
+              "address": "module.s3_bucket.aws_s3_bucket_versioning.this[0]",
+              "mode": "managed",
+              "type": "aws_s3_bucket_versioning",
+              "name": "this",
+              "index": 0,
+              "provider_name": "registry.opentofu.org/hashicorp/aws",
+              "schema_version": 0,
+              "values": {
+                "expected_bucket_owner": null,
+                "mfa": null,
+                "region": "eu-west-1",
+                "versioning_configuration": [
+                  {
+                    "status": "Enabled"
+                  }
+                ]
+              },
+              "sensitive_values": {
+                "versioning_configuration": [
+                  {}
+                ]
+              },
+              "identity": {
+                "account_id": null,
+                "bucket": null,
+                "region": null
+              },
+              "identity_schema_version": 1
+            }
+          ],
+          "address": "module.s3_bucket"
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "module.s3_bucket.aws_s3_bucket.this[0]",
+      "module_address": "module.s3_bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "this",
+      "index": 0,
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "bobthecorp-intact",
+          "force_destroy": false,
+          "object_lock_enabled": true,
+          "region": "eu-west-1",
+          "tags": null,
+          "timeouts": null
+        },
+        "after_unknown": {
+          "acceleration_status": true,
+          "acl": true,
+          "arn": true,
+          "bucket_domain_name": true,
+          "bucket_namespace": true,
+          "bucket_prefix": true,
+          "bucket_region": true,
+          "bucket_regional_domain_name": true,
+          "cors_rule": true,
+          "grant": true,
+          "hosted_zone_id": true,
+          "id": true,
+          "lifecycle_rule": true,
+          "logging": true,
+          "object_lock_configuration": true,
+          "policy": true,
+          "replication_configuration": true,
+          "request_payer": true,
+          "server_side_encryption_configuration": true,
+          "tags_all": true,
+          "versioning": true,
+          "website": true,
+          "website_domain": true,
+          "website_endpoint": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "cors_rule": [],
+          "grant": [],
+          "lifecycle_rule": [],
+          "logging": [],
+          "object_lock_configuration": [],
+          "replication_configuration": [],
+          "server_side_encryption_configuration": [],
+          "tags_all": {},
+          "versioning": [],
+          "website": []
+        },
+        "after_identity": {
+          "account_id": null,
+          "bucket": null,
+          "region": null
+        }
+      }
+    },
+    {
+      "address": "module.s3_bucket.aws_s3_bucket_lifecycle_configuration.this[0]",
+      "module_address": "module.s3_bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_lifecycle_configuration",
+      "name": "this",
+      "index": 0,
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "region": "eu-west-1",
+          "rule": [
+            {
+              "abort_incomplete_multipart_upload": [],
+              "expiration": [],
+              "filter": [
+                {
+                  "and": [],
+                  "object_size_greater_than": null,
+                  "object_size_less_than": null,
+                  "prefix": "",
+                  "tag": []
+                }
+              ],
+              "id": "expire-noncurrent",
+              "noncurrent_version_expiration": [
+                {
+                  "newer_noncurrent_versions": null,
+                  "noncurrent_days": 300
+                }
+              ],
+              "noncurrent_version_transition": [],
+              "prefix": "",
+              "status": "Enabled",
+              "transition": []
+            }
+          ],
+          "timeouts": null,
+          "transition_default_minimum_object_size": "all_storage_classes_128K"
+        },
+        "after_unknown": {
+          "bucket": true,
+          "expected_bucket_owner": true,
+          "id": true,
+          "rule": [
+            {
+              "abort_incomplete_multipart_upload": [],
+              "expiration": [],
+              "filter": [
+                {
+                  "and": [],
+                  "tag": []
+                }
+              ],
+              "noncurrent_version_expiration": [
+                {}
+              ],
+              "noncurrent_version_transition": [],
+              "transition": []
+            }
+          ]
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "rule": [
+            {
+              "abort_incomplete_multipart_upload": [],
+              "expiration": [],
+              "filter": [
+                {
+                  "and": [],
+                  "tag": []
+                }
+              ],
+              "noncurrent_version_expiration": [
+                {}
+              ],
+              "noncurrent_version_transition": [],
+              "transition": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "address": "module.s3_bucket.aws_s3_bucket_logging.this[0]",
+      "module_address": "module.s3_bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_logging",
+      "name": "this",
+      "index": 0,
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "expected_bucket_owner": null,
+          "region": "eu-west-1",
+          "target_bucket": "bobthecorp-access-logs",
+          "target_grant": [],
+          "target_object_key_format": [],
+          "target_prefix": "s3/"
+        },
+        "after_unknown": {
+          "bucket": true,
+          "id": true,
+          "target_grant": [],
+          "target_object_key_format": []
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "target_grant": [],
+          "target_object_key_format": []
+        },
+        "after_identity": {
+          "account_id": null,
+          "bucket": null,
+          "region": null
+        }
+      }
+    },
+    {
+      "address": "module.s3_bucket.aws_s3_bucket_public_access_block.this[0]",
+      "module_address": "module.s3_bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "this",
+      "index": 0,
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "ignore_public_acls": true,
+          "region": "eu-west-1",
+          "restrict_public_buckets": true,
+          "skip_destroy": true
+        },
+        "after_unknown": {
+          "bucket": true,
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {},
+        "after_identity": {
+          "account_id": null,
+          "bucket": null,
+          "region": null
+        }
+      }
+    },
+    {
+      "address": "module.s3_bucket.aws_s3_bucket_replication_configuration.this[0]",
+      "module_address": "module.s3_bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_replication_configuration",
+      "name": "this",
+      "index": 0,
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "region": "eu-west-1",
+          "role": "arn:aws:iam::111111111111:role/bobthecorp-replication",
+          "rule": [
+            {
+              "delete_marker_replication": [],
+              "destination": [
+                {
+                  "access_control_translation": [],
+                  "account": null,
+                  "bucket": "arn:aws:s3:::bobthecorp-intact-replica",
+                  "encryption_configuration": [],
+                  "metrics": [],
+                  "replication_time": [],
+                  "storage_class": null
+                }
+              ],
+              "existing_object_replication": [],
+              "filter": [
+                {
+                  "and": [],
+                  "prefix": null,
+                  "tag": []
+                }
+              ],
+              "id": "replicate-all",
+              "prefix": null,
+              "priority": null,
+              "source_selection_criteria": [],
+              "status": "Enabled"
+            }
+          ],
+          "token": null
+        },
+        "after_unknown": {
+          "bucket": true,
+          "id": true,
+          "rule": [
+            {
+              "delete_marker_replication": [],
+              "destination": [
+                {
+                  "access_control_translation": [],
+                  "encryption_configuration": [],
+                  "metrics": [],
+                  "replication_time": []
+                }
+              ],
+              "existing_object_replication": [],
+              "filter": [
+                {
+                  "and": [],
+                  "tag": []
+                }
+              ],
+              "source_selection_criteria": []
+            }
+          ]
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "rule": [
+            {
+              "delete_marker_replication": [],
+              "destination": [
+                {
+                  "access_control_translation": [],
+                  "encryption_configuration": [],
+                  "metrics": [],
+                  "replication_time": []
+                }
+              ],
+              "existing_object_replication": [],
+              "filter": [
+                {
+                  "and": [],
+                  "tag": []
+                }
+              ],
+              "source_selection_criteria": []
+            }
+          ],
+          "token": true
+        }
+      }
+    },
+    {
+      "address": "module.s3_bucket.aws_s3_bucket_server_side_encryption_configuration.this[0]",
+      "module_address": "module.s3_bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_server_side_encryption_configuration",
+      "name": "this",
+      "index": 0,
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "expected_bucket_owner": null,
+          "region": "eu-west-1",
+          "rule": [
+            {
+              "apply_server_side_encryption_by_default": [
+                {
+                  "kms_master_key_id": "arn:aws:kms:eu-west-1:111111111111:key/11111111-1111-1111-1111-111111111111",
+                  "sse_algorithm": "aws:kms"
+                }
+              ]
+            }
+          ]
+        },
+        "after_unknown": {
+          "bucket": true,
+          "id": true,
+          "rule": [
+            {
+              "apply_server_side_encryption_by_default": [
+                {}
+              ],
+              "blocked_encryption_types": true,
+              "bucket_key_enabled": true
+            }
+          ]
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "rule": [
+            {
+              "apply_server_side_encryption_by_default": [
+                {}
+              ],
+              "blocked_encryption_types": []
+            }
+          ]
+        },
+        "after_identity": {
+          "account_id": null,
+          "bucket": null,
+          "region": null
+        }
+      }
+    },
+    {
+      "address": "module.s3_bucket.aws_s3_bucket_versioning.this[0]",
+      "module_address": "module.s3_bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_versioning",
+      "name": "this",
+      "index": 0,
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "expected_bucket_owner": null,
+          "mfa": null,
+          "region": "eu-west-1",
+          "versioning_configuration": [
+            {
+              "status": "Enabled"
+            }
+          ]
+        },
+        "after_unknown": {
+          "bucket": true,
+          "id": true,
+          "versioning_configuration": [
+            {
+              "mfa_delete": true
+            }
+          ]
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "versioning_configuration": [
+            {}
+          ]
+        },
+        "after_identity": {
+          "account_id": null,
+          "bucket": null,
+          "region": null
+        }
+      }
+    }
+  ],
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.12.6",
+    "values": {
+      "root_module": {
+        "child_modules": [
+          {
+            "resources": [
+              {
+                "address": "module.s3_bucket.data.aws_caller_identity.current",
+                "mode": "data",
+                "type": "aws_caller_identity",
+                "name": "current",
+                "provider_name": "registry.opentofu.org/hashicorp/aws",
+                "schema_version": 0,
+                "values": {
+                  "account_id": "111111111111",
+                  "arn": "arn:aws:iam::111111111111:user/fixture",
+                  "id": "111111111111",
+                  "user_id": "AIDAFIXTUREFIXTUREFIX"
+                },
+                "sensitive_values": {}
+              },
+              {
+                "address": "module.s3_bucket.data.aws_partition.current",
+                "mode": "data",
+                "type": "aws_partition",
+                "name": "current",
+                "provider_name": "registry.opentofu.org/hashicorp/aws",
+                "schema_version": 0,
+                "values": {
+                  "dns_suffix": "amazonaws.com",
+                  "id": "aws",
+                  "partition": "aws",
+                  "reverse_dns_prefix": "com.amazonaws"
+                },
+                "sensitive_values": {}
+              },
+              {
+                "address": "module.s3_bucket.data.aws_region.current",
+                "mode": "data",
+                "type": "aws_region",
+                "name": "current",
+                "provider_name": "registry.opentofu.org/hashicorp/aws",
+                "schema_version": 0,
+                "values": {
+                  "description": "Europe (Ireland)",
+                  "endpoint": "ec2.eu-west-1.amazonaws.com",
+                  "id": "eu-west-1",
+                  "name": "eu-west-1",
+                  "region": "eu-west-1"
+                },
+                "sensitive_values": {}
+              }
+            ],
+            "address": "module.s3_bucket"
+          }
+        ]
+      }
+    }
+  },
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.opentofu.org/hashicorp/aws",
+        "version_constraint": "~> 6.0",
+        "expressions": {
+          "access_key": {
+            "constant_value": "mock_access_key"
+          },
+          "endpoints": [
+            {
+              "sts": {
+                "constant_value": "http://127.0.0.1:15515"
+              }
+            }
+          ],
+          "region": {
+            "constant_value": "eu-west-1"
+          },
+          "secret_key": {
+            "constant_value": "mock_secret_key"
+          },
+          "skip_credentials_validation": {
+            "constant_value": true
+          },
+          "skip_metadata_api_check": {
+            "constant_value": true
+          },
+          "skip_region_validation": {
+            "constant_value": true
+          },
+          "skip_requesting_account_id": {
+            "constant_value": true
+          }
+        }
+      }
+    },
+    "root_module": {
+      "module_calls": {
+        "s3_bucket": {
+          "source": "bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws",
+          "expressions": {
+            "bucket": {
+              "constant_value": "bobthecorp-intact"
+            },
+            "lifecycle_rule": {
+              "constant_value": [
+                {
+                  "id": "expire-noncurrent",
+                  "noncurrent_version_expiration": {
+                    "days": 300
+                  },
+                  "status": "Enabled"
+                }
+              ]
+            },
+            "logging": {
+              "constant_value": {
+                "target_bucket": "bobthecorp-access-logs",
+                "target_prefix": "s3/"
+              }
+            },
+            "replication_configuration": {
+              "constant_value": {
+                "role": "arn:aws:iam::111111111111:role/bobthecorp-replication",
+                "rules": [
+                  {
+                    "destination": {
+                      "bucket": "arn:aws:s3:::bobthecorp-intact-replica"
+                    },
+                    "id": "replicate-all",
+                    "status": "Enabled"
+                  }
+                ]
+              }
+            },
+            "server_side_encryption_configuration": {
+              "constant_value": {
+                "rule": {
+                  "apply_server_side_encryption_by_default": {
+                    "kms_master_key_id": "arn:aws:kms:eu-west-1:111111111111:key/11111111-1111-1111-1111-111111111111",
+                    "sse_algorithm": "aws:kms"
+                  }
+                }
+              }
+            },
+            "versioning": {
+              "constant_value": {
+                "enabled": "Enabled"
+              }
+            }
+          },
+          "module": {
+            "outputs": {
+              "aws_s3_bucket_versioning_status": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket_versioning.this[0].versioning_configuration[0].status",
+                    "aws_s3_bucket_versioning.this[0].versioning_configuration[0]",
+                    "aws_s3_bucket_versioning.this[0].versioning_configuration",
+                    "aws_s3_bucket_versioning.this[0]",
+                    "aws_s3_bucket_versioning.this"
+                  ]
+                },
+                "description": "The versioning status of the bucket. Will be 'Enabled', 'Suspended', or 'Disabled'"
+              },
+              "s3_bucket_arn": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket.this[0].arn",
+                    "aws_s3_bucket.this[0]",
+                    "aws_s3_bucket.this"
+                  ]
+                },
+                "description": "The ARN of the bucket. Will be of format arn:aws:s3:::bucketname"
+              },
+              "s3_bucket_bucket_domain_name": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket.this[0].bucket_domain_name",
+                    "aws_s3_bucket.this[0]",
+                    "aws_s3_bucket.this"
+                  ]
+                },
+                "description": "The bucket domain name. Will be of format bucketname.s3.amazonaws.com"
+              },
+              "s3_bucket_bucket_namespace": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket.this[0].bucket_namespace",
+                    "aws_s3_bucket.this[0]",
+                    "aws_s3_bucket.this"
+                  ]
+                },
+                "description": "The namespace of the bucket"
+              },
+              "s3_bucket_bucket_regional_domain_name": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket.this[0].bucket_regional_domain_name",
+                    "aws_s3_bucket.this[0]",
+                    "aws_s3_bucket.this"
+                  ]
+                },
+                "description": "The bucket region-specific domain name. The bucket domain name including the region name, please refer here for format. Note: The AWS CloudFront allows specifying S3 region-specific endpoint when creating S3 origin, it will prevent redirect issues from CloudFront to S3 Origin URL"
+              },
+              "s3_bucket_hosted_zone_id": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket.this[0].hosted_zone_id",
+                    "aws_s3_bucket.this[0]",
+                    "aws_s3_bucket.this"
+                  ]
+                },
+                "description": "The Route 53 Hosted Zone ID for this bucket's region"
+              },
+              "s3_bucket_id": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket.this[0].id",
+                    "aws_s3_bucket.this[0]",
+                    "aws_s3_bucket.this",
+                    "aws_s3_directory_bucket.this[0].bucket",
+                    "aws_s3_directory_bucket.this[0]",
+                    "aws_s3_directory_bucket.this"
+                  ]
+                },
+                "description": "The name of the bucket"
+              },
+              "s3_bucket_lifecycle_configuration_rules": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket_lifecycle_configuration.this[0].rule",
+                    "aws_s3_bucket_lifecycle_configuration.this[0]",
+                    "aws_s3_bucket_lifecycle_configuration.this"
+                  ]
+                },
+                "description": "The lifecycle rules of the bucket, if the bucket is configured with lifecycle rules"
+              },
+              "s3_bucket_policy": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket_policy.this[0].policy",
+                    "aws_s3_bucket_policy.this[0]",
+                    "aws_s3_bucket_policy.this"
+                  ]
+                },
+                "description": "The policy of the bucket, if the bucket is configured with a policy"
+              },
+              "s3_bucket_region": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket.this[0].bucket_region",
+                    "aws_s3_bucket.this[0]",
+                    "aws_s3_bucket.this"
+                  ]
+                },
+                "description": "The AWS region this bucket resides in"
+              },
+              "s3_bucket_tags": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket.this[0].tags",
+                    "aws_s3_bucket.this[0]",
+                    "aws_s3_bucket.this"
+                  ]
+                },
+                "description": "Tags of the bucket"
+              },
+              "s3_bucket_website_domain": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket_website_configuration.this[0].website_domain",
+                    "aws_s3_bucket_website_configuration.this[0]",
+                    "aws_s3_bucket_website_configuration.this"
+                  ]
+                },
+                "description": "The domain of the website endpoint, if the bucket is configured with a website. This is used to create Route 53 alias records"
+              },
+              "s3_bucket_website_endpoint": {
+                "expression": {
+                  "references": [
+                    "aws_s3_bucket_website_configuration.this[0].website_endpoint",
+                    "aws_s3_bucket_website_configuration.this[0]",
+                    "aws_s3_bucket_website_configuration.this"
+                  ]
+                },
+                "description": "The website endpoint, if the bucket is configured with a website"
+              },
+              "s3_directory_bucket_arn": {
+                "expression": {
+                  "references": [
+                    "aws_s3_directory_bucket.this[0].arn",
+                    "aws_s3_directory_bucket.this[0]",
+                    "aws_s3_directory_bucket.this"
+                  ]
+                },
+                "description": "ARN of the directory bucket"
+              },
+              "s3_directory_bucket_name": {
+                "expression": {
+                  "references": [
+                    "aws_s3_directory_bucket.this[0].bucket",
+                    "aws_s3_directory_bucket.this[0]",
+                    "aws_s3_directory_bucket.this"
+                  ]
+                },
+                "description": "Name of the directory bucket"
+              }
+            },
+            "resources": [
+              {
+                "address": "aws_s3_bucket.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "var.bucket"
+                    ]
+                  },
+                  "bucket_namespace": {
+                    "references": [
+                      "var.bucket_namespace"
+                    ]
+                  },
+                  "bucket_prefix": {
+                    "references": [
+                      "var.bucket_prefix"
+                    ]
+                  },
+                  "force_destroy": {
+                    "references": [
+                      "var.force_destroy"
+                    ]
+                  },
+                  "object_lock_enabled": {
+                    "references": [
+                      "var.object_lock_enabled"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "tags": {
+                    "references": [
+                      "var.tags"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_accelerate_configuration.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_accelerate_configuration",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "expected_bucket_owner": {
+                    "references": [
+                      "var.expected_bucket_owner"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "status": {
+                    "references": [
+                      "var.acceleration_status"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.acceleration_status",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_acl.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_acl",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "acl": {
+                    "references": [
+                      "var.acl",
+                      "var.acl"
+                    ]
+                  },
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "expected_bucket_owner": {
+                    "references": [
+                      "var.expected_bucket_owner"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "local.create_bucket_acl",
+                    "var.is_directory_bucket"
+                  ]
+                },
+                "depends_on": [
+                  "aws_s3_bucket_ownership_controls.this"
+                ]
+              },
+              {
+                "address": "aws_s3_bucket_analytics_configuration.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_analytics_configuration",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "name": {
+                    "references": [
+                      "each.key"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "for_each_expression": {
+                  "references": [
+                    "var.analytics_configuration",
+                    "local.create_bucket",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_cors_configuration.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_cors_configuration",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "expected_bucket_owner": {
+                    "references": [
+                      "var.expected_bucket_owner"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "local.cors_rules",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_intelligent_tiering_configuration.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_intelligent_tiering_configuration",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "name": {
+                    "references": [
+                      "each.key"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "status": {
+                    "references": [
+                      "each.value.status",
+                      "each.value",
+                      "each.value.status",
+                      "each.value"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "for_each_expression": {
+                  "references": [
+                    "local.intelligent_tiering",
+                    "local.create_bucket",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_inventory.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_inventory",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "each.value.bucket",
+                      "each.value",
+                      "each.value.bucket",
+                      "each.value",
+                      "var.is_directory_bucket",
+                      "aws_s3_directory_bucket.this[0].bucket",
+                      "aws_s3_directory_bucket.this[0]",
+                      "aws_s3_directory_bucket.this",
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "destination": [
+                    {
+                      "bucket": [
+                        {
+                          "account_id": {
+                            "references": [
+                              "each.value.destination.account_id",
+                              "each.value.destination",
+                              "each.value"
+                            ]
+                          },
+                          "bucket_arn": {
+                            "references": [
+                              "each.value.destination.bucket_arn",
+                              "each.value.destination",
+                              "each.value",
+                              "each.value.destination.bucket_arn",
+                              "each.value.destination",
+                              "each.value",
+                              "aws_s3_bucket.this[0].arn",
+                              "aws_s3_bucket.this[0]",
+                              "aws_s3_bucket.this"
+                            ]
+                          },
+                          "format": {
+                            "references": [
+                              "each.value.destination.format",
+                              "each.value.destination",
+                              "each.value"
+                            ]
+                          },
+                          "prefix": {
+                            "references": [
+                              "each.value.destination.prefix",
+                              "each.value.destination",
+                              "each.value"
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "enabled": {
+                    "references": [
+                      "each.value.enabled",
+                      "each.value"
+                    ]
+                  },
+                  "included_object_versions": {
+                    "references": [
+                      "each.value.included_object_versions",
+                      "each.value"
+                    ]
+                  },
+                  "name": {
+                    "references": [
+                      "each.key"
+                    ]
+                  },
+                  "optional_fields": {
+                    "references": [
+                      "each.value.optional_fields",
+                      "each.value"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "schedule": [
+                    {
+                      "frequency": {
+                        "references": [
+                          "each.value.frequency",
+                          "each.value"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "for_each_expression": {
+                  "references": [
+                    "var.inventory_configuration",
+                    "local.create_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_lifecycle_configuration.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_lifecycle_configuration",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "var.is_directory_bucket",
+                      "aws_s3_directory_bucket.this[0].bucket",
+                      "aws_s3_directory_bucket.this[0]",
+                      "aws_s3_directory_bucket.this",
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "expected_bucket_owner": {
+                    "references": [
+                      "var.expected_bucket_owner"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "transition_default_minimum_object_size": {
+                    "references": [
+                      "var.transition_default_minimum_object_size"
+                    ]
+                  }
+                },
+                "schema_version": 1,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.lifecycle_rule"
+                  ]
+                },
+                "depends_on": [
+                  "aws_s3_bucket_versioning.this",
+                  "aws_s3_bucket_replication_configuration.this"
+                ]
+              },
+              {
+                "address": "aws_s3_bucket_logging.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_logging",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "target_bucket": {
+                    "references": [
+                      "var.logging.target_bucket",
+                      "var.logging"
+                    ]
+                  },
+                  "target_prefix": {
+                    "references": [
+                      "var.logging.target_prefix",
+                      "var.logging"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.logging",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_metadata_configuration.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_metadata_configuration",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].bucket",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "metadata_configuration": [
+                    {
+                      "inventory_table_configuration": [
+                        {
+                          "configuration_state": {
+                            "references": [
+                              "var.metadata_inventory_table_configuration_state"
+                            ]
+                          }
+                        }
+                      ],
+                      "journal_table_configuration": [
+                        {
+                          "record_expiration": [
+                            {
+                              "days": {
+                                "references": [
+                                  "var.metadata_journal_table_record_expiration_days"
+                                ]
+                              },
+                              "expiration": {
+                                "references": [
+                                  "var.metadata_journal_table_record_expiration"
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.create_metadata_configuration"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_metric.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_metric",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "var.is_directory_bucket",
+                      "aws_s3_directory_bucket.this[0].bucket",
+                      "aws_s3_directory_bucket.this[0]",
+                      "aws_s3_directory_bucket.this",
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "name": {
+                    "references": [
+                      "each.value.name",
+                      "each.value"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "for_each_expression": {
+                  "references": [
+                    "var.metric_configuration",
+                    "local.create_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_object_lock_configuration.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_object_lock_configuration",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "expected_bucket_owner": {
+                    "references": [
+                      "var.expected_bucket_owner"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "rule": [
+                    {
+                      "default_retention": [
+                        {
+                          "days": {
+                            "references": [
+                              "var.object_lock_configuration.rule.default_retention.days",
+                              "var.object_lock_configuration.rule.default_retention",
+                              "var.object_lock_configuration.rule",
+                              "var.object_lock_configuration"
+                            ]
+                          },
+                          "mode": {
+                            "references": [
+                              "var.object_lock_configuration.rule.default_retention.mode",
+                              "var.object_lock_configuration.rule.default_retention",
+                              "var.object_lock_configuration.rule",
+                              "var.object_lock_configuration"
+                            ]
+                          },
+                          "years": {
+                            "references": [
+                              "var.object_lock_configuration.rule.default_retention.years",
+                              "var.object_lock_configuration.rule.default_retention",
+                              "var.object_lock_configuration.rule",
+                              "var.object_lock_configuration"
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "token": {
+                    "references": [
+                      "var.object_lock_configuration.token",
+                      "var.object_lock_configuration"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.object_lock_enabled",
+                    "var.object_lock_configuration.rule.default_retention",
+                    "var.object_lock_configuration.rule",
+                    "var.object_lock_configuration"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_ownership_controls.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_ownership_controls",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "local.attach_policy",
+                      "aws_s3_bucket_policy.this[0].id",
+                      "aws_s3_bucket_policy.this[0]",
+                      "aws_s3_bucket_policy.this",
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "rule": [
+                    {
+                      "object_ownership": {
+                        "references": [
+                          "var.object_ownership"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.control_object_ownership",
+                    "var.is_directory_bucket"
+                  ]
+                },
+                "depends_on": [
+                  "aws_s3_bucket_policy.this",
+                  "aws_s3_bucket_public_access_block.this",
+                  "aws_s3_bucket.this"
+                ]
+              },
+              {
+                "address": "aws_s3_bucket_policy.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_policy",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "var.is_directory_bucket",
+                      "aws_s3_directory_bucket.this[0].bucket",
+                      "aws_s3_directory_bucket.this[0]",
+                      "aws_s3_directory_bucket.this",
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "policy": {
+                    "references": [
+                      "local.policy"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "local.attach_policy"
+                  ]
+                },
+                "depends_on": [
+                  "aws_s3_bucket_public_access_block.this"
+                ]
+              },
+              {
+                "address": "aws_s3_bucket_public_access_block.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_public_access_block",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "block_public_acls": {
+                    "references": [
+                      "var.block_public_acls"
+                    ]
+                  },
+                  "block_public_policy": {
+                    "references": [
+                      "var.block_public_policy"
+                    ]
+                  },
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "ignore_public_acls": {
+                    "references": [
+                      "var.ignore_public_acls"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "restrict_public_buckets": {
+                    "references": [
+                      "var.restrict_public_buckets"
+                    ]
+                  },
+                  "skip_destroy": {
+                    "references": [
+                      "var.skip_destroy_public_access_block"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_public_policy",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_replication_configuration.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_replication_configuration",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "role": {
+                    "references": [
+                      "var.replication_configuration.role",
+                      "var.replication_configuration"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "local.has_replication",
+                    "var.is_directory_bucket"
+                  ]
+                },
+                "depends_on": [
+                  "aws_s3_bucket_versioning.this"
+                ]
+              },
+              {
+                "address": "aws_s3_bucket_request_payment_configuration.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_request_payment_configuration",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "expected_bucket_owner": {
+                    "references": [
+                      "var.expected_bucket_owner"
+                    ]
+                  },
+                  "payer": {
+                    "references": [
+                      "var.request_payer"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.request_payer",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_server_side_encryption_configuration.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_server_side_encryption_configuration",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "var.is_directory_bucket",
+                      "aws_s3_directory_bucket.this[0].bucket",
+                      "aws_s3_directory_bucket.this[0]",
+                      "aws_s3_directory_bucket.this",
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "expected_bucket_owner": {
+                    "references": [
+                      "var.expected_bucket_owner"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.server_side_encryption_configuration.rule",
+                    "var.server_side_encryption_configuration"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_versioning.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_versioning",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "expected_bucket_owner": {
+                    "references": [
+                      "var.expected_bucket_owner"
+                    ]
+                  },
+                  "mfa": {
+                    "references": [
+                      "var.versioning[\"mfa\"]",
+                      "var.versioning"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "versioning_configuration": [
+                    {
+                      "mfa_delete": {
+                        "references": [
+                          "var.versioning[\"mfa_delete\"]",
+                          "var.versioning",
+                          "var.versioning[\"mfa_delete\"]",
+                          "var.versioning"
+                        ]
+                      },
+                      "status": {
+                        "references": [
+                          "var.versioning[\"enabled\"]",
+                          "var.versioning",
+                          "var.versioning[\"status\"]",
+                          "var.versioning",
+                          "var.versioning[\"status\"]",
+                          "var.versioning"
+                        ]
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.versioning",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_bucket_website_configuration.this",
+                "mode": "managed",
+                "type": "aws_s3_bucket_website_configuration",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "aws_s3_bucket.this[0].id",
+                      "aws_s3_bucket.this[0]",
+                      "aws_s3_bucket.this"
+                    ]
+                  },
+                  "expected_bucket_owner": {
+                    "references": [
+                      "var.expected_bucket_owner"
+                    ]
+                  },
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "local.has_website",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "aws_s3_directory_bucket.this",
+                "mode": "managed",
+                "type": "aws_s3_directory_bucket",
+                "name": "this",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "bucket": {
+                    "references": [
+                      "var.bucket",
+                      "var.availability_zone_id"
+                    ]
+                  },
+                  "data_redundancy": {
+                    "references": [
+                      "var.data_redundancy"
+                    ]
+                  },
+                  "force_destroy": {
+                    "references": [
+                      "var.force_destroy"
+                    ]
+                  },
+                  "location": [
+                    {
+                      "name": {
+                        "references": [
+                          "var.availability_zone_id"
+                        ]
+                      },
+                      "type": {
+                        "references": [
+                          "var.location_type"
+                        ]
+                      }
+                    }
+                  ],
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  },
+                  "tags": {
+                    "references": [
+                      "var.tags"
+                    ]
+                  },
+                  "type": {
+                    "references": [
+                      "var.type"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_caller_identity.current",
+                "mode": "data",
+                "type": "aws_caller_identity",
+                "name": "current",
+                "provider_config_key": "aws",
+                "schema_version": 0
+              },
+              {
+                "address": "data.aws_canonical_user_id.this",
+                "mode": "data",
+                "type": "aws_canonical_user_id",
+                "name": "this",
+                "provider_config_key": "aws",
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "local.create_bucket_acl",
+                    "var.owner[\"id\"]",
+                    "var.owner"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.access_log_delivery",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "access_log_delivery",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:PutObject"
+                        ]
+                      },
+                      "effect": {
+                        "constant_value": "Allow"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "logging.s3.amazonaws.com"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "Service"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "AWSAccessLogDeliveryWrite"
+                      }
+                    },
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:GetBucketAcl"
+                        ]
+                      },
+                      "effect": {
+                        "constant_value": "Allow"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "logging.s3.amazonaws.com"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "Service"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "AWSAccessLogDeliveryAclCheck"
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_access_log_delivery_policy",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.cloudtrail_log_delivery",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "cloudtrail_log_delivery",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:GetBucketAcl"
+                        ]
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "cloudtrail.amazonaws.com"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "Service"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "AWSCloudTrailAclCheck"
+                      }
+                    },
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:PutObject"
+                        ]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "StringEquals"
+                          },
+                          "values": {
+                            "constant_value": [
+                              "bucket-owner-full-control"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "s3:x-amz-acl"
+                          }
+                        }
+                      ],
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "cloudtrail.amazonaws.com"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "Service"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "AWSCloudTrailWrite"
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_cloudtrail_log_delivery_policy",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.combined",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "combined",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "source_policy_documents": {
+                    "references": [
+                      "var.attach_elb_log_delivery_policy",
+                      "data.aws_iam_policy_document.elb_log_delivery[0].json",
+                      "data.aws_iam_policy_document.elb_log_delivery[0]",
+                      "data.aws_iam_policy_document.elb_log_delivery",
+                      "var.attach_lb_log_delivery_policy",
+                      "data.aws_iam_policy_document.lb_log_delivery[0].json",
+                      "data.aws_iam_policy_document.lb_log_delivery[0]",
+                      "data.aws_iam_policy_document.lb_log_delivery",
+                      "var.attach_access_log_delivery_policy",
+                      "data.aws_iam_policy_document.access_log_delivery[0].json",
+                      "data.aws_iam_policy_document.access_log_delivery[0]",
+                      "data.aws_iam_policy_document.access_log_delivery",
+                      "var.attach_cloudtrail_log_delivery_policy",
+                      "data.aws_iam_policy_document.cloudtrail_log_delivery[0].json",
+                      "data.aws_iam_policy_document.cloudtrail_log_delivery[0]",
+                      "data.aws_iam_policy_document.cloudtrail_log_delivery",
+                      "var.attach_require_latest_tls_policy",
+                      "data.aws_iam_policy_document.require_latest_tls[0].json",
+                      "data.aws_iam_policy_document.require_latest_tls[0]",
+                      "data.aws_iam_policy_document.require_latest_tls",
+                      "var.attach_deny_insecure_transport_policy",
+                      "data.aws_iam_policy_document.deny_insecure_transport[0].json",
+                      "data.aws_iam_policy_document.deny_insecure_transport[0]",
+                      "data.aws_iam_policy_document.deny_insecure_transport",
+                      "var.attach_deny_unencrypted_object_uploads",
+                      "data.aws_iam_policy_document.deny_unencrypted_object_uploads[0].json",
+                      "data.aws_iam_policy_document.deny_unencrypted_object_uploads[0]",
+                      "data.aws_iam_policy_document.deny_unencrypted_object_uploads",
+                      "var.attach_deny_ssec_encrypted_object_uploads",
+                      "data.aws_iam_policy_document.deny_ssec_encrypted_object_uploads[0].json",
+                      "data.aws_iam_policy_document.deny_ssec_encrypted_object_uploads[0]",
+                      "data.aws_iam_policy_document.deny_ssec_encrypted_object_uploads",
+                      "var.attach_deny_incorrect_kms_key_sse",
+                      "data.aws_iam_policy_document.deny_incorrect_kms_key_sse[0].json",
+                      "data.aws_iam_policy_document.deny_incorrect_kms_key_sse[0]",
+                      "data.aws_iam_policy_document.deny_incorrect_kms_key_sse",
+                      "var.attach_deny_incorrect_encryption_headers",
+                      "data.aws_iam_policy_document.deny_incorrect_encryption_headers[0].json",
+                      "data.aws_iam_policy_document.deny_incorrect_encryption_headers[0]",
+                      "data.aws_iam_policy_document.deny_incorrect_encryption_headers",
+                      "var.attach_inventory_destination_policy",
+                      "var.attach_analytics_destination_policy",
+                      "data.aws_iam_policy_document.inventory_and_analytics_destination_policy[0].json",
+                      "data.aws_iam_policy_document.inventory_and_analytics_destination_policy[0]",
+                      "data.aws_iam_policy_document.inventory_and_analytics_destination_policy",
+                      "var.attach_policy",
+                      "var.policy",
+                      "var.attach_waf_log_delivery_policy",
+                      "data.aws_iam_policy_document.waf_log_delivery[0].json",
+                      "data.aws_iam_policy_document.waf_log_delivery[0]",
+                      "data.aws_iam_policy_document.waf_log_delivery"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "local.attach_policy"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.deny_incorrect_encryption_headers",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "deny_incorrect_encryption_headers",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:PutObject"
+                        ]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "StringNotEquals"
+                          },
+                          "values": {
+                            "references": [
+                              "var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default.sse_algorithm",
+                              "var.server_side_encryption_configuration.rule.apply_server_side_encryption_by_default",
+                              "var.server_side_encryption_configuration.rule",
+                              "var.server_side_encryption_configuration"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "s3:x-amz-server-side-encryption"
+                          }
+                        }
+                      ],
+                      "effect": {
+                        "constant_value": "Deny"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "*"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "*"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "denyIncorrectEncryptionHeaders"
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_deny_incorrect_encryption_headers",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.deny_incorrect_kms_key_sse",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "deny_incorrect_kms_key_sse",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:PutObject"
+                        ]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "StringNotEquals"
+                          },
+                          "values": {
+                            "references": [
+                              "var.allowed_kms_key_arn"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "s3:x-amz-server-side-encryption-aws-kms-key-id"
+                          }
+                        }
+                      ],
+                      "effect": {
+                        "constant_value": "Deny"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "*"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "*"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "denyIncorrectKmsKeySse"
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_deny_incorrect_kms_key_sse",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.deny_insecure_transport",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "deny_insecure_transport",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:*"
+                        ]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "Bool"
+                          },
+                          "values": {
+                            "constant_value": [
+                              "false"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "aws:SecureTransport"
+                          }
+                        }
+                      ],
+                      "effect": {
+                        "constant_value": "Deny"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "*"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "*"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this",
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "denyInsecureTransport"
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_deny_insecure_transport_policy",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.deny_ssec_encrypted_object_uploads",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "deny_ssec_encrypted_object_uploads",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:PutObject"
+                        ]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "Null"
+                          },
+                          "values": {
+                            "constant_value": [
+                              false
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "s3:x-amz-server-side-encryption-customer-algorithm"
+                          }
+                        }
+                      ],
+                      "effect": {
+                        "constant_value": "Deny"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "*"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "*"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "denySSECEncryptedObjectUploads"
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_deny_ssec_encrypted_object_uploads",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.deny_unencrypted_object_uploads",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "deny_unencrypted_object_uploads",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:PutObject"
+                        ]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "Null"
+                          },
+                          "values": {
+                            "constant_value": [
+                              true
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "s3:x-amz-server-side-encryption"
+                          }
+                        }
+                      ],
+                      "effect": {
+                        "constant_value": "Deny"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "*"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "*"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "denyUnencryptedObjectUploads"
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_deny_unencrypted_object_uploads",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.elb_log_delivery",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "elb_log_delivery",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:PutObject"
+                        ]
+                      },
+                      "effect": {
+                        "constant_value": "Allow"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "logdelivery.elasticloadbalancing.amazonaws.com"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "Service"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": ""
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_elb_log_delivery_policy",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.inventory_and_analytics_destination_policy",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "inventory_and_analytics_destination_policy",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:PutObject"
+                        ]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "ArnLike"
+                          },
+                          "values": {
+                            "references": [
+                              "var.inventory_self_source_destination",
+                              "aws_s3_bucket.this[0].arn",
+                              "aws_s3_bucket.this[0]",
+                              "aws_s3_bucket.this",
+                              "var.inventory_source_bucket_arn",
+                              "var.analytics_self_source_destination",
+                              "aws_s3_bucket.this[0].arn",
+                              "aws_s3_bucket.this[0]",
+                              "aws_s3_bucket.this",
+                              "var.analytics_source_bucket_arn"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "aws:SourceArn"
+                          }
+                        },
+                        {
+                          "test": {
+                            "constant_value": "StringEquals"
+                          },
+                          "values": {
+                            "references": [
+                              "var.inventory_self_source_destination",
+                              "data.aws_caller_identity.current.account_id",
+                              "data.aws_caller_identity.current",
+                              "var.inventory_source_account_id",
+                              "var.analytics_self_source_destination",
+                              "data.aws_caller_identity.current.account_id",
+                              "data.aws_caller_identity.current",
+                              "var.analytics_source_account_id"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "aws:SourceAccount"
+                          }
+                        },
+                        {
+                          "test": {
+                            "constant_value": "StringEquals"
+                          },
+                          "values": {
+                            "constant_value": [
+                              "bucket-owner-full-control"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "s3:x-amz-acl"
+                          }
+                        }
+                      ],
+                      "effect": {
+                        "constant_value": "Allow"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "s3.amazonaws.com"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "Service"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "destinationInventoryAndAnalyticsPolicy"
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.is_directory_bucket",
+                    "var.attach_inventory_destination_policy",
+                    "var.attach_analytics_destination_policy"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.lb_log_delivery",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "lb_log_delivery",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:PutObject"
+                        ]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "StringEquals"
+                          },
+                          "values": {
+                            "constant_value": [
+                              "bucket-owner-full-control"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "s3:x-amz-acl"
+                          }
+                        }
+                      ],
+                      "effect": {
+                        "constant_value": "Allow"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "delivery.logs.amazonaws.com"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "Service"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "AlbNlbLogDeliveryWrite"
+                      }
+                    },
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:GetBucketAcl",
+                          "s3:ListBucket"
+                        ]
+                      },
+                      "effect": {
+                        "constant_value": "Allow"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "delivery.logs.amazonaws.com"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "Service"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "AlbNlbLogDeliveryAclCheck"
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_lb_log_delivery_policy",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.require_latest_tls",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "require_latest_tls",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:*"
+                        ]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "NumericLessThan"
+                          },
+                          "values": {
+                            "constant_value": [
+                              "1.2"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "s3:TlsVersion"
+                          }
+                        }
+                      ],
+                      "effect": {
+                        "constant_value": "Deny"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "*"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "*"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this",
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "denyOutdatedTLS"
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_require_latest_tls_policy",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.waf_log_delivery",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "waf_log_delivery",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:PutObject"
+                        ]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "StringEquals"
+                          },
+                          "values": {
+                            "constant_value": [
+                              "bucket-owner-full-control"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "s3:x-amz-acl"
+                          }
+                        },
+                        {
+                          "test": {
+                            "constant_value": "StringEquals"
+                          },
+                          "values": {
+                            "references": [
+                              "data.aws_caller_identity.current.account_id",
+                              "data.aws_caller_identity.current"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "aws:SourceAccount"
+                          }
+                        },
+                        {
+                          "test": {
+                            "constant_value": "ArnLike"
+                          },
+                          "values": {
+                            "references": [
+                              "data.aws_partition.current.partition",
+                              "data.aws_partition.current",
+                              "data.aws_caller_identity.current.account_id",
+                              "data.aws_caller_identity.current"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "aws:SourceArn"
+                          }
+                        }
+                      ],
+                      "effect": {
+                        "constant_value": "Allow"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "delivery.logs.amazonaws.com"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "Service"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this",
+                          "data.aws_caller_identity.current.account_id",
+                          "data.aws_caller_identity.current"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "WafLogDeliveryWrite"
+                      }
+                    },
+                    {
+                      "actions": {
+                        "constant_value": [
+                          "s3:GetBucketAcl"
+                        ]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "StringEquals"
+                          },
+                          "values": {
+                            "references": [
+                              "data.aws_caller_identity.current.account_id",
+                              "data.aws_caller_identity.current"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "aws:SourceAccount"
+                          }
+                        },
+                        {
+                          "test": {
+                            "constant_value": "ArnLike"
+                          },
+                          "values": {
+                            "references": [
+                              "data.aws_partition.current.partition",
+                              "data.aws_partition.current",
+                              "data.aws_caller_identity.current.account_id",
+                              "data.aws_caller_identity.current"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "aws:SourceArn"
+                          }
+                        }
+                      ],
+                      "effect": {
+                        "constant_value": "Allow"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "constant_value": [
+                              "delivery.logs.amazonaws.com"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "Service"
+                          }
+                        }
+                      ],
+                      "resources": {
+                        "references": [
+                          "aws_s3_bucket.this[0].arn",
+                          "aws_s3_bucket.this[0]",
+                          "aws_s3_bucket.this"
+                        ]
+                      },
+                      "sid": {
+                        "constant_value": "WafLogDeliveryAclCheck"
+                      }
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "local.create_bucket",
+                    "var.attach_waf_log_delivery_policy",
+                    "var.is_directory_bucket"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_partition.current",
+                "mode": "data",
+                "type": "aws_partition",
+                "name": "current",
+                "provider_config_key": "aws",
+                "schema_version": 0
+              },
+              {
+                "address": "data.aws_region.current",
+                "mode": "data",
+                "type": "aws_region",
+                "name": "current",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "region": {
+                    "references": [
+                      "var.region"
+                    ]
+                  }
+                },
+                "schema_version": 0
+              }
+            ],
+            "variables": {
+              "acceleration_status": {
+                "type": "string",
+                "default": null,
+                "description": "Sets the accelerate configuration of an existing bucket. Can be Enabled or Suspended"
+              },
+              "access_log_delivery_policy_source_accounts": {
+                "type": [
+                  "list",
+                  "string"
+                ],
+                "default": [],
+                "description": "List of AWS Account IDs should be allowed to deliver access logs to this bucket"
+              },
+              "access_log_delivery_policy_source_buckets": {
+                "type": [
+                  "list",
+                  "string"
+                ],
+                "default": [],
+                "description": "List of S3 bucket ARNs which should be allowed to deliver access logs to this bucket"
+              },
+              "access_log_delivery_policy_source_organizations": {
+                "type": [
+                  "list",
+                  "string"
+                ],
+                "default": [],
+                "description": "List of AWS Organization IDs should be allowed to deliver access logs to this bucket"
+              },
+              "acl": {
+                "type": "string",
+                "default": null,
+                "description": "The canned ACL to apply. Conflicts with `grant`"
+              },
+              "allowed_kms_key_arn": {
+                "type": "string",
+                "default": null,
+                "description": "The ARN of KMS key which should be allowed in PutObject"
+              },
+              "analytics_configuration": {
+                "type": [
+                  "map",
+                  [
+                    "object",
+                    {
+                      "filter": [
+                        "object",
+                        {
+                          "prefix": "string",
+                          "tags": [
+                            "map",
+                            "string"
+                          ]
+                        },
+                        [
+                          "prefix",
+                          "tags"
+                        ]
+                      ],
+                      "storage_class_analysis": [
+                        "object",
+                        {
+                          "destination_account_id": "string",
+                          "destination_bucket_arn": "string",
+                          "export_format": "string",
+                          "export_prefix": "string",
+                          "output_schema_version": "string"
+                        },
+                        [
+                          "destination_account_id",
+                          "destination_bucket_arn",
+                          "export_format",
+                          "export_prefix",
+                          "output_schema_version"
+                        ]
+                      ]
+                    },
+                    [
+                      "filter",
+                      "storage_class_analysis"
+                    ]
+                  ]
+                ],
+                "default": {},
+                "description": "Analytics configurations for the bucket, keyed by configuration name"
+              },
+              "analytics_self_source_destination": {
+                "type": "bool",
+                "default": false,
+                "description": "Whether or not the analytics source bucket is also the destination bucket"
+              },
+              "analytics_source_account_id": {
+                "type": "string",
+                "default": null,
+                "description": "The analytics source account id"
+              },
+              "analytics_source_bucket_arn": {
+                "type": "string",
+                "default": null,
+                "description": "The analytics source bucket ARN"
+              },
+              "attach_access_log_delivery_policy": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should have S3 access log delivery policy attached"
+              },
+              "attach_analytics_destination_policy": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should have bucket analytics destination policy attached"
+              },
+              "attach_cloudtrail_log_delivery_policy": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should have CloudTrail log delivery policy attached"
+              },
+              "attach_deny_incorrect_encryption_headers": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should deny incorrect encryption headers policy attached"
+              },
+              "attach_deny_incorrect_kms_key_sse": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket policy should deny usage of incorrect KMS key SSE"
+              },
+              "attach_deny_insecure_transport_policy": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should have deny non-SSL transport policy attached"
+              },
+              "attach_deny_ssec_encrypted_object_uploads": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should deny SSEC encrypted object uploads"
+              },
+              "attach_deny_unencrypted_object_uploads": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should deny unencrypted object uploads policy attached"
+              },
+              "attach_elb_log_delivery_policy": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should have ELB log delivery policy attached"
+              },
+              "attach_inventory_destination_policy": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should have bucket inventory destination policy attached"
+              },
+              "attach_lb_log_delivery_policy": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should have ALB/NLB log delivery policy attached"
+              },
+              "attach_policy": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should have bucket policy attached (set to `true` to use value of `policy` as bucket policy)"
+              },
+              "attach_public_policy": {
+                "type": "bool",
+                "default": true,
+                "description": "Controls if the S3 Bucket Public Access Block is created (set to `false` to allow upstream to apply defaults to the bucket)"
+              },
+              "attach_require_latest_tls_policy": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should require the latest version of TLS"
+              },
+              "attach_waf_log_delivery_policy": {
+                "type": "bool",
+                "default": false,
+                "description": "Controls if S3 bucket should have WAF log delivery policy attached"
+              },
+              "availability_zone_id": {
+                "type": "string",
+                "default": null,
+                "description": "Availability Zone ID or Local Zone ID"
+              },
+              "block_public_acls": {
+                "type": "bool",
+                "default": true,
+                "description": "Whether Amazon S3 should block public ACLs for this bucket"
+              },
+              "block_public_policy": {
+                "type": "bool",
+                "default": true,
+                "description": "Whether Amazon S3 should block public bucket policies for this bucket"
+              },
+              "bucket": {
+                "type": "string",
+                "default": null,
+                "description": "The name of the bucket. If omitted, Terraform will assign a random, unique name"
+              },
+              "bucket_namespace": {
+                "type": "string",
+                "default": null,
+                "description": "Namespace for the bucket. Determines bucket naming scope. Valid values: `account-regional`, `global`. Defaults to `global` (AWS)"
+              },
+              "bucket_prefix": {
+                "type": "string",
+                "default": null,
+                "description": "Creates a unique bucket name beginning with the specified prefix. Conflicts with bucket"
+              },
+              "control_object_ownership": {
+                "type": "bool",
+                "default": false,
+                "description": "Whether to manage S3 Bucket Ownership Controls on this bucket"
+              },
+              "cors_rule": {
+                "type": [
+                  "list",
+                  [
+                    "object",
+                    {
+                      "allowed_headers": [
+                        "list",
+                        "string"
+                      ],
+                      "allowed_methods": [
+                        "list",
+                        "string"
+                      ],
+                      "allowed_origins": [
+                        "list",
+                        "string"
+                      ],
+                      "expose_headers": [
+                        "list",
+                        "string"
+                      ],
+                      "id": "string",
+                      "max_age_seconds": "number"
+                    },
+                    [
+                      "allowed_headers",
+                      "expose_headers",
+                      "id",
+                      "max_age_seconds"
+                    ]
+                  ]
+                ],
+                "default": [],
+                "description": "Rules for Cross-Origin Resource Sharing on the bucket"
+              },
+              "create_bucket": {
+                "type": "bool",
+                "default": true,
+                "description": "Controls if S3 bucket should be created"
+              },
+              "create_metadata_configuration": {
+                "type": "bool",
+                "default": false,
+                "description": "Whether to create metadata configuration resource"
+              },
+              "data_redundancy": {
+                "type": "string",
+                "default": null,
+                "description": "Data redundancy. Valid values: `SingleAvailabilityZone`"
+              },
+              "expected_bucket_owner": {
+                "type": "string",
+                "default": null,
+                "description": "The account ID of the expected bucket owner"
+              },
+              "force_destroy": {
+                "type": "bool",
+                "default": false,
+                "description": "A boolean that indicates all objects should be deleted from the bucket so that the bucket can be destroyed without error. These objects are not recoverable"
+              },
+              "grant": {
+                "type": [
+                  "list",
+                  [
+                    "object",
+                    {
+                      "email": "string",
+                      "id": "string",
+                      "permission": "string",
+                      "type": "string",
+                      "uri": "string"
+                    },
+                    [
+                      "email",
+                      "id",
+                      "uri"
+                    ]
+                  ]
+                ],
+                "default": [],
+                "description": "ACL policy grants for the bucket. Conflicts with `acl`"
+              },
+              "ignore_public_acls": {
+                "type": "bool",
+                "default": true,
+                "description": "Whether Amazon S3 should ignore public ACLs for this bucket"
+              },
+              "intelligent_tiering": {
+                "type": [
+                  "map",
+                  [
+                    "object",
+                    {
+                      "filter": [
+                        "object",
+                        {
+                          "prefix": "string",
+                          "tags": [
+                            "map",
+                            "string"
+                          ]
+                        },
+                        [
+                          "prefix",
+                          "tags"
+                        ]
+                      ],
+                      "status": "string",
+                      "tiering": [
+                        "map",
+                        [
+                          "object",
+                          {
+                            "days": "number"
+                          }
+                        ]
+                      ]
+                    },
+                    [
+                      "filter",
+                      "status"
+                    ]
+                  ]
+                ],
+                "default": {},
+                "description": "Intelligent tiering configurations for the bucket, keyed by configuration name"
+              },
+              "inventory_configuration": {
+                "type": [
+                  "map",
+                  [
+                    "object",
+                    {
+                      "bucket": "string",
+                      "destination": [
+                        "object",
+                        {
+                          "account_id": "string",
+                          "bucket_arn": "string",
+                          "encryption": [
+                            "object",
+                            {
+                              "encryption_type": "string",
+                              "kms_key_id": "string"
+                            },
+                            [
+                              "kms_key_id"
+                            ]
+                          ],
+                          "format": "string",
+                          "prefix": "string"
+                        },
+                        [
+                          "account_id",
+                          "bucket_arn",
+                          "encryption",
+                          "format",
+                          "prefix"
+                        ]
+                      ],
+                      "enabled": "bool",
+                      "filter": [
+                        "object",
+                        {
+                          "prefix": "string"
+                        },
+                        [
+                          "prefix"
+                        ]
+                      ],
+                      "frequency": "string",
+                      "included_object_versions": "string",
+                      "optional_fields": [
+                        "list",
+                        "string"
+                      ]
+                    },
+                    [
+                      "bucket",
+                      "enabled",
+                      "filter",
+                      "optional_fields"
+                    ]
+                  ]
+                ],
+                "default": {},
+                "description": "Inventory configurations for the bucket, keyed by configuration name"
+              },
+              "inventory_self_source_destination": {
+                "type": "bool",
+                "default": false,
+                "description": "Whether or not the inventory source bucket is also the destination bucket"
+              },
+              "inventory_source_account_id": {
+                "type": "string",
+                "default": null,
+                "description": "The inventory source account id"
+              },
+              "inventory_source_bucket_arn": {
+                "type": "string",
+                "default": null,
+                "description": "The inventory source bucket ARN"
+              },
+              "is_directory_bucket": {
+                "type": "bool",
+                "default": false,
+                "description": "If the s3 bucket created is a directory bucket"
+              },
+              "lb_log_delivery_policy_source_organizations": {
+                "type": [
+                  "list",
+                  "string"
+                ],
+                "default": [],
+                "description": "List of AWS Organization IDs should be allowed to deliver ALB/NLB logs to this bucket"
+              },
+              "lifecycle_rule": {
+                "type": [
+                  "list",
+                  [
+                    "object",
+                    {
+                      "abort_incomplete_multipart_upload_days": "number",
+                      "enabled": "bool",
+                      "expiration": [
+                        "object",
+                        {
+                          "date": "string",
+                          "days": "number",
+                          "expired_object_delete_marker": "bool"
+                        },
+                        [
+                          "date",
+                          "days",
+                          "expired_object_delete_marker"
+                        ]
+                      ],
+                      "filter": [
+                        "object",
+                        {
+                          "object_size_greater_than": "number",
+                          "object_size_less_than": "number",
+                          "prefix": "string",
+                          "tag": [
+                            "map",
+                            "string"
+                          ],
+                          "tags": [
+                            "map",
+                            "string"
+                          ]
+                        },
+                        [
+                          "object_size_greater_than",
+                          "object_size_less_than",
+                          "prefix",
+                          "tag",
+                          "tags"
+                        ]
+                      ],
+                      "id": "string",
+                      "noncurrent_version_expiration": [
+                        "object",
+                        {
+                          "days": "number",
+                          "newer_noncurrent_versions": "number",
+                          "noncurrent_days": "number"
+                        },
+                        [
+                          "days",
+                          "newer_noncurrent_versions",
+                          "noncurrent_days"
+                        ]
+                      ],
+                      "noncurrent_version_transition": [
+                        "list",
+                        [
+                          "object",
+                          {
+                            "days": "number",
+                            "newer_noncurrent_versions": "number",
+                            "noncurrent_days": "number",
+                            "storage_class": "string"
+                          },
+                          [
+                            "days",
+                            "newer_noncurrent_versions",
+                            "noncurrent_days"
+                          ]
+                        ]
+                      ],
+                      "prefix": "string",
+                      "status": "string",
+                      "transition": [
+                        "list",
+                        [
+                          "object",
+                          {
+                            "date": "string",
+                            "days": "number",
+                            "storage_class": "string"
+                          },
+                          [
+                            "date",
+                            "days"
+                          ]
+                        ]
+                      ]
+                    },
+                    [
+                      "abort_incomplete_multipart_upload_days",
+                      "enabled",
+                      "expiration",
+                      "filter",
+                      "id",
+                      "noncurrent_version_expiration",
+                      "noncurrent_version_transition",
+                      "prefix",
+                      "status",
+                      "transition"
+                    ]
+                  ]
+                ],
+                "default": [],
+                "description": "Object lifecycle management rules for the bucket"
+              },
+              "location_type": {
+                "type": "string",
+                "default": null,
+                "description": "Location type. Valid values: `AvailabilityZone` or `LocalZone`"
+              },
+              "logging": {
+                "type": [
+                  "object",
+                  {
+                    "target_bucket": "string",
+                    "target_object_key_format": [
+                      "object",
+                      {
+                        "partitioned_prefix": [
+                          "object",
+                          {
+                            "partition_date_source": "string"
+                          },
+                          [
+                            "partition_date_source"
+                          ]
+                        ],
+                        "simple_prefix": [
+                          "object",
+                          {}
+                        ]
+                      },
+                      [
+                        "partitioned_prefix",
+                        "simple_prefix"
+                      ]
+                    ],
+                    "target_prefix": "string"
+                  },
+                  [
+                    "target_object_key_format",
+                    "target_prefix"
+                  ]
+                ],
+                "default": null,
+                "description": "Access log delivery configuration for the bucket"
+              },
+              "metadata_encryption_configuration": {
+                "type": [
+                  "object",
+                  {
+                    "kms_key_arn": "string",
+                    "sse_algorithm": "string"
+                  },
+                  [
+                    "kms_key_arn"
+                  ]
+                ],
+                "default": null,
+                "description": "Encryption configuration for the metadata inventory table"
+              },
+              "metadata_inventory_table_configuration_state": {
+                "type": "string",
+                "default": null,
+                "description": "Configuration state of the inventory table, indicating whether the inventory table is enabled or disabled. Valid values: `ENABLED`, `DISABLED`"
+              },
+              "metadata_journal_table_record_expiration": {
+                "type": "string",
+                "default": null,
+                "description": "Whether journal table record expiration is enabled or disabled. Valid values: `ENABLED`, `DISABLED`"
+              },
+              "metadata_journal_table_record_expiration_days": {
+                "type": "number",
+                "default": null,
+                "description": "Number of days to retain journal table records"
+              },
+              "metric_configuration": {
+                "type": [
+                  "list",
+                  [
+                    "object",
+                    {
+                      "filter": [
+                        "object",
+                        {
+                          "access_point": "string",
+                          "prefix": "string",
+                          "tags": [
+                            "map",
+                            "string"
+                          ]
+                        },
+                        [
+                          "access_point",
+                          "prefix",
+                          "tags"
+                        ]
+                      ],
+                      "name": "string"
+                    },
+                    [
+                      "filter"
+                    ]
+                  ]
+                ],
+                "default": [],
+                "description": "Metric configurations for the bucket"
+              },
+              "object_lock_configuration": {
+                "type": [
+                  "object",
+                  {
+                    "rule": [
+                      "object",
+                      {
+                        "default_retention": [
+                          "object",
+                          {
+                            "days": "number",
+                            "mode": "string",
+                            "years": "number"
+                          },
+                          [
+                            "days",
+                            "years"
+                          ]
+                        ]
+                      }
+                    ],
+                    "token": "string"
+                  },
+                  [
+                    "rule",
+                    "token"
+                  ]
+                ],
+                "default": {
+                  "rule": null,
+                  "token": null
+                },
+                "description": "Object lock configuration for the bucket"
+              },
+              "object_lock_enabled": {
+                "type": "bool",
+                "default": true,
+                "description": "Whether S3 bucket should have an Object Lock configuration enabled"
+              },
+              "object_ownership": {
+                "type": "string",
+                "default": "BucketOwnerEnforced",
+                "description": "Object ownership. Valid values: `BucketOwnerEnforced`, `BucketOwnerPreferred` or `ObjectWriter`. `BucketOwnerEnforced`: ACLs are disabled, and the bucket owner automatically owns and has full control over every object in the bucket. `BucketOwnerPreferred`: Objects uploaded to the bucket change ownership to the bucket owner if the objects are uploaded with the `bucket-owner-full-control` canned ACL. `ObjectWriter`: The uploading account will own the object if the object is uploaded with the `bucket-owner-full-control` canned ACL"
+              },
+              "owner": {
+                "type": [
+                  "map",
+                  "string"
+                ],
+                "default": {},
+                "description": "Bucket owner's display name and ID. Conflicts with `acl`"
+              },
+              "policy": {
+                "type": "string",
+                "default": null,
+                "description": "A valid bucket policy JSON document. Note that if the policy document is not specific enough (but still valid), Terraform may view the policy as constantly changing in a terraform plan. In this case, please make sure you use the verbose/specific version of the policy. For more information about building AWS IAM policy documents with Terraform, see the AWS IAM Policy Document Guide"
+              },
+              "putin_khuylo": {
+                "type": "bool",
+                "default": true,
+                "description": "Do you agree that Putin doesn't respect Ukrainian sovereignty and territorial integrity? More info: https://en.wikipedia.org/wiki/Putin_khuylo!"
+              },
+              "region": {
+                "type": "string",
+                "default": null,
+                "description": "Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration"
+              },
+              "replication_configuration": {
+                "type": [
+                  "object",
+                  {
+                    "role": "string",
+                    "rule": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "delete_marker_replication": "string",
+                          "delete_marker_replication_status": "string",
+                          "destination": [
+                            "object",
+                            {
+                              "access_control_translation": [
+                                "object",
+                                {
+                                  "owner": "string"
+                                }
+                              ],
+                              "account": "string",
+                              "account_id": "string",
+                              "bucket": "string",
+                              "encryption_configuration": [
+                                "object",
+                                {
+                                  "replica_kms_key_id": "string"
+                                },
+                                [
+                                  "replica_kms_key_id"
+                                ]
+                              ],
+                              "metrics": [
+                                "object",
+                                {
+                                  "minutes": "number",
+                                  "status": "string"
+                                },
+                                [
+                                  "minutes",
+                                  "status"
+                                ]
+                              ],
+                              "replica_kms_key_id": "string",
+                              "replication_time": [
+                                "object",
+                                {
+                                  "minutes": "number",
+                                  "status": "string"
+                                },
+                                [
+                                  "minutes",
+                                  "status"
+                                ]
+                              ],
+                              "storage_class": "string"
+                            },
+                            [
+                              "access_control_translation",
+                              "account",
+                              "account_id",
+                              "encryption_configuration",
+                              "metrics",
+                              "replica_kms_key_id",
+                              "replication_time",
+                              "storage_class"
+                            ]
+                          ],
+                          "existing_object_replication": "string",
+                          "existing_object_replication_status": "string",
+                          "filter": [
+                            "object",
+                            {
+                              "prefix": "string",
+                              "tag": [
+                                "map",
+                                "string"
+                              ],
+                              "tags": [
+                                "map",
+                                "string"
+                              ]
+                            },
+                            [
+                              "prefix",
+                              "tag",
+                              "tags"
+                            ]
+                          ],
+                          "id": "string",
+                          "prefix": "string",
+                          "priority": "number",
+                          "source_selection_criteria": [
+                            "object",
+                            {
+                              "replica_modifications": [
+                                "object",
+                                {
+                                  "enabled": "string",
+                                  "status": "string"
+                                },
+                                [
+                                  "enabled",
+                                  "status"
+                                ]
+                              ],
+                              "sse_kms_encrypted_objects": [
+                                "object",
+                                {
+                                  "enabled": "string",
+                                  "status": "string"
+                                },
+                                [
+                                  "enabled",
+                                  "status"
+                                ]
+                              ]
+                            },
+                            [
+                              "replica_modifications",
+                              "sse_kms_encrypted_objects"
+                            ]
+                          ],
+                          "status": "string"
+                        },
+                        [
+                          "delete_marker_replication",
+                          "delete_marker_replication_status",
+                          "existing_object_replication",
+                          "existing_object_replication_status",
+                          "filter",
+                          "id",
+                          "prefix",
+                          "priority",
+                          "source_selection_criteria",
+                          "status"
+                        ]
+                      ]
+                    ],
+                    "rules": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "delete_marker_replication": "string",
+                          "delete_marker_replication_status": "string",
+                          "destination": [
+                            "object",
+                            {
+                              "access_control_translation": [
+                                "object",
+                                {
+                                  "owner": "string"
+                                }
+                              ],
+                              "account": "string",
+                              "account_id": "string",
+                              "bucket": "string",
+                              "encryption_configuration": [
+                                "object",
+                                {
+                                  "replica_kms_key_id": "string"
+                                },
+                                [
+                                  "replica_kms_key_id"
+                                ]
+                              ],
+                              "metrics": [
+                                "object",
+                                {
+                                  "minutes": "number",
+                                  "status": "string"
+                                },
+                                [
+                                  "minutes",
+                                  "status"
+                                ]
+                              ],
+                              "replica_kms_key_id": "string",
+                              "replication_time": [
+                                "object",
+                                {
+                                  "minutes": "number",
+                                  "status": "string"
+                                },
+                                [
+                                  "minutes",
+                                  "status"
+                                ]
+                              ],
+                              "storage_class": "string"
+                            },
+                            [
+                              "access_control_translation",
+                              "account",
+                              "account_id",
+                              "encryption_configuration",
+                              "metrics",
+                              "replica_kms_key_id",
+                              "replication_time",
+                              "storage_class"
+                            ]
+                          ],
+                          "existing_object_replication": "string",
+                          "existing_object_replication_status": "string",
+                          "filter": [
+                            "object",
+                            {
+                              "prefix": "string",
+                              "tag": [
+                                "map",
+                                "string"
+                              ],
+                              "tags": [
+                                "map",
+                                "string"
+                              ]
+                            },
+                            [
+                              "prefix",
+                              "tag",
+                              "tags"
+                            ]
+                          ],
+                          "id": "string",
+                          "prefix": "string",
+                          "priority": "number",
+                          "source_selection_criteria": [
+                            "object",
+                            {
+                              "replica_modifications": [
+                                "object",
+                                {
+                                  "enabled": "string",
+                                  "status": "string"
+                                },
+                                [
+                                  "enabled",
+                                  "status"
+                                ]
+                              ],
+                              "sse_kms_encrypted_objects": [
+                                "object",
+                                {
+                                  "enabled": "string",
+                                  "status": "string"
+                                },
+                                [
+                                  "enabled",
+                                  "status"
+                                ]
+                              ]
+                            },
+                            [
+                              "replica_modifications",
+                              "sse_kms_encrypted_objects"
+                            ]
+                          ],
+                          "status": "string"
+                        },
+                        [
+                          "delete_marker_replication",
+                          "delete_marker_replication_status",
+                          "existing_object_replication",
+                          "existing_object_replication_status",
+                          "filter",
+                          "id",
+                          "prefix",
+                          "priority",
+                          "source_selection_criteria",
+                          "status"
+                        ]
+                      ]
+                    ]
+                  },
+                  [
+                    "role",
+                    "rule",
+                    "rules"
+                  ]
+                ],
+                "default": {
+                  "role": null,
+                  "rule": null,
+                  "rules": null
+                },
+                "description": "Cross-region replication configuration for the bucket"
+              },
+              "request_payer": {
+                "type": "string",
+                "default": null,
+                "description": "Specifies who should bear the cost of Amazon S3 data transfer. Can be either `BucketOwner` or `Requester`. By default, the owner of the S3 bucket would incur the costs of any data transfer. See Requester Pays Buckets developer guide for more information"
+              },
+              "restrict_public_buckets": {
+                "type": "bool",
+                "default": true,
+                "description": "Whether Amazon S3 should restrict public bucket policies for this bucket"
+              },
+              "server_side_encryption_configuration": {
+                "type": [
+                  "object",
+                  {
+                    "rule": [
+                      "object",
+                      {
+                        "apply_server_side_encryption_by_default": [
+                          "object",
+                          {
+                            "kms_master_key_id": "string",
+                            "sse_algorithm": "string"
+                          },
+                          [
+                            "kms_master_key_id"
+                          ]
+                        ],
+                        "blocked_encryption_types": [
+                          "list",
+                          "string"
+                        ],
+                        "bucket_key_enabled": "bool"
+                      },
+                      [
+                        "apply_server_side_encryption_by_default",
+                        "blocked_encryption_types",
+                        "bucket_key_enabled"
+                      ]
+                    ]
+                  },
+                  [
+                    "rule"
+                  ]
+                ],
+                "default": {
+                  "rule": {
+                    "apply_server_side_encryption_by_default": {
+                      "kms_master_key_id": null,
+                      "sse_algorithm": "aws:kms"
+                    },
+                    "blocked_encryption_types": null,
+                    "bucket_key_enabled": null
+                  }
+                },
+                "description": "Server-side encryption configuration for the bucket"
+              },
+              "skip_destroy_public_access_block": {
+                "type": "bool",
+                "default": true,
+                "description": "Whether to skip destroying the S3 Bucket Public Access Block configuration when destroying the bucket. Only used if `public_access_block` is set to true"
+              },
+              "tags": {
+                "type": [
+                  "map",
+                  "string"
+                ],
+                "default": {},
+                "description": "A mapping of tags to assign to the bucket"
+              },
+              "transition_default_minimum_object_size": {
+                "type": "string",
+                "default": null,
+                "description": "The default minimum object size behavior applied to the lifecycle configuration. Valid values: `all_storage_classes_128K` (default) or `varies_by_storage_class`"
+              },
+              "type": {
+                "type": "string",
+                "default": "Directory",
+                "description": "Bucket type. Valid values: `Directory`"
+              },
+              "versioning": {
+                "type": [
+                  "map",
+                  "string"
+                ],
+                "default": {
+                  "enabled": "Enabled"
+                },
+                "description": "Versioning configuration for the bucket"
+              },
+              "website": {
+                "type": [
+                  "object",
+                  {
+                    "error_document": "string",
+                    "index_document": "string",
+                    "redirect_all_requests_to": [
+                      "object",
+                      {
+                        "host_name": "string",
+                        "protocol": "string"
+                      },
+                      [
+                        "protocol"
+                      ]
+                    ],
+                    "routing_rules": [
+                      "list",
+                      [
+                        "object",
+                        {
+                          "condition": [
+                            "object",
+                            {
+                              "http_error_code_returned_equals": "string",
+                              "key_prefix_equals": "string"
+                            },
+                            [
+                              "http_error_code_returned_equals",
+                              "key_prefix_equals"
+                            ]
+                          ],
+                          "redirect": [
+                            "object",
+                            {
+                              "host_name": "string",
+                              "http_redirect_code": "string",
+                              "protocol": "string",
+                              "replace_key_prefix_with": "string",
+                              "replace_key_with": "string"
+                            },
+                            [
+                              "host_name",
+                              "http_redirect_code",
+                              "protocol",
+                              "replace_key_prefix_with",
+                              "replace_key_with"
+                            ]
+                          ]
+                        },
+                        [
+                          "condition",
+                          "redirect"
+                        ]
+                      ]
+                    ]
+                  },
+                  [
+                    "error_document",
+                    "index_document",
+                    "redirect_all_requests_to",
+                    "routing_rules"
+                  ]
+                ],
+                "default": {
+                  "error_document": null,
+                  "index_document": null,
+                  "redirect_all_requests_to": null,
+                  "routing_rules": null
+                },
+                "description": "Static website hosting or redirect configuration for the bucket"
+              }
+            }
+          },
+          "version_constraint": "~> 5.0"
+        }
+      }
+    }
+  },
+  "relevant_attributes": [
+    {
+      "resource": "module.s3_bucket.aws_s3_bucket.this[0]",
+      "attribute": [
+        "id"
+      ]
+    },
+    {
+      "resource": "module.s3_bucket.aws_s3_bucket.this[0]",
+      "attribute": [
+        "bucket_namespace"
+      ]
+    },
+    {
+      "resource": "module.s3_bucket.aws_s3_bucket.this[0]",
+      "attribute": [
+        "arn"
+      ]
+    },
+    {
+      "resource": "module.s3_bucket.aws_s3_bucket.this[0]",
+      "attribute": [
+        "hosted_zone_id"
+      ]
+    },
+    {
+      "resource": "module.s3_bucket.aws_s3_bucket.this[0]",
+      "attribute": [
+        "bucket_region"
+      ]
+    },
+    {
+      "resource": "module.s3_bucket.aws_s3_bucket.this[0]",
+      "attribute": [
+        "bucket_regional_domain_name"
+      ]
+    },
+    {
+      "resource": "module.s3_bucket.aws_s3_bucket.this[0]",
+      "attribute": [
+        "bucket_domain_name"
+      ]
+    },
+    {
+      "resource": "module.s3_bucket.aws_s3_bucket_lifecycle_configuration.this[0]",
+      "attribute": [
+        "rule"
+      ]
+    },
+    {
+      "resource": "module.s3_bucket.aws_s3_bucket_versioning.this[0]",
+      "attribute": [
+        "versioning_configuration",
+        0,
+        "status"
+      ]
+    },
+    {
+      "resource": "module.s3_bucket.aws_s3_directory_bucket.this[0]",
+      "attribute": [
+        "bucket"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "address": {
+        "kind": "resource",
+        "mode": "managed",
+        "module": "module.s3_bucket",
+        "name": "this",
+        "to_display": "module.s3_bucket.aws_s3_bucket.this",
+        "type": "aws_s3_bucket"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "instance_key": 0,
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.aws_s3_bucket.this[0]"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "resource",
+        "mode": "managed",
+        "module": "module.s3_bucket",
+        "name": "this",
+        "to_display": "module.s3_bucket.aws_s3_bucket_lifecycle_configuration.this",
+        "type": "aws_s3_bucket_lifecycle_configuration"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "instance_key": 0,
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.aws_s3_bucket_lifecycle_configuration.this[0]"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "resource",
+        "mode": "managed",
+        "module": "module.s3_bucket",
+        "name": "this",
+        "to_display": "module.s3_bucket.aws_s3_bucket_logging.this",
+        "type": "aws_s3_bucket_logging"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "instance_key": 0,
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.aws_s3_bucket_logging.this[0]"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "resource",
+        "mode": "managed",
+        "module": "module.s3_bucket",
+        "name": "this",
+        "to_display": "module.s3_bucket.aws_s3_bucket_ownership_controls.this",
+        "type": "aws_s3_bucket_ownership_controls"
+      },
+      "status": "pass"
+    },
+    {
+      "address": {
+        "kind": "resource",
+        "mode": "managed",
+        "module": "module.s3_bucket",
+        "name": "this",
+        "to_display": "module.s3_bucket.aws_s3_bucket_public_access_block.this",
+        "type": "aws_s3_bucket_public_access_block"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "instance_key": 0,
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.aws_s3_bucket_public_access_block.this[0]"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "resource",
+        "mode": "managed",
+        "module": "module.s3_bucket",
+        "name": "this",
+        "to_display": "module.s3_bucket.aws_s3_bucket_replication_configuration.this",
+        "type": "aws_s3_bucket_replication_configuration"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "instance_key": 0,
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.aws_s3_bucket_replication_configuration.this[0]"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "resource",
+        "mode": "managed",
+        "module": "module.s3_bucket",
+        "name": "this",
+        "to_display": "module.s3_bucket.aws_s3_bucket_server_side_encryption_configuration.this",
+        "type": "aws_s3_bucket_server_side_encryption_configuration"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "instance_key": 0,
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.aws_s3_bucket_server_side_encryption_configuration.this[0]"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "resource",
+        "mode": "managed",
+        "module": "module.s3_bucket",
+        "name": "this",
+        "to_display": "module.s3_bucket.aws_s3_bucket_versioning.this",
+        "type": "aws_s3_bucket_versioning"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "instance_key": 0,
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.aws_s3_bucket_versioning.this[0]"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "var",
+        "module": "module.s3_bucket",
+        "name": "block_public_acls",
+        "to_display": "module.s3_bucket.var.block_public_acls"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.var.block_public_acls"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "var",
+        "module": "module.s3_bucket",
+        "name": "block_public_policy",
+        "to_display": "module.s3_bucket.var.block_public_policy"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.var.block_public_policy"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "var",
+        "module": "module.s3_bucket",
+        "name": "ignore_public_acls",
+        "to_display": "module.s3_bucket.var.ignore_public_acls"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.var.ignore_public_acls"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "var",
+        "module": "module.s3_bucket",
+        "name": "lifecycle_rule",
+        "to_display": "module.s3_bucket.var.lifecycle_rule"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.var.lifecycle_rule"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "var",
+        "module": "module.s3_bucket",
+        "name": "logging",
+        "to_display": "module.s3_bucket.var.logging"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.var.logging"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "var",
+        "module": "module.s3_bucket",
+        "name": "object_lock_enabled",
+        "to_display": "module.s3_bucket.var.object_lock_enabled"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.var.object_lock_enabled"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "var",
+        "module": "module.s3_bucket",
+        "name": "object_ownership",
+        "to_display": "module.s3_bucket.var.object_ownership"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.var.object_ownership"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "var",
+        "module": "module.s3_bucket",
+        "name": "replication_configuration",
+        "to_display": "module.s3_bucket.var.replication_configuration"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.var.replication_configuration"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "var",
+        "module": "module.s3_bucket",
+        "name": "restrict_public_buckets",
+        "to_display": "module.s3_bucket.var.restrict_public_buckets"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.var.restrict_public_buckets"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "var",
+        "module": "module.s3_bucket",
+        "name": "server_side_encryption_configuration",
+        "to_display": "module.s3_bucket.var.server_side_encryption_configuration"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.var.server_side_encryption_configuration"
+          },
+          "status": "pass"
+        }
+      ]
+    },
+    {
+      "address": {
+        "kind": "var",
+        "module": "module.s3_bucket",
+        "name": "versioning",
+        "to_display": "module.s3_bucket.var.versioning"
+      },
+      "status": "pass",
+      "instances": [
+        {
+          "address": {
+            "module": "module.s3_bucket",
+            "to_display": "module.s3_bucket.var.versioning"
+          },
+          "status": "pass"
+        }
+      ]
+    }
+  ],
+  "timestamp": "2026-09-20T00:00:00Z",
+  "errored": false
+}

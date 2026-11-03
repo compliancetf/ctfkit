@@ -1,0 +1,102 @@
+{
+  "description": "with every proof listed the baseline is reported first, then the exception, then the receipt",
+  "decisions": {
+    "instances": [
+      {
+        "address": "fake_thing.a",
+        "type": "fake_thing",
+        "action": "create",
+        "prior_identity_kind": "none",
+        "refreshed": "true",
+        "unknown_paths": [],
+        "decisions": [
+          {
+            "control": "c",
+            "version": "1.0.0",
+            "result": "provisional",
+            "action": "deny"
+          }
+        ],
+        "not_evaluable": [],
+        "exceptions": [
+          "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "baselines": [
+          "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        ],
+        "break_glass": [
+          "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+        ],
+        "instance_key": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    ],
+    "required": {
+      "fake_thing": {
+        "decisions": [
+          {
+            "id": "c",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": [
+              "baseline",
+              "break_glass",
+              "grant",
+              "self_service"
+            ]
+          }
+        ],
+        "delete_decisions": []
+      }
+    }
+  },
+  "mode": {
+    "run_mode": "grandfather"
+  },
+  "exceptions": [
+    {
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "kind": "grant",
+      "controls": [
+        "c"
+      ]
+    }
+  ],
+  "baselines": [
+    {
+      "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "control": "c"
+    }
+  ],
+  "receipts": [
+    {
+      "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "override_id": "ovr-1",
+      "controls": [
+        "c"
+      ],
+      "action_keys": [
+        "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      ]
+    }
+  ],
+  "want": {
+    "refuse": false,
+    "rows": [
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "excepted",
+        "severity": "none",
+        "final": "pass",
+        "control": "c",
+        "version": "1.0.0",
+        "state": "provisional",
+        "proof": {
+          "kind": "baseline",
+          "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+        }
+      }
+    ]
+  }
+}

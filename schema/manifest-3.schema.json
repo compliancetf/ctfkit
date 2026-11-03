@@ -1,0 +1,200 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compliance.tf/schema/manifest-3.schema.json",
+  "title": "compliancetf-manifest.json, schema 3.x typed subset",
+  "description": "The subset of compliance manifest schema 3.x that ctfkit by compliance.tf reads, pinned to major 3 and written against 3.3 as served on 2026-09-20, plus the optional 3.4 supporting_clauses_by_framework. Fields the manifest schema defines but no analyzer reads are deliberately absent, and additionalProperties stays open at every level, so an additive minor bump needs no change here. A new major is refused by the loader, not by this schema: schema_version is pinned to ^3. so a schema 4 document fails validation, which is the same answer as the exit 2 the command gives.",
+  "type": "object",
+  "required": ["schema_version", "controls_scope", "scope_path", "module", "controls", "build", "posture", "scope"],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^3\\.[0-9]+$",
+      "description": "Major 3 only. ctfkit exits 2 on any other major."
+    },
+    "controls_scope": {
+      "enum": ["package", "subtree", "package-fallback"],
+      "description": "package is the package-root manifest and the only one carrying manifest_set_hash and the build-level not-applicable and superseded sets. package-fallback is the stub emitted when attribution is unavailable."
+    },
+    "scope_path": {
+      "$ref": "#/$defs/packagePath",
+      "description": "Package-root-relative POSIX path of the directory this manifest governs. The package root is the token \".\"."
+    },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "module": {
+      "type": "object",
+      "required": ["registry_source", "version", "frameworks"],
+      "properties": {
+        "registry_source": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "upstream_source": { "type": "string" },
+        "upstream_version": { "type": "string" },
+        "frameworks": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "framework_names": {
+          "type": "object",
+          "description": "framework id to its human readable name.",
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "controls": {
+      "type": "array",
+      "description": "The controls this manifest lists for its own scope. An empty array means no control-attributed change here; it never means assessed and none apply.",
+      "items": {
+        "type": "object",
+        "required": ["control_id", "status", "applies_in", "files_modified", "clauses_by_framework"],
+        "properties": {
+          "control_id": { "type": "string", "minLength": 1 },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "status": {
+            "enum": ["enforced", "delegated"],
+            "description": "enforced: this manifest's files_modified holds the evidence. delegated: every file the control changed is governed by another scope, named in applies_in."
+          },
+          "applies_in": {
+            "type": "array",
+            "description": "Every scope_path where this control has files. \".\" is the package root; an empty array means no files anywhere.",
+            "items": { "$ref": "#/$defs/packagePath" }
+          },
+          "files_modified": { "type": "array", "items": { "$ref": "#/$defs/packagePath" } },
+          "clauses_by_framework": {
+            "type": "object",
+            "additionalProperties": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          },
+          "supporting_clauses_by_framework": {
+            "type": "object",
+            "description": "3.4, optional: per framework, the subset of clauses_by_framework the catalog curation marked as supporting (partial or indirect) evidence, which must not render as full enforcement. Absent means the producer does not classify, never that nothing is hedged; [] for a framework means classified and nothing hedged there.",
+            "additionalProperties": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          },
+          "tool_checks": {
+            "type": "object",
+            "additionalProperties": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+          }
+        }
+      }
+    },
+    "build": {
+      "type": "object",
+      "properties": {
+        "files_modified": { "type": "array", "items": { "$ref": "#/$defs/packagePath" } },
+        "unattributed_modifications": { "type": "array", "items": { "$ref": "#/$defs/packagePath" } },
+        "dual_touch": { "type": "array", "items": { "$ref": "#/$defs/packagePath" } },
+        "controls_applied_count": { "type": "integer", "minimum": 0 },
+        "controls_not_applicable": {
+          "type": ["array", "null"],
+          "description": "Package scope only. Tri-state: absent means the producer never classified, [] means it classified and found none.",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "controls_superseded": {
+          "type": ["object", "null"],
+          "description": "Package scope only. weaker control id to the stricter control id that replaced it. Tri-state: absent means the producer never reported, {} means it reported none.",
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "operational_rules": {
+      "type": "array",
+      "description": "Package scoped at every manifest; rules cannot be attributed per subtree.",
+      "items": {
+        "type": "object",
+        "required": ["rule", "outcome"],
+        "properties": {
+          "rule": { "type": "string", "minLength": 1 },
+          "outcome": { "type": "string", "minLength": 1 },
+          "ruleset": {
+            "type": ["object", "null"],
+            "description": "Set when a per-module-call ruleset selection added the rule. Absent means baseline posture, not unknown.",
+            "required": ["name", "content_hash"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "content_hash": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "posture": {
+      "type": "object",
+      "properties": {
+        "rules_hash": { "type": "string" },
+        "snapshot_id": { "type": "string" },
+        "degraded": {
+          "type": ["array", "null"],
+          "description": "Tri-state: null means the producer never reported, [] means it reported nothing dropped, otherwise the reasons the org posture could not be applied in full.",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "required": ["does_not_prove"],
+      "properties": {
+        "proves": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "does_not_prove": {
+          "type": "array",
+          "description": "Machine-readable obligation tokens. A token this ctfkit release does not know is reported to the reader unchanged and never blocks.",
+          "items": {
+            "type": "object",
+            "required": ["token", "statement", "consumer_obligation"],
+            "properties": {
+              "token": { "type": "string", "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$" },
+              "statement": { "type": "string", "minLength": 1 },
+              "consumer_obligation": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    },
+    "child_manifests": {
+      "type": "array",
+      "description": "Each immediately governed child manifest.",
+      "items": {
+        "type": "object",
+        "required": ["scope_path", "sha256"],
+        "properties": {
+          "scope_path": { "$ref": "#/$defs/packagePath" },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+        }
+      }
+    },
+    "package_manifest": {
+      "type": "object",
+      "description": "Subtree manifests only: the relative path back to the package-scope manifest.",
+      "required": ["package_id", "path"],
+      "properties": {
+        "package_id": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 }
+      }
+    },
+    "manifest_set_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "Package scope only. SHA-256 over every manifest in the artifact. It detects staleness and partial replacement only; it is unsigned and is not an attestation."
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "controls_scope": { "const": "package" } }, "required": ["controls_scope"] },
+      "then": {
+        "required": ["manifest_set_hash"],
+        "properties": { "scope_path": { "const": "." } }
+      }
+    },
+    {
+      "if": { "properties": { "controls_scope": { "const": "subtree" } }, "required": ["controls_scope"] },
+      "then": { "required": ["package_manifest"] }
+    }
+  ],
+  "$defs": {
+    "packagePath": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Package-root-relative, POSIX separated, no leading ./, no .., never absolute. The package root is \".\".",
+      "not": { "anyOf": [
+        { "pattern": "^/" },
+        { "pattern": "^\\./" },
+        { "pattern": "(^|/)\\.\\.(/|$)" },
+        { "pattern": "\\\\" }
+      ] }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "data": {
+    "external": {
+      "probe": {
+        "program": ["CANARY-exec-pre-plan-program"]
+      }
+    }
+  }
+}

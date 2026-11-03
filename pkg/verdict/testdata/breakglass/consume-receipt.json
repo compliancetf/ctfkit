@@ -1,0 +1,24 @@
+{
+ "format": "compliancetf.consume-receipt/v1",
+ "override_id": "ovr-01",
+ "override_digest": "sha256:1d658a4cc6ee45fc32a32e0e145adc0e50404224ec0bdf1bb240d34c1f1712df",
+ "org_id": "bobthecorp",
+ "run_id": "run-1",
+ "request_digest": "sha256:0119502d054cfdcc2068b5160f71dbd4ce608a28cb83cc8889843820f427ccaa",
+ "controls": [
+  "CTF.S3.2",
+  "CTF.RDS.1"
+ ],
+ "instance_keys": [
+  "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+  "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+ ],
+ "plan_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+ "consumed_at": "2026-10-19T09:30:00Z",
+ "expires_at": "2026-10-19T20:00:00Z",
+ "signature": {
+  "kid": "sha256:cdd9612e397719da79a5da27878acd116409ac40513c63e590b44eea7683339c",
+  "alg": "ES256",
+  "value": "MEUCIQCF5lu4E9ur71gqaSEXgclkm5qZ00H6Uxvy5ACaUvmV5AIgKKeYW5HwYzetMO7D0V_SVBxerg3NZGEdNCY2jTXgdI4"
+ }
+}

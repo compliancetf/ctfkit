@@ -1,0 +1,3 @@
+module "called" {
+  source = "./called"
+}

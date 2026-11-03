@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compliance.tf/schema/migrate-plan-1.schema.json",
+  "title": "ctfkit.migrate-plan/1",
+  "description": "The plan file ctfkit migrate plan writes and ctfkit migrate apply reads. It carries no credential and no state bytes: backend_env names the variables the env table passes, never their values, and reason and detail are messages the writer builds, never command output, environment values or state. That is the writer's invariant; a schema cannot tell a secret from a string. Apply also checks what no schema states: created_at at most 24h old, the SHA-256 of tf_bin unchanged, each edit's sha256_before equal to the file on disk. The unified diff of edits[] is the sibling migrate-plan.diff.",
+  "type": "object",
+  "required": ["format", "created_at", "tf_bin", "tf_bin_sha256", "tf_version", "providers", "platforms", "proof", "units", "edits", "blocked"],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "ctfkit.migrate-plan/1" },
+    "created_at": { "$ref": "#/$defs/time" },
+    "tf_bin": { "$ref": "#/$defs/abs_path" },
+    "tf_bin_sha256": { "$ref": "#/$defs/sha256" },
+    "tf_version": { "$ref": "#/$defs/version" },
+    "providers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["type", "from", "to", "upstream_version", "wrapper_version", "root_constraint", "module_constraint"],
+        "additionalProperties": false,
+        "properties": {
+          "type": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "from": { "$ref": "#/$defs/provider" },
+          "to": { "$ref": "#/$defs/provider" },
+          "upstream_version": { "$ref": "#/$defs/version" },
+          "wrapper_version": { "$ref": "#/$defs/version" },
+          "root_constraint": { "description": "~> W.major.W.minor", "type": "string", "pattern": "^~> [0-9]+\\.[0-9]+$" },
+          "module_constraint": { "description": ">= W.major.0.0", "type": "string", "pattern": "^>= [0-9]+\\.0\\.0$" }
+        }
+      }
+    },
+    "platforms": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "description": "os_arch", "type": "string", "pattern": "^[a-z0-9]+_[a-z0-9]+$" }
+    },
+    "proof": { "description": "refresh is always on", "enum": ["no_op", "equivalent"] },
+    "units": { "type": "array", "items": { "$ref": "#/$defs/unit" } },
+    "edits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "sha256_before", "sha256_after", "reason"],
+        "additionalProperties": false,
+        "properties": {
+          "file": { "$ref": "#/$defs/rel_path" },
+          "sha256_before": { "description": "null for a file the edit creates (an implied provider's versions.tf)", "oneOf": [{ "$ref": "#/$defs/sha256" }, { "type": "null" }] },
+          "sha256_after": { "$ref": "#/$defs/sha256" },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "blocked": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["kind", "dir", "detail"],
+        "additionalProperties": false,
+        "properties": {
+          "kind": { "enum": ["remote_module", "module_provenance", "json_config", "terragrunt_template", "no_wrapper_release", "floor_violations", "missing_baseline"] },
+          "dir": { "$ref": "#/$defs/rel_path" },
+          "detail": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "unit": {
+      "type": "object",
+      "required": ["id", "kind", "dir", "backend", "backend_env", "workspaces"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["cli", "terragrunt", "hcp", "spacelift", "env0"] },
+        "dir": { "$ref": "#/$defs/rel_path" },
+        "backend": { "description": "backend type, e.g. local, s3, gcs, azurerm, remote, cloud", "type": "string", "pattern": "^[a-z][a-z0-9_]*$" },
+        "backend_env": {
+          "description": "names of the backend credential variables the env table passes; never values",
+          "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*$" }
+        },
+        "local_paths": {
+          "description": "local backend only: canonical absolute paths (Phase 3 Scope binding)",
+          "type": "object",
+          "required": ["state_path", "workspace_dir"],
+          "additionalProperties": false,
+          "properties": {
+            "state_path": { "$ref": "#/$defs/abs_path" },
+            "workspace_dir": { "$ref": "#/$defs/abs_path" }
+          }
+        },
+        "workspaces": {
+          "description": "the checked scope: each step of a workspace runs with TF_WORKSPACE set to it",
+          "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 }
+        },
+        "remote": {
+          "type": "object",
+          "required": ["org", "id", "name"],
+          "additionalProperties": false,
+          "properties": {
+            "org": { "type": "string", "minLength": 1 },
+            "id": { "type": "string", "minLength": 1 },
+            "name": { "type": "string", "minLength": 1 }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "backend": { "const": "local" } }, "required": ["backend"] },
+          "then": { "required": ["local_paths"] },
+          "else": { "not": { "required": ["local_paths"] } }
+        },
+        {
+          "if": { "properties": { "kind": { "enum": ["hcp", "spacelift", "env0"] } }, "required": ["kind"] },
+          "then": { "required": ["remote"] },
+          "else": { "not": { "required": ["remote"] } }
+        }
+      ]
+    },
+    "provider": {
+      "description": "fully qualified provider source address: host/namespace/type",
+      "type": "string",
+      "pattern": "^[a-z0-9.-]+/[a-z0-9][a-z0-9-]*/[a-z][a-z0-9-]*$"
+    },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "abs_path": { "description": "absolute path, POSIX or Windows drive form", "type": "string", "pattern": "^(/|[A-Za-z]:[\\\\/])" },
+    "rel_path": {
+      "description": "slash-separated path relative to the scan root, no .. segment",
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(\\.|([^/\\\\:.][^/\\\\:]*|\\.[^/\\\\:.][^/\\\\:]*|\\.\\.[^/\\\\:]+)(/([^/\\\\:.][^/\\\\:]*|\\.[^/\\\\:.][^/\\\\:]*|\\.\\.[^/\\\\:]+))*)$"
+    },
+    "time": {
+      "description": "RFC 3339 in UTC",
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?Z$"
+    }
+  }
+}

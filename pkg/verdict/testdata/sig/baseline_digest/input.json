@@ -1,0 +1,142 @@
+{
+ "baselines": [
+  {
+   "digest": "sha256:BBBB"
+  }
+ ],
+ "break_glass_receipts": [],
+ "bundle_digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+ "caller": {
+  "account_id": "111122223333",
+  "role_arn": "arn:aws:iam::111122223333:role/bobthecorp-ci",
+  "region": "us-east-1"
+ },
+ "content_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+ "environment": "production",
+ "exceptions": [
+  {
+   "digest": "sha256:9999999999999999999999999999999999999999999999999999999999999999",
+   "source": "grant",
+   "expires": "2026-11-01T00:00:00Z"
+  }
+ ],
+ "expires_at": "2026-10-19T22:00:00Z",
+ "floor_epoch": "3",
+ "format": "compliancetf.verdict/v1",
+ "instance_key_check": "5555555555555555555555555555555555555555555555555555555555555555",
+ "instances": [
+  {
+   "address": "aws_s3_bucket.logs[\"eu-ü\\t\"]",
+   "type": "aws_s3_bucket",
+   "action": "create",
+   "instance_key": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+   "prior_identity_kind": "none",
+   "refreshed": "true",
+   "unknown_paths": [
+    [
+     "arn"
+    ],
+    [
+     "tags_all",
+     "*"
+    ]
+   ],
+   "decisions": [
+    {
+     "control": "CTF.S3.1",
+     "version": "1",
+     "result": "pass",
+     "action": "deny"
+    },
+    {
+     "control": "CTF.S3.2",
+     "version": "2",
+     "result": "provisional",
+     "action": "deny"
+    }
+   ],
+   "not_evaluable": [],
+   "exceptions": [
+    "sha256:9999999999999999999999999999999999999999999999999999999999999999"
+   ],
+   "baselines": [],
+   "break_glass": []
+  },
+  {
+   "address": "aws_db_instance.main",
+   "type": "aws_db_instance",
+   "action": "replace",
+   "previous_address": "aws_db_instance.old",
+   "instance_key": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+   "delete_key": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+   "prior_identity_kind": "id",
+   "refreshed": "true",
+   "unknown_paths": [],
+   "decisions": [
+    {
+     "control": "CTF.RDS.1",
+     "version": "1",
+     "result": "not_evaluable",
+     "action": "warn"
+    }
+   ],
+   "delete_decisions": [
+    {
+     "control": "CTF.RDS.9",
+     "version": "1",
+     "result": "pending",
+     "action": "deny"
+    }
+   ],
+   "not_evaluable": [
+    {
+     "control": "CTF.RDS.1",
+     "reason": "unknown_value"
+    }
+   ],
+   "exceptions": [],
+   "baselines": [],
+   "break_glass": []
+  },
+  {
+   "address": "aws_instance.web",
+   "deposed": "a1b2c3d4",
+   "type": "aws_instance",
+   "action": "delete",
+   "delete_key": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "prior_identity_kind": "identity",
+   "refreshed": "false",
+   "unknown_paths": [],
+   "decisions": [],
+   "delete_decisions": [],
+   "not_evaluable": [],
+   "exceptions": [],
+   "baselines": [],
+   "break_glass": []
+  }
+ ],
+ "issued_at": "2026-10-19T10:00:00Z",
+ "nonce": "AAECAwQFBgcICQoLDA0ODw",
+ "org_id": "bobthecorp",
+ "plan_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+ "plan_format_version": "1.2",
+ "profile_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+ "provenance": {
+  "tool": "ctfkit gate plan",
+  "refresh": "true",
+  "targeted": "false",
+  "workspace": "prod"
+ },
+ "provider_versions": {
+  "compliancetf/aws": "2.0.0",
+  "hashicorp/aws": "6.20.0"
+ },
+ "run_id": "run-1",
+ "signature": {
+  "kid": "sha256:da5d9b9c4ca521b8deff6babebdca0e39c371adcb3e13a423ab97520904acc3f",
+  "alg": "ES256",
+  "value": "MEUCIBxbo5-rsGHd22d4HRNg6vPJaiaWEp0QHSQw4fObr5m7AiEAy_eyPHQ-BAX_BsEiE-hBYE_eFWl4y5p1GZp9MtH4Zsc"
+ },
+ "terraform_version": "1.14.0",
+ "workspace": "prod"
+}

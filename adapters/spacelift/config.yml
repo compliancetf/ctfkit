@@ -1,0 +1,48 @@
+# .spacelift/config.yml for a module repository served through the Spacelift module registry.
+# Copy this to .spacelift/config.yml at the root of the module repository. These hooks gate that
+# repository's own releases, so they belong beside its code. Consuming-stack hooks do not: see
+# config.stack.yml and https://compliance.tf/docs/ctfkit/spacelift/.
+#
+# Every flag that decides an outcome is pinned here and reads from the runner image, never from the
+# repository being analyzed: --fail-on, --format, --config, --exceptions, --catalog. A module
+# repository therefore cannot lower its own threshold, widen its endpoint allowlist, grant itself an
+# exception or swap in a different catalog by committing a file. `--catalog embedded` pins the
+# release catalog compiled into the binary and ignores ~/.ctf/control-requirements.yaml, so
+# control ids and remediation module sources always resolve and no catalog file has to be shipped
+# or kept current.
+#
+# Shadow mode: --fail-on never means the hook always exits 0 on findings, so a test case can only
+# fail on its own merits while the recipe is bedding in. To enforce, change it to --fail-on error.
+# This hook renders more than one format, so its exit code decides the test case and the threshold
+# matters here. The plan policy in policy.rego does not apply to module test cases.
+version: "1"
+
+test_defaults:
+  # An image that carries the pinned ctfkit binary on PATH, plus the settings and exception files
+  # the hooks read. The catalog needs no file: it is compiled into the binary. No runner image is
+  # published: build one on a Spacelift runner base with ctfkit v0.2.1 or later, following
+  # https://compliance.tf/docs/ctfkit/spacelift/, and push it to a registry your Spacelift workers
+  # can pull from. A distroless image has no shell and cannot run hooks, so it cannot be the runner
+  # image. A ctfkit container image is planned and not published.
+  runner_image: <your-registry>/ctfkit-runner:<tag>
+
+  after_init:
+    # A metadata file committed to the repository would otherwise be read as this run's result.
+    - rm -f ctfkit.custom.spacelift.json
+    - >-
+      ctfkit report
+      --fail-on never
+      --format receipt,spacelift --out-dir .ctfkit
+      --config /opt/ctfkit/ctfkit.yaml
+      --exceptions /opt/ctfkit/exceptions.yaml
+      --catalog embedded
+    # To import test results into the receipt, add --tests-json to the line above. ctfkit never
+    # runs tofu or terraform, so the file must already exist when this hook runs, written by the
+    # step that runs the tests, for example `tofu test -json > tests.json`:
+    #   ctfkit report --fail-on never --format receipt,spacelift --out-dir .ctfkit --tests-json tests.json ...
+
+tests:
+  - name: complete
+    project_root: examples/complete
+  - name: simple
+    project_root: examples/simple

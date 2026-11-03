@@ -1,0 +1,18 @@
+
+[36m📋[0m Validation Results
+
+[31m❌[0m Found 3 violations:
+
+🚫 [31mModule source is not an approved compliance.tf endpoint[0m
+   File: main.tf:12
+   Rule: ctf-001
+   Fix: Use soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws
+
+⚠️ [33mVariable name suggests a control bypass[0m
+   File: main.tf:41
+   Rule: ctf-003
+
+ℹ️ [36mResource type is outside the configured allowlist[0m
+   File: network/vpc.tf:7
+   Rule: ctf-004
+

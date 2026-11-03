@@ -1,0 +1,81 @@
+{
+  "format": "compliancetf.verdict/v1",
+  "org_id": "bobthecorp",
+  "workspace": "default",
+  "environment": "prod",
+  "run_id": "run-fixture",
+  "caller": {
+    "account_id": "",
+    "role_arn": "",
+    "region": ""
+  },
+  "plan_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "provenance": {},
+  "plan_format_version": "1.2",
+  "profile_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "bundle_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "content_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "floor_epoch": "7",
+  "provider_versions": {
+    "compliancetf/aws": "2.0.0",
+    "hashicorp/aws": "6.0.0"
+  },
+  "terraform_version": "1.16.3",
+  "nonce": "AAAAAAAAAAAAAAAAAAAAAA",
+  "issued_at": "2026-10-19T12:00:00Z",
+  "expires_at": "2026-10-20T12:00:00Z",
+  "instance_key_check": "0000000000000000000000000000000000000000000000000000000000000000",
+  "instances": [
+    {
+      "address": "aws_s3_bucket.logs",
+      "type": "aws_s3_bucket",
+      "action": "create",
+      "instance_key": "sha256:bcdf536bf216f0e307f20e31544325c6a4452f82da1788e8532e0fbfbd95b639",
+      "prior_identity_kind": "none",
+      "refreshed": "true",
+      "unknown_paths": [
+        [
+          "id"
+        ]
+      ],
+      "decisions": [
+        {
+          "control": "s3_bucket_public_access_block_present",
+          "version": "1.0.0",
+          "result": "pass",
+          "action": "deny"
+        }
+      ],
+      "not_evaluable": [],
+      "exceptions": [],
+      "baselines": [],
+      "break_glass": []
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.logs",
+      "type": "aws_s3_bucket_public_access_block",
+      "action": "create",
+      "instance_key": "sha256:2ddfbc52a33bc629be087e8e56b4327d6d72933d6afd0b0aa2f55777794d2663",
+      "prior_identity_kind": "none",
+      "refreshed": "true",
+      "unknown_paths": [
+        [
+          "id"
+        ]
+      ],
+      "decisions": [],
+      "not_evaluable": [],
+      "exceptions": [],
+      "baselines": [],
+      "break_glass": []
+    }
+  ],
+  "exceptions": [],
+  "baselines": [],
+  "break_glass_receipts": [],
+  "signature": {
+    "kid": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "alg": "ES256",
+    "value": "AA"
+  }
+}

@@ -1,0 +1,358 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.risk.sensitive_change_destructive_stateful",
+              "shortDescription": {
+                "text": "A change deletes or replaces a stateful resource, or removes its deletion safeguard"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "ctf.risk.sensitive_change_encryption_disablement",
+              "shortDescription": {
+                "text": "A change turns off encryption at rest"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.risk.sensitive_change_destructive_stateful",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "aws_db_instance.primary is replaced, which deletes the existing instance before the new one is created"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 5,
+                  "endLine": 17
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_db_instance.primary",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "70540511fbbb1bc0649f64afbd95bd532a6b3d2a8f2ae6993d0ba3408fe827e3"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            },
+            "ctf.attributes": [
+              "storage_encrypted"
+            ]
+          }
+        },
+        {
+          "ruleId": "ctf.risk.sensitive_change_encryption_disablement",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "aws_s3_bucket_server_side_encryption_configuration.archive is deleted, which removes default encryption from its bucket"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket_server_side_encryption_configuration.archive",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "ddb64222dd38c58d8cf1f0ff329bc1af352f3f9e6ddc8fe77da16585ec58fe3a"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.risk.sensitive_change_encryption_disablement",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "aws_db_instance.primary turns storage_encrypted from true to false"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 5,
+                  "endLine": 17
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_db_instance.primary",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "07a59d21c565df1130f2d5c2f008dfc9055e20e03b8ce1305c0a8e1ef61d5b05"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [
+              "rds_db_instance_encryption_at_rest_enabled"
+            ],
+            "ctf.frameworks": [
+              {
+                "id": "acsc_ism_2023",
+                "clauses": [
+                  "ISM-0955"
+                ]
+              },
+              {
+                "id": "aws_control_tower",
+                "clauses": [
+                  "5.0.1"
+                ]
+              },
+              {
+                "id": "aws_well_architected_v10",
+                "clauses": [
+                  "Data protection"
+                ]
+              },
+              {
+                "id": "cfr_part_11",
+                "clauses": [
+                  "11.10(c)",
+                  "11.30"
+                ]
+              },
+              {
+                "id": "cis_v140",
+                "clauses": [
+                  "2",
+                  "2.3.1"
+                ]
+              },
+              {
+                "id": "cis_v500",
+                "clauses": [
+                  "2",
+                  "2.2"
+                ]
+              },
+              {
+                "id": "cis_v600",
+                "clauses": [
+                  "3",
+                  "3.2"
+                ]
+              },
+              {
+                "id": "cis_v80_ig1",
+                "clauses": [
+                  "11.3"
+                ]
+              },
+              {
+                "id": "cisa_cyber_essentials",
+                "clauses": [
+                  "Your Data-1",
+                  "Your Data-2",
+                  "Your Systems-3"
+                ]
+              },
+              {
+                "id": "eu_gmp_annex_11",
+                "clauses": [
+                  "7.1"
+                ]
+              },
+              {
+                "id": "fedramp_moderate_rev_4",
+                "clauses": [
+                  "SC-28"
+                ]
+              },
+              {
+                "id": "ffiec",
+                "clauses": [
+                  "D3.PC.Am.B.12"
+                ]
+              },
+              {
+                "id": "gdpr",
+                "clauses": [
+                  "Article 32"
+                ]
+              },
+              {
+                "id": "hipaa_final_omnibus_2013",
+                "clauses": [
+                  "164.308(a)(1)(ii)(B)",
+                  "164.308(a)(4)(ii)(A)",
+                  "164.312(a)(2)(iv)",
+                  "164.312(e)(2)(ii)",
+                  "164.314(b)(2)(iv)"
+                ]
+              },
+              {
+                "id": "hipaa_security_2003",
+                "clauses": [
+                  "164.314(b)(2)"
+                ]
+              },
+              {
+                "id": "iso_27001_2013",
+                "clauses": [
+                  "Cryptographic Controls"
+                ]
+              },
+              {
+                "id": "iso_27001_2022",
+                "clauses": [
+                  "A.8.24"
+                ]
+              },
+              {
+                "id": "nist_800_171_rev_2",
+                "clauses": [
+                  "3.13.11",
+                  "3.13.16"
+                ]
+              },
+              {
+                "id": "nist_800_53_rev_4",
+                "clauses": [
+                  "SC-28"
+                ]
+              },
+              {
+                "id": "nist_800_53_rev_5",
+                "clauses": [
+                  "AU-9(3)",
+                  "CP-9(8)",
+                  "CP-9(d)",
+                  "SC-13(a)",
+                  "SC-28(1)",
+                  "SC-8(3)",
+                  "SC-8(4)",
+                  "SI-19(4)"
+                ]
+              },
+              {
+                "id": "nist_csf_v11",
+                "clauses": [
+                  "PR.DS-1"
+                ]
+              },
+              {
+                "id": "nist_csf_v2",
+                "clauses": [
+                  "PR.DS-01",
+                  "PR.DS-1"
+                ]
+              },
+              {
+                "id": "nydfs_23",
+                "clauses": [
+                  "500.15(a)"
+                ]
+              },
+              {
+                "id": "pci_dss_v321",
+                "clauses": [
+                  "Examine documentation about the system used to protect the PAN, including the vendor, type of system/process, and the encryption algorithms (if applicable) to verify that the PAN is rendered unreadable using methods like truncation,one-way hashes based on strong cryptography etc",
+                  "Examine several tables or files from a sample of data repositories to verify the PAN is rendered unreadable (that is, not stored in plain-text)",
+                  "Examine the configurations and observe the processes to verify that cardholder data on removable media is encrypted wherever stored",
+                  "Examine vendor documentation and system configuration settings to verify that passwords are protected with strong cryptography during transmission and storage",
+                  "Render PAN unreadable anywhere it is stored (including on portable digital media, backup media, and in logs) by using approaches like one-way hashes based on strong cryptography, truncation etc",
+                  "Requirement 3",
+                  "To verify that users are authenticated using unique ID and additional authentication (for example, a password/phrase) for access to the cardholder data environment perform the methods like examine documentation describing the authentication method(s) used etc",
+                  "Using strong cryptography, render all authentication credentials (such as passwords/phrases) unreadable during transmission and storage on all system components"
+                ]
+              },
+              {
+                "id": "pci_dss_v40",
+                "clauses": [
+                  "3.5.1",
+                  "8.3.2"
+                ]
+              },
+              {
+                "id": "rbi_cyber_security",
+                "clauses": [
+                  "Annex I (1.3)"
+                ]
+              },
+              {
+                "id": "soc_2",
+                "clauses": [
+                  "CC6.1",
+                  "PI1.5"
+                ]
+              }
+            ],
+            "ctf.preventive": true,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            },
+            "ctf.attributes": [
+              "storage_encrypted"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

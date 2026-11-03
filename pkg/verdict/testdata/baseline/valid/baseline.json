@@ -1,0 +1,94 @@
+{
+  "content_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "entries": [
+    {
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "type": "aws_s3_bucket",
+      "identity_kind": "id",
+      "identity": {
+        "id": "bkt-1"
+      },
+      "address": "aws_s3_bucket.logs",
+      "control": "s3_acl_private",
+      "control_major": "2",
+      "control_manifest_digest": "sha256:d35498d4bf1b7d35f7610973652d28c23566772bc6f775dbc04332e94a214f8d",
+      "read_digest": "sha256:13be98da7af57e58ace065ea57f25eea71ba2672602cbf9d00cd0ec534258d8c",
+      "approver_statement": {
+        "format": "compliancetf.baseline-approval/v1",
+        "org_id": "bobthecorp",
+        "role": "baseline_approver",
+        "subject": "alice@bobthecorp.example",
+        "workspace": "prod",
+        "scope": {
+          "account_id": "111111111111",
+          "region": "us-east-1"
+        },
+        "run_id": "run-obs-1",
+        "plan_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "content_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "issued_at": "2026-10-19T11:00:00Z",
+        "signature": {
+          "kid": "sha256:32d7036ff6dd2caa99bc57e3c4e989eb02514b5dbfb646c2639c80e7a68514d5",
+          "alg": "ES256",
+          "value": "MEYCIQDVp2LAM4cWTqilCrCDU-aqMrqX95kpPknPSlaYOJNFJwIhAKoYqqnlZgZOyaGFQNpC_IApkdbfuCOkmrQ2G_teKIWo"
+        }
+      },
+      "approver": "alice@bobthecorp.example",
+      "expires": "2026-12-01T00:00:00Z",
+      "ticket": "BOB-123"
+    },
+    {
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "type": "aws_s3_bucket",
+      "identity_kind": "identity",
+      "identity": {
+        "account_id": "111111111111",
+        "bucket": "bobthecorp-ünïcode\t\u003cb\u003e"
+      },
+      "address": "module.m[\"a\"].aws_s3_bucket.this[0]",
+      "control": "s3_acl_private",
+      "control_major": "2",
+      "control_manifest_digest": "sha256:d35498d4bf1b7d35f7610973652d28c23566772bc6f775dbc04332e94a214f8d",
+      "read_digest": "sha256:10a36073c3a5f27b00bd415328d0d37fab0f89e05df5eca6784bc277298fe0f5",
+      "approver_statement": {
+        "format": "compliancetf.baseline-approval/v1",
+        "org_id": "bobthecorp",
+        "role": "baseline_approver",
+        "subject": "bob@bobthecorp.example",
+        "workspace": "prod",
+        "scope": {
+          "account_id": "111111111111",
+          "region": "us-east-1"
+        },
+        "run_id": "run-obs-1",
+        "plan_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+        "content_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+        "issued_at": "2026-10-19T11:00:00Z",
+        "signature": {
+          "kid": "sha256:32d7036ff6dd2caa99bc57e3c4e989eb02514b5dbfb646c2639c80e7a68514d5",
+          "alg": "ES256",
+          "value": "MEYCIQCfHFyhZvqqDpHfr5tCwXjaQSnu4mV31obaPPPovOtGTQIhALV9_NmNmSNOH2mxuhsyyRu_5DnRohWi2r_iv45WB_zn"
+        }
+      },
+      "approver": "bob@bobthecorp.example",
+      "expires": "2026-11-15T00:00:00Z",
+      "ticket": ""
+    }
+  ],
+  "format": "compliancetf.baseline/v1",
+  "issued_at": "2026-10-19T11:00:00Z",
+  "org_id": "bobthecorp",
+  "signature": {
+    "alg": "ES256",
+    "kid": "sha256:dc5138e0ed46d240a9d81b6b252a11c1e67ba2539b8ac09062e179f603e4a3da",
+    "value": "MEQCIBFbMmnnQQq75C2pg838QTUX-klNd9roOFmJNK9sO1LpAiAuxzAbmusHEP3eXwzs-NlWXsA25e8Kn-TsOq7sJso8tw"
+  }
+}

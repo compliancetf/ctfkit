@@ -1,0 +1,1 @@
+{"v":1,"ctf":{"op":"replace","prior_identity":{"account_id":"111111111111","policy_arn":"arn:aws:iam::aws:policy/ReadOnlyAccess","role":"bobthecorp-app"},"prior_identity_kind":"identity"}}

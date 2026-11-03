@@ -1,0 +1,30 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_iam_role_policy_attachment.this",
+      "form": "create",
+      "recorded_name": "aws_iam_role_policy_attachment.3750fc853025dde7",
+      "sha256": {
+        "apply/aws_iam_role_policy_attachment.this.create.msgpack": "662c75849294018e105cbeee0c67311a951fdea9dde04eb48ba121bf17662544",
+        "apply/aws_iam_role_policy_attachment.this.create.type.json": "a58fca95982bcc542a44a57cb0e0749ffb2949ab9cc61fc5c9419c420f84ab8d",
+        "envelope/aws_iam_role_policy_attachment.this.create.json": "adff3b388af74c7b0f8c4105f6a35ed3aedd18b41f536a2150fcef397dd8c9f8"
+      }
+    },
+    {
+      "address": "aws_iam_role_policy_attachment.this",
+      "form": "delete",
+      "recorded_name": "aws_iam_role_policy_attachment.0e00bd8b24740a43",
+      "sha256": {
+        "apply/aws_iam_role_policy_attachment.this.delete.msgpack": "e4ff5e7d7a7f08e9800a3e25cb774533cb20040df30b6ba10f956f9acd0eb3f7",
+        "apply/aws_iam_role_policy_attachment.this.delete.type.json": "a58fca95982bcc542a44a57cb0e0749ffb2949ab9cc61fc5c9419c420f84ab8d",
+        "envelope/aws_iam_role_policy_attachment.this.delete.json": "adff3b388af74c7b0f8c4105f6a35ed3aedd18b41f536a2150fcef397dd8c9f8"
+      }
+    }
+  ]
+}

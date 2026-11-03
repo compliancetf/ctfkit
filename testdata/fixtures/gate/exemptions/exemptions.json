@@ -1,0 +1,70 @@
+[
+ {
+  "Kind": "grant",
+  "Digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "Expires": "2026-10-25T00:00:00Z",
+  "Controls": [
+   "s3_bucket_named"
+  ],
+  "Instances": [
+   "aws_s3_bucket.logs"
+  ]
+ },
+ {
+  "Kind": "grant",
+  "Digest": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "Expires": "2026-10-25T00:00:00Z",
+  "Controls": [
+   "s3_bucket_baseline_only"
+  ],
+  "Instances": [
+   "aws_s3_bucket.logs"
+  ]
+ },
+ {
+  "Kind": "self_service",
+  "Digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "Expires": "2026-10-25T00:00:00Z",
+  "Controls": [
+   "s3_bucket_not_coverable",
+   "s3_bucket_advisory"
+  ],
+  "Instances": [
+   "aws_s3_bucket.logs"
+  ]
+ },
+ {
+  "Kind": "self_service",
+  "Digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+  "Expires": "2026-10-24T00:00:00Z",
+  "Controls": [
+   "s3_bucket_named"
+  ],
+  "Instances": [
+   "aws_s3_bucket.logs"
+  ]
+ },
+ {
+  "Kind": "grant",
+  "Digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+  "Expires": "2026-10-25T00:00:00Z",
+  "Controls": [
+   "s3_bucket_delete_guard",
+   "s3_bucket_named"
+  ],
+  "Instances": [
+   "aws_s3_bucket.old"
+  ]
+ },
+ {
+  "Kind": "grant",
+  "Digest": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+  "Expires": "2026-10-25T00:00:00Z",
+  "Controls": [
+   "s3_bucket_public_access_block_present"
+  ],
+  "Instances": [
+   "aws_s3_bucket.logs"
+  ]
+ }
+]

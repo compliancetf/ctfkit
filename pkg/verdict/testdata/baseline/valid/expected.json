@@ -1,0 +1,26 @@
+{
+  "now": "2026-10-19T12:00:00Z",
+  "baseline_key": {
+    "kid": "sha256:dc5138e0ed46d240a9d81b6b252a11c1e67ba2539b8ac09062e179f603e4a3da",
+    "spki_b64": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE+vXfGw30Yrl22S6KL51ekOs7xMkayJf4Gj+icoBVctyPouqHmEgbeUh2oOp8dIgZb8TR+W+FrcagP7gjzzDAIw==",
+    "use": "baseline",
+    "not_before": "2026-10-18T12:00:00Z",
+    "not_after": "2026-12-17T12:00:00Z"
+  },
+  "statement_key": {
+    "kid": "sha256:32d7036ff6dd2caa99bc57e3c4e989eb02514b5dbfb646c2639c80e7a68514d5",
+    "spki_b64": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEYS4tqeb6D4lHHx1Dqb6muQLwhYWxk+EECUgXRWH9YQGYTmbqcgmJnGh7q1NxBa8LhO6kPsEiWBX/ZulHIqY5jg==",
+    "use": "receipt",
+    "not_before": "2026-10-18T12:00:00Z",
+    "not_after": "2026-12-17T12:00:00Z"
+  },
+  "signed_sha256": "f33e181142363d1faa4ea8294f18ea8cf858cb86c59c7bc494bf3b20809f13d3",
+  "statement_signed_sha256": [
+    "6961440f6831b24151938269e62404c7aa55242bd3b85d9d8c90c52cee097273",
+    "48c4fbc5532dac2aa246d7bd8efee4dff0b22e41725c803958ab6af6051e5891"
+  ],
+  "entry_digests": [
+    "sha256:0e0041cfafac6baf3ff71b1b3b8069a20157a99e4da946bde35f001ae24dc7e6",
+    "sha256:10bb8416e065b6d10d09c65a08f39765cc5a0bdc2c86bca89486d9324a64f519"
+  ]
+}

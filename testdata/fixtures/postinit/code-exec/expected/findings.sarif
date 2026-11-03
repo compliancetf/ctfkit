@@ -1,0 +1,556 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.coverage.manifest_missing",
+              "shortDescription": {
+                "text": "An instantiated module has no compliancetf-manifest.json"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "ctf.coverage.resource_unattested",
+              "shortDescription": {
+                "text": "The configuration declares its own resources and no imported test run covers them"
+              },
+              "defaultConfiguration": {
+                "level": "note"
+              }
+            },
+            {
+              "id": "ctf.exec.external_data",
+              "shortDescription": {
+                "text": "The configuration or a module it installs declares a data source that runs a local program"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "ctf.exec.module_endpoint",
+              "shortDescription": {
+                "text": "A module called from inside another module is installed from a source outside the allowed module endpoints"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "ctf.exec.provisioner",
+              "shortDescription": {
+                "text": "The configuration or a module it installs declares a provisioner"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "ctf.catalogVersion": {
+          "version": "2026.9.3",
+          "origin": "embedded"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.coverage.manifest_missing",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Module instance app.local (./modules/local) has no compliancetf-manifest.json; it is listed as not-evidence, never as covered"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".terraform/modules/modules.json"
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.app.module.local",
+                  "kind": "module"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "bbb2fafc2c2aa67457a91b654c98a5e21223779fd6e96e317bd0361836caa28f"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.coverage.manifest_missing",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Module instance app.tools (git::https://example.com/bobthecorp/tools.git) has no compliancetf-manifest.json; it is listed as not-evidence, never as covered"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".terraform/modules/modules.json"
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.app.module.tools",
+                  "kind": "module"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "3ca3515da4cd3e419b6c9c08279a5a04ff9b6c1198448ad016af783f1ee56ec9"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.provisioner",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Provisioner file in terraform_data.bootstrap runs when this configuration is applied, with the access of the machine that applies it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "bootstrap_override.tf"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 7
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "terraform_data.bootstrap",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "81f4a7908820d208e23ba2bcbb12f26aeda06184c294e9775123d5de4a36704f"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.provisioner",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Provisioner local-exec in terraform_data.bootstrap runs when this configuration is applied, with the access of the machine that applies it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 17,
+                  "endLine": 19
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "terraform_data.bootstrap",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "f54aaba243aa0be62fb73840af8bda1ff0fc257532a817c4ca0b868d7684ac2d"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.provisioner",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Provisioner remote-exec in module.app.module.local.terraform_data.hook runs when this configuration is applied, with the access of the machine that applies it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".terraform/modules/app/modules/local/main.tf.json"
+                },
+                "region": {
+                  "startLine": 7,
+                  "endLine": 9
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.app.module.local.terraform_data.hook",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "3e5f1fcc6e24174ca08bb9f5552000642ab72f45295b68a2b152a6fe4f76b158"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.provisioner",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Provisioner local-exec in module.app.module.net.terraform_data.legacy runs when this configuration is applied, with the access of the machine that applies it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".terraform/modules/app.net/main.tf"
+                },
+                "region": {
+                  "startLine": 8,
+                  "endLine": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.app.module.net.terraform_data.legacy",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "dc9b1ecdc89753c650385db87216f32cf6c87861b022163579e6f74c53673f89"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.external_data",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Data source data.external.probe runs a local program when this configuration is planned, with the access of the machine that plans it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "probe.tf.json"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 6
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "data.external.probe",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "61ed11c3d1522b9068332e61d5d452ab3dc588a2e2112804f755c0b4f4dd2f94"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.external_data",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Data source module.app.data.external.version runs a local program when this configuration is planned, with the access of the machine that plans it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".terraform/modules/app/main.tofu"
+                },
+                "region": {
+                  "startLine": 15,
+                  "endLine": 17
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.app.data.external.version",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "dc848e5642559f69399ce6998590b7ae3f83703d56cc086309cb50a197b3e83f"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.external_data",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Data source module.app.check.reachable.data.external.ping runs a local program when this configuration is planned, with the access of the machine that plans it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".terraform/modules/app/main.tofu"
+                },
+                "region": {
+                  "startLine": 21,
+                  "endLine": 23
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.app.check.reachable.data.external.ping",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "5e88a747abd497e2c46536ebdf33bdcc933ac0b3fee783589b125d6c63d8a9d1"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.module_endpoint",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Module module.app.module.net is installed from terraform-aws-modules/vpc/aws, which is not an allowed module endpoint; its code runs when this configuration is planned and applied"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".terraform/modules/app/main.tofu"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 4
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.app.module.net",
+                  "kind": "module"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "e32e5e4a6cb31005ac6428c3b83f8e627f2f2960c632a7fc2e939ecad879e635"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.module_endpoint",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Module module.app.module.tools is installed from git::https://example.com/bobthecorp/tools.git, which is not an allowed module endpoint; its code runs when this configuration is planned and applied"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".terraform/modules/app/main.tofu"
+                },
+                "region": {
+                  "startLine": 11,
+                  "endLine": 13
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.app.module.tools",
+                  "kind": "module"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "28ad49a1348eb370266d57f7631135cd8c4eba01bb324f1f43a4f0054bdd50b2"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.coverage.resource_unattested",
+          "level": "note",
+          "kind": "fail",
+          "message": {
+            "text": "This configuration declares 1 resource block(s) of its own and no imported test run covers them; they are unattested, not enforced"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".terraform/modules/modules.json"
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "62455aec162d94a84b2a3d4f880c21055d5e67e510706477ef877425e245b84f"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

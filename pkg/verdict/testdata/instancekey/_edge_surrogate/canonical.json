@@ -1,0 +1,4 @@
+{
+  "error": "string is not valid UTF-8 (lone surrogate)",
+  "format": "compliancetf.instancekey.golden/v1"
+}

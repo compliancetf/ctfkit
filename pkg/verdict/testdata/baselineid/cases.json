@@ -1,0 +1,2162 @@
+{
+  "comment": "Inputs, written by hand. bases are observations an entry is generated from; each case is an apply-time update request matched against its base's entry. want: stable (grandfathered), changed (not), no_entry (no identity).",
+  "baseline_key_hex": "abababababababababababababababababababababababababababababababab",
+  "now": "2026-10-19T12:00:00Z",
+  "bases": [
+    {
+      "name": "s3",
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      }
+    },
+    {
+      "name": "kms",
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "kms_key_rotation",
+        "version": "1.0.0",
+        "kind": "resource",
+        "resource_type": "aws_kms_key",
+        "reads": [
+          "enable_key_rotation"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.enable_key_rotation",
+        "action": "deny",
+        "severity": "medium",
+        "message": "KMS key rotation must be enabled",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_kms_key.main",
+        "mode": "managed",
+        "type": "aws_kms_key",
+        "name": "main",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after": {
+            "id": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after_unknown": {}
+        }
+      }
+    }
+  ],
+  "cases": [
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-match",
+      "base": "s3",
+      "want": "stable",
+      "about": "the observation itself"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "2222222222222222222222222222222222222222222222222222222222222222",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-new-run-secret",
+      "base": "s3",
+      "want": "stable",
+      "about": "a new run secret changes the instance key, not the entry"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": true,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod",
+              "team": "data"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-unrelated-change",
+      "base": "s3",
+      "want": "stable",
+      "about": "planned change of attributes the control does not read"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "authenticated-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "authenticated-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-read-change",
+      "base": "s3",
+      "want": "changed",
+      "about": "a read attribute differs from the observation in prior and planned state"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": true
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": true
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-nested-read-change",
+      "base": "s3",
+      "want": "changed",
+      "about": "a nested read attribute differs from the observation"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "private",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-planned-read-change",
+      "base": "s3",
+      "want": "changed",
+      "about": "the planned read differs from the prior read"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs-2",
+            "bucket": "bobthecorp-logs-2",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs-2",
+            "bucket": "bobthecorp-logs-2",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs-2",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-identity-change",
+      "base": "s3",
+      "want": "changed",
+      "about": "the identity object names another bucket"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": null
+          }
+        }
+      },
+      "name": "s3-identity-null-member",
+      "base": "s3",
+      "want": "changed",
+      "about": "a null identity member is dropped: precedence keeps kind identity, the identity differs"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": null,
+            "bucket": null,
+            "region": null
+          }
+        }
+      },
+      "name": "s3-precedence-all-null-identity",
+      "base": "s3",
+      "want": "changed",
+      "about": "an all-null identity object falls back to kind id"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {}
+        }
+      },
+      "name": "s3-precedence-no-identity",
+      "base": "s3",
+      "want": "changed",
+      "about": "no before_identity falls back to kind id"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-control-message",
+      "base": "s3",
+      "want": "changed",
+      "about": "a control input changes: message"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-control-reads",
+      "base": "s3",
+      "want": "changed",
+      "about": "a control input changes: reads"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private'",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-control-expr",
+      "base": "s3",
+      "want": "changed",
+      "about": "a control input changes: expr"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.2.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-control-minor",
+      "base": "s3",
+      "want": "changed",
+      "about": "a control input changes: minor version"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "3.0.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-control-major",
+      "base": "s3",
+      "want": "changed",
+      "about": "a control input changes: major version"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private_v2",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-control-id",
+      "base": "s3",
+      "want": "changed",
+      "about": "another control id"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "222222222222",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-scope-account",
+      "base": "s3",
+      "want": "changed",
+      "about": "another account"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "eu-west-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-scope-region",
+      "base": "s3",
+      "want": "changed",
+      "about": "another region"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "staging",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-workspace",
+      "base": "s3",
+      "want": "changed",
+      "about": "another workspace"
+    },
+    {
+      "org_id": "bobthecorp-other",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "s3_acl_private",
+        "version": "2.1.0",
+        "kind": "resource",
+        "resource_type": "aws_s3_bucket",
+        "reads": [
+          "acl",
+          "versioning.enabled"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.acl == 'private' && self.versioning.enabled",
+        "action": "deny",
+        "severity": "high",
+        "message": "S3 bucket must be private with versioning",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_s3_bucket.logs",
+        "mode": "managed",
+        "type": "aws_s3_bucket",
+        "name": "logs",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after": {
+            "id": "bobthecorp-logs",
+            "bucket": "bobthecorp-logs",
+            "acl": "public-read",
+            "force_destroy": false,
+            "region": "us-east-1",
+            "tags": {
+              "env": "prod"
+            },
+            "versioning": {
+              "enabled": false
+            }
+          },
+          "after_unknown": {},
+          "before_identity": {
+            "account_id": "111111111111",
+            "bucket": "bobthecorp-logs",
+            "region": "us-east-1"
+          }
+        }
+      },
+      "name": "s3-org",
+      "base": "s3",
+      "want": "changed",
+      "about": "another org"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "kms_key_rotation",
+        "version": "1.0.0",
+        "kind": "resource",
+        "resource_type": "aws_kms_key",
+        "reads": [
+          "enable_key_rotation"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.enable_key_rotation",
+        "action": "deny",
+        "severity": "medium",
+        "message": "KMS key rotation must be enabled",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_kms_key.main",
+        "mode": "managed",
+        "type": "aws_kms_key",
+        "name": "main",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after": {
+            "id": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after_unknown": {}
+        }
+      },
+      "name": "kms-match",
+      "base": "kms",
+      "want": "stable",
+      "about": "the observation itself"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "2222222222222222222222222222222222222222222222222222222222222222",
+      "control": {
+        "id": "kms_key_rotation",
+        "version": "1.0.0",
+        "kind": "resource",
+        "resource_type": "aws_kms_key",
+        "reads": [
+          "enable_key_rotation"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.enable_key_rotation",
+        "action": "deny",
+        "severity": "medium",
+        "message": "KMS key rotation must be enabled",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_kms_key.main",
+        "mode": "managed",
+        "type": "aws_kms_key",
+        "name": "main",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after": {
+            "id": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after_unknown": {}
+        }
+      },
+      "name": "kms-new-run-secret",
+      "base": "kms",
+      "want": "stable",
+      "about": "a new run secret changes the instance key, not the entry"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "kms_key_rotation",
+        "version": "1.0.0",
+        "kind": "resource",
+        "resource_type": "aws_kms_key",
+        "reads": [
+          "enable_key_rotation"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.enable_key_rotation",
+        "action": "deny",
+        "severity": "medium",
+        "message": "KMS key rotation must be enabled",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_kms_key.main",
+        "mode": "managed",
+        "type": "aws_kms_key",
+        "name": "main",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after": {
+            "id": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "description": "bobthecorp main key (rotated soon)",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod",
+              "team": "sec"
+            }
+          },
+          "after_unknown": {}
+        }
+      },
+      "name": "kms-unrelated-change",
+      "base": "kms",
+      "want": "stable",
+      "about": "planned change of attributes the control does not read"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "kms_key_rotation",
+        "version": "1.0.0",
+        "kind": "resource",
+        "resource_type": "aws_kms_key",
+        "reads": [
+          "enable_key_rotation"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.enable_key_rotation",
+        "action": "deny",
+        "severity": "medium",
+        "message": "KMS key rotation must be enabled",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_kms_key.main",
+        "mode": "managed",
+        "type": "aws_kms_key",
+        "name": "main",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": true,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after": {
+            "id": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": true,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after_unknown": {}
+        }
+      },
+      "name": "kms-read-change",
+      "base": "kms",
+      "want": "changed",
+      "about": "a read attribute differs from the observation"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "kms_key_rotation",
+        "version": "1.0.0",
+        "kind": "resource",
+        "resource_type": "aws_kms_key",
+        "reads": [
+          "enable_key_rotation"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.enable_key_rotation",
+        "action": "deny",
+        "severity": "medium",
+        "message": "KMS key rotation must be enabled",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_kms_key.main",
+        "mode": "managed",
+        "type": "aws_kms_key",
+        "name": "main",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "5678efgh-56ef-78gh-90ij-567890abcdef",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after": {
+            "id": "5678efgh-56ef-78gh-90ij-567890abcdef",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after_unknown": {}
+        }
+      },
+      "name": "kms-id-change",
+      "base": "kms",
+      "want": "changed",
+      "about": "the prior id differs"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "kms_key_rotation",
+        "version": "1.0.0",
+        "kind": "resource",
+        "resource_type": "aws_kms_key",
+        "reads": [
+          "enable_key_rotation"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.enable_key_rotation",
+        "action": "deny",
+        "severity": "medium",
+        "message": "KMS key rotation must be enabled",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_kms_key.main",
+        "mode": "managed",
+        "type": "aws_kms_key",
+        "name": "main",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "1234abcd-12ab-34cd-56ef-1234567890ab",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after": {
+            "id": "5678efgh-56ef-78gh-90ij-567890abcdef",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after_unknown": {}
+        }
+      },
+      "name": "kms-planned-id-change",
+      "base": "kms",
+      "want": "changed",
+      "about": "kind id: the planned state must keep the prior id"
+    },
+    {
+      "org_id": "bobthecorp",
+      "workspace": "prod",
+      "scope": {
+        "account_id": "111111111111",
+        "region": "us-east-1"
+      },
+      "run_secret_hex": "1111111111111111111111111111111111111111111111111111111111111111",
+      "control": {
+        "id": "kms_key_rotation",
+        "version": "1.0.0",
+        "kind": "resource",
+        "resource_type": "aws_kms_key",
+        "reads": [
+          "enable_key_rotation"
+        ],
+        "presence_mode": "effective",
+        "on": [
+          "create",
+          "update"
+        ],
+        "expr": "self.enable_key_rotation",
+        "action": "deny",
+        "severity": "medium",
+        "message": "KMS key rotation must be enabled",
+        "exemption_coverable": [
+          "baseline"
+        ]
+      },
+      "change": {
+        "address": "aws_kms_key.main",
+        "mode": "managed",
+        "type": "aws_kms_key",
+        "name": "main",
+        "provider_name": "registry.terraform.io/hashicorp/aws",
+        "change": {
+          "actions": [
+            "update"
+          ],
+          "before": {
+            "id": "",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after": {
+            "id": "",
+            "description": "bobthecorp main key",
+            "enable_key_rotation": false,
+            "tags": {
+              "env": "prod"
+            }
+          },
+          "after_unknown": {}
+        }
+      },
+      "name": "kms-precedence-none",
+      "base": "kms",
+      "want": "no_entry",
+      "about": "no identity schema and an empty id: no entry can be written"
+    }
+  ]
+}

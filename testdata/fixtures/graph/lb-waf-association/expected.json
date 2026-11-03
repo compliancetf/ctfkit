@@ -1,0 +1,8 @@
+[
+  {
+    "address": "aws_lb.web",
+    "control": "lb_waf_association_present",
+    "version": "1.0.0",
+    "result": "pass"
+  }
+]

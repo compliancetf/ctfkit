@@ -1,0 +1,14 @@
+[
+  {
+    "address": "module.site[0].aws_s3_bucket.this",
+    "control": "s3_bucket_public_access_block_present",
+    "version": "1.0.0",
+    "result": "pass"
+  },
+  {
+    "address": "module.site[1].aws_s3_bucket.this",
+    "control": "s3_bucket_public_access_block_present",
+    "version": "1.0.0",
+    "result": "pass"
+  }
+]

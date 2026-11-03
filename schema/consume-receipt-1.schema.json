@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compliance.tf/schema/consume-receipt-1.schema.json",
+  "title": "compliancetf.consume-receipt/v1",
+  "description": "The receipt the compliance.tf Evidence API signs when ctfkit gate sign consumes a break-glass override; embedded whole in the verdict's break_glass_receipts and verified offline by the compliance.tf terraform provider. Every value is a string, array or object. The signature member covers the RFC 8785 (JCS) form of the document without it, signed by a key of the profile's break_glass.receipt_keys. pkg/verdict.ParseReceipt is the reference reader.",
+  "type": "object",
+  "required": [
+    "format", "override_id", "override_digest", "org_id", "run_id", "request_digest", "controls", "instance_keys",
+    "plan_digest", "consumed_at", "expires_at", "signature"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "compliancetf.consume-receipt/v1" },
+    "override_id": { "$ref": "#/$defs/token" },
+    "override_digest": { "description": "sha256 over JCS of the whole override, signature included", "$ref": "#/$defs/digest" },
+    "org_id": { "type": "string", "minLength": 1 },
+    "run_id": { "type": "string", "minLength": 1 },
+    "request_digest": {
+      "description": "B9: sha256 over JCS of {org_id, workspace, environment, plan_digest, content_digest, floor_epoch, override_id, controls (sorted), instance_keys (sorted)}",
+      "$ref": "#/$defs/digest"
+    },
+    "controls": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/token" } },
+    "instance_keys": {
+      "description": "Action keys: instance_key, or delete_key for a destroy half.",
+      "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/digest" }
+    },
+    "plan_digest": { "$ref": "#/$defs/digest" },
+    "consumed_at": { "description": "Evidence API server time", "$ref": "#/$defs/time" },
+    "expires_at": { "$ref": "#/$defs/time" },
+    "predecessor_receipt_digest": { "$ref": "#/$defs/digest" },
+    "signature": { "$ref": "#/$defs/signature" }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "token": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "time": {
+      "description": "RFC 3339 in UTC",
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]+)?Z$"
+    },
+    "signature": {
+      "type": "object",
+      "required": ["kid", "alg", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "kid": { "$ref": "#/$defs/digest" },
+        "alg": { "const": "ES256" },
+        "value": { "description": "base64url without padding of the ASN.1 DER signature", "type": "string", "pattern": "^[A-Za-z0-9_-]+$" }
+      }
+    }
+  }
+}

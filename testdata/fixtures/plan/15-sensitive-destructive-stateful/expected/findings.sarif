@@ -1,0 +1,218 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.risk.sensitive_change_destructive_stateful",
+              "shortDescription": {
+                "text": "A change deletes or replaces a stateful resource, or removes its deletion safeguard"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.risk.sensitive_change_destructive_stateful",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "aws_dynamodb_table.sessions is replaced, which deletes the existing table before the new one is created"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 17
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_dynamodb_table.sessions",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "7250860a11f57db20b2887704012b4260f8bcd39fa16be2779ac6dd3c7a3be13"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            },
+            "ctf.attributes": [
+              "hash_key"
+            ]
+          }
+        },
+        {
+          "ruleId": "ctf.risk.sensitive_change_destructive_stateful",
+          "level": "warning",
+          "kind": "fail",
+          "message": {
+            "text": "aws_db_instance.ledger turns deletion_protection from true to false"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 35,
+                  "endLine": 47
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_db_instance.ledger",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "a89511d807566ae7de834a27afc1635eaad23a5a3e6235be381189505d2ecb99"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [
+              "rds_db_instance_deletion_protection_enabled"
+            ],
+            "ctf.frameworks": [
+              {
+                "id": "cfr_part_11",
+                "clauses": [
+                  "11.10(a)"
+                ]
+              },
+              {
+                "id": "cisa_cyber_essentials",
+                "clauses": [
+                  "Your Data-4",
+                  "Your Systems-3"
+                ]
+              },
+              {
+                "id": "eu_gmp_annex_11",
+                "clauses": [
+                  "7.1"
+                ]
+              },
+              {
+                "id": "fedramp_low_rev_4",
+                "clauses": [
+                  "SC-5"
+                ]
+              },
+              {
+                "id": "fedramp_moderate_rev_4",
+                "clauses": [
+                  "SC-5"
+                ]
+              },
+              {
+                "id": "ffiec",
+                "clauses": [
+                  "D5.IR.Pl.B.6"
+                ]
+              },
+              {
+                "id": "hipaa_final_omnibus_2013",
+                "clauses": [
+                  "164.308(a)(7)(ii)(C)"
+                ]
+              },
+              {
+                "id": "nist_800_53_rev_4",
+                "clauses": [
+                  "SC-5"
+                ]
+              },
+              {
+                "id": "nist_800_53_rev_5",
+                "clauses": [
+                  "CA-7(4)(c)",
+                  "CM-3(a)",
+                  "CP-1(a)(1)(b)",
+                  "CP-2(5)",
+                  "CP-2(a)",
+                  "CP-2(d)",
+                  "CP-2(e)",
+                  "SA-15(a)(4)",
+                  "SC-22",
+                  "SC-5(2)",
+                  "SI-13(5)"
+                ]
+              },
+              {
+                "id": "nist_csf_v11",
+                "clauses": [
+                  "RC.RP-1"
+                ]
+              },
+              {
+                "id": "nist_csf_v2",
+                "clauses": [
+                  "PR.DS-4",
+                  "PR.PT-5",
+                  "RC.RP-04"
+                ]
+              },
+              {
+                "id": "nydfs_23",
+                "clauses": [
+                  "500.02(a)"
+                ]
+              },
+              {
+                "id": "rbi_itf_nbfc",
+                "clauses": [
+                  "8.1"
+                ]
+              },
+              {
+                "id": "soc_2",
+                "clauses": [
+                  "C1.1"
+                ]
+              }
+            ],
+            "ctf.preventive": true,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            },
+            "ctf.attributes": [
+              "deletion_protection"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

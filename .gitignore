@@ -1,0 +1,36 @@
+# built binaries
+/ctfkit
+
+# goreleaser build output (`make clean` removes it)
+dist/
+
+# `make test-ci` coverage profile
+/coverage.txt
+
+# Local agent and issue-tracker state: never part of this repository (make hygiene).
+.beads/
+.dolt/
+.bv/
+*.db
+*.gate.lock*
+.claude/
+.codex/
+.cursor/
+.agents/
+skills-lock.json
+CLAUDE.local.md
+AGENTS.local.md
+
+# Local MCP server config: machine-local paths and credentials, never committed.
+.mcp.json
+
+# Parity fixtures kept outside this repository are run locally and never committed.
+testdata/local/
+
+# scripts/record-report-fixtures.sh assembles the fresh pack and keeps the swap backup here.
+testdata/.report-rerecord/
+
+# A bare `coverage` line is common in a global ignore file, and it would drop
+# the whole ctf.coverage analyzer package on checkout. A repository .gitignore
+# outranks the global one, so this negation keeps the package tracked.
+!internal/analyzer/coverage/

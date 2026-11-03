@@ -1,0 +1,77 @@
+# Hook configuration for a consuming stack.
+#
+# Configure this in the STACK'S SETTINGS, through the Spacelift UI, API or terraform provider, not
+# as a .spacelift/config.yml in the stack repository. A file in the repository is editable by
+# anyone who can open a pull request against it, so the hook that produces the evidence could be
+# removed in the same change that introduces the finding. Stack settings are a platform admin
+# concern and stay that way.
+#
+# The module-registry test hooks in config.yml are different: they live in the module repository's
+# own .spacelift/config.yml, because they gate that repository's releases.
+#
+# Two hooks, two metadata keys, so neither overwrites the other. Each file is JSON with a verdict,
+# a summary of counts and a findings list:
+#   after_init  ->  ctfkit report  ->  ctfkit.custom.spacelift.json
+#   after_plan  ->  ctfkit scan    ->  ctfkit-scan.custom.spacelift.json
+#
+# Every flag that decides an outcome is pinned here and reads from the runner image, never from the
+# repository being analyzed: --fail-on, --format, --config, --exceptions, --catalog, so a stack
+# cannot change any of them by committing a file. `--catalog embedded` pins the release catalog
+# compiled into the binary and ignores ~/.ctf/control-requirements.yaml, so control ids and
+# remediation module sources always resolve and no catalog file has to be shipped or kept current.
+#
+# Both hooks render a format list of exactly `spacelift`, which by contract exits 0 on findings, so
+# neither can turn the run red however the threshold is set. Exit 2, a tool error, still fails the
+# hook, and nothing here suppresses that. Whether a stack is enforced is decided in policy.rego, by
+# enforce or by the ctfkit:enforce stack label.
+version: "1"
+
+# Your own image with ctfkit v0.2.1 or later on PATH; see https://compliance.tf/docs/ctfkit/spacelift/.
+# A distroless image has no shell and cannot run hooks. A ctfkit container image is planned and not
+# published.
+runner_image: <your-registry>/ctfkit-runner:<tag>
+
+after_init:
+  # A metadata file left in the working directory, by an earlier hook or committed to the
+  # repository, would otherwise be read by the policy as this run's result.
+  - rm -f ctfkit.custom.spacelift.json
+  - >-
+    ctfkit report
+    --fail-on error
+    --format spacelift
+    --config /opt/ctfkit/ctfkit.yaml
+    --exceptions /opt/ctfkit/exceptions.yaml
+    --catalog embedded
+  # A stack that runs tofu test can import the results: add --tests-json to the line above. ctfkit
+  # never runs tofu or terraform, so the file must already exist when this hook runs, written by
+  # the step that runs the tests, for example `tofu test -json > tests.json`:
+  #   ctfkit report --fail-on error --format spacelift --tests-json tests.json ...
+
+after_plan:
+  # `ctfkit scan` needs plan JSON, and ctfkit never runs tofu or terraform itself, so the hook turns
+  # the saved plan into JSON first, with tofu when it is on PATH and terraform otherwise. It takes
+  # the first regular file among spacelift.plan, *.plan and *.tfplan in the working directory. The
+  # plan file name is not yet verified on a live Spacelift run; the probe covers the
+  # likely names until it is. A stale ctfkit-scan file or plan.json is removed first, so the policy
+  # never reads a file this run did not write. With no plan file the hook logs one line to stderr
+  # and exits 0: the run carries no ctfkit-scan key, and the policy reports it missing, warned in
+  # shadow mode and denied once enforcing. A failing show exits 1, and ctfkit scan is the last
+  # command, so a ctfkit tool error (exit 2) fails the hook too.
+  - |
+    rm -f ctfkit-scan.custom.spacelift.json plan.json
+    p=
+    for f in spacelift.plan *.plan *.tfplan; do
+      if [ -f "$f" ]; then p=$f; break; fi
+    done
+    if [ -z "$p" ]; then
+      echo "ctfkit: no plan file (spacelift.plan, *.plan, *.tfplan) in $(pwd); scan skipped" >&2
+    else
+      if command -v tofu >/dev/null 2>&1; then tf=tofu; else tf=terraform; fi
+      "$tf" show -json "$p" > plan.json || exit 1
+      ctfkit scan --plan plan.json --stage post_plan \
+        --fail-on error \
+        --format spacelift \
+        --config /opt/ctfkit/ctfkit.yaml \
+        --exceptions /opt/ctfkit/exceptions.yaml \
+        --catalog embedded
+    fi

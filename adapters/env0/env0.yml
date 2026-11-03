@@ -1,0 +1,147 @@
+# env0 custom flow for a governed apply with ctfkit by compliance.tf (preview).
+#
+# Precondition: the org profile sets verdict_required. env0 still runs its own plan and apply,
+# and only verdict_required makes the provider refuse what that apply would change without a
+# verdict. See README.md, "Precondition".
+#
+# Put this file in the template folder as env0.yml. ctfkit gate plan creates the candidate
+# artifact set during env0's plan step, and the apply step signs that set and applies it with
+# ctfkit apply. The set lives in the template folder as .ctfkit-artifacts and must reach the apply
+# step unchanged, across the approval [verify on a live env0 deployment]; ctfkit checks every file
+# against the digests in candidate.json, and without the set the apply step stops.
+#
+# env0 documents no way to replace or skip its own plan and apply steps, so both still run: env0's
+# plan is what reviewers see before they approve, and env0's own apply runs after the step below
+# has applied the signed set [verify]. See README.md, "What env0 still runs".
+#
+# Variables, set on the environment or project by an admin: CTFKIT_ORG, CTFKIT_ENVIRONMENT,
+# CTFKIT_PROFILE, CTFKIT_FLOOR, CTFKIT_BUNDLE_DIR and, for the apply step, CTFKIT_SIGNER. A
+# variable that is not set or is empty stops the step. env0 sets ENV0_WORKSPACE_NAME and
+# ENV0_DEPLOYMENT_TYPE.
+#
+# env0 names the steps of a Terraform template terraformPlan, terraformApply and terraformDestroy,
+# and those of an OpenTofu template opentofuPlan, opentofuApply and opentofuDestroy. Each hook is
+# here under both names; the OpenTofu hooks take only tofu as --tf-bin. flow_test.go fails when a
+# Terraform hook has no matching OpenTofu hook.
+version: 2
+
+deploy:
+  steps:
+    # Terraform templates.
+    terraformPlan:
+      before:
+        - name: ctfkit gate plan
+          run: |
+            set -eu
+            case "${ENV0_DEPLOYMENT_TYPE:?}" in
+              prPlan | driftDetection)
+                echo "ctfkit: a ${ENV0_DEPLOYMENT_TYPE} deployment applies nothing; no candidate planned" >&2
+                exit 0 ;;
+            esac
+            # Same probe as the apply step, so both run the binary whose digest candidate.json holds.
+            tf="$(command -v tofu || command -v terraform || :)"
+            if [ -z "$tf" ]; then
+              echo "ctfkit: neither tofu nor terraform is on PATH" >&2
+              exit 2
+            fi
+            # --out must not exist: a set left in the folder stops the plan rather than being reused.
+            ctfkit gate plan --out .ctfkit-artifacts --tf-bin "$tf" \
+              --workspace "${ENV0_WORKSPACE_NAME:?}" --environment "${CTFKIT_ENVIRONMENT:?}" \
+              --org "${CTFKIT_ORG:?}" --profile "${CTFKIT_PROFILE:?}" --floor "${CTFKIT_FLOOR:?}" \
+              --bundle-dir "${CTFKIT_BUNDLE_DIR:?}"
+    terraformApply:
+      before:
+        - name: ctfkit gate sign and apply
+          run: |
+            set -eu
+            a=.ctfkit-artifacts
+            if [ -L "$a" ] || [ ! -d "$a" ]; then
+              echo "ctfkit: no artifact set at $a; the plan step's candidate did not reach apply" >&2
+              exit 2
+            fi
+            tf="$(command -v tofu || command -v terraform || :)"
+            if [ -z "$tf" ]; then
+              echo "ctfkit: neither tofu nor terraform is on PATH" >&2
+              exit 2
+            fi
+            signer="${CTFKIT_SIGNER:?}"
+            set -- --tf-bin "$tf" \
+              --workspace "${ENV0_WORKSPACE_NAME:?}" --environment "${CTFKIT_ENVIRONMENT:?}" \
+              --org "${CTFKIT_ORG:?}" --profile "${CTFKIT_PROFILE:?}" --floor "${CTFKIT_FLOOR:?}" \
+              --bundle-dir "${CTFKIT_BUNDLE_DIR:?}"
+            # A transfer that drops file modes would otherwise make ctfkit refuse the set. Contents
+            # are checked by ctfkit against candidate.json, never here.
+            chmod 0700 "$a"
+            find "$a" -mindepth 1 -maxdepth 1 -type f -exec chmod 0600 {} +
+            # Each command's exit code fails the step: sign exits 1 when the verdict does not admit
+            # the plan, and apply then never runs.
+            ctfkit gate sign --candidate "$a" --signer "$signer" --fail-on error "$@"
+            ctfkit apply --artifacts "$a" "$@"
+    # OpenTofu templates: the same hooks on env0's OpenTofu step names, with tofu as --tf-bin.
+    opentofuPlan:
+      before:
+        - name: ctfkit gate plan
+          run: |
+            set -eu
+            case "${ENV0_DEPLOYMENT_TYPE:?}" in
+              prPlan | driftDetection)
+                echo "ctfkit: a ${ENV0_DEPLOYMENT_TYPE} deployment applies nothing; no candidate planned" >&2
+                exit 0 ;;
+            esac
+            # Same probe as the apply step, so both run the binary whose digest candidate.json holds.
+            tf="$(command -v tofu || :)"
+            if [ -z "$tf" ]; then
+              echo "ctfkit: tofu is not on PATH" >&2
+              exit 2
+            fi
+            # --out must not exist: a set left in the folder stops the plan rather than being reused.
+            ctfkit gate plan --out .ctfkit-artifacts --tf-bin "$tf" \
+              --workspace "${ENV0_WORKSPACE_NAME:?}" --environment "${CTFKIT_ENVIRONMENT:?}" \
+              --org "${CTFKIT_ORG:?}" --profile "${CTFKIT_PROFILE:?}" --floor "${CTFKIT_FLOOR:?}" \
+              --bundle-dir "${CTFKIT_BUNDLE_DIR:?}"
+    opentofuApply:
+      before:
+        - name: ctfkit gate sign and apply
+          run: |
+            set -eu
+            a=.ctfkit-artifacts
+            if [ -L "$a" ] || [ ! -d "$a" ]; then
+              echo "ctfkit: no artifact set at $a; the plan step's candidate did not reach apply" >&2
+              exit 2
+            fi
+            tf="$(command -v tofu || :)"
+            if [ -z "$tf" ]; then
+              echo "ctfkit: tofu is not on PATH" >&2
+              exit 2
+            fi
+            signer="${CTFKIT_SIGNER:?}"
+            set -- --tf-bin "$tf" \
+              --workspace "${ENV0_WORKSPACE_NAME:?}" --environment "${CTFKIT_ENVIRONMENT:?}" \
+              --org "${CTFKIT_ORG:?}" --profile "${CTFKIT_PROFILE:?}" --floor "${CTFKIT_FLOOR:?}" \
+              --bundle-dir "${CTFKIT_BUNDLE_DIR:?}"
+            # A transfer that drops file modes would otherwise make ctfkit refuse the set. Contents
+            # are checked by ctfkit against candidate.json, never here.
+            chmod 0700 "$a"
+            find "$a" -mindepth 1 -maxdepth 1 -type f -exec chmod 0600 {} +
+            # Each command's exit code fails the step: sign exits 1 when the verdict does not admit
+            # the plan, and apply then never runs.
+            ctfkit gate sign --candidate "$a" --signer "$signer" --fail-on error "$@"
+            ctfkit apply --artifacts "$a" "$@"
+
+# ctfkit governs no destroy, so a destroy deployment of this template stops before env0 destroys
+# anything, on a Terraform or an OpenTofu template. Step names from env0's custom flow reference
+# [verify on a live env0 deployment].
+destroy:
+  steps:
+    terraformDestroy:
+      before:
+        - name: ctfkit refuses destroy
+          run: |
+            echo "ctfkit: this template applies only through ctfkit; a destroy is not governed and is refused" >&2
+            exit 2
+    opentofuDestroy:
+      before:
+        - name: ctfkit refuses destroy
+          run: |
+            echo "ctfkit: this template applies only through ctfkit; a destroy is not governed and is refused" >&2
+            exit 2

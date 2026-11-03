@@ -1,0 +1,16 @@
+# Class 2: an IAM policy allows wildcard actions on every resource with no
+# condition. "*" is reported at level, a service-wide wildcard such as s3:* at
+# service_level.
+class: wildcard_iam
+rules:
+  - types: [aws_iam_policy, aws_iam_role_policy, aws_iam_user_policy, aws_iam_group_policy]
+    attribute: policy
+    predicate: policy_wildcard_action
+    level: error
+    service_level: warning
+  - types: [aws_iam_role]
+    attribute: inline_policy
+    field: policy
+    predicate: policy_wildcard_action
+    level: error
+    service_level: warning

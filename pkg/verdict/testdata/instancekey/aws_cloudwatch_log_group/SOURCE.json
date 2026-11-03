@@ -1,0 +1,40 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_cloudwatch_log_group.new",
+      "form": "create",
+      "recorded_name": "aws_cloudwatch_log_group.27c15ce624322710",
+      "sha256": {
+        "apply/aws_cloudwatch_log_group.new.create.msgpack": "54b5a1656fdc98bb26e05740e83e74d713bc4db8777c88e011ebce39869f4466",
+        "apply/aws_cloudwatch_log_group.new.create.type.json": "0c0c58963b74d6e9deeb5bc4061b0fd5b0aa088876fa2459d1bbfc742c0e7bd0",
+        "envelope/aws_cloudwatch_log_group.new.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_cloudwatch_log_group.old",
+      "form": "delete",
+      "recorded_name": "aws_cloudwatch_log_group.2251851e9769edba",
+      "sha256": {
+        "apply/aws_cloudwatch_log_group.old.delete.msgpack": "e4ff5e7d7a7f08e9800a3e25cb774533cb20040df30b6ba10f956f9acd0eb3f7",
+        "apply/aws_cloudwatch_log_group.old.delete.type.json": "0c0c58963b74d6e9deeb5bc4061b0fd5b0aa088876fa2459d1bbfc742c0e7bd0",
+        "envelope/aws_cloudwatch_log_group.old.delete.json": "5e13df9db443e83f0d0d2aff7dd17a244ee21a4017a874df4fc8fa3664b2c97d"
+      }
+    },
+    {
+      "address": "aws_cloudwatch_log_group.this",
+      "form": "update",
+      "recorded_name": "aws_cloudwatch_log_group.76c25c28f5eb8400",
+      "sha256": {
+        "apply/aws_cloudwatch_log_group.this.update.msgpack": "3f60468a60ec7a313982ce2f14eb78fc7c00ab10a65f9a3dc768bbdb2ecc9d74",
+        "apply/aws_cloudwatch_log_group.this.update.type.json": "0c0c58963b74d6e9deeb5bc4061b0fd5b0aa088876fa2459d1bbfc742c0e7bd0",
+        "envelope/aws_cloudwatch_log_group.this.update.json": "d566da35baf8f05291a7f8051c58e59e7de9a48f5844832671d7d9a6eff85c15"
+      }
+    }
+  ]
+}

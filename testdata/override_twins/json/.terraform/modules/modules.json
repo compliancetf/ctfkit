@@ -1,0 +1,1 @@
+{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"bucket","Source":"bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws","Version":"5.16.1","Dir":".terraform/modules/bucket"},{"Key":"store","Source":"./modules/store","Dir":"modules/store"}]}

@@ -1,0 +1,20 @@
+- id: ctfkit
+  name: ctfkit
+  description: Run ctfkit pre_plan checks on Terraform and OpenTofu files (module sources, pinning, disabled controls, providers)
+  entry: ctfkit scan --stage pre_plan
+  language: golang
+  files: \.(tf|tofu)(\.json)?$
+  exclude: \.terraform/
+  require_serial: false
+  pass_filenames: true
+  additional_dependencies: []
+- id: ctfkit-scan-dir
+  name: ctfkit (directory scan)
+  description: Run ctfkit pre_plan checks over the whole repository as one directory scan, which tells reusable module directories from deployable roots (use in module repositories)
+  entry: ctfkit scan --stage pre_plan .
+  language: golang
+  files: \.(tf|tofu)(\.json)?$
+  exclude: \.terraform/
+  require_serial: true
+  pass_filenames: false
+  additional_dependencies: []

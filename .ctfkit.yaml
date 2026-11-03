@@ -1,0 +1,40 @@
+# ctfkit configuration
+
+# Allowed compliance.tf endpoints
+# Only modules from these endpoints will be permitted
+allowed_endpoints:
+  - "soc2.compliance.tf"
+  - "pcidss.compliance.tf"
+  - "nist.compliance.tf"
+  - "iso27001.compliance.tf"
+  - "hipaa.compliance.tf"
+  - "fedramp.compliance.tf"
+  - "registry.compliance.tf"
+  # Custom org endpoints. bobthecorp is the fake test org every fixture in this
+  # repository uses; ctfkit report, run from here, reads this list for
+  # ctf.exec.module_endpoint.
+  - "bobthecorp.compliance.tf"
+
+# Fail when control disable attempts are detected
+# Query parameters or variables that attempt to disable controls will fail validation
+fail_on_control_disable: true
+
+# Optional: Resource allowlist
+# If specified, only these resource types are allowed
+# Leave empty to allow all resource types
+allowed_resources: []
+  # - "aws_s3_bucket"
+  # - "aws_iam_role"
+  # - "aws_iam_policy"
+
+# Patterns that indicate control disabling attempts
+# Module sources containing these patterns will be flagged
+disable_patterns:
+  - "disable_"
+  - "skip_"
+  - "ignore_"
+  - "bypass_"
+  - "no_"
+
+# Verbose output
+verbose: false

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compliance.tf/schema/spacelift-1.schema.json",
+  "title": "ctfkit.spacelift/1",
+  "description": "The compact metadata file ctfkit by compliance.tf writes to ctfkit.custom.spacelift.json in the run's working directory. Spacelift exposes it to a plan policy as input.third_party_metadata.custom.ctfkit, so it stays small on purpose: the verdict, the level counts and one line per finding.",
+  "type": "object",
+  "required": ["schema", "stage", "verdict", "summary", "findings"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "ctfkit.spacelift/1" },
+    "stage": { "enum": ["pre_plan", "post_init", "post_plan", "pre_apply", "post_apply"] },
+    "verdict": { "enum": ["pass", "fail"] },
+    "watermark": {
+      "type": "string",
+      "pattern": "^[^\u0000-\u001f\u007f]+$",
+      "description": "The optional banner line --watermark sets: one line of printable text. Absent when no banner was set."
+    },
+    "summary": {
+      "type": "object",
+      "description": "Counts over findings, by level. A policy can deny on summary.error without walking the array.",
+      "required": ["error", "warning", "note"],
+      "additionalProperties": false,
+      "properties": {
+        "error": { "type": "integer", "minimum": 0 },
+        "warning": { "type": "integer", "minimum": 0 },
+        "note": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ruleId", "level", "message"],
+        "additionalProperties": false,
+        "properties": {
+          "ruleId": { "type": "string", "pattern": "^ctf\\.[a-z0-9]+(\\.[a-z0-9_]+)+$" },
+          "level": { "enum": ["error", "warning", "note"] },
+          "message": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

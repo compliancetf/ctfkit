@@ -1,0 +1,27 @@
+{
+  "schema": "ctfkit.spacelift/1",
+  "stage": "post_init",
+  "verdict": "pass",
+  "summary": {
+    "error": 0,
+    "warning": 2,
+    "note": 1
+  },
+  "findings": [
+    {
+      "ruleId": "ctf.coverage.delegation_unresolved",
+      "level": "warning",
+      "message": "Control s3_bucket_event_notifications_enabled is delegated to scope modules/notification of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced"
+    },
+    {
+      "ruleId": "ctf.coverage.delegation_unresolved",
+      "level": "warning",
+      "message": "Control s3_public_access_block_account is delegated to scope modules/account-public-access of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced"
+    },
+    {
+      "ruleId": "ctf.coverage.resource_unattested",
+      "level": "note",
+      "message": "This configuration declares 3 resource block(s) of its own and no imported test run covers them; they are unattested, not enforced"
+    }
+  ]
+}

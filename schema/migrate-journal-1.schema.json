@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compliance.tf/schema/migrate-journal-1.schema.json",
+  "title": "ctfkit.migrate-journal/1",
+  "description": "The migration record ctfkit migrate apply writes at <journal-dir>/<run_id>/journal.json when a unit commits, beside rollback.sh. It holds no state bytes and no credential. That is the writer's invariant, not the schema's: closed objects refuse an unknown member, but a string member can still carry any bytes, so the writer builds every value from controlled data, never from environment values, command output or state. ctfkit migrate rollback reads it and stops for manual reconciliation when the current serial or lineage no longer matches serial_after and lineage.",
+  "type": "object",
+  "required": ["format", "run_id", "plan_sha256", "files", "units"],
+  "additionalProperties": false,
+  "properties": {
+    "format": { "const": "ctfkit.migrate-journal/1" },
+    "run_id": { "$ref": "#/$defs/run_id" },
+    "plan_sha256": { "description": "SHA-256 of the plan file bytes the run applied", "$ref": "migrate-plan-1.schema.json#/$defs/sha256" },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256_before", "sha256_after", "diff"],
+        "additionalProperties": false,
+        "properties": {
+          "path": { "$ref": "migrate-plan-1.schema.json#/$defs/rel_path" },
+          "sha256_before": { "description": "null for a file the run created", "oneOf": [{ "$ref": "migrate-plan-1.schema.json#/$defs/sha256" }, { "type": "null" }] },
+          "sha256_after": { "$ref": "migrate-plan-1.schema.json#/$defs/sha256" },
+          "diff": { "description": "path of the file's diff, relative to the record's directory", "$ref": "migrate-plan-1.schema.json#/$defs/rel_path" }
+        }
+      }
+    },
+    "units": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "workspaces"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "workspaces": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/workspace" } }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "run_id": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "workspace": {
+      "type": "object",
+      "required": ["name", "serial_before", "serial_after", "lineage", "from", "to", "steps", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "serial_before": { "type": "integer", "minimum": 0 },
+        "serial_after": { "type": "integer", "minimum": 0 },
+        "lineage": { "type": "string", "minLength": 1 },
+        "from": { "$ref": "migrate-plan-1.schema.json#/$defs/provider" },
+        "to": { "$ref": "migrate-plan-1.schema.json#/$defs/provider" },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "status", "at"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "$ref": "#/$defs/step" },
+              "status": { "enum": ["done", "failed", "skipped", "compensated"] },
+              "at": { "$ref": "migrate-plan-1.schema.json#/$defs/time" }
+            }
+          }
+        },
+        "status": { "enum": ["migrated", "rolled_back", "failed", "awaiting_finish", "stopped"] }
+      }
+    },
+    "step": {
+      "description": "the apply sequence steps 0-9, plus rollback for a reverse run",
+      "enum": ["modules", "preflight", "snapshot", "shadow_proof", "rebind", "rewrite", "lock", "proof", "confirm", "commit", "rollback"]
+    }
+  }
+}

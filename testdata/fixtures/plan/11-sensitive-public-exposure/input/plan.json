@@ -1,0 +1,329 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.12.6",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket_policy.public_site",
+          "mode": "managed",
+          "type": "aws_s3_bucket_policy",
+          "name": "public_site",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "bucket": "bobthecorp-public-site",
+            "policy": "{\"Statement\":[{\"Action\":\"s3:GetObject\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"arn:aws:s3:::bobthecorp-public-site/*\",\"Sid\":\"PublicRead\"}],\"Version\":\"2012-10-17\"}",
+            "region": "eu-west-1"
+          },
+          "sensitive_values": {},
+          "identity": {
+            "account_id": null,
+            "bucket": null,
+            "region": null
+          },
+          "identity_schema_version": 0
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.private_data",
+          "mode": "managed",
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "private_data",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "block_public_acls": true,
+            "block_public_policy": true,
+            "bucket": "bobthecorp-private-data",
+            "id": "bobthecorp-private_data",
+            "ignore_public_acls": true,
+            "region": "eu-west-1",
+            "restrict_public_buckets": true,
+            "skip_destroy": null
+          },
+          "sensitive_values": {}
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.public_site",
+          "mode": "managed",
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "public_site",
+          "provider_name": "registry.opentofu.org/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "block_public_acls": true,
+            "block_public_policy": false,
+            "bucket": "bobthecorp-public-site",
+            "id": "bobthecorp-public_site",
+            "ignore_public_acls": true,
+            "region": "eu-west-1",
+            "restrict_public_buckets": false,
+            "skip_destroy": null
+          },
+          "sensitive_values": {},
+          "identity": {
+            "account_id": null,
+            "bucket": null,
+            "region": null
+          },
+          "identity_schema_version": 0
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket_policy.public_site",
+      "mode": "managed",
+      "type": "aws_s3_bucket_policy",
+      "name": "public_site",
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "bobthecorp-public-site",
+          "policy": "{\"Statement\":[{\"Action\":\"s3:GetObject\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"arn:aws:s3:::bobthecorp-public-site/*\",\"Sid\":\"PublicRead\"}],\"Version\":\"2012-10-17\"}",
+          "region": "eu-west-1"
+        },
+        "after_unknown": {
+          "id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {},
+        "after_identity": {
+          "account_id": null,
+          "bucket": null,
+          "region": null
+        }
+      }
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.private_data",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "private_data",
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "before": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "bucket": "bobthecorp-private-data",
+          "id": "bobthecorp-private_data",
+          "ignore_public_acls": true,
+          "region": "eu-west-1",
+          "restrict_public_buckets": true,
+          "skip_destroy": null
+        },
+        "after": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "bucket": "bobthecorp-private-data",
+          "id": "bobthecorp-private_data",
+          "ignore_public_acls": true,
+          "region": "eu-west-1",
+          "restrict_public_buckets": true,
+          "skip_destroy": null
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.public_site",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "public_site",
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "update"
+        ],
+        "before": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "bucket": "bobthecorp-public-site",
+          "id": "bobthecorp-public_site",
+          "ignore_public_acls": true,
+          "region": "eu-west-1",
+          "restrict_public_buckets": true,
+          "skip_destroy": null
+        },
+        "after": {
+          "block_public_acls": true,
+          "block_public_policy": false,
+          "bucket": "bobthecorp-public-site",
+          "id": "bobthecorp-public_site",
+          "ignore_public_acls": true,
+          "region": "eu-west-1",
+          "restrict_public_buckets": false,
+          "skip_destroy": null
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {},
+        "after_identity": {
+          "account_id": null,
+          "bucket": null,
+          "region": null
+        }
+      }
+    }
+  ],
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.12.6",
+    "values": {
+      "root_module": {
+        "resources": [
+          {
+            "address": "aws_s3_bucket_public_access_block.private_data",
+            "mode": "managed",
+            "type": "aws_s3_bucket_public_access_block",
+            "name": "private_data",
+            "provider_name": "registry.opentofu.org/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "block_public_acls": true,
+              "block_public_policy": true,
+              "bucket": "bobthecorp-private-data",
+              "id": "bobthecorp-private_data",
+              "ignore_public_acls": true,
+              "region": "eu-west-1",
+              "restrict_public_buckets": true,
+              "skip_destroy": null
+            },
+            "sensitive_values": {}
+          },
+          {
+            "address": "aws_s3_bucket_public_access_block.public_site",
+            "mode": "managed",
+            "type": "aws_s3_bucket_public_access_block",
+            "name": "public_site",
+            "provider_name": "registry.opentofu.org/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "block_public_acls": true,
+              "block_public_policy": true,
+              "bucket": "bobthecorp-public-site",
+              "id": "bobthecorp-public_site",
+              "ignore_public_acls": true,
+              "region": "eu-west-1",
+              "restrict_public_buckets": true,
+              "skip_destroy": null
+            },
+            "sensitive_values": {}
+          }
+        ]
+      }
+    }
+  },
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.opentofu.org/hashicorp/aws",
+        "version_constraint": "~> 6.0",
+        "expressions": {
+          "access_key": {
+            "constant_value": "mock_access_key"
+          },
+          "region": {
+            "constant_value": "eu-west-1"
+          },
+          "secret_key": {
+            "constant_value": "mock_secret_key"
+          },
+          "skip_credentials_validation": {
+            "constant_value": true
+          },
+          "skip_metadata_api_check": {
+            "constant_value": true
+          },
+          "skip_region_validation": {
+            "constant_value": true
+          },
+          "skip_requesting_account_id": {
+            "constant_value": true
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket_policy.public_site",
+          "mode": "managed",
+          "type": "aws_s3_bucket_policy",
+          "name": "public_site",
+          "provider_config_key": "aws",
+          "expressions": {
+            "bucket": {
+              "constant_value": "bobthecorp-public-site"
+            },
+            "policy": {}
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.private_data",
+          "mode": "managed",
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "private_data",
+          "provider_config_key": "aws",
+          "expressions": {
+            "block_public_acls": {
+              "constant_value": true
+            },
+            "block_public_policy": {
+              "constant_value": true
+            },
+            "bucket": {
+              "constant_value": "bobthecorp-private-data"
+            },
+            "ignore_public_acls": {
+              "constant_value": true
+            },
+            "restrict_public_buckets": {
+              "constant_value": true
+            }
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.public_site",
+          "mode": "managed",
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "public_site",
+          "provider_config_key": "aws",
+          "expressions": {
+            "block_public_acls": {
+              "constant_value": true
+            },
+            "block_public_policy": {
+              "constant_value": false
+            },
+            "bucket": {
+              "constant_value": "bobthecorp-public-site"
+            },
+            "ignore_public_acls": {
+              "constant_value": true
+            },
+            "restrict_public_buckets": {
+              "constant_value": false
+            }
+          },
+          "schema_version": 0
+        }
+      ]
+    }
+  },
+  "timestamp": "2026-09-20T00:00:00Z",
+  "errored": false
+}

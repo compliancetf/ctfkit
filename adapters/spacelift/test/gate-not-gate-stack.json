@@ -1,0 +1,35 @@
+{
+  "third_party_metadata": {
+    "custom": {
+      "ctfkit": {
+        "schema": "ctfkit.spacelift/1",
+        "stage": "post_init",
+        "verdict": "pass",
+        "summary": {
+          "error": 0,
+          "warning": 0,
+          "note": 0
+        },
+        "findings": []
+      },
+      "ctfkit-scan": {
+        "schema": "ctfkit.spacelift/1",
+        "stage": "post_plan",
+        "verdict": "pass",
+        "summary": {
+          "error": 0,
+          "warning": 0,
+          "note": 0
+        },
+        "findings": []
+      }
+    }
+  },
+  "spacelift": {
+    "stack": {
+      "labels": [
+        "team:platform"
+      ]
+    }
+  }
+}

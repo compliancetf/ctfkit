@@ -1,0 +1,79 @@
+{
+  "description": "the provider's destroy RPC resolves only the delete half of a replace",
+  "decisions": {
+    "instances": [
+      {
+        "address": "fake_thing.a",
+        "type": "fake_thing",
+        "action": "replace",
+        "prior_identity_kind": "none",
+        "refreshed": "true",
+        "unknown_paths": [],
+        "decisions": [
+          {
+            "control": "c",
+            "version": "1.0.0",
+            "result": "fail",
+            "action": "deny"
+          }
+        ],
+        "not_evaluable": [],
+        "exceptions": [],
+        "baselines": [],
+        "break_glass": [],
+        "instance_key": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "delete_key": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+        "delete_decisions": [
+          {
+            "control": "kept",
+            "version": "1.0.0",
+            "result": "pass",
+            "action": "deny"
+          }
+        ]
+      }
+    ],
+    "required": {
+      "fake_thing": {
+        "decisions": [
+          {
+            "id": "c",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          }
+        ],
+        "delete_decisions": [
+          {
+            "id": "kept",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          }
+        ]
+      }
+    },
+    "half": "delete"
+  },
+  "mode": {
+    "run_mode": "hard_fail"
+  },
+  "exceptions": [],
+  "baselines": [],
+  "receipts": [],
+  "want": {
+    "refuse": false,
+    "rows": [
+      {
+        "address": "fake_thing.a",
+        "half": "delete",
+        "result": "pass",
+        "severity": "none",
+        "final": "pass",
+        "control": "kept",
+        "version": "1.0.0",
+        "state": "pass"
+      }
+    ]
+  }
+}

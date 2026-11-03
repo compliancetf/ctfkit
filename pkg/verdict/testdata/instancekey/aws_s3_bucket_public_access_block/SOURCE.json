@@ -1,0 +1,30 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_s3_bucket_public_access_block.this",
+      "form": "delete",
+      "recorded_name": "aws_s3_bucket_public_access_block.8210653bf1d9a5d8",
+      "sha256": {
+        "apply/aws_s3_bucket_public_access_block.this.delete.msgpack": "e4ff5e7d7a7f08e9800a3e25cb774533cb20040df30b6ba10f956f9acd0eb3f7",
+        "apply/aws_s3_bucket_public_access_block.this.delete.type.json": "c3a4dea3842b193781468b2c0582acd08637e5d928d4f1fa22f9898e86cd1d5a",
+        "envelope/aws_s3_bucket_public_access_block.this.delete.json": "32d2cedc28d6f9fb635a48f2ef87b7003917d088981ca6986d7558259d11d10c"
+      }
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.this",
+      "form": "create",
+      "recorded_name": "aws_s3_bucket_public_access_block.37d5d33df2565057",
+      "sha256": {
+        "apply/aws_s3_bucket_public_access_block.this.create.msgpack": "d06fc8bde163131c2020f60f701d8a39f8f5f4b3c5a6004c29e2b7a29836f2f6",
+        "apply/aws_s3_bucket_public_access_block.this.create.type.json": "c3a4dea3842b193781468b2c0582acd08637e5d928d4f1fa22f9898e86cd1d5a",
+        "envelope/aws_s3_bucket_public_access_block.this.create.json": "32d2cedc28d6f9fb635a48f2ef87b7003917d088981ca6986d7558259d11d10c"
+      }
+    }
+  ]
+}

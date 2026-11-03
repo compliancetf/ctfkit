@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.coverage.module_source",
+              "shortDescription": {
+                "text": "Module sources outside compliance.tf endpoints, and raw resources a compliance.tf module covers"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.coverage.module_source",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Raw aws_s3_bucket where the compliance.tf module soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws exists"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 8
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket.logs",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "12da6f81c854345aabab9504e3a1e043bb3bbb3be502fdfb9f598b98b9620efd"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [
+              "s3_bucket_object_lock_enabled"
+            ],
+            "ctf.frameworks": [
+              {
+                "id": "cfr_part_11",
+                "clauses": [
+                  "11.10(a)",
+                  "11.10(c)"
+                ]
+              },
+              {
+                "id": "eu_gmp_annex_11",
+                "clauses": [
+                  "17"
+                ]
+              },
+              {
+                "id": "ffiec",
+                "clauses": [
+                  "D2.MA.Ma.B.1"
+                ]
+              },
+              {
+                "id": "hipaa_final_omnibus_2013",
+                "clauses": [
+                  "164.308(a)(1)(ii)(B)"
+                ]
+              },
+              {
+                "id": "hipaa_security_2003",
+                "clauses": [
+                  "164.308(a)(1)(ii)(B)"
+                ]
+              },
+              {
+                "id": "nist_800_53_rev_4",
+                "clauses": [
+                  "SC-28"
+                ]
+              },
+              {
+                "id": "nist_csf_v11",
+                "clauses": [
+                  "RC.RP-1"
+                ]
+              },
+              {
+                "id": "nist_csf_v2",
+                "clauses": [
+                  "RC.RP-02"
+                ]
+              },
+              {
+                "id": "nydfs_23",
+                "clauses": [
+                  "500.02(a)"
+                ]
+              },
+              {
+                "id": "pci_dss_v40",
+                "clauses": [
+                  "10.3.4"
+                ]
+              },
+              {
+                "id": "rbi_itf_nbfc",
+                "clauses": [
+                  "4.4.h"
+                ]
+              },
+              {
+                "id": "soc_2",
+                "clauses": [
+                  "C1.1",
+                  "PI1.5"
+                ]
+              }
+            ],
+            "ctf.preventive": true,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            },
+            "ctf.remediation": {
+              "moduleSource": "soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws",
+              "version": "~> 5.0"
+            },
+            "ctf.exception": {
+              "allowed": false,
+              "entryId": "SEC-4108",
+              "justification": "Scratch bucket for ETL output. Objects are deleted within 24 hours, which object lock retention would block."
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

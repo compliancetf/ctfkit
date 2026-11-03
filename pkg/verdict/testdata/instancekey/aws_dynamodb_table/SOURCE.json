@@ -1,0 +1,30 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_dynamodb_table.new",
+      "form": "create",
+      "recorded_name": "aws_dynamodb_table.5c588d4d8659ede2",
+      "sha256": {
+        "apply/aws_dynamodb_table.new.create.msgpack": "5bfd30fc1754cb75d3eb845725b9f3d92d20d1df8c2951ebcc351cf145e545be",
+        "apply/aws_dynamodb_table.new.create.type.json": "c9bf001802b4abaeae939d1ebf7c6b7f8418b8a65f25b2a8a8e3627cc4af017a",
+        "envelope/aws_dynamodb_table.new.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_dynamodb_table.this",
+      "form": "delete",
+      "recorded_name": "aws_dynamodb_table.8368f16d7dccb77c",
+      "sha256": {
+        "apply/aws_dynamodb_table.this.delete.msgpack": "e4ff5e7d7a7f08e9800a3e25cb774533cb20040df30b6ba10f956f9acd0eb3f7",
+        "apply/aws_dynamodb_table.this.delete.type.json": "c9bf001802b4abaeae939d1ebf7c6b7f8418b8a65f25b2a8a8e3627cc4af017a",
+        "envelope/aws_dynamodb_table.this.delete.json": "b0886d08c7e5a1c330f368b63a6a364dc3e7b871500684edc39a259917989d40"
+      }
+    }
+  ]
+}

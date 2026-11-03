@@ -1,0 +1,47 @@
+# Identity catalog for ctf.graph.companion. Two resources link only when a
+# companion's link attribute and a target attribute hold known, equal values
+# in the same form; a value in another form of the same object (an ARN where
+# the target holds a name) is an alias and is never resolved. Values are
+# compared as given: every form here is case-sensitive and has one spelling.
+# A value is read as a form its attribute does not declare only when that
+# form's pattern starts with a literal (arn:, vpc-); a bucket name pattern
+# also matches other ids, so outside its attributes it is a catalog miss.
+#
+# scope: resource attributes that must agree, besides the provider
+# configuration, for two resources to be in the same account and region.
+scope: [region]
+
+forms:
+  arn:
+    pattern: '^arn:[a-z0-9-]+:[a-z0-9-]+:[a-z0-9-]*:[0-9]*:.+$'
+  s3_bucket_name:
+    pattern: '^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$'
+  vpc_id:
+    pattern: '^vpc-(?:[0-9a-f]{8}|[0-9a-f]{17})$'
+
+# Per resource type and attribute, the forms the attribute holds, in match
+# order.
+attributes:
+  aws_s3_bucket:
+    id: [s3_bucket_name]
+    bucket: [s3_bucket_name]
+    arn: [arn]
+  aws_s3_bucket_public_access_block:
+    bucket: [s3_bucket_name]
+  aws_s3_bucket_server_side_encryption_configuration:
+    bucket: [s3_bucket_name]
+  aws_s3_bucket_logging:
+    bucket: [s3_bucket_name]
+  aws_s3_bucket_versioning:
+    bucket: [s3_bucket_name]
+  aws_lb:
+    id: [arn]
+    arn: [arn]
+  aws_wafv2_web_acl_association:
+    resource_arn: [arn]
+  aws_wafv2_web_acl:
+    arn: [arn]
+  aws_vpc:
+    id: [vpc_id]
+  aws_flow_log:
+    vpc_id: [vpc_id]

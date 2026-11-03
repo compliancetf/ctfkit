@@ -1,0 +1,169 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.13.0",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.a[0]",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "a",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "bobthecorp-logs-0",
+          "region": "eu-west-1",
+          "force_destroy": false
+        },
+        "after_unknown": {
+          "id": true,
+          "arn": true
+        }
+      },
+      "index": 0
+    },
+    {
+      "address": "aws_s3_bucket.a[1]",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "a",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "bobthecorp-logs-1",
+          "region": "eu-west-1",
+          "force_destroy": false
+        },
+        "after_unknown": {
+          "id": true,
+          "arn": true
+        }
+      },
+      "index": 1
+    },
+    {
+      "address": "aws_s3_bucket.a[2]",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "a",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "bobthecorp-logs-2",
+          "region": "eu-west-1",
+          "force_destroy": false
+        },
+        "after_unknown": {
+          "id": true,
+          "arn": true
+        }
+      },
+      "index": 2
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.a[0]",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "a",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "region": "eu-west-1",
+          "bucket": "bobthecorp-logs-0"
+        },
+        "after_unknown": {
+          "id": true
+        }
+      },
+      "index": 0
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.a[1]",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "a",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "region": "eu-west-1",
+          "bucket": "bobthecorp-logs-1"
+        },
+        "after_unknown": {
+          "id": true
+        }
+      },
+      "index": 1
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket.a",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "a",
+          "provider_config_key": "aws",
+          "expressions": {},
+          "schema_version": 0,
+          "count_expression": {
+            "constant_value": 3
+          }
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.a",
+          "mode": "managed",
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "a",
+          "provider_config_key": "aws",
+          "expressions": {
+            "bucket": {
+              "references": [
+                "aws_s3_bucket.a",
+                "count.index"
+              ]
+            }
+          },
+          "schema_version": 0,
+          "count_expression": {
+            "constant_value": 2
+          }
+        }
+      ]
+    }
+  }
+}

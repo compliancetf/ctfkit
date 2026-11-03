@@ -1,0 +1,2750 @@
+{
+  "provider": "registry.terraform.io/hashicorp/aws",
+  "version": "6.70.0",
+  "resources": {
+    "aws_agentregistry_registry": {
+      "encryption_configuration": {
+        "kms_key_arn": "string"
+      }
+    },
+    "aws_ami_copy": {
+      "encrypted": "bool",
+      "kms_key_id": "string"
+    },
+    "aws_apprunner_service": {
+      "encryption_configuration": {
+        "kms_key": "string"
+      }
+    },
+    "aws_appsync_api_cache": {
+      "at_rest_encryption_enabled": "bool",
+      "transit_encryption_enabled": "bool"
+    },
+    "aws_athena_database": {
+      "encryption_configuration": {
+        "encryption_option": "string",
+        "kms_key": "string"
+      }
+    },
+    "aws_backup_logically_air_gapped_vault": {
+      "encryption_key_arn": "string"
+    },
+    "aws_bedrock_evaluation_job": {
+      "customer_encryption_key_id": "string"
+    },
+    "aws_bedrock_model_invocation_logging_configuration": {
+      "logging_config": {
+        "cloudwatch_config": "object",
+        "embedding_data_delivery_enabled": "bool",
+        "image_data_delivery_enabled": "bool",
+        "s3_config": "object",
+        "text_data_delivery_enabled": "bool",
+        "video_data_delivery_enabled": "bool"
+      }
+    },
+    "aws_bedrockagent_agent": {
+      "customer_encryption_key_arn": "string"
+    },
+    "aws_bedrockagent_data_source": {
+      "server_side_encryption_configuration": {
+        "kms_key_arn": "string"
+      }
+    },
+    "aws_bedrockagent_flow": {
+      "customer_encryption_key_arn": "string"
+    },
+    "aws_bedrockagent_prompt": {
+      "customer_encryption_key_arn": "string"
+    },
+    "aws_bedrockagentcore_memory": {
+      "encryption_key_arn": "string"
+    },
+    "aws_bedrockagentcore_policy_engine": {
+      "encryption_key_arn": "string"
+    },
+    "aws_chatbot_slack_channel_configuration": {
+      "logging_level": "string"
+    },
+    "aws_chatbot_teams_channel_configuration": {
+      "logging_level": "string"
+    },
+    "aws_chime_voice_connector": {
+      "require_encryption": "bool"
+    },
+    "aws_chimesdkvoice_voice_profile_domain": {
+      "server_side_encryption_configuration": {
+        "kms_key_arn": "string"
+      }
+    },
+    "aws_cleanrooms_collaboration": {
+      "data_encryption_metadata": {
+        "allow_clear_text": "bool",
+        "allow_duplicates": "bool",
+        "allow_joins_on_columns_with_different_names": "bool",
+        "preserve_nulls": "bool"
+      }
+    },
+    "aws_cloudformation_type": {
+      "logging_config": {
+        "log_group_name": "string",
+        "log_role_arn": "string"
+      }
+    },
+    "aws_cloudfront_distribution": {
+      "logging_config": {
+        "bucket": "string",
+        "include_cookies": "bool",
+        "prefix": "string"
+      },
+      "logging_v1_enabled": "bool"
+    },
+    "aws_cloudfront_field_level_encryption_profile": {
+      "encryption_entities": {
+        "items": "object"
+      }
+    },
+    "aws_cloudtrail": {
+      "advanced_event_selector": {
+        "field_selector": "object",
+        "name": "string"
+      },
+      "arn": "string",
+      "cloud_watch_logs_group_arn": "string",
+      "cloud_watch_logs_role_arn": "string",
+      "enable_log_file_validation": "bool",
+      "enable_logging": "bool",
+      "event_selector": {
+        "data_resource": "object",
+        "exclude_management_event_sources": "list",
+        "include_management_events": "bool",
+        "read_write_type": "string"
+      },
+      "home_region": "string",
+      "id": "string",
+      "include_global_service_events": "bool",
+      "insight_selector": {
+        "insight_type": "string"
+      },
+      "is_multi_region_trail": "bool",
+      "is_organization_trail": "bool",
+      "kms_key_id": "string",
+      "name": "string",
+      "region": "string",
+      "s3_bucket_name": "string",
+      "s3_key_prefix": "string",
+      "sns_topic_arn": "string",
+      "sns_topic_name": "string",
+      "tags": "map",
+      "tags_all": "map"
+    },
+    "aws_cloudtrail_event_data_store": {
+      "kms_key_id": "string",
+      "retention_period": "number"
+    },
+    "aws_cloudwatch_event_archive": {
+      "retention_days": "number"
+    },
+    "aws_cloudwatch_log_anomaly_detector": {
+      "kms_key_id": "string"
+    },
+    "aws_cloudwatch_log_group": {
+      "arn": "string",
+      "deletion_protection_enabled": "bool",
+      "id": "string",
+      "kms_key_id": "string",
+      "log_group_class": "string",
+      "name": "string",
+      "name_prefix": "string",
+      "region": "string",
+      "retention_in_days": "number",
+      "skip_destroy": "bool",
+      "tags": "map",
+      "tags_all": "map"
+    },
+    "aws_cloudwatchomni_space": {
+      "encryption_configuration": {
+        "encryption_strategy": "string",
+        "kms_key_arn": "string"
+      }
+    },
+    "aws_codeartifact_domain": {
+      "encryption_key": "string"
+    },
+    "aws_codebuild_project": {
+      "encryption_key": "string"
+    },
+    "aws_codecommit_repository": {
+      "kms_key_id": "string"
+    },
+    "aws_cognito_user_pool": {
+      "deletion_protection": "string"
+    },
+    "aws_config_configuration_recorder": {
+      "id": "string",
+      "name": "string",
+      "recording_group": {
+        "all_supported": "bool",
+        "exclusion_by_resource_types": "object",
+        "include_global_resource_types": "bool",
+        "recording_strategy": "object",
+        "resource_types": "list"
+      },
+      "recording_mode": {
+        "recording_frequency": "string",
+        "recording_mode_override": "object"
+      },
+      "region": "string",
+      "role_arn": "string"
+    },
+    "aws_config_delivery_channel": {
+      "id": "string",
+      "name": "string",
+      "region": "string",
+      "s3_bucket_name": "string",
+      "s3_key_prefix": "string",
+      "s3_kms_key_arn": "string",
+      "snapshot_delivery_properties": {
+        "delivery_frequency": "string"
+      },
+      "sns_topic_arn": "string"
+    },
+    "aws_config_retention_configuration": {
+      "retention_period_in_days": "number"
+    },
+    "aws_customerprofiles_domain": {
+      "default_encryption_key": "string"
+    },
+    "aws_datasync_location_efs": {
+      "in_transit_encryption": "string"
+    },
+    "aws_dax_cluster": {
+      "cluster_endpoint_encryption_type": "string",
+      "server_side_encryption": {
+        "enabled": "bool"
+      }
+    },
+    "aws_db_cluster_snapshot": {
+      "kms_key_id": "string"
+    },
+    "aws_db_instance": {
+      "address": "string",
+      "allocated_storage": "number",
+      "allow_major_version_upgrade": "bool",
+      "apply_immediately": "bool",
+      "arn": "string",
+      "auto_minor_version_upgrade": "bool",
+      "availability_zone": "string",
+      "backup_retention_period": "number",
+      "backup_target": "string",
+      "backup_window": "string",
+      "blue_green_update": {
+        "enabled": "bool"
+      },
+      "ca_cert_identifier": "string",
+      "character_set_name": "string",
+      "copy_tags_to_snapshot": "bool",
+      "custom_iam_instance_profile": "string",
+      "customer_owned_ip_enabled": "bool",
+      "database_insights_mode": "string",
+      "db_name": "string",
+      "db_subnet_group_name": "string",
+      "dedicated_log_volume": "bool",
+      "delete_automated_backups": "bool",
+      "deletion_protection": "bool",
+      "domain": "string",
+      "domain_auth_secret_arn": "string",
+      "domain_dns_ips": "list",
+      "domain_fqdn": "string",
+      "domain_iam_role_name": "string",
+      "domain_ou": "string",
+      "enabled_cloudwatch_logs_exports": "list",
+      "endpoint": "string",
+      "engine": "string",
+      "engine_lifecycle_support": "string",
+      "engine_version": "string",
+      "engine_version_actual": "string",
+      "final_snapshot_identifier": "string",
+      "hosted_zone_id": "string",
+      "iam_database_authentication_enabled": "bool",
+      "id": "string",
+      "identifier": "string",
+      "identifier_prefix": "string",
+      "instance_class": "string",
+      "iops": "number",
+      "kms_key_id": "string",
+      "latest_restorable_time": "string",
+      "license_model": "string",
+      "listener_endpoint": {
+        "address": "string",
+        "hosted_zone_id": "string",
+        "port": "number"
+      },
+      "maintenance_window": "string",
+      "manage_master_user_password": "bool",
+      "master_user_secret": {
+        "kms_key_id": "string",
+        "secret_arn": "string",
+        "secret_status": "string"
+      },
+      "master_user_secret_kms_key_id": "string",
+      "max_allocated_storage": "number",
+      "monitoring_interval": "number",
+      "monitoring_role_arn": "string",
+      "multi_az": "bool",
+      "nchar_character_set_name": "string",
+      "network_type": "string",
+      "option_group_name": "string",
+      "parameter_group_name": "string",
+      "password": "string",
+      "password_wo": "string",
+      "password_wo_version": "number",
+      "performance_insights_enabled": "bool",
+      "performance_insights_kms_key_id": "string",
+      "performance_insights_retention_period": "number",
+      "port": "number",
+      "publicly_accessible": "bool",
+      "region": "string",
+      "replica_mode": "string",
+      "replicas": "list",
+      "replicate_source_db": "string",
+      "resource_id": "string",
+      "restore_to_point_in_time": {
+        "restore_time": "string",
+        "source_db_instance_automated_backups_arn": "string",
+        "source_db_instance_identifier": "string",
+        "source_dbi_resource_id": "string",
+        "use_latest_restorable_time": "bool"
+      },
+      "s3_import": {
+        "bucket_name": "string",
+        "bucket_prefix": "string",
+        "ingestion_role": "string",
+        "source_engine": "string",
+        "source_engine_version": "string"
+      },
+      "skip_final_snapshot": "bool",
+      "snapshot_identifier": "string",
+      "status": "string",
+      "storage_encrypted": "bool",
+      "storage_throughput": "number",
+      "storage_type": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "timezone": "string",
+      "upgrade_rollout_order": "string",
+      "upgrade_storage_config": "bool",
+      "username": "string",
+      "vpc_security_group_ids": "list",
+      "warning_event_categories": "list"
+    },
+    "aws_db_instance_automated_backups_replication": {
+      "kms_key_id": "string",
+      "retention_period": "number"
+    },
+    "aws_db_proxy": {
+      "debug_logging": "bool"
+    },
+    "aws_db_snapshot": {
+      "encrypted": "bool",
+      "kms_key_id": "string"
+    },
+    "aws_db_snapshot_copy": {
+      "encrypted": "bool",
+      "kms_key_id": "string"
+    },
+    "aws_devopsguru_service_integration": {
+      "kms_server_side_encryption": {
+        "kms_key_id": "string",
+        "opt_in_status": "string",
+        "type": "string"
+      }
+    },
+    "aws_dms_instance_profile": {
+      "publicly_accessible": "bool"
+    },
+    "aws_dms_replication_instance": {
+      "allocated_storage": "number",
+      "allow_major_version_upgrade": "bool",
+      "apply_immediately": "bool",
+      "auto_minor_version_upgrade": "bool",
+      "availability_zone": "string",
+      "dns_name_servers": "string",
+      "engine_version": "string",
+      "id": "string",
+      "kerberos_authentication_settings": {
+        "key_cache_secret_iam_arn": "string",
+        "key_cache_secret_id": "string",
+        "krb5_file_contents": "string"
+      },
+      "kms_key_arn": "string",
+      "multi_az": "bool",
+      "network_type": "string",
+      "preferred_maintenance_window": "string",
+      "publicly_accessible": "bool",
+      "region": "string",
+      "replication_instance_arn": "string",
+      "replication_instance_class": "string",
+      "replication_instance_id": "string",
+      "replication_instance_private_ips": "list",
+      "replication_instance_public_ips": "list",
+      "replication_subnet_group_id": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "vpc_security_group_ids": "list"
+    },
+    "aws_dms_s3_endpoint": {
+      "encryption_mode": "string",
+      "server_side_encryption_kms_key_id": "string"
+    },
+    "aws_docdb_cluster": {
+      "allow_major_version_upgrade": "bool",
+      "apply_immediately": "bool",
+      "arn": "string",
+      "availability_zones": "list",
+      "backup_retention_period": "number",
+      "cluster_identifier": "string",
+      "cluster_identifier_prefix": "string",
+      "cluster_members": "list",
+      "cluster_resource_id": "string",
+      "db_cluster_parameter_group_name": "string",
+      "db_subnet_group_name": "string",
+      "deletion_protection": "bool",
+      "enabled_cloudwatch_logs_exports": "list",
+      "endpoint": "string",
+      "engine": "string",
+      "engine_version": "string",
+      "final_snapshot_identifier": "string",
+      "global_cluster_identifier": "string",
+      "hosted_zone_id": "string",
+      "id": "string",
+      "kms_key_id": "string",
+      "manage_master_user_password": "bool",
+      "master_password": "string",
+      "master_password_wo": "string",
+      "master_password_wo_version": "number",
+      "master_user_secret": {
+        "kms_key_id": "string",
+        "secret_arn": "string",
+        "secret_status": "string"
+      },
+      "master_username": "string",
+      "network_type": "string",
+      "port": "number",
+      "preferred_backup_window": "string",
+      "preferred_maintenance_window": "string",
+      "reader_endpoint": "string",
+      "region": "string",
+      "restore_to_point_in_time": {
+        "restore_to_time": "string",
+        "restore_type": "string",
+        "source_cluster_identifier": "string",
+        "use_latest_restorable_time": "bool"
+      },
+      "serverless_v2_scaling_configuration": {
+        "max_capacity": "number",
+        "min_capacity": "number"
+      },
+      "skip_final_snapshot": "bool",
+      "snapshot_identifier": "string",
+      "storage_encrypted": "bool",
+      "storage_type": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "vpc_security_group_ids": "list"
+    },
+    "aws_docdb_cluster_instance": {
+      "kms_key_id": "string",
+      "publicly_accessible": "bool"
+    },
+    "aws_docdb_cluster_snapshot": {
+      "kms_key_id": "string"
+    },
+    "aws_docdb_global_cluster": {
+      "deletion_protection": "bool"
+    },
+    "aws_docdbelastic_cluster": {
+      "kms_key_id": "string"
+    },
+    "aws_drs_replication_configuration_template": {
+      "ebs_encryption": "string",
+      "ebs_encryption_key_arn": "string"
+    },
+    "aws_dsql_cluster": {
+      "deletion_protection_enabled": "bool",
+      "encryption_details": {
+        "encryption_status": "string",
+        "encryption_type": "string"
+      },
+      "kms_encryption_key": "string"
+    },
+    "aws_dx_connection": {
+      "encryption_mode": "string",
+      "port_encryption_status": "string"
+    },
+    "aws_dynamodb_table": {
+      "arn": "string",
+      "attribute": {
+        "name": "string",
+        "type": "string"
+      },
+      "billing_mode": "string",
+      "deletion_protection_enabled": "bool",
+      "global_secondary_index": {
+        "hash_key": "string",
+        "key_schema": "object",
+        "name": "string",
+        "non_key_attributes": "list",
+        "on_demand_throughput": "object",
+        "projection_type": "string",
+        "range_key": "string",
+        "read_capacity": "number",
+        "warm_throughput": "object",
+        "write_capacity": "number"
+      },
+      "global_table_witness": {
+        "region_name": "string"
+      },
+      "hash_key": "string",
+      "id": "string",
+      "import_table": {
+        "input_compression_type": "string",
+        "input_format": "string",
+        "input_format_options": "object",
+        "s3_bucket_source": "object"
+      },
+      "local_secondary_index": {
+        "name": "string",
+        "non_key_attributes": "list",
+        "projection_type": "string",
+        "range_key": "string"
+      },
+      "name": "string",
+      "on_demand_throughput": {
+        "max_read_request_units": "number",
+        "max_write_request_units": "number"
+      },
+      "point_in_time_recovery": {
+        "enabled": "bool",
+        "recovery_period_in_days": "number"
+      },
+      "range_key": "string",
+      "read_capacity": "number",
+      "region": "string",
+      "replica": {
+        "arn": "string",
+        "consistency_mode": "string",
+        "deletion_protection_enabled": "bool",
+        "kms_key_arn": "string",
+        "point_in_time_recovery": "bool",
+        "propagate_tags": "bool",
+        "region_name": "string",
+        "stream_arn": "string",
+        "stream_label": "string"
+      },
+      "restore_backup_arn": "string",
+      "restore_date_time": "string",
+      "restore_source_name": "string",
+      "restore_source_table_arn": "string",
+      "restore_to_latest_time": "bool",
+      "server_side_encryption": {
+        "enabled": "bool",
+        "kms_key_arn": "string"
+      },
+      "stream_arn": "string",
+      "stream_enabled": "bool",
+      "stream_label": "string",
+      "stream_view_type": "string",
+      "table_class": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "ttl": {
+        "attribute_name": "string",
+        "enabled": "bool"
+      },
+      "warm_throughput": {
+        "read_units_per_second": "number",
+        "write_units_per_second": "number"
+      },
+      "write_capacity": "number"
+    },
+    "aws_dynamodb_table_replica": {
+      "deletion_protection_enabled": "bool"
+    },
+    "aws_ebs_snapshot": {
+      "data_encryption_key_id": "string",
+      "encrypted": "bool",
+      "kms_key_id": "string"
+    },
+    "aws_ebs_snapshot_copy": {
+      "data_encryption_key_id": "string",
+      "encrypted": "bool",
+      "kms_key_id": "string"
+    },
+    "aws_ebs_snapshot_import": {
+      "data_encryption_key_id": "string",
+      "encrypted": "bool",
+      "kms_key_id": "string"
+    },
+    "aws_ebs_volume": {
+      "arn": "string",
+      "availability_zone": "string",
+      "create_time": "string",
+      "encrypted": "bool",
+      "final_snapshot": "bool",
+      "id": "string",
+      "iops": "number",
+      "kms_key_id": "string",
+      "multi_attach_enabled": "bool",
+      "outpost_arn": "string",
+      "region": "string",
+      "size": "number",
+      "snapshot_id": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "throughput": "number",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "type": "string",
+      "volume_initialization_rate": "number"
+    },
+    "aws_ec2_transit_gateway": {
+      "encryption_support": "string"
+    },
+    "aws_ecr_repository": {
+      "encryption_configuration": {
+        "encryption_type": "string",
+        "kms_key": "string"
+      }
+    },
+    "aws_ecr_repository_creation_template": {
+      "encryption_configuration": {
+        "encryption_type": "string",
+        "kms_key": "string"
+      }
+    },
+    "aws_ecr_repository_policy": {
+      "id": "string",
+      "policy": "string",
+      "region": "string",
+      "registry_id": "string",
+      "repository": "string"
+    },
+    "aws_efs_file_system": {
+      "arn": "string",
+      "availability_zone_id": "string",
+      "availability_zone_name": "string",
+      "creation_token": "string",
+      "dns_name": "string",
+      "encrypted": "bool",
+      "id": "string",
+      "kms_key_id": "string",
+      "lifecycle_policy": {
+        "transition_to_archive": "string",
+        "transition_to_ia": "string",
+        "transition_to_primary_storage_class": "string"
+      },
+      "name": "string",
+      "number_of_mount_targets": "number",
+      "owner_id": "string",
+      "performance_mode": "string",
+      "protection": {
+        "replication_overwrite": "string"
+      },
+      "provisioned_throughput_in_mibps": "number",
+      "region": "string",
+      "size_in_bytes": {
+        "value": "number",
+        "value_in_ia": "number",
+        "value_in_standard": "number"
+      },
+      "tags": "map",
+      "tags_all": "map",
+      "throughput_mode": "string"
+    },
+    "aws_eks_cluster": {
+      "access_config": {
+        "authentication_mode": "string",
+        "bootstrap_cluster_creator_admin_permissions": "bool"
+      },
+      "arn": "string",
+      "bootstrap_self_managed_addons": "bool",
+      "certificate_authority": {
+        "data": "string"
+      },
+      "cluster_id": "string",
+      "compute_config": {
+        "enabled": "bool",
+        "node_pools": "list",
+        "node_role_arn": "string"
+      },
+      "control_plane_scaling_config": {
+        "tier": "string"
+      },
+      "created_at": "string",
+      "deletion_protection": "bool",
+      "enabled_cluster_log_types": "list",
+      "encryption_config": {
+        "provider": "object",
+        "resources": "list"
+      },
+      "endpoint": "string",
+      "force_update_version": "bool",
+      "id": "string",
+      "identity": {
+        "oidc": "object"
+      },
+      "kube_api_server_config": {
+        "event_ttl": "string",
+        "service_node_port_range": "object"
+      },
+      "kube_controller_manager_config": {
+        "horizontal_pod_autoscaler_controller_config": "object",
+        "pod_gc_controller_config": "object"
+      },
+      "kube_scheduler_config": {
+        "node_resources_fit": "object"
+      },
+      "kubernetes_network_config": {
+        "elastic_load_balancing": "object",
+        "ip_family": "string",
+        "service_ipv4_cidr": "string",
+        "service_ipv6_cidr": "string"
+      },
+      "name": "string",
+      "outpost_config": {
+        "control_plane_instance_type": "string",
+        "control_plane_placement": "object",
+        "etcd_instance_type": "string",
+        "etcd_placement": "object",
+        "outpost_arns": "list"
+      },
+      "platform_version": "string",
+      "region": "string",
+      "remote_network_config": {
+        "remote_node_networks": "object",
+        "remote_pod_networks": "object"
+      },
+      "role_arn": "string",
+      "status": "string",
+      "storage_config": {
+        "block_storage": "object"
+      },
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "upgrade_policy": {
+        "support_type": "string"
+      },
+      "version": "string",
+      "vpc_config": {
+        "cluster_security_group_id": "string",
+        "control_plane_egress_mode": "string",
+        "endpoint_private_access": "bool",
+        "endpoint_public_access": "bool",
+        "public_access_cidrs": "list",
+        "security_group_ids": "list",
+        "subnet_ids": "list",
+        "vpc_id": "string"
+      },
+      "zonal_shift_config": {
+        "enabled": "bool"
+      }
+    },
+    "aws_elasticache_cluster": {
+      "apply_immediately": "bool",
+      "arn": "string",
+      "auto_minor_version_upgrade": "string",
+      "availability_zone": "string",
+      "az_mode": "string",
+      "cache_nodes": {
+        "address": "string",
+        "availability_zone": "string",
+        "id": "string",
+        "outpost_arn": "string",
+        "port": "number"
+      },
+      "cluster_address": "string",
+      "cluster_id": "string",
+      "configuration_endpoint": "string",
+      "engine": "string",
+      "engine_version": "string",
+      "engine_version_actual": "string",
+      "final_snapshot_identifier": "string",
+      "id": "string",
+      "ip_discovery": "string",
+      "log_delivery_configuration": {
+        "destination": "string",
+        "destination_type": "string",
+        "log_format": "string",
+        "log_type": "string"
+      },
+      "maintenance_window": "string",
+      "network_type": "string",
+      "node_type": "string",
+      "notification_topic_arn": "string",
+      "num_cache_nodes": "number",
+      "outpost_mode": "string",
+      "parameter_group_name": "string",
+      "port": "number",
+      "preferred_availability_zones": "list",
+      "preferred_outpost_arn": "string",
+      "region": "string",
+      "replication_group_id": "string",
+      "security_group_ids": "list",
+      "snapshot_arns": "list",
+      "snapshot_name": "string",
+      "snapshot_retention_limit": "number",
+      "snapshot_window": "string",
+      "subnet_group_name": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "transit_encryption_enabled": "bool"
+    },
+    "aws_elasticache_global_replication_group": {
+      "at_rest_encryption_enabled": "bool",
+      "transit_encryption_enabled": "bool"
+    },
+    "aws_elasticache_replication_group": {
+      "apply_immediately": "bool",
+      "arn": "string",
+      "at_rest_encryption_enabled": "string",
+      "auth_token": "string",
+      "auth_token_update_strategy": "string",
+      "auth_token_wo": "string",
+      "auth_token_wo_version": "number",
+      "auto_minor_version_upgrade": "string",
+      "automatic_failover_enabled": "bool",
+      "cluster_enabled": "bool",
+      "cluster_mode": "string",
+      "configuration_endpoint_address": "string",
+      "data_tiering_enabled": "bool",
+      "description": "string",
+      "durability": "string",
+      "engine": "string",
+      "engine_version": "string",
+      "engine_version_actual": "string",
+      "final_snapshot_identifier": "string",
+      "global_replication_group_id": "string",
+      "id": "string",
+      "ip_discovery": "string",
+      "kms_key_id": "string",
+      "log_delivery_configuration": {
+        "destination": "string",
+        "destination_type": "string",
+        "log_format": "string",
+        "log_type": "string"
+      },
+      "maintenance_window": "string",
+      "member_clusters": "list",
+      "multi_az_enabled": "bool",
+      "network_type": "string",
+      "node_group_configuration": {
+        "node_group_id": "string",
+        "primary_availability_zone": "string",
+        "primary_outpost_arn": "string",
+        "replica_availability_zones": "list",
+        "replica_count": "number",
+        "replica_outpost_arns": "list",
+        "slots": "string"
+      },
+      "node_type": "string",
+      "notification_topic_arn": "string",
+      "num_cache_clusters": "number",
+      "num_node_groups": "number",
+      "parameter_group_name": "string",
+      "port": "number",
+      "preferred_cache_cluster_azs": "list",
+      "primary_endpoint_address": "string",
+      "reader_endpoint_address": "string",
+      "region": "string",
+      "replicas_per_node_group": "number",
+      "replication_group_id": "string",
+      "security_group_ids": "list",
+      "security_group_names": "list",
+      "snapshot_arns": "list",
+      "snapshot_name": "string",
+      "snapshot_retention_limit": "number",
+      "snapshot_window": "string",
+      "subnet_group_name": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "transit_encryption_enabled": "bool",
+      "transit_encryption_mode": "string",
+      "user_group_ids": "list"
+    },
+    "aws_elasticache_serverless_cache": {
+      "kms_key_id": "string"
+    },
+    "aws_elasticsearch_domain": {
+      "node_to_node_encryption": {
+        "enabled": "bool"
+      }
+    },
+    "aws_emr_cluster": {
+      "log_encryption_kms_key_id": "string"
+    },
+    "aws_emr_studio": {
+      "encryption_key_arn": "string"
+    },
+    "aws_finspace_kx_environment": {
+      "kms_key_id": "string"
+    },
+    "aws_flow_log": {
+      "arn": "string",
+      "deliver_cross_account_role": "string",
+      "destination_options": {
+        "file_format": "string",
+        "hive_compatible_partitions": "bool",
+        "per_hour_partition": "bool"
+      },
+      "eni_id": "string",
+      "iam_role_arn": "string",
+      "id": "string",
+      "log_destination": "string",
+      "log_destination_type": "string",
+      "log_format": "string",
+      "max_aggregation_interval": "number",
+      "region": "string",
+      "regional_nat_gateway_id": "string",
+      "subnet_id": "string",
+      "tag_field_specification": {
+        "resource_type": "string",
+        "tag_keys": "list"
+      },
+      "tags": "map",
+      "tags_all": "map",
+      "traffic_type": "string",
+      "transit_gateway_attachment_id": "string",
+      "transit_gateway_id": "string",
+      "vpc_id": "string"
+    },
+    "aws_fsx_backup": {
+      "kms_key_id": "string"
+    },
+    "aws_fsx_file_cache": {
+      "kms_key_id": "string"
+    },
+    "aws_fsx_lustre_file_system": {
+      "arn": "string",
+      "auto_import_policy": "string",
+      "automatic_backup_retention_days": "number",
+      "backup_id": "string",
+      "copy_tags_to_backups": "bool",
+      "daily_automatic_backup_start_time": "string",
+      "data_compression_type": "string",
+      "data_read_cache_configuration": {
+        "size": "number",
+        "sizing_mode": "string"
+      },
+      "deployment_type": "string",
+      "dns_name": "string",
+      "drive_cache_type": "string",
+      "efa_enabled": "bool",
+      "export_path": "string",
+      "file_system_type_version": "string",
+      "final_backup_tags": "map",
+      "id": "string",
+      "import_path": "string",
+      "imported_file_chunk_size": "number",
+      "kms_key_id": "string",
+      "log_configuration": {
+        "destination": "string",
+        "level": "string"
+      },
+      "metadata_configuration": {
+        "iops": "number",
+        "mode": "string"
+      },
+      "mount_name": "string",
+      "network_interface_ids": "list",
+      "owner_id": "string",
+      "per_unit_storage_throughput": "number",
+      "region": "string",
+      "root_squash_configuration": {
+        "no_squash_nids": "list",
+        "root_squash": "string"
+      },
+      "security_group_ids": "list",
+      "skip_final_backup": "bool",
+      "storage_capacity": "number",
+      "storage_type": "string",
+      "subnet_ids": "list",
+      "tags": "map",
+      "tags_all": "map",
+      "throughput_capacity": "number",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "vpc_id": "string",
+      "weekly_maintenance_start_time": "string"
+    },
+    "aws_fsx_ontap_file_system": {
+      "kms_key_id": "string"
+    },
+    "aws_fsx_openzfs_file_system": {
+      "kms_key_id": "string"
+    },
+    "aws_fsx_windows_file_system": {
+      "active_directory_id": "string",
+      "aliases": "list",
+      "arn": "string",
+      "audit_log_configuration": {
+        "audit_log_destination": "string",
+        "file_access_audit_log_level": "string",
+        "file_share_access_audit_log_level": "string"
+      },
+      "automatic_backup_retention_days": "number",
+      "backup_id": "string",
+      "copy_tags_to_backups": "bool",
+      "daily_automatic_backup_start_time": "string",
+      "deployment_type": "string",
+      "disk_iops_configuration": {
+        "iops": "number",
+        "mode": "string"
+      },
+      "dns_name": "string",
+      "final_backup_tags": "map",
+      "id": "string",
+      "kms_key_id": "string",
+      "network_interface_ids": "list",
+      "network_type": "string",
+      "owner_id": "string",
+      "preferred_file_server_ip": "string",
+      "preferred_subnet_id": "string",
+      "region": "string",
+      "remote_administration_endpoint": "string",
+      "security_group_ids": "list",
+      "self_managed_active_directory": {
+        "dns_ips": "list",
+        "domain_join_service_account_secret": "string",
+        "domain_name": "string",
+        "file_system_administrators_group": "string",
+        "organizational_unit_distinguished_name": "string",
+        "password": "string",
+        "password_wo": "string",
+        "password_wo_version": "number",
+        "username": "string"
+      },
+      "skip_final_backup": "bool",
+      "storage_capacity": "number",
+      "storage_type": "string",
+      "subnet_ids": "list",
+      "tags": "map",
+      "tags_all": "map",
+      "throughput_capacity": "number",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "vpc_id": "string",
+      "weekly_maintenance_start_time": "string"
+    },
+    "aws_glue_data_catalog_encryption_settings": {
+      "data_catalog_encryption_settings": {
+        "connection_password_encryption": "object",
+        "encryption_at_rest": "object"
+      }
+    },
+    "aws_glue_security_configuration": {
+      "encryption_configuration": {
+        "cloudwatch_encryption": "object",
+        "job_bookmarks_encryption": "object",
+        "s3_encryption": "object"
+      }
+    },
+    "aws_grafana_workspace": {
+      "kms_key_id": "string"
+    },
+    "aws_guardduty_detector": {
+      "account_id": "string",
+      "arn": "string",
+      "datasources": {
+        "kubernetes": "object",
+        "malware_protection": "object",
+        "s3_logs": "object"
+      },
+      "enable": "bool",
+      "finding_publishing_frequency": "string",
+      "id": "string",
+      "region": "string",
+      "tags": "map",
+      "tags_all": "map"
+    },
+    "aws_iam_group_policy": {
+      "group": "string",
+      "id": "string",
+      "name": "string",
+      "name_prefix": "string",
+      "policy": "string"
+    },
+    "aws_iam_policy": {
+      "arn": "string",
+      "attachment_count": "number",
+      "delay_after_policy_creation_in_ms": "number",
+      "description": "string",
+      "id": "string",
+      "name": "string",
+      "name_prefix": "string",
+      "path": "string",
+      "policy": "string",
+      "policy_id": "string",
+      "tags": "map",
+      "tags_all": "map"
+    },
+    "aws_iam_role": {
+      "arn": "string",
+      "assume_role_policy": "string",
+      "create_date": "string",
+      "description": "string",
+      "force_detach_policies": "bool",
+      "id": "string",
+      "inline_policy": {
+        "name": "string",
+        "policy": "string"
+      },
+      "managed_policy_arns": "list",
+      "max_session_duration": "number",
+      "name": "string",
+      "name_prefix": "string",
+      "path": "string",
+      "permissions_boundary": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "unique_id": "string"
+    },
+    "aws_iam_role_policy": {
+      "id": "string",
+      "name": "string",
+      "name_prefix": "string",
+      "policy": "string",
+      "role": "string"
+    },
+    "aws_iam_user_policy": {
+      "id": "string",
+      "name": "string",
+      "name_prefix": "string",
+      "policy": "string",
+      "user": "string"
+    },
+    "aws_imagebuilder_component": {
+      "encrypted": "bool",
+      "kms_key_id": "string"
+    },
+    "aws_imagebuilder_container_recipe": {
+      "encrypted": "bool",
+      "kms_key_id": "string"
+    },
+    "aws_imagebuilder_image": {
+      "logging_configuration": {
+        "log_group_name": "string"
+      }
+    },
+    "aws_imagebuilder_image_pipeline": {
+      "logging_configuration": {
+        "image_log_group_name": "string",
+        "pipeline_log_group_name": "string"
+      }
+    },
+    "aws_imagebuilder_infrastructure_configuration": {
+      "logging": {
+        "s3_logs": "object"
+      }
+    },
+    "aws_imagebuilder_workflow": {
+      "kms_key_id": "string"
+    },
+    "aws_instance": {
+      "ami": "string",
+      "arn": "string",
+      "associate_public_ip_address": "bool",
+      "availability_zone": "string",
+      "capacity_reservation_specification": {
+        "capacity_reservation_preference": "string",
+        "capacity_reservation_target": "object"
+      },
+      "cpu_options": {
+        "amd_sev_snp": "string",
+        "core_count": "number",
+        "nested_virtualization": "string",
+        "threads_per_core": "number"
+      },
+      "credit_specification": {
+        "cpu_credits": "string"
+      },
+      "disable_api_stop": "bool",
+      "disable_api_termination": "bool",
+      "ebs_block_device": {
+        "delete_on_termination": "bool",
+        "device_name": "string",
+        "encrypted": "bool",
+        "iops": "number",
+        "kms_key_id": "string",
+        "snapshot_id": "string",
+        "tags": "map",
+        "tags_all": "map",
+        "throughput": "number",
+        "volume_id": "string",
+        "volume_size": "number",
+        "volume_type": "string"
+      },
+      "ebs_optimized": "bool",
+      "enable_primary_ipv6": "bool",
+      "enclave_options": {
+        "enabled": "bool"
+      },
+      "ephemeral_block_device": {
+        "device_name": "string",
+        "no_device": "bool",
+        "virtual_name": "string"
+      },
+      "force_destroy": "bool",
+      "get_password_data": "bool",
+      "hibernation": "bool",
+      "host_id": "string",
+      "host_resource_group_arn": "string",
+      "iam_instance_profile": "string",
+      "id": "string",
+      "instance_initiated_shutdown_behavior": "string",
+      "instance_lifecycle": "string",
+      "instance_market_options": {
+        "market_type": "string",
+        "spot_options": "object"
+      },
+      "instance_state": "string",
+      "instance_type": "string",
+      "ipv6_address_count": "number",
+      "ipv6_addresses": "list",
+      "key_name": "string",
+      "launch_template": {
+        "id": "string",
+        "name": "string",
+        "version": "string"
+      },
+      "maintenance_options": {
+        "auto_recovery": "string"
+      },
+      "metadata_options": {
+        "http_endpoint": "string",
+        "http_protocol_ipv6": "string",
+        "http_put_response_hop_limit": "number",
+        "http_tokens": "string",
+        "instance_metadata_tags": "string"
+      },
+      "monitoring": "bool",
+      "network_interface": {
+        "delete_on_termination": "bool",
+        "device_index": "number",
+        "network_card_index": "number",
+        "network_interface_id": "string"
+      },
+      "outpost_arn": "string",
+      "password_data": "string",
+      "placement_group": "string",
+      "placement_group_id": "string",
+      "placement_partition_number": "number",
+      "primary_network_interface": {
+        "delete_on_termination": "bool",
+        "network_interface_id": "string"
+      },
+      "primary_network_interface_id": "string",
+      "private_dns": "string",
+      "private_dns_name_options": {
+        "enable_resource_name_dns_a_record": "bool",
+        "enable_resource_name_dns_aaaa_record": "bool",
+        "hostname_type": "string"
+      },
+      "private_ip": "string",
+      "public_dns": "string",
+      "public_ip": "string",
+      "region": "string",
+      "root_block_device": {
+        "delete_on_termination": "bool",
+        "device_name": "string",
+        "encrypted": "bool",
+        "iops": "number",
+        "kms_key_id": "string",
+        "tags": "map",
+        "tags_all": "map",
+        "throughput": "number",
+        "volume_id": "string",
+        "volume_size": "number",
+        "volume_type": "string"
+      },
+      "secondary_network_interface": {
+        "delete_on_termination": "bool",
+        "device_index": "number",
+        "interface_type": "string",
+        "mac_address": "string",
+        "network_card_index": "number",
+        "private_ip_address_count": "number",
+        "private_ip_addresses": "list",
+        "secondary_interface_id": "string",
+        "secondary_network_id": "string",
+        "secondary_subnet_id": "string",
+        "source_dest_check": "bool",
+        "status": "string"
+      },
+      "secondary_private_ips": "list",
+      "security_groups": "list",
+      "source_dest_check": "bool",
+      "spot_instance_request_id": "string",
+      "subnet_id": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "tenancy": "string",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "read": "string",
+        "update": "string"
+      },
+      "user_data": "string",
+      "user_data_base64": "string",
+      "user_data_replace_on_change": "bool",
+      "volume_tags": "map",
+      "vpc_security_group_ids": "list"
+    },
+    "aws_ivschat_room": {
+      "logging_configuration_identifiers": "list"
+    },
+    "aws_kendra_index": {
+      "server_side_encryption_configuration": {
+        "kms_key_id": "string"
+      }
+    },
+    "aws_keyspaces_table": {
+      "encryption_specification": {
+        "kms_key_identifier": "string",
+        "type": "string"
+      }
+    },
+    "aws_kinesis_analytics_application": {
+      "cloudwatch_logging_options": {
+        "id": "string",
+        "log_stream_arn": "string",
+        "role_arn": "string"
+      }
+    },
+    "aws_kinesis_firehose_delivery_stream": {
+      "server_side_encryption": {
+        "enabled": "bool",
+        "key_arn": "string",
+        "key_type": "string"
+      }
+    },
+    "aws_kinesis_stream": {
+      "encryption_type": "string",
+      "kms_key_id": "string",
+      "retention_period": "number"
+    },
+    "aws_kinesis_video_stream": {
+      "kms_key_id": "string"
+    },
+    "aws_kinesisanalyticsv2_application": {
+      "cloudwatch_logging_options": {
+        "cloudwatch_logging_option_id": "string",
+        "log_stream_arn": "string"
+      }
+    },
+    "aws_kms_key": {
+      "arn": "string",
+      "bypass_policy_lockout_safety_check": "bool",
+      "custom_key_store_id": "string",
+      "customer_master_key_spec": "string",
+      "deletion_window_in_days": "number",
+      "description": "string",
+      "enable_key_rotation": "bool",
+      "id": "string",
+      "is_enabled": "bool",
+      "key_id": "string",
+      "key_usage": "string",
+      "multi_region": "bool",
+      "policy": "string",
+      "region": "string",
+      "rotation_period_in_days": "number",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string"
+      },
+      "xks_key_id": "string"
+    },
+    "aws_lambda_function": {
+      "logging_config": {
+        "application_log_level": "string",
+        "log_format": "string",
+        "log_group": "string",
+        "system_log_level": "string"
+      }
+    },
+    "aws_lambda_permission": {
+      "action": "string",
+      "event_source_token": "string",
+      "function_name": "string",
+      "function_url_auth_type": "string",
+      "id": "string",
+      "invoked_via_function_url": "bool",
+      "principal": "string",
+      "principal_org_id": "string",
+      "qualifier": "string",
+      "region": "string",
+      "source_account": "string",
+      "source_arn": "string",
+      "statement_id": "string",
+      "statement_id_prefix": "string",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "read": "string"
+      }
+    },
+    "aws_lambdamicrovms_microvm": {
+      "logging": {
+        "cloudwatch": "object",
+        "disabled": "object"
+      }
+    },
+    "aws_lb": {
+      "access_logs": {
+        "bucket": "string",
+        "enabled": "bool",
+        "prefix": "string"
+      },
+      "arn": "string",
+      "arn_suffix": "string",
+      "client_keep_alive": "number",
+      "connection_logs": {
+        "bucket": "string",
+        "enabled": "bool",
+        "prefix": "string"
+      },
+      "customer_owned_ipv4_pool": "string",
+      "desync_mitigation_mode": "string",
+      "dns_name": "string",
+      "dns_record_client_routing_policy": "string",
+      "drop_invalid_header_fields": "bool",
+      "enable_cross_zone_load_balancing": "bool",
+      "enable_deletion_protection": "bool",
+      "enable_http2": "bool",
+      "enable_prefix_for_ipv6_source_nat": "string",
+      "enable_tls_version_and_cipher_suite_headers": "bool",
+      "enable_waf_fail_open": "bool",
+      "enable_xff_client_port": "bool",
+      "enable_zonal_shift": "bool",
+      "enforce_security_group_inbound_rules_on_private_link_traffic": "string",
+      "health_check_logs": {
+        "bucket": "string",
+        "enabled": "bool",
+        "prefix": "string"
+      },
+      "id": "string",
+      "idle_timeout": "number",
+      "internal": "bool",
+      "ip_address_type": "string",
+      "ipam_pools": {
+        "ipv4_ipam_pool_id": "string"
+      },
+      "load_balancer_type": "string",
+      "minimum_load_balancer_capacity": {
+        "capacity_units": "number"
+      },
+      "name": "string",
+      "name_prefix": "string",
+      "preserve_host_header": "bool",
+      "region": "string",
+      "secondary_ips_auto_assigned_per_subnet": "number",
+      "security_groups": "list",
+      "subnet_mapping": {
+        "allocation_id": "string",
+        "ipv6_address": "string",
+        "outpost_id": "string",
+        "private_ipv4_address": "string",
+        "subnet_id": "string"
+      },
+      "subnets": "list",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "vpc_id": "string",
+      "xff_header_processing_mode": "string",
+      "zone_id": "string"
+    },
+    "aws_lightsail_database": {
+      "publicly_accessible": "bool"
+    },
+    "aws_location_geofence_collection": {
+      "kms_key_id": "string"
+    },
+    "aws_location_tracker": {
+      "kms_key_id": "string"
+    },
+    "aws_m2_application": {
+      "kms_key_id": "string"
+    },
+    "aws_m2_environment": {
+      "kms_key_id": "string",
+      "publicly_accessible": "bool"
+    },
+    "aws_mailmanager_archive": {
+      "retention_actual": {
+        "retention_period": "string"
+      }
+    },
+    "aws_mq_broker": {
+      "encryption_options": {
+        "kms_key_id": "string",
+        "use_aws_owned_key": "bool"
+      },
+      "publicly_accessible": "bool"
+    },
+    "aws_msk_channel": {
+      "encryption_configuration": {
+        "kms_key_arn": "string"
+      },
+      "logging_info": {
+        "cloudwatch_logs": "object",
+        "firehose": "object",
+        "s3": "object"
+      }
+    },
+    "aws_msk_cluster": {
+      "arn": "string",
+      "bootstrap_brokers": "string",
+      "bootstrap_brokers_ipv6": "string",
+      "bootstrap_brokers_public_sasl_iam": "string",
+      "bootstrap_brokers_public_sasl_scram": "string",
+      "bootstrap_brokers_public_tls": "string",
+      "bootstrap_brokers_sasl_iam": "string",
+      "bootstrap_brokers_sasl_iam_ipv6": "string",
+      "bootstrap_brokers_sasl_scram": "string",
+      "bootstrap_brokers_sasl_scram_ipv6": "string",
+      "bootstrap_brokers_tls": "string",
+      "bootstrap_brokers_tls_ipv6": "string",
+      "bootstrap_brokers_vpc_connectivity_sasl_iam": "string",
+      "bootstrap_brokers_vpc_connectivity_sasl_scram": "string",
+      "bootstrap_brokers_vpc_connectivity_tls": "string",
+      "broker_node_group_info": {
+        "az_distribution": "string",
+        "client_subnets": "list",
+        "connectivity_info": "object",
+        "instance_type": "string",
+        "security_groups": "list",
+        "storage_info": "object"
+      },
+      "client_authentication": {
+        "sasl": "object",
+        "tls": "object",
+        "unauthenticated": "bool"
+      },
+      "cluster_name": "string",
+      "cluster_uuid": "string",
+      "configuration_info": {
+        "arn": "string",
+        "revision": "number"
+      },
+      "current_version": "string",
+      "customer_action_status": "string",
+      "encryption_info": {
+        "encryption_at_rest_kms_key_arn": "string",
+        "encryption_in_transit": "object"
+      },
+      "enhanced_monitoring": "string",
+      "id": "string",
+      "kafka_version": "string",
+      "logging_info": {
+        "broker_logs": "object"
+      },
+      "number_of_broker_nodes": "number",
+      "open_monitoring": {
+        "prometheus": "object"
+      },
+      "rebalancing": {
+        "status": "string"
+      },
+      "region": "string",
+      "storage_mode": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "zookeeper_connect_string": "string",
+      "zookeeper_connect_string_tls": "string"
+    },
+    "aws_mskconnect_connector": {
+      "kafka_cluster_encryption_in_transit": {
+        "encryption_type": "string"
+      }
+    },
+    "aws_mwaa_environment": {
+      "logging_configuration": {
+        "dag_processing_logs": "object",
+        "scheduler_logs": "object",
+        "task_logs": "object",
+        "webserver_logs": "object",
+        "worker_logs": "object"
+      }
+    },
+    "aws_neptune_cluster": {
+      "allow_major_version_upgrade": "bool",
+      "apply_immediately": "bool",
+      "arn": "string",
+      "availability_zones": "list",
+      "backup_retention_period": "number",
+      "cluster_identifier": "string",
+      "cluster_identifier_prefix": "string",
+      "cluster_members": "list",
+      "cluster_resource_id": "string",
+      "copy_tags_to_snapshot": "bool",
+      "deletion_protection": "bool",
+      "enable_cloudwatch_logs_exports": "list",
+      "endpoint": "string",
+      "engine": "string",
+      "engine_version": "string",
+      "final_snapshot_identifier": "string",
+      "global_cluster_identifier": "string",
+      "hosted_zone_id": "string",
+      "iam_database_authentication_enabled": "bool",
+      "iam_roles": "list",
+      "id": "string",
+      "kms_key_arn": "string",
+      "neptune_cluster_parameter_group_name": "string",
+      "neptune_instance_parameter_group_name": "string",
+      "neptune_subnet_group_name": "string",
+      "network_type": "string",
+      "port": "number",
+      "preferred_backup_window": "string",
+      "preferred_maintenance_window": "string",
+      "reader_endpoint": "string",
+      "region": "string",
+      "replication_source_identifier": "string",
+      "serverless_v2_scaling_configuration": {
+        "max_capacity": "number",
+        "min_capacity": "number"
+      },
+      "skip_final_snapshot": "bool",
+      "snapshot_identifier": "string",
+      "storage_encrypted": "bool",
+      "storage_type": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "vpc_security_group_ids": "list"
+    },
+    "aws_neptune_cluster_instance": {
+      "publicly_accessible": "bool"
+    },
+    "aws_neptune_cluster_snapshot": {
+      "kms_key_id": "string"
+    },
+    "aws_neptune_global_cluster": {
+      "deletion_protection": "bool"
+    },
+    "aws_neptunegraph_graph": {
+      "deletion_protection": "bool"
+    },
+    "aws_networkfirewall_firewall": {
+      "encryption_configuration": {
+        "key_id": "string",
+        "type": "string"
+      }
+    },
+    "aws_networkfirewall_firewall_policy": {
+      "encryption_configuration": {
+        "key_id": "string",
+        "type": "string"
+      }
+    },
+    "aws_networkfirewall_logging_configuration": {
+      "logging_configuration": {
+        "log_destination_config": "object"
+      }
+    },
+    "aws_networkfirewall_rule_group": {
+      "encryption_configuration": {
+        "key_id": "string",
+        "type": "string"
+      }
+    },
+    "aws_networkfirewall_tls_inspection_configuration": {
+      "encryption_configuration": {
+        "key_id": "string",
+        "type": "string"
+      }
+    },
+    "aws_observabilityadmin_s3_table_integration": {
+      "encryption": {
+        "kms_key_arn": "string",
+        "sse_algorithm": "string"
+      }
+    },
+    "aws_odb_autonomous_database": {
+      "encryption_key_provider": "string",
+      "kms_key_id": "string"
+    },
+    "aws_opensearch_domain": {
+      "access_policies": "string",
+      "advanced_options": "map",
+      "advanced_security_options": {
+        "anonymous_auth_enabled": "bool",
+        "enabled": "bool",
+        "internal_user_database_enabled": "bool",
+        "jwt_options": "object",
+        "master_user_options": "object"
+      },
+      "aiml_options": {
+        "natural_language_query_generation_options": "object",
+        "s3_vectors_engine": "object",
+        "serverless_vector_acceleration": "object"
+      },
+      "arn": "string",
+      "auto_tune_options": {
+        "desired_state": "string",
+        "maintenance_schedule": "object",
+        "rollback_on_disable": "string",
+        "use_off_peak_window": "bool"
+      },
+      "cluster_config": {
+        "cold_storage_options": "object",
+        "dedicated_master_count": "number",
+        "dedicated_master_enabled": "bool",
+        "dedicated_master_type": "string",
+        "instance_count": "number",
+        "instance_type": "string",
+        "multi_az_with_standby_enabled": "bool",
+        "node_options": "object",
+        "warm_count": "number",
+        "warm_enabled": "bool",
+        "warm_type": "string",
+        "zone_awareness_config": "object",
+        "zone_awareness_enabled": "bool"
+      },
+      "cognito_options": {
+        "enabled": "bool",
+        "identity_pool_id": "string",
+        "role_arn": "string",
+        "user_pool_id": "string"
+      },
+      "dashboard_endpoint": "string",
+      "dashboard_endpoint_v2": "string",
+      "deployment_strategy_options": {
+        "deployment_strategy": "string"
+      },
+      "domain_endpoint_options": {
+        "custom_endpoint": "string",
+        "custom_endpoint_certificate_arn": "string",
+        "custom_endpoint_enabled": "bool",
+        "enforce_https": "bool",
+        "tls_security_policy": "string"
+      },
+      "domain_endpoint_v2_hosted_zone_id": "string",
+      "domain_id": "string",
+      "domain_name": "string",
+      "ebs_options": {
+        "ebs_enabled": "bool",
+        "iops": "number",
+        "throughput": "number",
+        "volume_size": "number",
+        "volume_type": "string"
+      },
+      "encrypt_at_rest": {
+        "enabled": "bool",
+        "kms_key_id": "string"
+      },
+      "endpoint": "string",
+      "endpoint_v2": "string",
+      "engine_version": "string",
+      "id": "string",
+      "identity_center_options": {
+        "enabled_api_access": "bool",
+        "identity_center_instance_arn": "string",
+        "roles_key": "string",
+        "subject_key": "string"
+      },
+      "ip_address_type": "string",
+      "log_publishing_options": {
+        "cloudwatch_log_group_arn": "string",
+        "enabled": "bool",
+        "log_type": "string"
+      },
+      "node_to_node_encryption": {
+        "enabled": "bool"
+      },
+      "off_peak_window_options": {
+        "enabled": "bool",
+        "off_peak_window": "object"
+      },
+      "region": "string",
+      "snapshot_options": {
+        "automated_snapshot_start_hour": "number"
+      },
+      "software_update_options": {
+        "auto_software_update_enabled": "bool"
+      },
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "vpc_options": {
+        "availability_zones": "list",
+        "security_group_ids": "list",
+        "subnet_ids": "list",
+        "vpc_id": "string"
+      }
+    },
+    "aws_opensearch_domain_policy": {
+      "access_policies": "string",
+      "domain_name": "string",
+      "id": "string",
+      "region": "string",
+      "timeouts": {
+        "delete": "string",
+        "update": "string"
+      }
+    },
+    "aws_opensearchserverless_collection": {
+      "encryption_config": {
+        "aws_owned_key": "bool",
+        "kms_key_arn": "string"
+      }
+    },
+    "aws_osis_pipeline": {
+      "encryption_at_rest_options": {
+        "kms_key_arn": "string"
+      }
+    },
+    "aws_pinpointsmsvoicev2_phone_number": {
+      "deletion_protection_enabled": "bool"
+    },
+    "aws_pinpointsmsvoicev2_pool": {
+      "deletion_protection_enabled": "bool"
+    },
+    "aws_pinpointsmsvoicev2_sender_id": {
+      "deletion_protection_enabled": "bool"
+    },
+    "aws_prometheus_scraper_logging_configuration": {
+      "logging_destination": {
+        "cloudwatch_logs": "object"
+      }
+    },
+    "aws_prometheus_workspace": {
+      "logging_configuration": {
+        "log_group_arn": "string"
+      }
+    },
+    "aws_prometheus_workspace_configuration": {
+      "retention_period_in_days": "number"
+    },
+    "aws_qbusiness_application": {
+      "encryption_configuration": {
+        "kms_key_id": "string"
+      }
+    },
+    "aws_qldb_ledger": {
+      "deletion_protection": "bool"
+    },
+    "aws_rbin_rule": {
+      "retention_period": {
+        "retention_period_unit": "string",
+        "retention_period_value": "number"
+      }
+    },
+    "aws_rds_cluster": {
+      "allocated_storage": "number",
+      "allow_major_version_upgrade": "bool",
+      "apply_immediately": "bool",
+      "arn": "string",
+      "auto_minor_version_upgrade": "bool",
+      "availability_zones": "list",
+      "backtrack_window": "number",
+      "backup_retention_period": "number",
+      "ca_certificate_identifier": "string",
+      "ca_certificate_valid_till": "string",
+      "cluster_identifier": "string",
+      "cluster_identifier_prefix": "string",
+      "cluster_members": "list",
+      "cluster_resource_id": "string",
+      "cluster_scalability_type": "string",
+      "copy_tags_to_snapshot": "bool",
+      "database_insights_mode": "string",
+      "database_name": "string",
+      "db_cluster_instance_class": "string",
+      "db_cluster_parameter_group_name": "string",
+      "db_instance_parameter_group_name": "string",
+      "db_subnet_group_name": "string",
+      "db_system_id": "string",
+      "delete_automated_backups": "bool",
+      "deletion_protection": "bool",
+      "domain": "string",
+      "domain_iam_role_name": "string",
+      "enable_global_write_forwarding": "bool",
+      "enable_http_endpoint": "bool",
+      "enable_local_write_forwarding": "bool",
+      "enabled_cloudwatch_logs_exports": "list",
+      "endpoint": "string",
+      "engine": "string",
+      "engine_lifecycle_support": "string",
+      "engine_mode": "string",
+      "engine_version": "string",
+      "engine_version_actual": "string",
+      "final_snapshot_identifier": "string",
+      "global_cluster_identifier": "string",
+      "hosted_zone_id": "string",
+      "iam_database_authentication_enabled": "bool",
+      "iam_roles": "list",
+      "id": "string",
+      "iops": "number",
+      "kms_key_id": "string",
+      "manage_master_user_password": "bool",
+      "master_password": "string",
+      "master_password_wo": "string",
+      "master_password_wo_version": "number",
+      "master_user_secret": {
+        "kms_key_id": "string",
+        "secret_arn": "string",
+        "secret_status": "string"
+      },
+      "master_user_secret_kms_key_id": "string",
+      "master_username": "string",
+      "monitoring_interval": "number",
+      "monitoring_role_arn": "string",
+      "network_type": "string",
+      "performance_insights_enabled": "bool",
+      "performance_insights_kms_key_id": "string",
+      "performance_insights_retention_period": "number",
+      "port": "number",
+      "preferred_backup_window": "string",
+      "preferred_maintenance_window": "string",
+      "publicly_accessible": "bool",
+      "reader_endpoint": "string",
+      "region": "string",
+      "replication_source_identifier": "string",
+      "restore_to_point_in_time": {
+        "restore_to_time": "string",
+        "restore_type": "string",
+        "source_cluster_identifier": "string",
+        "source_cluster_resource_id": "string",
+        "use_latest_restorable_time": "bool"
+      },
+      "s3_import": {
+        "bucket_name": "string",
+        "bucket_prefix": "string",
+        "ingestion_role": "string",
+        "source_engine": "string",
+        "source_engine_version": "string"
+      },
+      "scaling_configuration": {
+        "auto_pause": "bool",
+        "max_capacity": "number",
+        "min_capacity": "number",
+        "seconds_before_timeout": "number",
+        "seconds_until_auto_pause": "number",
+        "timeout_action": "string"
+      },
+      "serverlessv2_scaling_configuration": {
+        "max_capacity": "number",
+        "min_capacity": "number",
+        "seconds_until_auto_pause": "number"
+      },
+      "skip_final_snapshot": "bool",
+      "snapshot_identifier": "string",
+      "source_region": "string",
+      "storage_encrypted": "bool",
+      "storage_type": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "upgrade_rollout_order": "string",
+      "vpc_security_group_ids": "list",
+      "warning_event_categories": "list"
+    },
+    "aws_rds_cluster_activity_stream": {
+      "kms_key_id": "string"
+    },
+    "aws_rds_cluster_instance": {
+      "apply_immediately": "bool",
+      "arn": "string",
+      "auto_minor_version_upgrade": "bool",
+      "availability_zone": "string",
+      "ca_cert_identifier": "string",
+      "cluster_identifier": "string",
+      "copy_tags_to_snapshot": "bool",
+      "custom_iam_instance_profile": "string",
+      "db_parameter_group_name": "string",
+      "db_subnet_group_name": "string",
+      "dbi_resource_id": "string",
+      "endpoint": "string",
+      "engine": "string",
+      "engine_version": "string",
+      "engine_version_actual": "string",
+      "force_destroy": "bool",
+      "id": "string",
+      "identifier": "string",
+      "identifier_prefix": "string",
+      "instance_class": "string",
+      "kms_key_id": "string",
+      "monitoring_interval": "number",
+      "monitoring_role_arn": "string",
+      "network_type": "string",
+      "performance_insights_enabled": "bool",
+      "performance_insights_kms_key_id": "string",
+      "performance_insights_retention_period": "number",
+      "port": "number",
+      "preferred_backup_window": "string",
+      "preferred_maintenance_window": "string",
+      "promotion_tier": "number",
+      "publicly_accessible": "bool",
+      "region": "string",
+      "storage_encrypted": "bool",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "warning_event_categories": "list",
+      "writer": "bool"
+    },
+    "aws_rds_cluster_snapshot_copy": {
+      "kms_key_id": "string"
+    },
+    "aws_rds_custom_db_engine_version": {
+      "kms_key_id": "string"
+    },
+    "aws_rds_export_task": {
+      "kms_key_id": "string"
+    },
+    "aws_rds_global_cluster": {
+      "deletion_protection": "bool"
+    },
+    "aws_rds_integration": {
+      "additional_encryption_context": "map",
+      "kms_key_id": "string"
+    },
+    "aws_rds_shard_group": {
+      "publicly_accessible": "bool"
+    },
+    "aws_redshift_cluster": {
+      "allow_version_upgrade": "bool",
+      "apply_immediately": "bool",
+      "aqua_configuration_status": "string",
+      "arn": "string",
+      "automated_snapshot_retention_period": "number",
+      "availability_zone": "string",
+      "availability_zone_relocation_enabled": "bool",
+      "cluster_identifier": "string",
+      "cluster_namespace_arn": "string",
+      "cluster_nodes": {
+        "node_role": "string",
+        "private_ip_address": "string",
+        "public_ip_address": "string"
+      },
+      "cluster_parameter_group_name": "string",
+      "cluster_public_key": "string",
+      "cluster_revision_number": "string",
+      "cluster_subnet_group_name": "string",
+      "cluster_type": "string",
+      "cluster_version": "string",
+      "database_name": "string",
+      "default_iam_role_arn": "string",
+      "dns_name": "string",
+      "elastic_ip": "string",
+      "encrypted": "string",
+      "endpoint": "string",
+      "enhanced_vpc_routing": "bool",
+      "final_snapshot_identifier": "string",
+      "iam_roles": "list",
+      "id": "string",
+      "kms_key_id": "string",
+      "maintenance_track_name": "string",
+      "manage_master_password": "bool",
+      "manual_snapshot_retention_period": "number",
+      "master_password": "string",
+      "master_password_secret_arn": "string",
+      "master_password_secret_kms_key_id": "string",
+      "master_password_wo": "string",
+      "master_password_wo_version": "number",
+      "master_username": "string",
+      "multi_az": "bool",
+      "node_type": "string",
+      "number_of_nodes": "number",
+      "owner_account": "string",
+      "port": "number",
+      "preferred_maintenance_window": "string",
+      "publicly_accessible": "bool",
+      "region": "string",
+      "skip_final_snapshot": "bool",
+      "snapshot_arn": "string",
+      "snapshot_cluster_identifier": "string",
+      "snapshot_identifier": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "vpc_security_group_ids": "list"
+    },
+    "aws_redshift_cluster_snapshot": {
+      "kms_key_id": "string"
+    },
+    "aws_redshift_integration": {
+      "additional_encryption_context": "map",
+      "kms_key_id": "string"
+    },
+    "aws_redshift_snapshot_copy": {
+      "retention_period": "number"
+    },
+    "aws_redshift_snapshot_copy_grant": {
+      "kms_key_id": "string"
+    },
+    "aws_redshiftserverless_namespace": {
+      "kms_key_id": "string"
+    },
+    "aws_redshiftserverless_snapshot": {
+      "kms_key_id": "string",
+      "retention_period": "number"
+    },
+    "aws_redshiftserverless_workgroup": {
+      "publicly_accessible": "bool"
+    },
+    "aws_rekognition_stream_processor": {
+      "kms_key_id": "string"
+    },
+    "aws_resiliencehubv2_policy": {
+      "kms_key_id": "string"
+    },
+    "aws_resiliencehubv2_service": {
+      "kms_key_id": "string"
+    },
+    "aws_resiliencehubv2_system": {
+      "kms_key_id": "string"
+    },
+    "aws_s3_bucket": {
+      "acceleration_status": "string",
+      "acl": "string",
+      "arn": "string",
+      "bucket": "string",
+      "bucket_domain_name": "string",
+      "bucket_namespace": "string",
+      "bucket_prefix": "string",
+      "bucket_region": "string",
+      "bucket_regional_domain_name": "string",
+      "cors_rule": {
+        "allowed_headers": "list",
+        "allowed_methods": "list",
+        "allowed_origins": "list",
+        "expose_headers": "list",
+        "max_age_seconds": "number"
+      },
+      "force_destroy": "bool",
+      "grant": {
+        "id": "string",
+        "permissions": "list",
+        "type": "string",
+        "uri": "string"
+      },
+      "hosted_zone_id": "string",
+      "id": "string",
+      "lifecycle_rule": {
+        "abort_incomplete_multipart_upload_days": "number",
+        "enabled": "bool",
+        "expiration": "object",
+        "id": "string",
+        "noncurrent_version_expiration": "object",
+        "noncurrent_version_transition": "object",
+        "prefix": "string",
+        "tags": "map",
+        "transition": "object"
+      },
+      "logging": {
+        "target_bucket": "string",
+        "target_prefix": "string"
+      },
+      "object_lock_configuration": {
+        "object_lock_enabled": "string",
+        "rule": "object"
+      },
+      "object_lock_enabled": "bool",
+      "policy": "string",
+      "region": "string",
+      "replication_configuration": {
+        "role": "string",
+        "rules": "object"
+      },
+      "request_payer": "string",
+      "server_side_encryption_configuration": {
+        "rule": "object"
+      },
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "read": "string",
+        "update": "string"
+      },
+      "versioning": {
+        "enabled": "bool",
+        "mfa_delete": "bool"
+      },
+      "website": {
+        "error_document": "string",
+        "index_document": "string",
+        "redirect_all_requests_to": "string",
+        "routing_rules": "string"
+      },
+      "website_domain": "string",
+      "website_endpoint": "string"
+    },
+    "aws_s3_bucket_acl": {
+      "access_control_policy": {
+        "grant": "object",
+        "owner": "object"
+      },
+      "acl": "string",
+      "bucket": "string",
+      "expected_bucket_owner": "string",
+      "id": "string",
+      "region": "string"
+    },
+    "aws_s3_bucket_logging": {
+      "bucket": "string",
+      "expected_bucket_owner": "string",
+      "id": "string",
+      "region": "string",
+      "target_bucket": "string",
+      "target_grant": {
+        "grantee": "object",
+        "permission": "string"
+      },
+      "target_object_key_format": {
+        "partitioned_prefix": "object",
+        "simple_prefix": "object"
+      },
+      "target_prefix": "string"
+    },
+    "aws_s3_bucket_object": {
+      "kms_key_id": "string",
+      "server_side_encryption": "string"
+    },
+    "aws_s3_bucket_policy": {
+      "bucket": "string",
+      "id": "string",
+      "policy": "string",
+      "region": "string"
+    },
+    "aws_s3_bucket_public_access_block": {
+      "block_public_acls": "bool",
+      "block_public_policy": "bool",
+      "bucket": "string",
+      "id": "string",
+      "ignore_public_acls": "bool",
+      "region": "string",
+      "restrict_public_buckets": "bool",
+      "skip_destroy": "bool"
+    },
+    "aws_s3_bucket_server_side_encryption_configuration": {
+      "bucket": "string",
+      "expected_bucket_owner": "string",
+      "id": "string",
+      "region": "string",
+      "rule": {
+        "apply_server_side_encryption_by_default": "object",
+        "blocked_encryption_types": "list",
+        "bucket_key_enabled": "bool"
+      }
+    },
+    "aws_s3_bucket_versioning": {
+      "bucket": "string",
+      "expected_bucket_owner": "string",
+      "id": "string",
+      "mfa": "string",
+      "region": "string",
+      "versioning_configuration": {
+        "mfa_delete": "string",
+        "status": "string"
+      }
+    },
+    "aws_s3_object": {
+      "kms_key_id": "string",
+      "server_side_encryption": "string"
+    },
+    "aws_s3_object_copy": {
+      "kms_encryption_context": "string",
+      "kms_key_id": "string",
+      "server_side_encryption": "string"
+    },
+    "aws_s3files_file_system": {
+      "kms_key_id": "string"
+    },
+    "aws_s3tables_table": {
+      "encryption_configuration": {
+        "kms_key_arn": "string",
+        "sse_algorithm": "string"
+      }
+    },
+    "aws_s3tables_table_bucket": {
+      "encryption_configuration": {
+        "kms_key_arn": "string",
+        "sse_algorithm": "string"
+      }
+    },
+    "aws_s3vectors_index": {
+      "encryption_configuration": {
+        "kms_key_arn": "string",
+        "sse_type": "string"
+      }
+    },
+    "aws_s3vectors_vector_bucket": {
+      "encryption_configuration": {
+        "kms_key_arn": "string",
+        "sse_type": "string"
+      }
+    },
+    "aws_sagemaker_domain": {
+      "kms_key_id": "string",
+      "retention_policy": {
+        "home_efs_file_system": "string"
+      }
+    },
+    "aws_sagemaker_notebook_instance": {
+      "kms_key_id": "string"
+    },
+    "aws_sagemaker_training_job": {
+      "enable_inter_container_traffic_encryption": "bool"
+    },
+    "aws_secretsmanager_secret": {
+      "arn": "string",
+      "description": "string",
+      "force_overwrite_replica_secret": "bool",
+      "id": "string",
+      "kms_key_id": "string",
+      "name": "string",
+      "name_prefix": "string",
+      "policy": "string",
+      "recovery_window_in_days": "number",
+      "region": "string",
+      "replica": {
+        "kms_key_id": "string",
+        "last_accessed_date": "string",
+        "region": "string",
+        "status": "string",
+        "status_message": "string"
+      },
+      "tags": "map",
+      "tags_all": "map",
+      "type": "string"
+    },
+    "aws_security_group": {
+      "arn": "string",
+      "description": "string",
+      "egress": {
+        "cidr_blocks": "list",
+        "description": "string",
+        "from_port": "number",
+        "ipv6_cidr_blocks": "list",
+        "prefix_list_ids": "list",
+        "protocol": "string",
+        "security_groups": "list",
+        "self": "bool",
+        "to_port": "number"
+      },
+      "id": "string",
+      "ingress": {
+        "cidr_blocks": "list",
+        "description": "string",
+        "from_port": "number",
+        "ipv6_cidr_blocks": "list",
+        "prefix_list_ids": "list",
+        "protocol": "string",
+        "security_groups": "list",
+        "self": "bool",
+        "to_port": "number"
+      },
+      "name": "string",
+      "name_prefix": "string",
+      "owner_id": "string",
+      "region": "string",
+      "revoke_rules_on_delete": "bool",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string"
+      },
+      "vpc_id": "string"
+    },
+    "aws_security_group_rule": {
+      "cidr_blocks": "list",
+      "description": "string",
+      "from_port": "number",
+      "id": "string",
+      "ipv6_cidr_blocks": "list",
+      "prefix_list_ids": "list",
+      "protocol": "string",
+      "region": "string",
+      "security_group_id": "string",
+      "security_group_rule_id": "string",
+      "self": "bool",
+      "source_security_group_id": "string",
+      "timeouts": {
+        "create": "string"
+      },
+      "to_port": "number",
+      "type": "string"
+    },
+    "aws_sfn_activity": {
+      "encryption_configuration": {
+        "kms_data_key_reuse_period_seconds": "number",
+        "kms_key_id": "string",
+        "type": "string"
+      }
+    },
+    "aws_sfn_state_machine": {
+      "encryption_configuration": {
+        "kms_data_key_reuse_period_seconds": "number",
+        "kms_key_id": "string",
+        "type": "string"
+      },
+      "logging_configuration": {
+        "include_execution_data": "bool",
+        "level": "string",
+        "log_destination": "string"
+      }
+    },
+    "aws_sns_topic": {
+      "application_failure_feedback_role_arn": "string",
+      "application_success_feedback_role_arn": "string",
+      "application_success_feedback_sample_rate": "number",
+      "archive_policy": "string",
+      "arn": "string",
+      "beginning_archive_time": "string",
+      "content_based_deduplication": "bool",
+      "delivery_policy": "string",
+      "display_name": "string",
+      "fifo_throughput_scope": "string",
+      "fifo_topic": "bool",
+      "firehose_failure_feedback_role_arn": "string",
+      "firehose_success_feedback_role_arn": "string",
+      "firehose_success_feedback_sample_rate": "number",
+      "http_failure_feedback_role_arn": "string",
+      "http_success_feedback_role_arn": "string",
+      "http_success_feedback_sample_rate": "number",
+      "id": "string",
+      "kms_master_key_id": "string",
+      "lambda_failure_feedback_role_arn": "string",
+      "lambda_success_feedback_role_arn": "string",
+      "lambda_success_feedback_sample_rate": "number",
+      "maximum_message_size": "number",
+      "name": "string",
+      "name_prefix": "string",
+      "owner": "string",
+      "policy": "string",
+      "region": "string",
+      "signature_version": "number",
+      "sqs_failure_feedback_role_arn": "string",
+      "sqs_success_feedback_role_arn": "string",
+      "sqs_success_feedback_sample_rate": "number",
+      "tags": "map",
+      "tags_all": "map",
+      "tracing_config": "string"
+    },
+    "aws_sns_topic_policy": {
+      "arn": "string",
+      "id": "string",
+      "owner": "string",
+      "policy": "string",
+      "region": "string"
+    },
+    "aws_sqs_queue": {
+      "arn": "string",
+      "content_based_deduplication": "bool",
+      "deduplication_scope": "string",
+      "delay_seconds": "number",
+      "fifo_queue": "bool",
+      "fifo_throughput_limit": "string",
+      "id": "string",
+      "kms_data_key_reuse_period_seconds": "number",
+      "kms_master_key_id": "string",
+      "max_message_size": "number",
+      "message_retention_seconds": "number",
+      "name": "string",
+      "name_prefix": "string",
+      "policy": "string",
+      "receive_wait_time_seconds": "number",
+      "redrive_allow_policy": "string",
+      "redrive_policy": "string",
+      "region": "string",
+      "sqs_managed_sse_enabled": "bool",
+      "tags": "map",
+      "tags_all": "map",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      },
+      "url": "string",
+      "visibility_timeout_seconds": "number"
+    },
+    "aws_sqs_queue_policy": {
+      "id": "string",
+      "policy": "string",
+      "queue_url": "string",
+      "region": "string"
+    },
+    "aws_storagegateway_tape_pool": {
+      "retention_lock_time_in_days": "number",
+      "retention_lock_type": "string"
+    },
+    "aws_timestreaminfluxdb_db_cluster": {
+      "publicly_accessible": "bool"
+    },
+    "aws_timestreaminfluxdb_db_instance": {
+      "publicly_accessible": "bool"
+    },
+    "aws_timestreamquery_scheduled_query": {
+      "kms_key_id": "string"
+    },
+    "aws_timestreamwrite_database": {
+      "kms_key_id": "string"
+    },
+    "aws_timestreamwrite_table": {
+      "retention_properties": {
+        "magnetic_store_retention_period_in_days": "number",
+        "memory_store_retention_period_in_hours": "number"
+      }
+    },
+    "aws_transfer_connector": {
+      "logging_role": "string"
+    },
+    "aws_transfer_server": {
+      "logging_role": "string"
+    },
+    "aws_verifiedpermissions_policy_store": {
+      "deletion_protection": "string"
+    },
+    "aws_vpc": {
+      "arn": "string",
+      "assign_generated_ipv6_cidr_block": "bool",
+      "cidr_block": "string",
+      "default_network_acl_id": "string",
+      "default_route_table_id": "string",
+      "default_security_group_id": "string",
+      "dhcp_options_id": "string",
+      "enable_dns_hostnames": "bool",
+      "enable_dns_support": "bool",
+      "enable_network_address_usage_metrics": "bool",
+      "id": "string",
+      "instance_tenancy": "string",
+      "ipv4_ipam_pool_id": "string",
+      "ipv4_netmask_length": "number",
+      "ipv6_association_id": "string",
+      "ipv6_cidr_block": "string",
+      "ipv6_cidr_block_network_border_group": "string",
+      "ipv6_ipam_pool_id": "string",
+      "ipv6_netmask_length": "number",
+      "main_route_table_id": "string",
+      "owner_id": "string",
+      "region": "string",
+      "tags": "map",
+      "tags_all": "map"
+    },
+    "aws_vpc_security_group_ingress_rule": {
+      "arn": "string",
+      "cidr_ipv4": "string",
+      "cidr_ipv6": "string",
+      "description": "string",
+      "from_port": "number",
+      "id": "string",
+      "ip_protocol": "string",
+      "prefix_list_id": "string",
+      "referenced_security_group_id": "string",
+      "region": "string",
+      "security_group_id": "string",
+      "security_group_rule_id": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "to_port": "number"
+    },
+    "aws_vpn_connection": {
+      "tunnel1_phase1_encryption_algorithms": "list",
+      "tunnel1_phase2_encryption_algorithms": "list",
+      "tunnel2_phase1_encryption_algorithms": "list",
+      "tunnel2_phase2_encryption_algorithms": "list"
+    },
+    "aws_waf_web_acl": {
+      "logging_configuration": {
+        "log_destination": "string",
+        "redacted_fields": "object"
+      }
+    },
+    "aws_wafregional_web_acl": {
+      "logging_configuration": {
+        "log_destination": "string",
+        "redacted_fields": "object"
+      }
+    },
+    "aws_wafv2_web_acl": {
+      "application_integration_url": "string",
+      "arn": "string",
+      "association_config": {
+        "request_body": "object"
+      },
+      "capacity": "number",
+      "captcha_config": {
+        "immunity_time_property": "object"
+      },
+      "challenge_config": {
+        "immunity_time_property": "object"
+      },
+      "custom_response_body": {
+        "content": "string",
+        "content_type": "string",
+        "key": "string"
+      },
+      "data_protection_config": {
+        "data_protection": "object"
+      },
+      "default_action": {
+        "allow": "object",
+        "block": "object"
+      },
+      "description": "string",
+      "id": "string",
+      "lock_token": "string",
+      "monetization_config": {
+        "crypto_config": "object",
+        "currency_mode": "string"
+      },
+      "name": "string",
+      "name_prefix": "string",
+      "region": "string",
+      "rule": {
+        "action": "object",
+        "captcha_config": "object",
+        "challenge_config": "object",
+        "name": "string",
+        "override_action": "object",
+        "priority": "number",
+        "rule_label": "object",
+        "statement": "object",
+        "visibility_config": "object"
+      },
+      "rule_json": "string",
+      "scope": "string",
+      "tags": "map",
+      "tags_all": "map",
+      "token_domains": "list",
+      "visibility_config": {
+        "cloudwatch_metrics_enabled": "bool",
+        "metric_name": "string",
+        "sampled_requests_enabled": "bool"
+      }
+    },
+    "aws_wafv2_web_acl_association": {
+      "id": "string",
+      "region": "string",
+      "resource_arn": "string",
+      "timeouts": {
+        "create": "string"
+      },
+      "web_acl_arn": "string"
+    },
+    "aws_wafv2_web_acl_logging_configuration": {
+      "logging_filter": {
+        "default_behavior": "string",
+        "filter": "object"
+      }
+    },
+    "aws_workspaces_workspace": {
+      "root_volume_encryption_enabled": "bool",
+      "user_volume_encryption_enabled": "bool",
+      "volume_encryption_key": "string"
+    },
+    "aws_workspacesweb_browser_settings": {
+      "additional_encryption_context": "map"
+    },
+    "aws_workspacesweb_data_protection_settings": {
+      "additional_encryption_context": "map"
+    },
+    "aws_workspacesweb_ip_access_settings": {
+      "additional_encryption_context": "map"
+    },
+    "aws_workspacesweb_portal": {
+      "additional_encryption_context": "map",
+      "user_access_logging_settings_arn": "string"
+    },
+    "aws_workspacesweb_session_logger": {
+      "additional_encryption_context": "map"
+    },
+    "aws_workspacesweb_user_access_logging_settings": {
+      "user_access_logging_settings_arn": "string"
+    },
+    "aws_workspacesweb_user_access_logging_settings_association": {
+      "user_access_logging_settings_arn": "string"
+    },
+    "aws_workspacesweb_user_settings": {
+      "additional_encryption_context": "map"
+    }
+  }
+}

@@ -1,0 +1,827 @@
+{
+  "provider": "registry.terraform.io/hashicorp/google",
+  "version": "8.8.1",
+  "resources": {
+    "google_active_directory_domain": {
+      "deletion_protection": "bool"
+    },
+    "google_alloydb_backup": {
+      "encryption_config": {
+        "kms_key_name": "string"
+      },
+      "encryption_info": {
+        "encryption_type": "string",
+        "kms_key_versions": "list"
+      }
+    },
+    "google_alloydb_cluster": {
+      "deletion_protection": "bool",
+      "encryption_config": {
+        "kms_key_name": "string"
+      },
+      "encryption_info": {
+        "encryption_type": "string",
+        "kms_key_versions": "list"
+      }
+    },
+    "google_apigee_instance": {
+      "access_logging_config": {
+        "enabled": "bool",
+        "filter": "string"
+      },
+      "disk_encryption_key_name": "string"
+    },
+    "google_apigee_organization": {
+      "api_consumer_data_encryption_key_name": "string",
+      "control_plane_encryption_key_name": "string",
+      "runtime_database_encryption_key_name": "string"
+    },
+    "google_backup_dr_backup_vault": {
+      "encryption_config": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_beyondcorp_security_gateway": {
+      "logging": {}
+    },
+    "google_bigquery_analytics_hub_query_template": {
+      "encryption_configuration": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_bigquery_data_transfer_config": {
+      "encryption_configuration": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_bigquery_dataset": {
+      "default_encryption_configuration": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_bigquery_table": {
+      "deletion_protection": "bool",
+      "encryption_configuration": {
+        "kms_key_name": "string",
+        "kms_key_version": "string"
+      }
+    },
+    "google_bigtable_authorized_view": {
+      "deletion_protection": "string"
+    },
+    "google_bigtable_instance": {
+      "deletion_protection": "bool"
+    },
+    "google_bigtable_logical_view": {
+      "deletion_protection": "bool"
+    },
+    "google_bigtable_materialized_view": {
+      "deletion_protection": "bool"
+    },
+    "google_bigtable_table": {
+      "deletion_protection": "string"
+    },
+    "google_ces_app": {
+      "logging_settings": {
+        "audio_recording_config": "object",
+        "bigquery_export_settings": "object",
+        "cloud_logging_settings": "object",
+        "conversation_logging_settings": "object",
+        "metric_analysis_settings": "object",
+        "redaction_config": "object"
+      }
+    },
+    "google_chronicle_environment": {
+      "deletion_protection": "bool",
+      "retention_duration": "number"
+    },
+    "google_cloud_run_v2_instance": {
+      "encryption_key": "string",
+      "encryption_key_revocation_action": "string",
+      "encryption_key_shutdown_duration": "string"
+    },
+    "google_cloud_run_v2_job": {
+      "deletion_protection": "bool"
+    },
+    "google_cloud_run_v2_service": {
+      "deletion_protection": "bool"
+    },
+    "google_cloud_run_v2_worker_pool": {
+      "deletion_protection": "bool"
+    },
+    "google_cloud_tasks_queue": {
+      "stackdriver_logging_config": {
+        "sampling_ratio": "number"
+      }
+    },
+    "google_colab_runtime_template": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_compute_disk": {
+      "disk_encryption_key": {
+        "kms_key_self_link": "string",
+        "kms_key_service_account": "string",
+        "raw_key": "string",
+        "raw_key_wo": "string",
+        "raw_key_wo_version": "string",
+        "rsa_encrypted_key": "string",
+        "rsa_encrypted_key_wo": "string",
+        "rsa_encrypted_key_wo_version": "string",
+        "sha256": "string"
+      },
+      "source_image_encryption_key": {
+        "kms_key_self_link": "string",
+        "kms_key_service_account": "string",
+        "raw_key": "string",
+        "sha256": "string"
+      },
+      "source_snapshot_encryption_key": {
+        "kms_key_self_link": "string",
+        "kms_key_service_account": "string",
+        "raw_key": "string",
+        "sha256": "string"
+      }
+    },
+    "google_compute_firewall": {
+      "enable_logging": "bool"
+    },
+    "google_compute_firewall_policy_rule": {
+      "enable_logging": "bool"
+    },
+    "google_compute_image": {
+      "image_encryption_key": {
+        "kms_key_self_link": "string",
+        "kms_key_service_account": "string",
+        "raw_key": "string",
+        "rsa_encrypted_key": "string"
+      },
+      "source_disk_encryption_key": {
+        "kms_key_self_link": "string",
+        "kms_key_service_account": "string",
+        "raw_key": "string",
+        "rsa_encrypted_key": "string"
+      },
+      "source_image_encryption_key": {
+        "kms_key_self_link": "string",
+        "kms_key_service_account": "string",
+        "raw_key": "string",
+        "rsa_encrypted_key": "string"
+      },
+      "source_snapshot_encryption_key": {
+        "kms_key_self_link": "string",
+        "kms_key_service_account": "string",
+        "raw_key": "string",
+        "rsa_encrypted_key": "string"
+      }
+    },
+    "google_compute_instance": {
+      "deletion_protection": "bool",
+      "instance_encryption_key": {
+        "kms_key_self_link": "string",
+        "kms_key_service_account": "string",
+        "sha256": "string"
+      }
+    },
+    "google_compute_instance_from_template": {
+      "deletion_protection": "bool",
+      "instance_encryption_key": {
+        "kms_key_self_link": "string",
+        "kms_key_service_account": "string",
+        "sha256": "string"
+      }
+    },
+    "google_compute_interconnect_attachment": {
+      "encryption": "string"
+    },
+    "google_compute_network_firewall_policy_rule": {
+      "enable_logging": "bool"
+    },
+    "google_compute_region_disk": {
+      "disk_encryption_key": {
+        "kms_key_name": "string",
+        "raw_key": "string",
+        "raw_key_wo": "string",
+        "raw_key_wo_version": "string",
+        "rsa_encrypted_key": "string",
+        "rsa_encrypted_key_wo": "string",
+        "rsa_encrypted_key_wo_version": "string",
+        "sha256": "string"
+      },
+      "source_image_encryption_key": {
+        "kms_key_name": "string",
+        "kms_key_service_account": "string",
+        "raw_key": "string",
+        "rsa_encrypted_key": "string",
+        "sha256": "string"
+      },
+      "source_snapshot_encryption_key": {
+        "raw_key": "string",
+        "sha256": "string"
+      }
+    },
+    "google_compute_region_network_firewall_policy_rule": {
+      "enable_logging": "bool"
+    },
+    "google_compute_snapshot": {
+      "snapshot_encryption_key": {
+        "kms_key_self_link": "string",
+        "kms_key_service_account": "string",
+        "raw_key": "string",
+        "rsa_encrypted_key": "string",
+        "sha256": "string"
+      },
+      "source_disk_encryption_key": {
+        "kms_key_self_link": "string",
+        "kms_key_service_account": "string",
+        "raw_key": "string",
+        "rsa_encrypted_key": "string"
+      }
+    },
+    "google_compute_storage_pool": {
+      "deletion_protection": "bool"
+    },
+    "google_container_attached_cluster": {
+      "logging_config": {
+        "component_config": "object"
+      }
+    },
+    "google_container_cluster": {
+      "database_encryption": {
+        "key_name": "string",
+        "state": "string"
+      },
+      "deletion_protection": "bool",
+      "in_transit_encryption_config": "string",
+      "logging_config": {
+        "enable_components": "list"
+      },
+      "logging_service": "string"
+    },
+    "google_data_fusion_instance": {
+      "enable_stackdriver_logging": "bool"
+    },
+    "google_data_loss_prevention_content_policy": {
+      "logging_configs": {
+        "log_to_big_query": "object"
+      }
+    },
+    "google_dataproc_metastore_federation": {
+      "deletion_protection": "bool"
+    },
+    "google_dataproc_metastore_service": {
+      "deletion_protection": "bool",
+      "encryption_config": {
+        "kms_key": "string"
+      }
+    },
+    "google_dataproc_workflow_template": {
+      "encryption_config": {
+        "kms_key": "string"
+      }
+    },
+    "google_datastream_stream": {
+      "customer_managed_encryption_key": "string"
+    },
+    "google_dialogflow_agent": {
+      "enable_logging": "bool"
+    },
+    "google_dialogflow_conversation_profile": {
+      "logging_config": {
+        "enable_stackdriver_logging": "bool"
+      }
+    },
+    "google_dialogflow_cx_agent": {
+      "enable_stackdriver_logging": "bool"
+    },
+    "google_dialogflow_cx_security_settings": {
+      "retention_strategy": "string",
+      "retention_window_days": "number"
+    },
+    "google_dialogflow_cx_webhook": {
+      "enable_stackdriver_logging": "bool"
+    },
+    "google_dialogflow_encryption_spec": {
+      "encryption_spec": {
+        "kms_key": "string"
+      }
+    },
+    "google_dns_managed_zone": {
+      "cloud_logging_config": {
+        "enable_logging": "bool"
+      }
+    },
+    "google_dns_policy": {
+      "enable_logging": "bool"
+    },
+    "google_edgecontainer_cluster": {
+      "control_plane_encryption": {
+        "kms_key": "string",
+        "kms_key_active_version": "string",
+        "kms_key_state": "string",
+        "kms_status": "object"
+      }
+    },
+    "google_edgecontainer_node_pool": {
+      "local_disk_encryption": {
+        "kms_key": "string",
+        "kms_key_active_version": "string",
+        "kms_key_state": "string"
+      }
+    },
+    "google_eventarc_google_api_source": {
+      "logging_config": {
+        "log_severity": "string"
+      }
+    },
+    "google_eventarc_message_bus": {
+      "logging_config": {
+        "log_severity": "string"
+      }
+    },
+    "google_eventarc_pipeline": {
+      "logging_config": {
+        "log_severity": "string"
+      }
+    },
+    "google_filestore_instance": {
+      "deletion_protection_enabled": "bool",
+      "deletion_protection_reason": "string"
+    },
+    "google_firestore_change_stream": {
+      "retention_period": "string"
+    },
+    "google_folder": {
+      "deletion_protection": "bool"
+    },
+    "google_gemini_logging_setting": {
+      "logging_setting_id": "string"
+    },
+    "google_gemini_logging_setting_binding": {
+      "logging_setting_id": "string"
+    },
+    "google_gke_backup_backup_plan": {
+      "retention_policy": {
+        "backup_delete_lock_days": "number",
+        "backup_retain_days": "number",
+        "locked": "bool"
+      }
+    },
+    "google_healthcare_dataset": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_iam_workforce_pool_provider": {
+      "detailed_audit_logging": "bool"
+    },
+    "google_logging_billing_account_bucket_config": {
+      "retention_days": "number"
+    },
+    "google_logging_folder_bucket_config": {
+      "retention_days": "number"
+    },
+    "google_logging_folder_settings": {
+      "logging_service_account_id": "string"
+    },
+    "google_logging_organization_bucket_config": {
+      "retention_days": "number"
+    },
+    "google_logging_organization_settings": {
+      "logging_service_account_id": "string"
+    },
+    "google_logging_project_bucket_config": {
+      "retention_days": "number"
+    },
+    "google_logging_saved_query": {
+      "logging_query": {
+        "filter": "string",
+        "summary_field_end": "number",
+        "summary_field_start": "number",
+        "summary_fields": "object"
+      }
+    },
+    "google_looker_instance": {
+      "encryption_config": {
+        "kms_key_name": "string",
+        "kms_key_name_version": "string",
+        "kms_key_state": "string"
+      }
+    },
+    "google_memcache_instance": {
+      "deletion_protection": "bool"
+    },
+    "google_memorystore_instance": {
+      "deletion_protection_enabled": "bool",
+      "transit_encryption_mode": "string"
+    },
+    "google_migration_center_settings": {
+      "disable_cloud_logging": "bool"
+    },
+    "google_netapp_active_directory": {
+      "aes_encryption": "bool"
+    },
+    "google_netapp_backup_vault": {
+      "encryption_state": "string"
+    },
+    "google_netapp_storage_pool": {
+      "encryption_type": "string"
+    },
+    "google_netapp_volume": {
+      "encryption_type": "string"
+    },
+    "google_oracle_database_autonomous_database": {
+      "deletion_protection": "bool"
+    },
+    "google_oracle_database_cloud_exadata_infrastructure": {
+      "deletion_protection": "bool"
+    },
+    "google_oracle_database_cloud_vm_cluster": {
+      "deletion_protection": "bool"
+    },
+    "google_oracle_database_db_system": {
+      "deletion_protection": "bool"
+    },
+    "google_oracle_database_exadb_vm_cluster": {
+      "deletion_protection": "bool"
+    },
+    "google_oracle_database_exascale_db_storage_vault": {
+      "deletion_protection": "bool"
+    },
+    "google_oracle_database_goldengate_connection": {
+      "deletion_protection": "bool"
+    },
+    "google_oracle_database_goldengate_connection_assignment": {
+      "deletion_protection": "bool"
+    },
+    "google_oracle_database_odb_network": {
+      "deletion_protection": "bool"
+    },
+    "google_oracle_database_odb_subnet": {
+      "deletion_protection": "bool"
+    },
+    "google_privateca_ca_pool": {
+      "encryption_spec": {
+        "cloud_kms_key": "string"
+      }
+    },
+    "google_privateca_certificate_authority": {
+      "deletion_protection": "bool"
+    },
+    "google_pubsub_lite_topic": {
+      "retention_config": {
+        "per_partition_bytes": "string",
+        "period": "string"
+      }
+    },
+    "google_redis_cluster": {
+      "deletion_protection_enabled": "bool",
+      "transit_encryption_mode": "string"
+    },
+    "google_redis_instance": {
+      "deletion_protection": "bool",
+      "transit_encryption_mode": "string"
+    },
+    "google_secret_manager_regional_secret": {
+      "customer_managed_encryption": {
+        "kms_key_name": "string"
+      },
+      "deletion_protection": "bool"
+    },
+    "google_secret_manager_regional_secret_version": {
+      "customer_managed_encryption": {
+        "kms_key_version_name": "string"
+      }
+    },
+    "google_secret_manager_secret": {
+      "deletion_protection": "bool"
+    },
+    "google_spanner_backup_schedule": {
+      "encryption_config": {
+        "encryption_type": "string",
+        "kms_key_name": "string",
+        "kms_key_names": "list"
+      },
+      "retention_duration": "string"
+    },
+    "google_spanner_database": {
+      "deletion_protection": "bool",
+      "encryption_config": {
+        "kms_key_name": "string",
+        "kms_key_names": "list"
+      }
+    },
+    "google_sql_database_instance": {
+      "available_maintenance_versions": "list",
+      "backupdr_backup": "string",
+      "clone": {
+        "allocated_ip_range": "string",
+        "database_names": "list",
+        "point_in_time": "string",
+        "preferred_zone": "string",
+        "source_instance_deletion_time": "string",
+        "source_instance_name": "string",
+        "source_project": "string"
+      },
+      "connection_name": "string",
+      "database_version": "string",
+      "deletion_policy": "string",
+      "deletion_protection": "bool",
+      "dns_name": "string",
+      "dns_names": {
+        "connection_type": "string",
+        "dns_scope": "string",
+        "name": "string"
+      },
+      "encryption_confidential_mode": "bool",
+      "encryption_key_name": "string",
+      "enforce_new_sql_network_architecture": "bool",
+      "final_backup_description": "string",
+      "first_ip_address": "string",
+      "id": "string",
+      "include_replicas_for_major_version_upgrade": "bool",
+      "instance_type": "string",
+      "ip_address": {
+        "ip_address": "string",
+        "time_to_retire": "string",
+        "type": "string"
+      },
+      "maintenance_version": "string",
+      "master_instance_name": "string",
+      "name": "string",
+      "node_count": "number",
+      "point_in_time_restore_context": {
+        "allocated_ip_range": "string",
+        "datasource": "string",
+        "point_in_time": "string",
+        "preferred_zone": "string",
+        "region": "string",
+        "target_instance": "string"
+      },
+      "private_ip_address": "string",
+      "project": "string",
+      "psc_service_attachment_link": "string",
+      "public_ip_address": "string",
+      "region": "string",
+      "replica_configuration": {
+        "ca_certificate": "string",
+        "cascadable_replica": "bool",
+        "client_certificate": "string",
+        "client_key": "string",
+        "connect_retry_interval": "number",
+        "dump_file_path": "string",
+        "failover_target": "bool",
+        "master_heartbeat_period": "number",
+        "password": "string",
+        "ssl_cipher": "string",
+        "username": "string",
+        "verify_server_certificate": "bool"
+      },
+      "replica_names": "list",
+      "replication_cluster": {
+        "dr_replica": "bool",
+        "failover_dr_replica_name": "string",
+        "psa_write_endpoint": "string"
+      },
+      "restore_backup_context": {
+        "backup_run_id": "number",
+        "instance_id": "string",
+        "project": "string"
+      },
+      "root_password": "string",
+      "root_password_wo": "string",
+      "root_password_wo_version": "string",
+      "self_link": "string",
+      "server_ca_cert": {
+        "cert": "string",
+        "common_name": "string",
+        "create_time": "string",
+        "expiration_time": "string",
+        "sha1_fingerprint": "string"
+      },
+      "service_account_email_address": "string",
+      "settings": {
+        "activation_policy": "string",
+        "active_directory_config": "object",
+        "advanced_machine_features": "object",
+        "auto_upgrade_enabled": "bool",
+        "availability_type": "string",
+        "backup_configuration": "object",
+        "collation": "string",
+        "connection_pool_config": "object",
+        "connector_enforcement": "string",
+        "data_api_access": "string",
+        "data_cache_config": "object",
+        "data_disk_provisioned_iops": "number",
+        "data_disk_provisioned_throughput": "number",
+        "database_flags": "object",
+        "deletion_protection_enabled": "bool",
+        "deny_maintenance_period": "object",
+        "disk_autoresize": "bool",
+        "disk_autoresize_limit": "number",
+        "disk_size": "number",
+        "disk_type": "string",
+        "edition": "string",
+        "effective_availability_type": "string",
+        "enable_dataplex_integration": "bool",
+        "enable_google_ml_integration": "bool",
+        "entraid_config": "object",
+        "final_backup_config": "object",
+        "insights_config": "object",
+        "ip_configuration": "object",
+        "location_preference": "object",
+        "maintenance_window": "object",
+        "password_validation_policy": "object",
+        "pricing_plan": "string",
+        "read_pool_auto_scale_config": "object",
+        "replication_lag_max_seconds": "number",
+        "retain_backups_on_delete": "bool",
+        "sql_server_audit_config": "object",
+        "tier": "string",
+        "time_zone": "string",
+        "user_labels": "map",
+        "version": "number"
+      },
+      "switch_transaction_logs_to_cloud_storage_enabled": "bool",
+      "timeouts": {
+        "create": "string",
+        "delete": "string",
+        "update": "string"
+      }
+    },
+    "google_storage_bucket": {
+      "autoclass": {
+        "enabled": "bool",
+        "terminal_storage_class": "string"
+      },
+      "cors": {
+        "max_age_seconds": "number",
+        "method": "list",
+        "origin": "list",
+        "response_header": "list"
+      },
+      "custom_placement_config": {
+        "data_locations": "list"
+      },
+      "default_event_based_hold": "bool",
+      "deletion_policy": "string",
+      "effective_labels": "map",
+      "enable_object_retention": "bool",
+      "encryption": {
+        "customer_managed_encryption_enforcement_config": "object",
+        "customer_supplied_encryption_enforcement_config": "object",
+        "default_kms_key_name": "string",
+        "google_managed_encryption_enforcement_config": "object"
+      },
+      "force_destroy": "bool",
+      "hierarchical_namespace": {
+        "enabled": "bool"
+      },
+      "id": "string",
+      "ip_filter": {
+        "allow_all_service_agent_access": "bool",
+        "allow_cross_org_vpcs": "bool",
+        "mode": "string",
+        "public_network_source": "object",
+        "vpc_network_sources": "object"
+      },
+      "labels": "map",
+      "lifecycle_rule": {
+        "action": "object",
+        "condition": "object"
+      },
+      "location": "string",
+      "logging": {
+        "log_bucket": "string",
+        "log_object_prefix": "string"
+      },
+      "name": "string",
+      "project": "string",
+      "project_number": "number",
+      "public_access_prevention": "string",
+      "requester_pays": "bool",
+      "retention_policy": {
+        "is_locked": "bool",
+        "retention_period": "string"
+      },
+      "rpo": "string",
+      "self_link": "string",
+      "soft_delete_policy": {
+        "effective_time": "string",
+        "retention_duration_seconds": "number"
+      },
+      "storage_class": "string",
+      "terraform_labels": "map",
+      "time_created": "string",
+      "timeouts": {
+        "create": "string",
+        "read": "string",
+        "update": "string"
+      },
+      "uniform_bucket_level_access": "bool",
+      "updated": "string",
+      "url": "string",
+      "versioning": {
+        "enabled": "bool"
+      },
+      "website": {
+        "main_page_suffix": "string",
+        "not_found_page": "string"
+      }
+    },
+    "google_storage_bucket_object": {
+      "customer_encryption": {
+        "encryption_algorithm": "string",
+        "encryption_key": "string"
+      }
+    },
+    "google_storage_insights_dataset_config": {
+      "retention_period_days": "number"
+    },
+    "google_storage_transfer_job": {
+      "logging_config": {
+        "enable_on_prem_gcs_transfer_logs": "bool",
+        "log_action_states": "list",
+        "log_actions": "list"
+      }
+    },
+    "google_vector_search_collection": {
+      "encryption_spec": {
+        "crypto_key_name": "string"
+      }
+    },
+    "google_vertex_ai_dataset": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_vertex_ai_endpoint": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      },
+      "predict_request_response_logging_config": {
+        "bigquery_destination": "object",
+        "enabled": "bool",
+        "sampling_rate": "number"
+      }
+    },
+    "google_vertex_ai_evaluation_metric": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_vertex_ai_feature_online_store": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_vertex_ai_featurestore": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_vertex_ai_index": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_vertex_ai_index_endpoint": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_vertex_ai_index_endpoint_deployed_index": {
+      "enable_access_logging": "bool"
+    },
+    "google_vertex_ai_persistent_resource": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_vertex_ai_rag_corpus": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_vertex_ai_reasoning_engine": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_vertex_ai_tensorboard": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_workflows_workflow": {
+      "deletion_protection": "bool"
+    },
+    "google_workstations_workstation_config": {
+      "encryption_key": {
+        "kms_key": "string",
+        "kms_key_service_account": "string"
+      }
+    }
+  }
+}

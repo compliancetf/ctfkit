@@ -1,0 +1,37 @@
+# Hook configuration for a stack whose plan command is ctfkit gate plan (preview).
+#
+# Configure this in the STACK'S SETTINGS, next to the hooks of config.stack.yml, through the
+# Spacelift UI, API or terraform provider, not as a file in the stack repository. It goes with the
+# custom workflow in workflow.yml and the stack label ctfkit:gate, which makes the plan policy
+# require the ctfkit-gate metadata that workflow writes.
+#
+# before_apply signs the candidate ctfkit gate plan wrote during planning, then the workflow's
+# apply command runs ctfkit apply on the same artifact set. The signer is the only credential this
+# adds; keep it out of the planning phase [verify how to scope a credential to the apply phase].
+version: "1"
+
+before_apply:
+  # The set must still be there, as a directory: a run whose planning workspace did not reach
+  # apply has nothing to sign. A transfer that drops file modes would make ctfkit refuse the set,
+  # so 0700 and 0600 are restored first; contents are checked by ctfkit against candidate.json.
+  # gate sign exits 1 when the verdict does not admit the plan, which fails the hook and the run.
+  - |
+    set -eu
+    a=.ctfkit-artifacts
+    if [ -L "$a" ] || [ ! -d "$a" ]; then
+      echo "ctfkit: no artifact set at $a; the candidate from planning did not reach apply" >&2
+      exit 2
+    fi
+    chmod 0700 "$a"
+    find "$a" -mindepth 1 -maxdepth 1 -type f -exec chmod 0600 {} +
+    # Assigned first: a failing $(...) inside an argument list would not stop set -e.
+    tf="$(command -v tofu)" || tf=
+    ws="$(tofu workspace show)" || ws=
+    if [ -z "$tf" ] || [ -z "$ws" ]; then
+      echo "ctfkit: tofu is not on PATH or tofu workspace show gave no workspace" >&2
+      exit 2
+    fi
+    ctfkit gate sign --candidate "$a" --signer "$CTFKIT_SIGNER" --fail-on error \
+      --tf-bin "$tf" --workspace "$ws" \
+      --environment "$CTFKIT_ENVIRONMENT" --org "$CTFKIT_ORG" --profile "$CTFKIT_PROFILE" \
+      --floor "$CTFKIT_FLOOR" --bundle-dir "$CTFKIT_BUNDLE_DIR"

@@ -1,0 +1,310 @@
+name: Test
+
+# Every pull request and every push to master. A pull request from a fork runs with a
+# read-only token and no secrets; nothing here needs more.
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Each job declares the token scope it needs.
+permissions: {}
+
+# A new push to a pull request cancels its superseded run; a master run is never cut short.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  # One job for every gate. Each job bills a whole rounded-up minute plus its own checkout,
+  # Go setup and module download, and the Lint, Integration Tests and Action self-test jobs
+  # each finished in under 40s, so they are steps here. Every gate after the first runs on
+  # `!cancelled()`, so a lint failure still reports the test results in the same run.
+  #
+  # Linux only: neither macOS nor Windows has a code path of its own here. The Windows and
+  # macOS binaries are still cross-compiled and schema-checked by the goreleaser step on
+  # master, they are just not exercised.
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      # A released version this repository publishes, used by the action self-test. Bump it
+      # when a release changes what the sample or the fixture below reports.
+      # The public repository starts with no release, so the self-test skips until this one
+      # exists: after the first public release, set this and the digest below to that release.
+      CTFKIT_SELFTEST_VERSION: 0.1.1
+      # The Linux x86_64 archive's line in that release's checksums.txt; bump it with the version.
+      # The first self-test step pins it through the sha256 input.
+      CTFKIT_SELFTEST_SHA256: 86469b6f925369ab8ac1a78a6bfa9f3ce9036e136f47c75b7638bd7bdc28035e
+      REPORT_FIXTURE: testdata/fixtures/report/missing-manifest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Go
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version: '1.25.x'
+          cache: true
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Verify dependencies
+        run: go mod verify
+
+      # The adapter policy tests skip when opa is not on PATH; installing it here is what
+      # makes them run in CI. Version and checksum MUST equal the http:opa pin in mise.toml.
+      - name: Install OPA
+        env:
+          OPA_VERSION: 1.20.2
+          OPA_SHA256: 69da5179ee403d10fa11bab6cfb4ffb0d23dba5f9b682fa977db772a1da5670f
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/opa" \
+            "https://github.com/open-policy-agent/opa/releases/download/v${OPA_VERSION}/opa_linux_amd64_static"
+          echo "${OPA_SHA256}  $RUNNER_TEMP/opa" | sha256sum -c -
+          install -m 0755 "$RUNNER_TEMP/opa" /usr/local/bin/opa
+          opa version
+
+      # v4 of this action drives golangci-lint v1, which cannot read a `version: 2`
+      # config. Pinned rather than `latest`, which is what moved it across a major.
+      # This version MUST equal the golangci-lint pin in mise.toml: a linter built
+      # against a different Go release cannot read this module's export data and
+      # reports the whole package as `typecheck` failures.
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
+        with:
+          version: v2.6.1
+          args: --timeout=5m
+
+      # `make check` minus its test and lint targets: the race run below covers `make test`
+      # and `make conformance` in one pass, and the step above is the pinned linter.
+      - name: Build and schema-check the fixtures
+        if: ${{ !cancelled() }}
+        run: make build schemacheck
+
+      - name: Run unit tests with race detector
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: make test-ci
+
+      - name: Test with real Terraform files
+        if: ${{ !cancelled() }}
+        run: |
+          ./ctfkit scan --stage pre_plan testdata/pass/
+          if ./ctfkit scan --stage pre_plan testdata/fail/non_ctf_module.tf; then
+            echo "Expected the scan to fail but it passed"
+            exit 1
+          fi
+          echo "The scan failed, as expected, on a module that is not from compliance.tf"
+
+      # Public-repo hygiene: no agent or tracker state, home paths or tracker ids in the tree.
+      - name: Hygiene
+        if: ${{ !cancelled() }}
+        run: make hygiene
+
+      # Known vulnerabilities in the code paths the module calls. The version is pinned in the
+      # Makefile; go run verifies the download against the checksum database.
+      - name: govulncheck
+        if: ${{ !cancelled() }}
+        run: make vulncheck
+
+      - name: Upload coverage to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          files: ./coverage.txt
+          fail_ci_if_error: false
+
+      # Action self-test: runs the composite action from this checkout, so an action.yml
+      # change is exercised before it ships. The binary is a pinned release, downloaded with
+      # the job token from the action's default repository, which adapters/github/action_test.go
+      # keeps equal to the .goreleaser.yml release target. The SARIF upload is off: the
+      # self-test checks the files, and a pull request token cannot upload. Most steps are
+      # expected to find something, so every action step runs with continue-on-error and the
+      # last step checks outcome, exit code and outputs. These steps come last: the action
+      # changes PATH and the job env, which no earlier gate should see.
+
+      # Until CTFKIT_SELFTEST_VERSION is released in compliancetf/ctfkit (a fresh public
+      # repository has no release), the self-test steps below skip with a notice.
+      - name: Check the self-test release exists
+        id: selftest
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Only a missing release skips; any other API error fails the step.
+          if err=$(gh api "repos/compliancetf/ctfkit/releases/tags/v${CTFKIT_SELFTEST_VERSION}" --silent 2>&1); then
+            echo "run=true" >> "${GITHUB_OUTPUT}"
+          elif [[ ${err} == *"HTTP 404"* ]]; then
+            echo "run=false" >> "${GITHUB_OUTPUT}"
+            echo "::notice::action self-test skipped: compliancetf/ctfkit has no release v${CTFKIT_SELFTEST_VERSION} yet; bump CTFKIT_SELFTEST_VERSION in test.yml after the first public release"
+          else
+            echo "::error::cannot read release v${CTFKIT_SELFTEST_VERSION}: ${err}"
+            exit 1
+          fi
+
+      # adapters/sample-repo: one raw aws_s3_bucket, one error-level finding, exit 1. chdir scopes
+      # the configuration to the sample, so nothing else in this checkout reaches the findings.
+      - name: Scan the sample repository
+        id: scan
+        if: ${{ !cancelled() && steps.selftest.outputs.run == 'true' }}
+        continue-on-error: true
+        uses: ./adapters/github
+        with:
+          command: scan
+          plan: adapters/sample-repo/plan.json
+          chdir: adapters/sample-repo
+          version: ${{ env.CTFKIT_SELFTEST_VERSION }}
+          sha256: ${{ env.CTFKIT_SELFTEST_SHA256 }}
+          sarif: 'false'
+
+      # The Security tab copy of the scan findings; the report step below replaces the variable.
+      - name: Record the scan upload file
+        id: scan-upload
+        if: ${{ !cancelled() && steps.selftest.outputs.run == 'true' }}
+        run: echo "path=${CTFKIT_SARIF_UPLOAD:-}" >> "${GITHUB_OUTPUT}"
+
+      # pre_plan reads configuration only, with no plan file. testdata/pass has nothing at error,
+      # so this step succeeds. pr-comment is on for every event except pull_request, and on those
+      # events it must skip with a notice because the run is not a pull request. On a pull
+      # request it stays off, so the self-test never comments (the job token here has no
+      # pull-requests: write either).
+      - name: Pre-plan scan of passing configuration
+        id: preplan-pass
+        if: ${{ !cancelled() && steps.selftest.outputs.run == 'true' }}
+        continue-on-error: true
+        uses: ./adapters/github
+        with:
+          command: scan
+          stage: pre_plan
+          chdir: testdata/pass
+          version: ${{ env.CTFKIT_SELFTEST_VERSION }}
+          sarif: 'false'
+          pr-comment: ${{ github.event_name != 'pull_request' && 'true' || 'false' }}
+
+      # testdata/fail has an error-level finding: exit 1 is captured and the step fails.
+      - name: Pre-plan scan of failing configuration
+        id: preplan-fail
+        if: ${{ !cancelled() && steps.selftest.outputs.run == 'true' }}
+        continue-on-error: true
+        uses: ./adapters/github
+        with:
+          command: scan
+          stage: pre_plan
+          chdir: testdata/fail
+          version: ${{ env.CTFKIT_SELFTEST_VERSION }}
+          sarif: 'false'
+
+      # The sample has no module cache, so the report outputs come from a report fixture that
+      # has one. Its expected exit code is recorded next to its expected projections.
+      - name: Report on a fixture
+        id: report
+        if: ${{ !cancelled() && steps.selftest.outputs.run == 'true' }}
+        continue-on-error: true
+        uses: ./adapters/github
+        with:
+          path: ${{ env.REPORT_FIXTURE }}/input
+          version: ${{ env.CTFKIT_SELFTEST_VERSION }}
+          sarif: 'false'
+
+      - name: Check the action outcome and outputs
+        if: ${{ !cancelled() && steps.selftest.outputs.run == 'true' }}
+        env:
+          SCAN_OUTCOME: ${{ steps.scan.outcome }}
+          SCAN_EXIT: ${{ steps.scan.outputs.exit-code }}
+          SCAN_SARIF: ${{ steps.scan.outputs.sarif }}
+          SCAN_UPLOAD: ${{ steps.scan-upload.outputs.path }}
+          REPORT_OUTCOME: ${{ steps.report.outcome }}
+          REPORT_EXIT: ${{ steps.report.outputs.exit-code }}
+          REPORT_RECEIPT: ${{ steps.report.outputs.receipt }}
+          REPORT_SARIF: ${{ steps.report.outputs.sarif }}
+          REPORT_MARKDOWN: ${{ steps.report.outputs.markdown }}
+          PASS_OUTCOME: ${{ steps.preplan-pass.outcome }}
+          PASS_EXIT: ${{ steps.preplan-pass.outputs.exit-code }}
+          PASS_MARKDOWN: ${{ steps.preplan-pass.outputs.markdown }}
+          PASS_COMMENT: ${{ steps.preplan-pass.outputs.pr-comment }}
+          FAIL_OUTCOME: ${{ steps.preplan-fail.outcome }}
+          FAIL_EXIT: ${{ steps.preplan-fail.outputs.exit-code }}
+          FAIL_SARIF: ${{ steps.preplan-fail.outputs.sarif }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          status=0
+          bad() { echo "::error::$*"; status=1; }
+
+          [ "${PASS_EXIT}" = 0 ] || bad "pre_plan scan of testdata/pass exit code is '${PASS_EXIT}', want 0"
+          [ "${PASS_OUTCOME}" = success ] || bad "pre_plan scan of testdata/pass outcome is '${PASS_OUTCOME}', want success"
+          [ -n "${PASS_MARKDOWN}" ] && [ -s "${PASS_MARKDOWN}" ] || bad "pre_plan scan markdown '${PASS_MARKDOWN}' is not a non-empty file"
+          want_comment=""
+          [ "${EVENT_NAME}" = pull_request ] || want_comment=skipped
+          [ "${PASS_COMMENT}" = "${want_comment}" ] || bad "pr-comment result is '${PASS_COMMENT}', want '${want_comment}'"
+          [ "${FAIL_EXIT}" = 1 ] || bad "pre_plan scan of testdata/fail exit code is '${FAIL_EXIT}', want 1"
+          [ "${FAIL_OUTCOME}" = failure ] || bad "pre_plan scan of testdata/fail outcome is '${FAIL_OUTCOME}', want failure"
+          [ -n "${FAIL_SARIF}" ] && [ -s "${FAIL_SARIF}" ] || bad "pre_plan scan sarif '${FAIL_SARIF}' is not a non-empty file"
+
+          [ "${SCAN_EXIT}" = 1 ] || bad "scan exit code is '${SCAN_EXIT}', want 1"
+          [ "${SCAN_OUTCOME}" = failure ] || bad "scan step outcome is '${SCAN_OUTCOME}', want failure"
+          # Exactly the sample's own finding, located relative to chdir: main.tf, not
+          # adapters/sample-repo/main.tf, which is how the check knows --chdir reached ctfkit.
+          # The upload copy carries the repository-relative path code scanning needs.
+          only_sample() {
+            jq -e --arg uri "$2" '[.runs[0].results[]] | length == 1 and (.[0]
+                     | .ruleId == "ctf.coverage.module_source" and .level == "error"
+                     and .locations[0].logicalLocations[0].fullyQualifiedName == "aws_s3_bucket.raw"
+                     and .locations[0].physicalLocation.artifactLocation.uri == $uri)' "$1" > /dev/null
+          }
+          if [ -n "${SCAN_SARIF}" ] && [ -s "${SCAN_SARIF}" ]; then
+            only_sample "${SCAN_SARIF}" main.tf \
+              || bad "scan SARIF is not exactly ctf.coverage.module_source at error on aws_s3_bucket.raw in main.tf"
+          else
+            bad "scan sarif output '${SCAN_SARIF}' is not a non-empty file"
+          fi
+          if [ -n "${SCAN_UPLOAD}" ] && [ -s "${SCAN_UPLOAD}" ] && [ "${SCAN_UPLOAD}" != "${SCAN_SARIF}" ]; then
+            only_sample "${SCAN_UPLOAD}" adapters/sample-repo/main.tf \
+              || bad "scan upload copy does not locate the finding at adapters/sample-repo/main.tf"
+          else
+            bad "scan upload file '${SCAN_UPLOAD}' is not a separate non-empty file"
+          fi
+
+          want="$(tr -d '[:space:]' < "${REPORT_FIXTURE}/expected/exit-code")"
+          want_outcome=failure
+          [ "${want}" != 0 ] || want_outcome=success
+          [ "${REPORT_EXIT}" = "${want}" ] || bad "report exit code is '${REPORT_EXIT}', want ${want}"
+          [ "${REPORT_OUTCOME}" = "${want_outcome}" ] || bad "report step outcome is '${REPORT_OUTCOME}', want ${want_outcome}"
+          for f in "${REPORT_RECEIPT}" "${REPORT_SARIF}" "${REPORT_MARKDOWN}"; do
+            [ -n "${f}" ] && [ -s "${f}" ] || bad "report output '${f}' is not a non-empty file"
+          done
+          # The second invocation replaced the first one's upload file: a later upload step
+          # never sends the scan's findings as the report's.
+          [ "${CTFKIT_SARIF_UPLOAD:-}" = "${REPORT_SARIF}" ] \
+            || bad "upload file after the report step is '${CTFKIT_SARIF_UPLOAD:-}', want the report sarif '${REPORT_SARIF}'"
+          exit "${status}"
+
+      # Master runs only: the cross-compile is the expensive step and its output is not
+      # consumed by a branch run. A snapshot build exercises the same .goreleaser.yml the
+      # tag build uses, so every push to master checks it before the release pull request is
+      # merged: a schema or cross-compile break shows up here rather than on the tag. This is the
+      # only cross-compilation path; the Makefile delegates here too. It runs only when every
+      # gate above passed, as the separate Build job did through `needs`.
+      - name: Cross-compile via goreleaser (snapshot)
+        if: github.ref == 'refs/heads/master'
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
+        with:
+          distribution: goreleaser
+          version: 'v2.19.0'
+          args: build --snapshot --clean
+
+      - name: Upload artifacts
+        if: github.ref == 'refs/heads/master'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: binaries
+          path: dist/
+          retention-days: 7

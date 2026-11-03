@@ -1,0 +1,52 @@
+{
+ "format": "compliancetf.override/v1",
+ "override_id": "ovr-01",
+ "org_id": "bobthecorp",
+ "workspace": "prod",
+ "environment": "production",
+ "requester": "alice@bobthecorp.example",
+ "plan_digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+ "content_digest": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+ "floor_epoch": "3",
+ "instance_keys": [
+  "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+  "sha256:6666666666666666666666666666666666666666666666666666666666666666"
+ ],
+ "controls": [
+  "CTF.S3.2",
+  "CTF.RDS.1"
+ ],
+ "approvals": [
+  {
+   "approver": "bob@bobthecorp.example",
+   "role": "break_glass_approver",
+   "approved_at": "2026-10-19T08:10:00Z",
+   "expires_at": "2026-10-19T19:00:00Z",
+   "signature": {
+    "kid": "sha256:cdd9612e397719da79a5da27878acd116409ac40513c63e590b44eea7683339c",
+    "alg": "ES256",
+    "value": "MEQCID4gEjvjlPIcd5eP0GS0seLBbpodRCmXY07s5wZo4YeBAiB-VBnVKgaItTXylxlyw0gPq7sWIxkcZHuGF7GRSd4avg"
+   }
+  },
+  {
+   "approver": "carol@bobthecorp.example",
+   "role": "break_glass_approver",
+   "approved_at": "2026-10-19T08:20:00Z",
+   "expires_at": "2026-10-19T20:00:00Z",
+   "signature": {
+    "kid": "sha256:cdd9612e397719da79a5da27878acd116409ac40513c63e590b44eea7683339c",
+    "alg": "ES256",
+    "value": "MEQCIA-54hc81CGsRiYeKnphfLSv0tmZ96vLg_xtMkM_3ms3AiAQGqohMuod9OzvFA_Yb3bEi104lGjehjsZ3IGGqZG5cQ"
+   }
+  }
+ ],
+ "reason": "restore service after incident (ü)",
+ "ticket": "INC-1001",
+ "issued_at": "2026-10-19T08:00:00Z",
+ "expires_at": "2026-10-19T20:00:00Z",
+ "signature": {
+  "kid": "sha256:cdd9612e397719da79a5da27878acd116409ac40513c63e590b44eea7683339c",
+  "alg": "ES256",
+  "value": "MEYCIQCLKrUV961GEHo-q1HLCe4fR-fp_t82P8160o7awIaI-gIhAM-rCqba38qqikQ4c_Vm3eV8RxOqTvgivC2tZR08U_v_"
+ }
+}

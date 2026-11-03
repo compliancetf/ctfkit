@@ -1,0 +1,12 @@
+{
+  "description": "request_digest.json was written by running the provider's breakglass.RequestDigest on the listed inputs in a throwaway copy of the provider tree; consume_receipt_digest is the provider's receipt digest (internal/breakglass parse) of consume-receipt.json, which that parse accepts and whose request_digest it recomputes equal. Regenerating the signed samples changes the receipt digest: re-record it the same way.",
+  "provider_repository": "github.com/compliancetf/terraform-provider-aws",
+  "provider_commit": "2faaff8f89df8b518f7f82521a8f7ef90d529416",
+  "provider_files": {
+    "internal/breakglass/breakglass.go": "sha256:f9ff5a8be53a67031ead53a0b06523ff9d757d1bb0bd01924e85f64571a51bef",
+    "internal/bundle/digest.go": "sha256:23d3c144c308d6f124a56c1ea913db5ad6eae1671d8c8e42456e3a55b005291d"
+  },
+  "request_digest_json": "sha256:daf26b4ab0cb612baa4f5edd356d4b3532fb344abb3ac9b850c5ea9b953b3abb",
+  "consume_receipt_json": "sha256:9d02cb6f5d001e78f7509664792e5a664640bbfc1558124939362fabb3d2f81a",
+  "consume_receipt_digest": "sha256:d462f2ed4fc616f51a5248326f609c7100c5e18ba8f19545e7eae2ba6f46211d"
+}

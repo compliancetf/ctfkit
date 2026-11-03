@@ -1,0 +1,8 @@
+[
+  {
+    "address": "aws_vpc.main",
+    "control": "vpc_flow_log_present",
+    "version": "1.0.0",
+    "result": "pass"
+  }
+]

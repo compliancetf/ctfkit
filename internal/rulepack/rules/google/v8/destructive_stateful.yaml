@@ -1,0 +1,17 @@
+# Class 5: a change deletes or replaces a stateful resource, or removes its
+# deletion safeguard.
+class: destructive_stateful
+rules:
+  - kinds: &stateful
+      google_sql_database_instance: instance
+      google_storage_bucket: bucket
+    predicate: replaced
+    level: error
+  - kinds: *stateful
+    predicate: deleted
+    level: error
+
+  - types: [google_sql_database_instance]
+    attribute: deletion_protection
+    predicate: turned_off
+    level: warning

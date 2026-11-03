@@ -1,0 +1,119 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.risk.sensitive_change_public_exposure",
+              "shortDescription": {
+                "text": "A change opens a resource to public or unrestricted access"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.risk.sensitive_change_public_exposure",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "aws_s3_bucket_public_access_block.public_site turns block_public_policy, restrict_public_buckets from true to false"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket_public_access_block.public_site",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "a1f0995529c109e0b09ee18d14e4551eb371464aec93107f61572d06907fa8ec"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            },
+            "ctf.attributes": [
+              "block_public_policy",
+              "restrict_public_buckets"
+            ]
+          }
+        },
+        {
+          "ruleId": "ctf.risk.sensitive_change_public_exposure",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "aws_s3_bucket_policy.public_site allows any principal with no Condition in policy"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 13,
+                  "endLine": 26
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_s3_bucket_policy.public_site",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "2d3d1db707f1262e0e6b18c0110764e420305f22e6092a2d2124b0344295c1da"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            },
+            "ctf.attributes": [
+              "policy"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

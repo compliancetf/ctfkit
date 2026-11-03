@@ -1,0 +1,14 @@
+[
+  {
+    "kid": "sha256:da5d9b9c4ca521b8deff6babebdca0e39c371adcb3e13a423ab97520904acc3f",
+    "spki_b64": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE6bFWq2kKMOXNt5WIjuz6/r7oZis7VRPv4UtBsY30le2lGgGY1GEtdZpIxVhevtABQW+j7gbrwI3cXa8WHniQ5Q=="
+  },
+  {
+    "kid": "sha256:b5e32077ea22887a3d59a2676caa3e3bd0649dc8b7288bbe42606a4eb97b9276",
+    "spki_b64": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE5uER15il5uarEJ85vW8nRxD6tXHtuCY/21litqfNRlTisN3iTrrLCZERv6FqGq38Ukc7/Qsg7foXVDSYYTNJAw=="
+  },
+  {
+    "kid": "sha256:a471338f9eda7cda7d7cefbe4e9965e505efc17846b49cb6590c15af2fb95b5f",
+    "spki_b64": "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEbBlHLBC9aYqfHrSpS8wKzYzFGGoPfXg/EdUqTp9nASd2UoeSMKNuFN8YgCmU8HSomKTchR3H4QcGU6KHIixwUVBzGjO1/woMWcx+9TQe1nxhih+vrITK2NOwZ0qOkT/x"
+  }
+]

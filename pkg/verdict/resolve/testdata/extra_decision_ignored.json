@@ -1,0 +1,68 @@
+{
+  "description": "a decision for a control the bundle does not load for the type is ignored",
+  "decisions": {
+    "instances": [
+      {
+        "address": "fake_thing.a",
+        "type": "fake_thing",
+        "action": "create",
+        "prior_identity_kind": "none",
+        "refreshed": "true",
+        "unknown_paths": [],
+        "decisions": [
+          {
+            "control": "c",
+            "version": "1.0.0",
+            "result": "pass",
+            "action": "deny"
+          },
+          {
+            "control": "x",
+            "version": "1.0.0",
+            "result": "fail",
+            "action": "deny"
+          }
+        ],
+        "not_evaluable": [],
+        "exceptions": [],
+        "baselines": [],
+        "break_glass": [],
+        "instance_key": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      }
+    ],
+    "required": {
+      "fake_thing": {
+        "decisions": [
+          {
+            "id": "c",
+            "version": "1.0.0",
+            "action": "deny",
+            "coverable": []
+          }
+        ],
+        "delete_decisions": []
+      }
+    }
+  },
+  "mode": {
+    "run_mode": "hard_fail"
+  },
+  "exceptions": [],
+  "baselines": [],
+  "receipts": [],
+  "want": {
+    "refuse": false,
+    "rows": [
+      {
+        "address": "fake_thing.a",
+        "half": "create",
+        "result": "pass",
+        "severity": "none",
+        "final": "pass",
+        "control": "c",
+        "version": "1.0.0",
+        "state": "pass"
+      }
+    ]
+  }
+}

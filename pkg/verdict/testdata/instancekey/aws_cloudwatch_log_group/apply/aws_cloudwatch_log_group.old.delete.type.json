@@ -1,0 +1,1 @@
+["object",{"arn":"string","deletion_protection_enabled":"bool","id":"string","kms_key_id":"string","log_group_class":"string","name":"string","name_prefix":"string","region":"string","retention_in_days":"number","skip_destroy":"bool","tags":["map","string"],"tags_all":["map","string"]}]

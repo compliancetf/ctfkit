@@ -1,0 +1,32 @@
+# Checks that a pull request title is a Conventional Commits subject. A PR is
+# squash-merged with its title as the commit subject, so the title is what the
+# changelog groups and what decides the next version (feat, fix, feat!). deps is the
+# Dependabot prefix for Go module and base image updates; release-please lists it.
+#
+# The title reaches the shell only through env, never through ${{ }} in run.
+# The job checks out nothing and needs no permissions.
+name: PR title
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+permissions: {}
+
+jobs:
+  conventional:
+    name: pr-title
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Check the title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          re='^(feat|fix|deps|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9._/-]+\))?!?: [^ ].*$'
+          if [[ "$TITLE" =~ $re ]]; then
+            echo "ok: $TITLE"
+            exit 0
+          fi
+          echo "::error::PR title is not a Conventional Commits subject: type(scope)!: description, for example 'feat(cli): print grouped help'. Types: feat, fix, deps, docs, style, refactor, perf, test, build, ci, chore, revert."
+          exit 1

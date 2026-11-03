@@ -1,0 +1,96 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.13.0",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.a",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "a",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "bobthecorp-logs",
+          "region": "eu-west-1",
+          "force_destroy": false
+        },
+        "after_unknown": {
+          "id": true,
+          "arn": true
+        }
+      }
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.a",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "a",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "block_public_acls": true,
+          "block_public_policy": true,
+          "region": "eu-west-1"
+        },
+        "after_unknown": {
+          "id": true,
+          "bucket": true
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket.a",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "a",
+          "provider_config_key": "aws",
+          "expressions": {
+            "bucket": {
+              "constant_value": "bobthecorp-logs"
+            }
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.a",
+          "mode": "managed",
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "a",
+          "provider_config_key": "aws",
+          "expressions": {
+            "bucket": {
+              "references": [
+                "aws_s3_bucket.a.id",
+                "aws_s3_bucket.a"
+              ]
+            }
+          },
+          "schema_version": 0
+        }
+      ]
+    }
+  }
+}

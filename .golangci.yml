@@ -1,0 +1,75 @@
+# v2 schema. Verified with `golangci-lint config verify`; keep it that way.
+# The pinned linter version lives in mise.toml and .github/workflows/test.yml and the
+# two MUST match - a linter built against a different Go release cannot read this
+# module's export data and reports every package as a `typecheck` failure.
+version: "2"
+
+run:
+  timeout: 5m
+  issues-exit-code: 1
+  tests: true
+  modules-download-mode: readonly
+
+output:
+  formats:
+    text:
+      print-issued-lines: true
+      print-linter-name: true
+  sort-order:
+    - linter
+    - file
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - staticcheck
+    - misspell
+    - revive
+    - unconvert
+    - gosec
+    - gocritic
+
+  settings:
+    errcheck:
+      # check-blank is not set: it makes `_, _ = fmt.Fprintf(...)` an error, and that
+      # is this codebase's idiom for an error it means to drop.
+      check-type-assertions: true
+
+    govet:
+      enable-all: true
+      disable:
+        # enable-all turns this on; reordering struct fields to save padding bytes
+        # is not a defect here.
+        - fieldalignment
+
+    misspell:
+      locale: US
+
+    revive:
+      confidence: 0.8
+
+  # v1 `issues.exclude-rules`. `exclude-use-default: false` is dropped: in v2 the old
+  # default exclusions are opt-in presets, so listing none already means that.
+  exclusions:
+    rules:
+      # Exclude some linters from running on tests files
+      - path: _test\.go
+        linters:
+          - errcheck
+          - gosec
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+
+  settings:
+    goimports:
+      # A list in v2, a bare string in v1.
+      local-prefixes:
+        - github.com/compliancetf/ctfkit
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

@@ -1,0 +1,18 @@
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 6.0"
+}
+
+module "served" {
+  source  = "soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws"
+  version = "~> 5.0"
+}
+
+module "other" {
+  source  = "bobthecorp/network/aws"
+  version = "~> 1.0"
+}
+
+resource "aws_s3_bucket" "logs" {
+  bucket = "bobthecorp-logs"
+}

@@ -1,0 +1,30 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_s3_bucket_versioning.new",
+      "form": "create",
+      "recorded_name": "aws_s3_bucket_versioning.eb81fb9d15f7c131",
+      "sha256": {
+        "apply/aws_s3_bucket_versioning.new.create.msgpack": "5220fa1eed3382544a855e1d7c2418129ed211a77f532b2ec32bb6ae5571857c",
+        "apply/aws_s3_bucket_versioning.new.create.type.json": "e285578d21f6fe1910883de97ee30d222bca0246610fe90bf7abe277df31c7cc",
+        "envelope/aws_s3_bucket_versioning.new.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_s3_bucket_versioning.old",
+      "form": "update",
+      "recorded_name": "aws_s3_bucket_versioning.0374bf9450121680",
+      "sha256": {
+        "apply/aws_s3_bucket_versioning.old.update.msgpack": "7baf9314955c1131aa2a53a3155ddef85afaa87d4ae2d393f36cd2ab3282316f",
+        "apply/aws_s3_bucket_versioning.old.update.type.json": "e285578d21f6fe1910883de97ee30d222bca0246610fe90bf7abe277df31c7cc",
+        "envelope/aws_s3_bucket_versioning.old.update.json": "d91ee1a1127cb7e5eba9919007b7111f7ce0d3266c7a3508f8ef1045c0b2ccee"
+      }
+    }
+  ]
+}

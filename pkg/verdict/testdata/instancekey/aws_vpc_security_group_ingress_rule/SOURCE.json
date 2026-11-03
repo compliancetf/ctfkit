@@ -1,0 +1,30 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_vpc_security_group_ingress_rule.new",
+      "form": "create",
+      "recorded_name": "aws_vpc_security_group_ingress_rule.9f41d939746a17b4",
+      "sha256": {
+        "apply/aws_vpc_security_group_ingress_rule.new.create.msgpack": "3887836904bc412f52e127b55dedac81cc8a431a410fe6d57d151c870b4258fe",
+        "apply/aws_vpc_security_group_ingress_rule.new.create.type.json": "35093585bb72ef4082d0daf671f15a07dbfa3b5526f0931337f2890f62a7e8e1",
+        "envelope/aws_vpc_security_group_ingress_rule.new.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_vpc_security_group_ingress_rule.old",
+      "form": "delete",
+      "recorded_name": "aws_vpc_security_group_ingress_rule.0401bc5876155740",
+      "sha256": {
+        "apply/aws_vpc_security_group_ingress_rule.old.delete.msgpack": "e4ff5e7d7a7f08e9800a3e25cb774533cb20040df30b6ba10f956f9acd0eb3f7",
+        "apply/aws_vpc_security_group_ingress_rule.old.delete.type.json": "35093585bb72ef4082d0daf671f15a07dbfa3b5526f0931337f2890f62a7e8e1",
+        "envelope/aws_vpc_security_group_ingress_rule.old.delete.json": "4668326d7dca120981cc9ecfe7c5fc594ebe54cfc8e5e5848e47c1e8ae93a04e"
+      }
+    }
+  ]
+}

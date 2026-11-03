@@ -1,0 +1,396 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compliance.tf/schema/receipt-1.schema.json",
+  "title": "ctf.evidence.receipt/1",
+  "description": "The Evidence Receipt ctfkit by compliance.tf writes. The envelope is frozen: statement is canonical JSON (RFC 8785) so a later signature covers exactly those bytes, and attestations plus the optional watermark sit outside it. Open source output leaves both attestations lists empty; signing is planned. Versioning: while ctfkit is before 1.0 a release may add optional properties within /1, and the objects stay closed, so validate a receipt against the copy of this schema shipped with the ctfkit release that wrote it.",
+  "type": "object",
+  "required": ["schema", "kind", "statement", "attestations"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "ctf.evidence.receipt/1" },
+    "kind": {
+      "enum": ["module-coverage", "provider-run"],
+      "description": "module-coverage: written by ctfkit report. provider-run: written by ctfkit evidence ship for one governed run's evidence."
+    },
+    "watermark": {
+      "type": "string",
+      "pattern": "^[^\u0000-\u001f\u007f]+$",
+      "description": "The optional banner line --watermark sets: one line of printable text. Absent when no banner was set."
+    },
+    "attestations": {
+      "type": "object",
+      "required": ["customerCi", "complianceTf"],
+      "additionalProperties": false,
+      "description": "Empty in open source output. A hosted tier fills these in without changing statement.",
+      "properties": {
+        "customerCi": { "type": "array", "items": { "type": "object" } },
+        "complianceTf": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "statement": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "module-coverage" } } },
+      "then": { "properties": { "statement": { "$ref": "#/$defs/statement" } } }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "provider-run" } } },
+      "then": {
+        "properties": { "statement": { "$ref": "#/$defs/providerRunStatement" } },
+        "not": { "required": ["watermark"] }
+      }
+    }
+  ],
+  "$defs": {
+    "providerRunStatement": {
+      "type": "object",
+      "required": ["status", "conditions", "generator", "run", "chains", "sinks", "alerts"],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": ["recovery_required", "failed", "overridden", "evidence-degraded", "single-resource-only", "enforced"],
+          "description": "The first entry of conditions, in this order; enforced when conditions is empty. Only enforced is a passing run."
+        },
+        "conditions": {
+          "type": "array",
+          "description": "Every status condition that holds for the run, each once, in the status order.",
+          "items": { "enum": ["recovery_required", "failed", "overridden", "evidence-degraded", "single-resource-only"] }
+        },
+        "generator": {
+          "type": "object",
+          "required": ["name", "version"],
+          "additionalProperties": false,
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "version": { "type": "string", "minLength": 1 }
+          }
+        },
+        "run": {
+          "type": "object",
+          "required": ["id", "orgId", "workspace", "runnerClass", "timestamp"],
+          "additionalProperties": false,
+          "properties": {
+            "id": { "type": "string", "minLength": 1 },
+            "orgId": { "type": "string", "minLength": 1 },
+            "workspace": { "type": "string" },
+            "runnerClass": {
+              "enum": ["local", "ci", "hcp-advisory", "spacelift", "env0"],
+              "description": "From the producing command, never from the environment: ci when the run's artifact set came from ctfkit apply, local for a bare evidence ship."
+            },
+            "timestamp": { "type": "string", "format": "date-time" },
+            "stage": { "type": "string", "description": "Run task stage the receipt was written at (runner class hcp-advisory)." },
+            "taskResultId": { "type": "string", "description": "Run task result id (runner class hcp-advisory)." },
+            "speculative": { "type": "boolean", "description": "The run task's run was speculative (runner class hcp-advisory)." }
+          }
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Why the run is not enforced when no other member says it, for example evidence chains that failed verification."
+        },
+        "inputs": {
+          "type": "object",
+          "description": "Digests of what an advisory run task analyzed.",
+          "additionalProperties": false,
+          "properties": {
+            "planJson": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+            "profile": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+          }
+        },
+        "findings": {
+          "type": "array",
+          "description": "Findings of an advisory run task, suppressed ones included and marked.",
+          "items": {
+            "type": "object",
+            "required": ["ruleId", "level", "message", "suppressed"],
+            "additionalProperties": false,
+            "properties": {
+              "ruleId": { "$ref": "#/$defs/ruleId" },
+              "level": { "$ref": "#/$defs/level" },
+              "message": { "type": "string", "minLength": 1 },
+              "suppressed": { "type": "boolean" }
+            }
+          }
+        },
+        "chains": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["chain", "firstSeq", "lastSeq", "lastHash", "records", "breaks", "terminated", "missing"],
+            "additionalProperties": false,
+            "properties": {
+              "chain": { "type": "string", "pattern": "^c_[0-9]{13}_[0-9a-f]{16}$" },
+              "firstSeq": { "type": "integer", "minimum": 0 },
+              "lastSeq": { "type": "integer", "minimum": 0 },
+              "lastHash": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+              "records": { "type": "integer", "minimum": 0 },
+              "breaks": { "type": "integer", "minimum": 0 },
+              "terminated": { "type": "boolean" },
+              "missing": {
+                "type": "array",
+                "description": "Seq spans the chain is missing; a span without to is open-ended.",
+                "items": {
+                  "type": "object",
+                  "required": ["from"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "from": { "type": "integer", "minimum": 0 },
+                    "to": { "type": "integer", "minimum": 0 }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "sinks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "shipped", "spooled"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "shipped": { "type": "integer", "minimum": 0 },
+              "spooled": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "manifest": {
+          "type": "object",
+          "required": ["key", "kid", "sha256"],
+          "additionalProperties": false,
+          "properties": {
+            "key": { "type": "string", "minLength": 1 },
+            "kid": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+            "sha256": { "$ref": "#/$defs/sha256" }
+          }
+        },
+        "alerts": {
+          "type": "array",
+          "description": "Alerts the run raised, for example break_glass_evidence_degraded.",
+          "items": { "$ref": "#/$defs/token" }
+        }
+      }
+    },
+    "statement": {
+      "type": "object",
+      "required": [
+        "stage", "generator", "run", "subject", "inputs", "builds",
+        "instancesWithoutManifest", "rootResources", "obligations",
+        "findings", "verdict", "scopeStatement"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "stage": { "$ref": "#/$defs/stage" },
+        "generator": {
+          "type": "object",
+          "required": ["name", "version"],
+          "additionalProperties": false,
+          "properties": {
+            "name": { "type": "string", "minLength": 1 },
+            "version": { "type": "string", "minLength": 1 }
+          }
+        },
+        "run": {
+          "type": "object",
+          "required": ["platform", "id", "commit", "timestamp"],
+          "additionalProperties": false,
+          "properties": {
+            "platform": { "type": "string" },
+            "id": { "type": "string" },
+            "commit": { "type": "string" },
+            "timestamp": { "type": "string", "format": "date-time" }
+          }
+        },
+        "subject": {
+          "type": "object",
+          "required": ["root"],
+          "additionalProperties": false,
+          "properties": { "root": { "type": "string", "minLength": 1 } }
+        },
+        "inputs": {
+          "type": "object",
+          "required": ["modulesJson", "manifests"],
+          "additionalProperties": false,
+          "properties": {
+            "modulesJson": {
+              "type": "object",
+              "required": ["sha256"],
+              "additionalProperties": false,
+              "properties": { "sha256": { "$ref": "#/$defs/sha256" } }
+            },
+            "manifests": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["key", "source", "version", "sha256", "provenance"],
+                "additionalProperties": false,
+                "properties": {
+                  "key": { "type": "string", "minLength": 1 },
+                  "source": { "type": "string", "minLength": 1 },
+                  "version": { "type": "string", "minLength": 1 },
+                  "sha256": { "$ref": "#/$defs/sha256" },
+                  "provenance": {
+                    "const": "local-unverified",
+                    "description": "The manifest was read from the local module directory and no party attested to it. The only value open source output emits."
+                  }
+                }
+              }
+            },
+            "tests": {
+              "type": "object",
+              "description": "Present only when --tests-json was passed.",
+              "required": ["sha256", "runs", "passed", "failed", "errored", "skipped"],
+              "additionalProperties": false,
+              "properties": {
+                "sha256": { "$ref": "#/$defs/sha256" },
+                "runs": { "type": "integer", "minimum": 0 },
+                "passed": { "type": "integer", "minimum": 0 },
+                "failed": { "type": "integer", "minimum": 0 },
+                "errored": { "type": "integer", "minimum": 0 },
+                "skipped": { "type": "integer", "minimum": 0 }
+              }
+            }
+          }
+        },
+        "builds": { "type": "array", "items": { "$ref": "#/$defs/build" } },
+        "instancesWithoutManifest": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["key", "source"],
+            "additionalProperties": false,
+            "properties": {
+              "key": { "type": "string", "minLength": 1 },
+              "source": { "type": "string" }
+            }
+          }
+        },
+        "rootResources": {
+          "type": "object",
+          "required": ["declared", "coverage"],
+          "additionalProperties": false,
+          "properties": {
+            "declared": { "type": "integer", "minimum": 0 },
+            "coverage": {
+              "enum": ["not-applicable", "tested", "unattested"],
+              "description": "not-applicable: the root declares no resources of its own. tested: the root's own suite covers them. unattested: it declares resources and no suite was imported."
+            }
+          }
+        },
+        "obligations": {
+          "type": "array",
+          "description": "The does_not_prove tokens of every manifest read, deduplicated and sorted by token.",
+          "items": {
+            "type": "object",
+            "required": ["token", "consumerObligation"],
+            "additionalProperties": false,
+            "properties": {
+              "token": { "$ref": "#/$defs/token" },
+              "consumerObligation": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+        "verdict": {
+          "enum": ["pass", "fail"],
+          "description": "fail when a finding at or above --fail-on is present; the exit code is the command's concern, not this field's."
+        },
+        "scopeStatement": {
+          "const": "This receipt records which controls the compliance.tf served modules in this configuration enforce at module build time, as read from the manifests written at init, and which resources declared by this configuration are covered by its own tests. It is not a live-state assertion, not an attestation by compliance.tf, and not computer-system validation.",
+          "description": "Rendered verbatim. Changing this text is a specification change."
+        }
+      }
+    },
+    "build": {
+      "type": "object",
+      "description": "One served build, grouped by (source, version) across every instance of it.",
+      "required": [
+        "source", "version", "keys", "frameworks", "controls",
+        "notApplicable", "superseded", "operationalRules", "degraded"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "source": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "keys": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "frameworks": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "controls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "status", "satisfiedIn", "clausesByFramework"],
+            "additionalProperties": false,
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "status": {
+                "enum": ["enforced", "delegated"],
+                "description": "delegated means another scope holds the evidence; satisfiedIn is empty when no instance governs that scope."
+              },
+              "satisfiedIn": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+              "clausesByFramework": {
+                "type": "object",
+                "additionalProperties": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+              },
+              "supportingClausesByFramework": {
+                "type": "object",
+                "description": "Manifest schema 3.4: per framework, the clausesByFramework entries the catalog curation marked as supporting evidence (partial or indirect, never full enforcement), in listed order. Absent when the manifest does not classify (before 3.4), which means unknown, never that nothing is hedged; a framework missing from this object is unknown for that framework; an empty list means classified and nothing hedged there.",
+                "additionalProperties": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+              }
+            }
+          }
+        },
+        "notApplicable": {
+          "type": ["integer", "null"],
+          "minimum": 0,
+          "description": "Tri-state: null means the producer never classified, a number is how many controls it evaluated and found no resource of their target type for."
+        },
+        "superseded": {
+          "type": "object",
+          "description": "weaker control id to the stricter control id that replaced it.",
+          "additionalProperties": { "type": "string", "minLength": 1 }
+        },
+        "operationalRules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["rule", "outcome"],
+            "properties": {
+              "rule": { "type": "string", "minLength": 1 },
+              "outcome": { "type": "string", "minLength": 1 },
+              "ruleset": {
+                "type": ["object", "null"],
+                "required": ["name", "contentHash"],
+                "properties": {
+                  "name": { "type": "string", "minLength": 1 },
+                  "contentHash": { "type": "string", "minLength": 1 }
+                }
+              }
+            }
+          }
+        },
+        "degraded": {
+          "type": "array",
+          "description": "Reasons the org posture could not be applied in full. Empty means the producer reported nothing dropped.",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "required": ["ruleId", "level", "message"],
+      "additionalProperties": false,
+      "properties": {
+        "ruleId": { "$ref": "#/$defs/ruleId" },
+        "level": { "$ref": "#/$defs/level" },
+        "message": { "type": "string", "minLength": 1 }
+      }
+    },
+    "stage": { "enum": ["pre_plan", "post_init", "post_plan", "pre_apply", "post_apply"] },
+    "level": { "enum": ["error", "warning", "note"] },
+    "ruleId": { "type": "string", "pattern": "^ctf\\.[a-z0-9]+(\\.[a-z0-9_]+)+$" },
+    "token": { "type": "string", "pattern": "^[a-z0-9]+(_[a-z0-9]+)*$" },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

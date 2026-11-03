@@ -1,0 +1,37 @@
+{
+  "repository": "github.com/compliancetf/terraform-provider-aws",
+  "commit": "d0384eff0e07bcc9b63b48c323ad84395f16e44c",
+  "note": "Computed by the provider's internal/baseline (ReadDigest, digestJSON over bundle.ParseControls, Load) at this commit; the provider has no committed vectors for these. Rerun: copy provider_vectors_test.go.txt to internal/baseline/zz_ctfkit_vectors_test.go in a provider checkout at the commit, then CTFKIT_VECTORS=<ctfkit>/pkg/verdict/testdata go test ./internal/baseline/ -run CtfkitVectors. The baseline is re-signed with fresh in-memory keys on every run, so its bytes change; every digest outside baseline/valid is deterministic. Update the sha256 values after a rerun.",
+  "files": [
+    {
+      "path": "pkg/verdict/testdata/readdigest/cases.json",
+      "role": "inputs written by hand; digest and k_read_hex fields written by the generator",
+      "sha256": "01c96cf20258eac2a5ae7ec8e9e71b7ccbb63795e5abf493b6b9edae747d280b"
+    },
+    {
+      "path": "pkg/verdict/testdata/controlmanifest/controls.json",
+      "role": "input, written by hand",
+      "sha256": "0b3167216fcb7eda14a7e1d173199aca3af3311df1659d6edeb1c780a29856e7"
+    },
+    {
+      "path": "pkg/verdict/testdata/controlmanifest/expected.json",
+      "role": "written by the generator",
+      "sha256": "9b914199ae0ee33caabd399f7ee106be4407ac100504902910473433df200ff0"
+    },
+    {
+      "path": "pkg/verdict/testdata/baseline/valid/baseline.json",
+      "role": "written by the generator, accepted by the provider's Load",
+      "sha256": "97263956279676d6096a6cf80e7d93ce912c636bdb1258df5249d2e40793fade"
+    },
+    {
+      "path": "pkg/verdict/testdata/baseline/valid/expected.json",
+      "role": "written by the generator",
+      "sha256": "759ead91ebf07c4bc5dd22e1e3240441b117b141962f23118e5146cf4cfb3a61"
+    },
+    {
+      "path": "pkg/verdict/testdata/baseline/provider_vectors_test.go.txt",
+      "role": "the generator; copy into internal/baseline as a _test.go file to rerun",
+      "sha256": "2511107892cf07ec1d27cb2d3fa01d3c0cef36e378800a522bf1a5d2907923c0"
+    }
+  ]
+}

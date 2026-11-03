@@ -1,0 +1,81 @@
+# Class 1: a change opens a resource to public or unrestricted access.
+class: public_exposure
+rules:
+  - types: [aws_s3_bucket_public_access_block]
+    predicate: deleted
+    level: error
+    message: "{address} is deleted, which lifts the public access block on its bucket"
+  - types: [aws_s3_bucket_public_access_block]
+    attributes: [block_public_acls, block_public_policy, ignore_public_acls, restrict_public_buckets]
+    predicate: turned_off
+    level: error
+
+  - types: [aws_s3_bucket_acl]
+    attribute: acl
+    predicate: value_in
+    values: [public-read, public-read-write]
+    level: error
+    message: "{address} sets a public canned ACL in {attributes}"
+
+  - types: [aws_s3_bucket_policy, aws_sns_topic_policy, aws_sqs_queue_policy, aws_ecr_repository_policy]
+    attribute: policy
+    predicate: policy_any_principal
+    level: error
+  # aws_opensearch_domain_policy holds its document in access_policies.
+  - types: [aws_opensearch_domain_policy]
+    attribute: access_policies
+    predicate: policy_any_principal
+    level: error
+
+  # A trust policy open to any principal is class 1, not class 2:
+  # reachability is the risk the reader acts on.
+  - types: [aws_iam_role]
+    attribute: assume_role_policy
+    predicate: policy_any_principal
+    level: error
+
+  - types: [aws_lambda_permission]
+    attribute: principal
+    predicate: value_in
+    values: ["*"]
+    unset: [source_arn]
+    level: error
+    message: "{address} lets any principal invoke it with no source_arn, through {attributes}"
+
+  # An Aurora cluster is reachable through its instances: publicly_accessible
+  # is on aws_rds_cluster_instance, not aws_rds_cluster.
+  - types: [aws_db_instance, aws_rds_cluster_instance, aws_redshift_cluster, aws_dms_replication_instance]
+    attribute: publicly_accessible
+    predicate: turned_on
+    level: error
+
+  - types: [aws_instance]
+    attribute: associate_public_ip_address
+    predicate: turned_on
+    level: warning
+
+  # Ingress open to 0.0.0.0/0 or ::/0, at note when the port range is exactly
+  # 80 or exactly 443.
+  - types: [aws_security_group]
+    attribute: ingress
+    predicate: open_cidr
+    ipv4: cidr_blocks
+    ipv6: ipv6_cidr_blocks
+    ports: [from_port, to_port]
+    note_ports: [80, 443]
+    level: error
+  - types: [aws_security_group_rule]
+    when: {type: ingress}
+    predicate: open_cidr
+    ipv4: cidr_blocks
+    ipv6: ipv6_cidr_blocks
+    ports: [from_port, to_port]
+    note_ports: [80, 443]
+    level: error
+  - types: [aws_vpc_security_group_ingress_rule]
+    predicate: open_cidr
+    ipv4: cidr_ipv4
+    ipv6: cidr_ipv6
+    ports: [from_port, to_port]
+    note_ports: [80, 443]
+    level: error

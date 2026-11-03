@@ -1,0 +1,151 @@
+name: Release
+
+# Two ways in, one build: release-please.yml dispatches this workflow on the tag it just created
+# (its tag push starts nothing, being made with the job token), and a maintainer may push a v*
+# tag by hand. Either way the run is on refs/tags/vX.Y.Z, which the attestation records.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+# The goreleaser job gets these. id-token and attestations are granted to the attest job alone,
+# so no third-party build step can mint a token carrying this workflow's identity.
+permissions:
+  contents: write
+  packages: write
+
+# One run per tag, never cut short.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  goreleaser:
+    # A dispatch from a branch builds nothing: releases come from v* tags only.
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Refuse a tag that is not a version
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          [[ $REF =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]] || { echo "::error::not a release tag: $REF"; exit 1; }
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Go
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+        with:
+          go-version: '1.25.x'
+          cache: true
+
+      # The images are built for linux/amd64 and linux/arm64 with buildx; QEMU
+      # covers the arm64 platform on the amd64 runner.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+
+      # A new ghcr package starts private: set it public in the package settings once,
+      # after the first release, before anonymous pulls work.
+      - name: Log in to ghcr.io
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # A ctftest build accepts the public instance_key test secret
+      # (pkg/verdict/testdata/instancekey/FORMAT.md); a release never carries the tag.
+      - name: Refuse the ctftest build tag
+        run: |
+          if [[ ! -f .goreleaser.yml ]] || grep -n ctftest .goreleaser.yml || [[ "${GOFLAGS:-}" == *ctftest* ]]; then
+            echo "::error::release builds must not carry the ctftest build tag"
+            exit 1
+          fi
+
+      # goreleaser finds syft on PATH for the SPDX SBOM of each archive (.goreleaser.yml
+      # sboms). The action pins the syft release it installs.
+      - name: Install syft
+        uses: anchore/sbom-action/download-syft@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
+
+      # release-please has already created the release with its notes: goreleaser then appends
+      # its footer and attaches the assets (release.mode: append) and writes no changelog of its
+      # own. A hand-pushed tag has no release yet, so goreleaser creates it with its changelog.
+      - name: Check for existing release notes
+        id: notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          # Only a missing release means no notes; any other API error fails the run.
+          if err=$(gh api "repos/$REPO/releases/tags/$TAG" --silent 2>&1); then
+            echo "exist=true" >> "$GITHUB_OUTPUT"
+          elif [[ $err == *"HTTP 404"* ]]; then
+            echo "exist=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::cannot read release $TAG: $err"
+            exit 1
+          fi
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
+        with:
+          distribution: goreleaser
+          version: 'v2.19.0'
+          # The Homebrew cask is skipped until the compliancetf/homebrew-tap repository exists
+          # and HOMEBREW_TAP_GITHUB_TOKEN can push to it; then drop --skip=homebrew.
+          args: release --clean --skip=homebrew
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CTFKIT_RELEASE_NOTES_EXIST: ${{ steps.notes.outputs.exist }}
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+
+      # The attest job reads this file alone: checksums.txt names every archive and package with
+      # its digest, which is all the attestation needs.
+      - name: Hand checksums.txt to the attest job
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: checksums
+          path: dist/checksums.txt
+          retention-days: 1
+
+      - name: Upload assets
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release-assets
+          path: dist/*
+
+  # One GitHub build provenance attestation covering every file in checksums.txt: the archives
+  # and the deb, rpm and apk packages. `gh attestation verify <file> --repo
+  # compliancetf/ctfkit --signer-workflow compliancetf/ctfkit/.github/workflows/release.yml
+  # --source-ref refs/tags/vX.Y.Z` checks a download against it. This job holds id-token and
+  # attestations, and runs no build tooling. Artifact attestations need a public repository on
+  # this plan, so a private copy skips it.
+  attest:
+    needs: goreleaser
+    if: ${{ !github.event.repository.private }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Download checksums.txt
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: checksums
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-checksums: checksums.txt

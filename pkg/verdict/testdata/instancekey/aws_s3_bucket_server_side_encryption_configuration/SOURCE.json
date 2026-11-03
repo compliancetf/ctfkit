@@ -1,0 +1,30 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_s3_bucket_server_side_encryption_configuration.new",
+      "form": "create",
+      "recorded_name": "aws_s3_bucket_server_side_encryption_configuration.4d700e7b4c6bb1a6",
+      "sha256": {
+        "apply/aws_s3_bucket_server_side_encryption_configuration.new.create.msgpack": "109101d5e042cead55cd65061e56bc3192b72535b06812dd868e95b954d55b6a",
+        "apply/aws_s3_bucket_server_side_encryption_configuration.new.create.type.json": "d4636f48a91e3c523e5dccf63633e80969ef0cab4d8aa3fbd0e4080c8fa32675",
+        "envelope/aws_s3_bucket_server_side_encryption_configuration.new.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_s3_bucket_server_side_encryption_configuration.this",
+      "form": "update",
+      "recorded_name": "aws_s3_bucket_server_side_encryption_configuration.49e9fdbad6d407eb",
+      "sha256": {
+        "apply/aws_s3_bucket_server_side_encryption_configuration.this.update.msgpack": "eab39526771d02ba586ed6b16e34daa011ca8222c0a692313ace1f86ede29dfc",
+        "apply/aws_s3_bucket_server_side_encryption_configuration.this.update.type.json": "d4636f48a91e3c523e5dccf63633e80969ef0cab4d8aa3fbd0e4080c8fa32675",
+        "envelope/aws_s3_bucket_server_side_encryption_configuration.this.update.json": "7644126280364afc46a5fcd4cf420473cfbdfe3832f62cc52d6afacc43489461"
+      }
+    }
+  ]
+}

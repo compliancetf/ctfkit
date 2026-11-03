@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.exec.external_data",
+              "shortDescription": {
+                "text": "The configuration or a module it installs declares a data source that runs a local program"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "ctf.exec.provisioner",
+              "shortDescription": {
+                "text": "The configuration or a module it installs declares a provisioner"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "ctf.catalogVersion": {
+          "version": "2026.9.3",
+          "origin": "embedded"
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.exec.provisioner",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Provisioner local-exec in module.shared.terraform_data.outside runs when this configuration is applied, with the access of the machine that applies it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "../shared/main.tf"
+                },
+                "region": {
+                  "startLine": 23,
+                  "endLine": 25
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.shared.terraform_data.outside",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "598a38aa11fe66331836b533c3aa88b01c21a7c646b9aecdd1de468509f163ca"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.exec.external_data",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Data source module.shared.check.shared.data.external.probe runs a local program when this configuration is planned, with the access of the machine that plans it"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "../shared/main.tf"
+                },
+                "region": {
+                  "startLine": 12,
+                  "endLine": 14
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "module.shared.check.shared.data.external.probe",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "ee253f362218661a3f089a54027de5f6556a665243d90cb7282f3c9e0ccf0806"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_init",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

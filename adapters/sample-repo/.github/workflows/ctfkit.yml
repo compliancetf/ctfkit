@@ -1,0 +1,36 @@
+# Scans the committed plan.json and puts the finding in the Security tab. No tofu, no init, no
+# registry token and no cloud credentials: the plan file and the pinned ctfkit binary are all the
+# job needs. In your own repository, produce plan.json in an earlier step with
+# `tofu plan -out=tfplan && tofu show -json tfplan > plan.json`; see adapters/github/workflow-template.yml.
+#
+# The action lives in the public compliancetf/ctfkit-action repository and downloads the binary
+# from the private compliancetf/ctfkit releases. CTFKIT_RELEASE_TOKEN is a fine-grained token with
+# resource owner compliancetf, repository ctfkit and Contents: read.
+name: ctfkit
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # command: scan always renders sarif and uploads it with category ctfkit. catalog defaults to
+      # embedded, and config and exceptions default to the files bundled with the action, never
+      # files discovered in this checkout.
+      - name: Scan the plan
+        uses: compliancetf/ctfkit-action@v0.2.1
+        with:
+          command: scan
+          plan: plan.json
+          version: v0.2.1
+          github-token: ${{ secrets.CTFKIT_RELEASE_TOKEN }}
+          fail-on: error

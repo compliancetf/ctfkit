@@ -1,0 +1,1 @@
+["object",{"block_public_acls":"bool","block_public_policy":"bool","bucket":"string","id":"string","ignore_public_acls":"bool","region":"string","restrict_public_buckets":"bool","skip_destroy":"bool"}]

@@ -1,0 +1,13 @@
+{
+  "commit": "d0384eff0e07bcc9b63b48c323ad84395f16e44c",
+  "note": "copied byte for byte; the provider's TestDSSE is the oracle",
+  "path": "internal/trust/testdata/dsse",
+  "sha256": {
+    "bad-sig.json": "e3553469372d8af68d8a8874971b2bf1fdd0a5f585afcf75a584b63526fd0cba",
+    "good.json": "fcd188464ad600b313b5588e89630b21eda867e1509bc3b4c7e6c07eb8eabc63",
+    "outside-window.json": "6cf9e582097744c5a85f35a42bf29e299a8aa78386be357e37132647362d5827",
+    "revoked.json": "b5c6b766fb73d970b4c312eedda3a673fe9bc7e0656dddb50a0a5631ef686da0",
+    "wrong-purpose.json": "2efd5c9cea2f872e5c6736a185ccacb9a2c899ac93014ce886470732e8190fa9"
+  },
+  "source": "github.com/compliancetf/terraform-provider-aws"
+}

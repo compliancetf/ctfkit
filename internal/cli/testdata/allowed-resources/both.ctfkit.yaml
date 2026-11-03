@@ -1,0 +1,4 @@
+# Control: both resource types are allowed, so the same fixture must pass.
+allowed_resources:
+  - aws_s3_bucket
+  - aws_iam_role

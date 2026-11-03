@@ -1,0 +1,9 @@
+[
+  {
+    "kid": "sha256:cdd9612e397719da79a5da27878acd116409ac40513c63e590b44eea7683339c",
+    "spki_b64": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEKapgNhM45syrlREXFZyR3w/vomP0YdzRqKEqJc+eDMRelvLLidvD2vzv1vIsvos/RICN826OT7TJ+XHhCR8S8A==",
+    "use": "receipt",
+    "not_before": "2026-10-01T00:00:00Z",
+    "not_after": "2026-12-31T00:00:00Z"
+  }
+]

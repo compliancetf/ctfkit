@@ -1,0 +1,37 @@
+[
+  {
+    "index": 0,
+    "id": "s3_acl_private",
+    "digest": "sha256:d35498d4bf1b7d35f7610973652d28c23566772bc6f775dbc04332e94a214f8d"
+  },
+  {
+    "index": 1,
+    "id": "s3_acl_private",
+    "digest": "sha256:d35498d4bf1b7d35f7610973652d28c23566772bc6f775dbc04332e94a214f8d"
+  },
+  {
+    "index": 2,
+    "id": "s3_acl_private",
+    "digest": "sha256:d35498d4bf1b7d35f7610973652d28c23566772bc6f775dbc04332e94a214f8d"
+  },
+  {
+    "index": 3,
+    "id": "s3_acl_private",
+    "digest": "sha256:c59896b7aa77038654b7bfc91d65eb1a64f050965a782cc6c7daa9d5ec385ffc"
+  },
+  {
+    "index": 4,
+    "id": "s3_logging_target",
+    "digest": "sha256:8a519f16a58ea53307418c37e27272958af7f6ca661e3411258cdbb008dd005e"
+  },
+  {
+    "index": 5,
+    "id": "s3_logging_companion",
+    "digest": "sha256:424d090fbdf985d737dfb6b71629b6f53bcfef3c3cef263c94780a57193e6039"
+  },
+  {
+    "index": 6,
+    "id": "rds_keep",
+    "digest": "sha256:60627830cdcd13278facb8f14a9273166f2b97ccf1e92e4e701510b5329b816e"
+  }
+]

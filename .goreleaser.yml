@@ -1,0 +1,218 @@
+# GoReleaser configuration for ctfkit
+version: 2
+
+project_name: ctfkit
+
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+
+builds:
+  - id: ctfkit
+    binary: ctfkit
+    main: ./cmd/ctfkit
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goarm:
+      - "7"
+    ignore:
+      - goos: windows
+        goarch: arm
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - id: ctfkit
+    formats: [tar.gz]
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - LICENSE
+      - README.md
+      # The pages README.md links to; docs/shared and maintainer notes stay out.
+      - docs/install.md
+      - docs/commands.md
+      - docs/configuration.md
+      - docs/analyzers.md
+      - docs/stages.md
+      - docs/governed-apply.md
+      - docs/evidence.md
+      - docs/cff.md
+      - docs/rule-packs.md
+      - docs/threat-model.md
+
+checksum:
+  name_template: "checksums.txt"
+
+# One SPDX SBOM per archive, written by syft (release.yml installs it) and attached to the
+# release next to the archive it describes.
+sboms:
+  - artifacts: archive
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+# Used only when goreleaser creates the release itself (a hand-pushed tag). A release made by
+# release-please already carries its notes, and release.yml sets CTFKIT_RELEASE_NOTES_EXIST.
+changelog:
+  disable: '{{ envOrDefault "CTFKIT_RELEASE_NOTES_EXIST" "false" }}'
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs(\\([^)]*\\))?!?:"
+      - "^test(\\([^)]*\\))?!?:"
+      - "^chore(\\([^)]*\\))?!?:"
+      - "^ci(\\([^)]*\\))?!?:"
+      - "^style(\\([^)]*\\))?!?:"
+      - "^refactor(\\([^)]*\\))?!?:"
+      - "^build(\\([^)]*\\))?!?:"
+      - "Merge pull request"
+      - "Merge branch"
+  groups:
+    - title: Features
+      regexp: "^.*?feat(\\([^)]*\\))?!?:.+$"
+      order: 0
+    - title: "Bug fixes"
+      regexp: "^.*?fix(\\([^)]*\\))?!?:.+$"
+      order: 1
+    - title: "Performance improvements"
+      regexp: "^.*?perf(\\([^)]*\\))?!?:.+$"
+      order: 2
+    - title: Others
+      order: 999
+
+release:
+  github:
+    owner: compliancetf
+    name: ctfkit
+  draft: false
+  prerelease: auto
+  # release-please creates the release with its notes first; goreleaser appends the footer
+  # below and uploads the assets to it.
+  mode: append
+  name_template: "{{.ProjectName}} v{{.Version}}"
+  footer: |
+    ### Installation
+
+    Download the archive for your platform and `checksums.txt` from the assets below, and
+    check the archive with `sha256sum --ignore-missing -c checksums.txt` before unpacking it.
+    `.deb`, `.rpm` and `.apk` packages are attached too, with an SPDX SBOM per archive.
+
+    To check that an archive was built by the release workflow from this tag:
+
+    ```sh
+    gh attestation verify <archive> --repo compliancetf/ctfkit \
+      --signer-workflow compliancetf/ctfkit/.github/workflows/release.yml \
+      --source-ref refs/tags/{{ .Tag }}
+    ```
+
+# A cask, not a formula: `brews` is deprecated, and the formulas it generated were
+# hand-rolled wrappers around a pre-built binary, which is what a cask is actually for.
+# `directory` is omitted because casks default to `Casks`.
+homebrew_casks:
+  - name: ctfkit
+    binaries:
+      - ctfkit
+    homepage: https://github.com/compliancetf/ctfkit
+    description: "Run the same Terraform and OpenTofu checks across your pipelines"
+    repository:
+      owner: compliancetf
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    # The release binaries are not signed or notarized, so macOS quarantines them and
+    # the first run is blocked. Homebrew strips the attribute on install instead.
+    # Remove this once the darwin builds are signed and notarized.
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/ctfkit"]
+          end
+
+dockers:
+  - image_templates:
+      - "ghcr.io/compliancetf/{{.ProjectName}}:{{ .Version }}-amd64"
+      # Empty on a prerelease tag, which goreleaser skips: a preview never moves latest.
+      - "{{ if not .Prerelease }}ghcr.io/compliancetf/{{.ProjectName}}:latest-amd64{{ end }}"
+    use: buildx
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source=https://github.com/compliancetf/ctfkit"
+      - "--label=org.opencontainers.image.licenses=Apache-2.0"
+
+  - image_templates:
+      - "ghcr.io/compliancetf/{{.ProjectName}}:{{ .Version }}-arm64"
+      # Empty on a prerelease tag, which goreleaser skips: a preview never moves latest.
+      - "{{ if not .Prerelease }}ghcr.io/compliancetf/{{.ProjectName}}:latest-arm64{{ end }}"
+    use: buildx
+    goarch: arm64
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source=https://github.com/compliancetf/ctfkit"
+      - "--label=org.opencontainers.image.licenses=Apache-2.0"
+
+docker_manifests:
+  - name_template: "ghcr.io/compliancetf/{{.ProjectName}}:{{ .Version }}"
+    image_templates:
+      - "ghcr.io/compliancetf/{{.ProjectName}}:{{ .Version }}-amd64"
+      - "ghcr.io/compliancetf/{{.ProjectName}}:{{ .Version }}-arm64"
+
+  - name_template: "ghcr.io/compliancetf/{{.ProjectName}}:latest"
+    # auto: no latest manifest for a prerelease tag such as v0.3.0-preview.1.
+    skip_push: auto
+    image_templates:
+      - "ghcr.io/compliancetf/{{.ProjectName}}:latest-amd64"
+      - "ghcr.io/compliancetf/{{.ProjectName}}:latest-arm64"
+
+nfpms:
+  - id: packages
+    package_name: ctfkit
+    homepage: https://github.com/compliancetf/ctfkit
+    maintainer: Anton Babenko <anton@antonbabenko.com>
+    description: "ctfkit by compliance.tf is an Apache-2.0 analyzer runtime that turns Terraform and OpenTofu configuration, plans and module manifests into consistent SARIF findings and evidence receipts."
+    license: "Apache-2.0"
+    formats:
+      - deb
+      - rpm
+      - apk
+    bindir: /usr/bin
+
+announce:
+  skip: "{{gt .Patch 0}}"

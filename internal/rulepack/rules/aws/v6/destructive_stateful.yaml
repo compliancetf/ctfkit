@@ -1,0 +1,48 @@
+# Class 5: a change deletes or replaces a stateful resource, or removes its
+# deletion safeguard. kinds names the word a message uses for each type.
+# replaced comes before deleted: a replacement is reported once, as a
+# replacement, and either one ends the class for that resource.
+class: destructive_stateful
+rules:
+  - kinds: &stateful
+      aws_db_instance: instance
+      aws_rds_cluster: cluster
+      aws_dynamodb_table: table
+      aws_s3_bucket: bucket
+      aws_efs_file_system: file system
+      aws_elasticache_cluster: cluster
+      aws_elasticache_replication_group: replication group
+      aws_redshift_cluster: cluster
+      aws_docdb_cluster: cluster
+      aws_neptune_cluster: cluster
+      aws_opensearch_domain: domain
+      aws_ebs_volume: volume
+      aws_fsx_lustre_file_system: file system
+      aws_fsx_windows_file_system: file system
+      aws_msk_cluster: cluster
+      aws_kms_key: key
+      aws_secretsmanager_secret: secret
+    predicate: replaced
+    level: error
+  - kinds: *stateful
+    predicate: deleted
+    level: error
+
+  # The deletion safeguard of each stateful type that has one in v6. The
+  # others (EBS, EFS, ElastiCache, FSx, KMS, MSK, OpenSearch, Redshift, S3,
+  # Secrets Manager) have no deletion-protection attribute, and none of the
+  # stateful types has skip_destroy. The weekly refresh tracks every
+  # deletion_protection* attribute, so one that appears later arrives as a
+  # draft rule in its pull request.
+  - types: [aws_db_instance, aws_docdb_cluster, aws_neptune_cluster, aws_rds_cluster]
+    attribute: deletion_protection
+    predicate: turned_off
+    level: warning
+  - types: [aws_dynamodb_table]
+    attribute: deletion_protection_enabled
+    predicate: turned_off
+    level: warning
+  - types: [aws_db_instance, aws_rds_cluster]
+    attribute: skip_final_snapshot
+    predicate: turned_on
+    level: warning

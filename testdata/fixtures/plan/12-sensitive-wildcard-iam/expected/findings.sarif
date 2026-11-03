@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.risk.sensitive_change_wildcard_iam",
+              "shortDescription": {
+                "text": "An IAM policy allows wildcard actions on every resource with no condition"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.risk.sensitive_change_wildcard_iam",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "aws_iam_policy.admin allows every action on every resource with no Condition in policy"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 15
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_iam_policy.admin",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "414f2a3b281c788766e3255a8836d465fbdc18f3d6f934c5f039a0920f0879d6"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            },
+            "ctf.attributes": [
+              "policy"
+            ]
+          }
+        },
+        {
+          "ruleId": "ctf.risk.sensitive_change_wildcard_iam",
+          "level": "warning",
+          "kind": "fail",
+          "message": {
+            "text": "aws_iam_policy.s3_admin allows a service-wide action wildcard on every resource with no Condition in policy"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 18,
+                  "endLine": 29
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_iam_policy.s3_admin",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "9d27c62709103a8946265850da5288eda745a05591defbcd35628d0387795f7e"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            },
+            "ctf.attributes": [
+              "policy"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

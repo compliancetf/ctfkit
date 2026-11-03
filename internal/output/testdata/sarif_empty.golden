@@ -1,0 +1,74 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf-001",
+              "name": "non-compliant-module-source",
+              "shortDescription": {
+                "text": "Module source is not from an allowed compliance.tf endpoint"
+              },
+              "fullDescription": {
+                "text": "Terraform modules must use approved compliance.tf endpoints to ensure compliance controls are enforced"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/compliancetf/ctfkit#ctf-001"
+            },
+            {
+              "id": "ctf-002",
+              "name": "control-bypass-query-parameter",
+              "shortDescription": {
+                "text": "Module source contains control bypass attempt via query parameters"
+              },
+              "fullDescription": {
+                "text": "Query parameters attempting to disable or bypass compliance controls are not allowed"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/compliancetf/ctfkit#ctf-002"
+            },
+            {
+              "id": "ctf-003",
+              "name": "control-bypass-variable",
+              "shortDescription": {
+                "text": "Module variable potentially disables compliance controls"
+              },
+              "fullDescription": {
+                "text": "Module variables with names suggesting control bypass (disable_, skip_, etc.) are flagged for review"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "helpUri": "https://github.com/compliancetf/ctfkit#ctf-003"
+            },
+            {
+              "id": "ctf-004",
+              "name": "disallowed-resource-type",
+              "shortDescription": {
+                "text": "Resource type is not in the allowed list"
+              },
+              "fullDescription": {
+                "text": "Only specific resource types are allowed according to the configuration"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              },
+              "helpUri": "https://github.com/compliancetf/ctfkit#ctf-004"
+            }
+          ]
+        }
+      },
+      "results": []
+    }
+  ]
+}

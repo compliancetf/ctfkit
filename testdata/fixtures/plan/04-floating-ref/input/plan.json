@@ -1,0 +1,383 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.12.6",
+  "planned_values": {
+    "root_module": {
+      "child_modules": [
+        {
+          "resources": [
+            {
+              "address": "module.iam_policy.aws_iam_policy.policy[0]",
+              "mode": "managed",
+              "type": "aws_iam_policy",
+              "name": "policy",
+              "index": 0,
+              "provider_name": "registry.opentofu.org/hashicorp/aws",
+              "schema_version": 0,
+              "values": {
+                "delay_after_policy_creation_in_ms": null,
+                "description": null,
+                "name": "bobthecorp-floating-ref",
+                "path": "/",
+                "policy": "{\"Statement\":[{\"Action\":\"s3:GetObject\",\"Effect\":\"Allow\",\"Resource\":\"arn:aws:s3:::bobthecorp-floating-ref/*\"}],\"Version\":\"2012-10-17\"}",
+                "tags": null
+              },
+              "sensitive_values": {
+                "tags_all": {}
+              },
+              "identity": {
+                "arn": null
+              },
+              "identity_schema_version": 0
+            }
+          ],
+          "address": "module.iam_policy"
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "module.iam_policy.aws_iam_policy.policy[0]",
+      "module_address": "module.iam_policy",
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "policy",
+      "index": 0,
+      "provider_name": "registry.opentofu.org/hashicorp/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "delay_after_policy_creation_in_ms": null,
+          "description": null,
+          "name": "bobthecorp-floating-ref",
+          "path": "/",
+          "policy": "{\"Statement\":[{\"Action\":\"s3:GetObject\",\"Effect\":\"Allow\",\"Resource\":\"arn:aws:s3:::bobthecorp-floating-ref/*\"}],\"Version\":\"2012-10-17\"}",
+          "tags": null
+        },
+        "after_unknown": {
+          "arn": true,
+          "attachment_count": true,
+          "id": true,
+          "name_prefix": true,
+          "policy_id": true,
+          "tags_all": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "tags_all": {}
+        },
+        "after_identity": {
+          "arn": null
+        }
+      }
+    }
+  ],
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.12.6",
+    "values": {
+      "root_module": {
+        "resources": [
+          {
+            "address": "data.aws_iam_policy_document.readonly",
+            "mode": "data",
+            "type": "aws_iam_policy_document",
+            "name": "readonly",
+            "provider_name": "registry.opentofu.org/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "id": "1808933708",
+              "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Effect\": \"Allow\",\n      \"Action\": \"s3:GetObject\",\n      \"Resource\": \"arn:aws:s3:::bobthecorp-floating-ref/*\"\n    }\n  ]\n}",
+              "minified_json": "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":\"s3:GetObject\",\"Resource\":\"arn:aws:s3:::bobthecorp-floating-ref/*\"}]}",
+              "override_json": null,
+              "override_policy_documents": null,
+              "policy_id": null,
+              "source_json": null,
+              "source_policy_documents": null,
+              "statement": [
+                {
+                  "actions": [
+                    "s3:GetObject"
+                  ],
+                  "condition": [],
+                  "effect": "Allow",
+                  "not_actions": [],
+                  "not_principals": [],
+                  "not_resources": [],
+                  "principals": [],
+                  "resources": [
+                    "arn:aws:s3:::bobthecorp-floating-ref/*"
+                  ],
+                  "sid": ""
+                }
+              ],
+              "version": "2012-10-17"
+            },
+            "sensitive_values": {
+              "statement": [
+                {
+                  "actions": [
+                    false
+                  ],
+                  "condition": [],
+                  "not_actions": [],
+                  "not_principals": [],
+                  "not_resources": [],
+                  "principals": [],
+                  "resources": [
+                    false
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.opentofu.org/hashicorp/aws",
+        "version_constraint": "~> 6.0",
+        "expressions": {
+          "access_key": {
+            "constant_value": "mock_access_key"
+          },
+          "region": {
+            "constant_value": "eu-west-1"
+          },
+          "secret_key": {
+            "constant_value": "mock_secret_key"
+          },
+          "skip_credentials_validation": {
+            "constant_value": true
+          },
+          "skip_metadata_api_check": {
+            "constant_value": true
+          },
+          "skip_region_validation": {
+            "constant_value": true
+          },
+          "skip_requesting_account_id": {
+            "constant_value": true
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "data.aws_iam_policy_document.readonly",
+          "mode": "data",
+          "type": "aws_iam_policy_document",
+          "name": "readonly",
+          "provider_config_key": "aws",
+          "expressions": {
+            "statement": [
+              {
+                "actions": {
+                  "constant_value": [
+                    "s3:GetObject"
+                  ]
+                },
+                "resources": {
+                  "constant_value": [
+                    "arn:aws:s3:::bobthecorp-floating-ref/*"
+                  ]
+                }
+              }
+            ]
+          },
+          "schema_version": 0
+        }
+      ],
+      "module_calls": {
+        "iam_policy": {
+          "source": "git::https://github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-policy",
+          "expressions": {
+            "name": {
+              "constant_value": "bobthecorp-floating-ref"
+            },
+            "policy": {
+              "references": [
+                "data.aws_iam_policy_document.readonly.json",
+                "data.aws_iam_policy_document.readonly"
+              ]
+            }
+          },
+          "module": {
+            "outputs": {
+              "arn": {
+                "expression": {
+                  "references": [
+                    "aws_iam_policy.policy[0].arn",
+                    "aws_iam_policy.policy[0]",
+                    "aws_iam_policy.policy"
+                  ]
+                },
+                "description": "The ARN assigned by AWS to this policy"
+              },
+              "id": {
+                "expression": {
+                  "references": [
+                    "aws_iam_policy.policy[0].id",
+                    "aws_iam_policy.policy[0]",
+                    "aws_iam_policy.policy"
+                  ]
+                },
+                "description": "The policy's ID"
+              },
+              "name": {
+                "expression": {
+                  "references": [
+                    "aws_iam_policy.policy[0].name",
+                    "aws_iam_policy.policy[0]",
+                    "aws_iam_policy.policy"
+                  ]
+                },
+                "description": "The name of the policy"
+              },
+              "policy": {
+                "expression": {
+                  "references": [
+                    "aws_iam_policy.policy[0].policy",
+                    "aws_iam_policy.policy[0]",
+                    "aws_iam_policy.policy"
+                  ]
+                },
+                "description": "The policy document"
+              }
+            },
+            "resources": [
+              {
+                "address": "aws_iam_policy.policy",
+                "mode": "managed",
+                "type": "aws_iam_policy",
+                "name": "policy",
+                "provider_config_key": "aws",
+                "expressions": {
+                  "description": {
+                    "references": [
+                      "var.description"
+                    ]
+                  },
+                  "name": {
+                    "references": [
+                      "var.name"
+                    ]
+                  },
+                  "name_prefix": {
+                    "references": [
+                      "var.name_prefix"
+                    ]
+                  },
+                  "path": {
+                    "references": [
+                      "var.path"
+                    ]
+                  },
+                  "policy": {
+                    "references": [
+                      "var.policy"
+                    ]
+                  },
+                  "tags": {
+                    "references": [
+                      "var.tags"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": [
+                    "var.create"
+                  ]
+                }
+              }
+            ],
+            "variables": {
+              "create": {
+                "type": "bool",
+                "default": true,
+                "description": "Whether to create the IAM policy"
+              },
+              "description": {
+                "type": "string",
+                "default": null,
+                "description": "The description of the policy"
+              },
+              "name": {
+                "type": "string",
+                "default": null,
+                "description": "The name of the policy"
+              },
+              "name_prefix": {
+                "type": "string",
+                "default": null,
+                "description": "IAM policy name prefix"
+              },
+              "path": {
+                "type": "string",
+                "default": null,
+                "description": "The path of the policy in IAM"
+              },
+              "policy": {
+                "type": "string",
+                "default": "",
+                "description": "The path of the policy in IAM (tpl file)"
+              },
+              "tags": {
+                "type": [
+                  "map",
+                  "string"
+                ],
+                "default": {},
+                "description": "A map of tags to add to all resources."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "relevant_attributes": [
+    {
+      "resource": "data.aws_iam_policy_document.readonly",
+      "attribute": [
+        "json"
+      ]
+    },
+    {
+      "resource": "module.iam_policy.aws_iam_policy.policy[0]",
+      "attribute": [
+        "policy"
+      ]
+    },
+    {
+      "resource": "module.iam_policy.aws_iam_policy.policy[0]",
+      "attribute": [
+        "arn"
+      ]
+    },
+    {
+      "resource": "module.iam_policy.aws_iam_policy.policy[0]",
+      "attribute": [
+        "name"
+      ]
+    },
+    {
+      "resource": "module.iam_policy.aws_iam_policy.policy[0]",
+      "attribute": [
+        "id"
+      ]
+    }
+  ],
+  "timestamp": "2026-09-20T00:00:00Z",
+  "errored": false
+}

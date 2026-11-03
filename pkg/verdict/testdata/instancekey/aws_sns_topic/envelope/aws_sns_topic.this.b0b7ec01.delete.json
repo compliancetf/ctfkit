@@ -1,0 +1,1 @@
+{"v":1,"ctf":{"op":"delete","prior_identity":{"arn":"arn:aws:sns:us-east-1:111111111111:bobthecorp-alerts-old"},"prior_identity_kind":"identity"}}

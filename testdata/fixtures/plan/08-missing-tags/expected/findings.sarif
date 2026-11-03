@@ -1,0 +1,154 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.coverage.module_source",
+              "shortDescription": {
+                "text": "Module sources outside compliance.tf endpoints, and raw resources a compliance.tf module covers"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "ctf.policy.tagging",
+              "shortDescription": {
+                "text": "A resource is missing tags the organisation requires"
+              },
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.coverage.module_source",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Raw aws_sqs_queue where the compliance.tf module soc2.compliance.tf/terraform-aws-modules/sqs/aws exists"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 3
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_sqs_queue.untagged",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "b6c184538eaa198077e13cdd9ce271a2417bb13866259f7420f2bb85e7335e64"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [
+              "sqs_queue_dead_letter_queue_configured",
+              "sqs_queue_encrypted_at_rest",
+              "sqs_queue_encrypted_with_kms_cmk"
+            ],
+            "ctf.frameworks": [
+              {
+                "id": "aws_well_architected_v10",
+                "clauses": [
+                  "Data protection"
+                ]
+              },
+              {
+                "id": "eu_gmp_annex_11",
+                "clauses": [
+                  "7.1"
+                ]
+              },
+              {
+                "id": "iso_27001_2022",
+                "clauses": [
+                  "A.8.24"
+                ]
+              },
+              {
+                "id": "nist_csf_v2",
+                "clauses": [
+                  "PR.DS-01"
+                ]
+              }
+            ],
+            "ctf.preventive": true,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            },
+            "ctf.remediation": {
+              "moduleSource": "soc2.compliance.tf/terraform-aws-modules/sqs/aws",
+              "version": "~> 4.0"
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.policy.tagging",
+          "level": "warning",
+          "kind": "fail",
+          "message": {
+            "text": "aws_sqs_queue.untagged is missing required tags Environment, Owner"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 1,
+                  "endLine": 3
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_sqs_queue.untagged",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "62b152128c31d605a21f0f53f4674639d6df2f6605b02d022541f32dd705de11"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

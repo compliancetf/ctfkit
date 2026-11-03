@@ -1,0 +1,60 @@
+{
+  "format": "ctfkit.migrate-plan/1",
+  "created_at": "2026-10-20T09:00:00Z",
+  "tf_bin": "/usr/local/bin/terraform",
+  "tf_bin_sha256": "ca978112ca1bbdcafac231b39a23dc4da786eff8147c4e72b9807785afee48bb",
+  "tf_version": "1.16.6",
+  "providers": [
+    {
+      "type": "aws",
+      "from": "registry.terraform.io/hashicorp/aws",
+      "to": "registry.compliance.tf/compliancetf/aws",
+      "upstream_version": "6.67.0",
+      "wrapper_version": "6.67.0",
+      "root_constraint": "~> 6.67",
+      "module_constraint": ">= 6.0.0"
+    }
+  ],
+  "platforms": [
+    "darwin_arm64",
+    "linux_amd64"
+  ],
+  "proof": "no_op",
+  "units": [
+    {
+      "id": ".",
+      "kind": "cli",
+      "dir": ".",
+      "backend": "local",
+      "backend_env": [],
+      "local_paths": {
+        "state_path": "/home/bobthecorp/infra/terraform.tfstate",
+        "workspace_dir": "/home/bobthecorp/infra/terraform.tfstate.d"
+      },
+      "workspaces": [
+        "default"
+      ]
+    }
+  ],
+  "edits": [
+    {
+      "file": "main.tf",
+      "sha256_before": "7a164b612c9fc66097be723d74eb75cb8ae1c2765294a9f86499993c1b45b491",
+      "sha256_after": "461ef4ab861c96d9959b03a6155e244c5a7d54a6e9740c8f6a8bd7268499e833",
+      "reason": "required_providers aws source rewritten to registry.compliance.tf/compliancetf/aws, version ~> 6.0 kept (root); required_providers awsprod source rewritten to registry.compliance.tf/compliancetf/aws, version ~> 6.67 added (root)"
+    },
+    {
+      "file": "modules/replica/main.tf",
+      "sha256_before": "8000b4d6fb5d3f4f7b310312786739f450cf32b30e108457905050b8fff3861b",
+      "sha256_after": "77e99d1747df7a998b607ded231b24b633fe12ae112b02ccff2203b91d796467",
+      "reason": "required_providers aws source rewritten to registry.compliance.tf/compliancetf/aws, version >= 5.0 kept (module)"
+    },
+    {
+      "file": "versions_override.tf",
+      "sha256_before": "78a680e453c04fd20fb0b8c165b602e476483075bc1409a119db0fe00251355c",
+      "sha256_after": "9773e79bd55c7d22397179d5acd2a468fd31499f56d751ad5cdb72e2e46c9591",
+      "reason": "required_providers aws source rewritten to registry.compliance.tf/compliancetf/aws, version ~> 6.12 kept (root)"
+    }
+  ],
+  "blocked": []
+}

@@ -1,0 +1,15 @@
+{
+  "now": "2026-10-19T12:00:00Z",
+  "use": "verdict",
+  "keys": [
+    {
+      "kid": "sha256:da5d9b9c4ca521b8deff6babebdca0e39c371adcb3e13a423ab97520904acc3f",
+      "spki_b64": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE6bFWq2kKMOXNt5WIjuz6/r7oZis7VRPv4UtBsY30le2lGgGY1GEtdZpIxVhevtABQW+j7gbrwI3cXa8WHniQ5Q==",
+      "use": "verdict",
+      "not_before": "2026-10-01T00:00:00Z",
+      "not_after": "2026-12-31T00:00:00Z"
+    }
+  ],
+  "signed_sha256": "a1275e3cedd850ae80cf8bf6f2b2efca80e1d90c4e6ac68e7d74f81785a2b82e",
+  "error": ""
+}

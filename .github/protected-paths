@@ -1,0 +1,68 @@
+# Protected paths (mirrors the terraform-provider-aws protected-paths gate).
+# A PR touching any path below needs the owner's approval of its head and
+# loses auto-merge, unless the owner below authored it; the owner-approval
+# commit status stays pending until then (.github/workflows/protected-paths.yml).
+# Grammar, enforced by scripts/protected-paths.sh: one rule per line,
+# "/path @antonbabenko"; no wildcards. A rule covers the path itself and
+# everything below it (no trailing slash, so a symlink or submodule at a
+# directory path is covered too). The script matches case-insensitively.
+# Most packages below do not exist yet; the rule guards them from creation.
+
+# CI, release, this gate
+/.github @antonbabenko
+/CODEOWNERS @antonbabenko
+/docs/CODEOWNERS @antonbabenko
+/scripts/protected-paths.sh @antonbabenko
+/workflow_pins_test.go @antonbabenko
+
+# Build and release inputs
+/Makefile @antonbabenko
+/.goreleaser.yml @antonbabenko
+/.goreleaser.yaml @antonbabenko
+/Dockerfile @antonbabenko
+/mise.toml @antonbabenko
+/go.work @antonbabenko
+/go.work.sum @antonbabenko
+/.golangci.yml @antonbabenko
+/.golangci.yaml @antonbabenko
+/.golangci.toml @antonbabenko
+/.golangci.json @antonbabenko
+/release-please-config.json @antonbabenko
+/.release-please-manifest.json @antonbabenko
+/.pre-commit-config.yaml @antonbabenko
+/vendor @antonbabenko
+
+# Verdict: canonicalizer, instance_key, digests, input verifier, decision resolver
+/pkg/verdict @antonbabenko
+
+# Association
+/internal/graph @antonbabenko
+
+# Terraform exec: owned dirs, sealed binary and providers, env and argv tables
+/internal/tfexec @antonbabenko
+
+# Signing, evidence record, chain, run manifest, sinks, break-glass consume
+/internal/sign @antonbabenko
+/internal/evidence @antonbabenko
+/internal/sink @antonbabenko
+/internal/breakglass @antonbabenko
+/internal/render/receipt @antonbabenko
+
+# State restore
+/internal/migrate/wal.go @antonbabenko
+/internal/migrate/journal.go @antonbabenko
+/internal/migrate/rebind.go @antonbabenko
+/internal/migrate/provenance.go @antonbabenko
+
+# Evidence and verdict schemas
+/schema/receipt-1.schema.json @antonbabenko
+/schema/evidence-record-1.schema.json @antonbabenko
+/schema/verdict-1.schema.json @antonbabenko
+/schema/baseline-1.schema.json @antonbabenko
+/schema/override-1.schema.json @antonbabenko
+/schema/consume-receipt-1.schema.json @antonbabenko
+
+# Golden fixtures of the paths above that live outside them
+/schema/testdata/provider-evidence @antonbabenko
+/testdata/fixtures/evidence @antonbabenko
+/testdata/fixtures/graph @antonbabenko

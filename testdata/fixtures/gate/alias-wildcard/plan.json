@@ -1,0 +1,104 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.16.3",
+  "resource_changes": [
+    {
+      "address": "aws_s3_bucket.a",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "a",
+      "provider_name": "registry.compliance.tf/compliancetf/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "bobthecorp-a",
+          "region": "eu-west-1"
+        },
+        "after_unknown": {
+          "id": true
+        }
+      }
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.a",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "a",
+      "provider_name": "registry.compliance.tf/compliancetf/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "arn:aws:s3:::bobthecorp-a",
+          "region": "eu-west-1"
+        },
+        "after_unknown": {
+          "id": true
+        }
+      }
+    },
+    {
+      "address": "aws_s3_bucket.w",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "w",
+      "provider_name": "registry.compliance.tf/compliancetf/aws",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "bucket": "bobthecorp-*",
+          "region": "eu-west-1"
+        },
+        "after_unknown": {
+          "id": true
+        }
+      }
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.compliance.tf/compliancetf/aws",
+        "expressions": {
+          "region": {
+            "constant_value": "eu-west-1"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_s3_bucket.a",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "a",
+          "provider_config_key": "aws"
+        },
+        {
+          "address": "aws_s3_bucket_public_access_block.a",
+          "mode": "managed",
+          "type": "aws_s3_bucket_public_access_block",
+          "name": "a",
+          "provider_config_key": "aws"
+        },
+        {
+          "address": "aws_s3_bucket.w",
+          "mode": "managed",
+          "type": "aws_s3_bucket",
+          "name": "w",
+          "provider_config_key": "aws"
+        }
+      ]
+    }
+  }
+}

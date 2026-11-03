@@ -1,0 +1,121 @@
+{
+  "format": "compliancetf.verdict/v1",
+  "org_id": "bobthecorp",
+  "workspace": "default",
+  "environment": "prod",
+  "run_id": "run-fixture",
+  "caller": {
+    "account_id": "",
+    "role_arn": "",
+    "region": ""
+  },
+  "plan_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "provenance": {},
+  "plan_format_version": "1.2",
+  "profile_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "bundle_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "content_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "floor_epoch": "7",
+  "provider_versions": {
+    "compliancetf/aws": "2.0.0",
+    "hashicorp/aws": "6.0.0"
+  },
+  "terraform_version": "1.16.3",
+  "nonce": "AAAAAAAAAAAAAAAAAAAAAA",
+  "issued_at": "2026-10-19T12:00:00Z",
+  "expires_at": "2026-10-20T12:00:00Z",
+  "instance_key_check": "0000000000000000000000000000000000000000000000000000000000000000",
+  "instances": [
+    {
+      "address": "aws_s3_bucket.logs",
+      "type": "aws_s3_bucket",
+      "action": "update",
+      "instance_key": "sha256:8758805a8ce46bd417c216305c88a67a4ce2943beed88c2675a9e0100b0c5b35",
+      "prior_identity_kind": "id",
+      "refreshed": "true",
+      "unknown_paths": [],
+      "decisions": [
+        {
+          "control": "s3_bucket_named",
+          "version": "1.0.0",
+          "result": "provisional",
+          "action": "deny"
+        },
+        {
+          "control": "s3_bucket_public_access_block_present",
+          "version": "1.0.0",
+          "result": "pass",
+          "action": "deny"
+        }
+      ],
+      "not_evaluable": [],
+      "exceptions": [
+        "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+        "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+      ],
+      "baselines": [],
+      "break_glass": []
+    },
+    {
+      "address": "aws_s3_bucket_public_access_block.logs",
+      "type": "aws_s3_bucket_public_access_block",
+      "action": "no-op",
+      "prior_identity_kind": "id",
+      "refreshed": "true",
+      "unknown_paths": [],
+      "decisions": [],
+      "not_evaluable": [],
+      "exceptions": [],
+      "baselines": [],
+      "break_glass": []
+    },
+    {
+      "address": "aws_s3_bucket.old",
+      "type": "aws_s3_bucket",
+      "action": "delete",
+      "delete_key": "sha256:d97a20f528cbe035faf3914c6629bbeaf56d5be232164bad0e51c828a0d9135c",
+      "prior_identity_kind": "id",
+      "refreshed": "true",
+      "unknown_paths": [],
+      "decisions": [],
+      "delete_decisions": [
+        {
+          "control": "s3_bucket_delete_guard",
+          "version": "1.0.0",
+          "result": "provisional",
+          "action": "deny"
+        }
+      ],
+      "not_evaluable": [],
+      "exceptions": [
+        "sha256:5555555555555555555555555555555555555555555555555555555555555555"
+      ],
+      "baselines": [],
+      "break_glass": []
+    }
+  ],
+  "exceptions": [
+    {
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "source": "grant",
+      "expires": "2026-10-25T00:00:00Z"
+    },
+    {
+      "digest": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+      "source": "self_service",
+      "expires": "2026-10-24T00:00:00Z"
+    },
+    {
+      "digest": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "source": "grant",
+      "expires": "2026-10-25T00:00:00Z"
+    }
+  ],
+  "baselines": [],
+  "break_glass_receipts": [],
+  "signature": {
+    "kid": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "alg": "ES256",
+    "value": "AA"
+  }
+}

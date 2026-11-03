@@ -1,0 +1,41 @@
+{
+  "//": "Array forms and comment properties, which the tf-json case does not use.",
+  "resource": [
+    {
+      "aws_s3_bucket": [
+        {
+          "logs": [
+            {
+              "bucket": "bobthecorp-logs"
+            }
+          ]
+        }
+      ],
+      "aws_sqs_queue": [
+        {
+          "jobs": [
+            {
+              "//": "a queue",
+              "name": "bobthecorp-jobs"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "module": [
+    {
+      "store": [
+        {
+          "source": "./modules/store"
+        }
+      ],
+      "bucket": [
+        {
+          "source": "bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws",
+          "version": "~> 5.0"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,833 @@
+name: ctfkit report
+description: >-
+  Run ctfkit by compliance.tf over an initialized Terraform or OpenTofu root and publish its
+  findings, its evidence receipt and a markdown summary.
+author: compliance.tf
+
+branding:
+  icon: check-square
+  color: blue
+
+inputs:
+  command:
+    description: >-
+      Which ctfkit command to run. report (default) reads the module cache after the caller's init.
+      scan reads the caller's plan JSON after init, plan and show -json. plan, sign and apply
+      (preview) run ctfkit gate plan, ctfkit gate sign and ctfkit apply on the artifact set in
+      artifacts, one per job; see verdict-workflow-template.yml.
+    required: false
+    default: report
+  path:
+    description: >-
+      Module root or example directory to report on. Passed to ctfkit as --path. Used by
+      command: report only.
+    required: false
+    default: "."
+  tests-json:
+    description: >-
+      Output of tofu test -json or terraform test -json for the same root, written by an earlier
+      step. ctfkit never runs tofu or terraform itself, so the caller produces this file. Passed to
+      ctfkit as --tests-json when set; imported test results then reach the receipt and the
+      markdown section. Used by command: report only.
+    required: false
+    default: ""
+  plan:
+    description: >-
+      Plan JSON from terraform show -json or tofu show -json. Required when command is scan, unless
+      stage is pre_plan, which reads configuration only and refuses a plan. Ignored by report.
+    required: false
+    default: ""
+  chdir:
+    description: >-
+      Terraform configuration directory, passed to ctfkit as --chdir: the directory the plan was
+      made from, or the directory a pre_plan scan reads (default the checkout root). Scan
+      reads configuration from this directory only, rather than from the whole checkout. Findings
+      in the sarif output are relative to it; the copy uploaded to the Security tab is made
+      relative to the repository again. A path relative to the checkout, or an absolute path
+      inside the workspace; an absolute path elsewhere is refused. Used by command: scan. For plan,
+      sign and apply it is the configuration directory passed as --dir (default the checkout root).
+    required: false
+    default: ""
+  artifacts:
+    description: >-
+      Artifact set directory. plan creates it (it must not exist); sign and apply read the set a
+      download-artifact step put there, after this action restores the 0700 directory and 0600 file
+      modes the artifact transfer drops. ctfkit checks every file against the digests in
+      candidate.json itself. Required for plan, sign and apply.
+    required: false
+    default: ""
+  workspace:
+    description: Terraform workspace of the run, passed as --workspace. plan, sign and apply only.
+    required: false
+    default: ""
+  environment:
+    description: Environment the candidate is for, passed as --environment. plan, sign and apply only.
+    required: false
+    default: ""
+  tf-bin:
+    description: >-
+      Absolute path of the terraform or tofu binary, passed as --tf-bin. Every job must install
+      the same binary: ctfkit records its SHA-256 at plan and refuses another one later. Install it
+      without a wrapper script. plan, sign and apply only.
+    required: false
+    default: ""
+  org:
+    description: Org id the profile and bundles must name, passed as --org. plan, sign and apply only.
+    required: false
+    default: ""
+  profile:
+    description: >-
+      Signed org profile (DSSE envelope), passed as --profile. It is signed, so it may be committed
+      or written to a file from a secret by an earlier step. plan, sign and apply only.
+    required: false
+    default: ""
+  floor:
+    description: Signed floor statement (DSSE envelope), passed as --floor. plan, sign and apply only.
+    required: false
+    default: ""
+  bundle-dir:
+    description: >-
+      Directory holding one directory per signed bundle, passed as --bundle-dir. plan, sign and
+      apply only.
+    required: false
+    default: ""
+  signer:
+    description: >-
+      Verdict signer URI, passed to ctfkit gate sign as --signer, for example awskms:<key arn>. The
+      awskms signer reads the default AWS credential chain, so assume the role with OIDC in an
+      earlier step; no key is stored in the workflow. sign only.
+    required: false
+    default: ""
+  version:
+    description: >-
+      ctfkit release to install, with or without the leading v (for example v0.2.0). The archive is
+      downloaded from that exact release tag and verified against the release checksums file before
+      it is unpacked. There is no default: pin the version you reviewed.
+    required: true
+  sha256:
+    description: >-
+      SHA-256 of the release archive for this runner, as 64 hex digits: for example the
+      ctfkit_<version>_Linux_x86_64.tar.gz line of checksums.txt, taken from the release you
+      reviewed. When set, the downloaded archive must match it or the step fails. The release
+      checksums file comes from the same release and token as the archive, so on its own it proves
+      the download is intact, not who published it; this pin does not depend on the release at all.
+      A matrix over runner architectures needs one pin per archive. Empty (the default) skips it.
+    required: false
+    default: ""
+  verify-attestation:
+    description: >-
+      Verify the archive against the GitHub build provenance attestation of its release with gh
+      attestation verify, bound to the release workflow of <repository> and to the requested tag,
+      and fail the step when it does not verify. Needs a gh whose attestation verify has
+      --signer-workflow and --source-ref, and a release that carries an attestation; a release
+      without one fails, so this is off by default. One of true, false.
+    required: false
+    default: "false"
+  repository:
+    description: >-
+      Repository whose release holds the ctfkit archive and its checksums file, as owner/name.
+      Point it at a private copy of ctfkit together with a github-token that can read it. The
+      default is the repository .goreleaser.yml publishes to.
+    required: false
+    default: compliancetf/ctfkit
+  github-token:
+    description: >-
+      Token for the release download. The default job token reads public releases and the releases
+      of the repository the workflow runs in; a permissions block that omits contents: read takes
+      that away. The default repository, compliancetf/ctfkit, is public, so the default token reads
+      it; for a private copy named in repository, pass a token with Contents: read on it.
+    required: false
+    default: ${{ github.token }}
+  fail-on:
+    description: >-
+      Lowest finding level that fails this step. One of error, warning, note, never. Shadow-mode
+      rollouts start at never. Always passed to ctfkit report, scan and gate sign, so a
+      repository's own settings file cannot lower it; gate sign takes error, warning or note.
+    required: false
+    default: error
+  config:
+    description: >-
+      ctfkit settings file. Defaults to the file bundled with this action, never one discovered in
+      the checkout, so the analyzed repository cannot change the settings the workflow asked for.
+    required: false
+    default: ""
+  exceptions:
+    description: >-
+      Exception registry. Defaults to the empty registry bundled with this action, never one
+      discovered in the checkout, so the analyzed repository cannot grant itself an exception.
+    required: false
+    default: ""
+  catalog:
+    description: >-
+      Control catalog. The default, the literal embedded, pins the release catalog compiled into the
+      binary and ignores any catalog on the runner, so control ids and remediation module sources
+      always resolve. A path overrides it and replaces that catalog wholesale, so only point this at
+      a catalog you maintain. Never discovered from the checkout.
+    required: false
+    default: embedded
+  sarif:
+    description: >-
+      Upload the SARIF findings to the GitHub Security tab. The upload runs even when ctfkit
+      reported findings, before the exit code is re-applied.
+    required: false
+    default: "true"
+  pr-comment:
+    description: >-
+      On a pull_request or pull_request_target event, keep one comment on the pull request with the
+      markdown this action writes to the job summary, updated in place on every run. The comment is
+      keyed by command and directory, so matrix jobs over several roots each keep their own. Needs
+      pull-requests: write. A failed comment API call is a warning, never a failed step; any other
+      event skips with a notice.
+    required: false
+    default: "false"
+  comment-token:
+    description: >-
+      Token for the pull request comment only, separate from github-token, which downloads the
+      release and may hold a read-only token for a private copy of ctfkit.
+      The default job token can comment when the job has pull-requests: write; on a pull request
+      from a fork it is read-only, so the comment fails with a warning.
+    required: false
+    default: ${{ github.token }}
+  format:
+    description: >-
+      Comma-separated ctfkit report formats to render. Used by command: report only; scan always
+      renders sarif, because the Security tab upload is the point of running it here, plus text for
+      the job summary. The spacelift projection is refused: it belongs to the Spacelift hooks,
+      which write it into the run working directory for a plan policy to read.
+    required: false
+    default: receipt,sarif,markdown
+  verify-lock:
+    description: >-
+      Run ctfkit verify-lock before the command, on path for report or chdir otherwise, and fail the
+      step on any finding: a root whose lock file lacks the hashed compliance.tf wrapper entry or
+      still installs the upstream provider it wraps. Wrapped types come from the config input
+      (wrapped_providers, default aws). One of true, false.
+    required: false
+    default: "false"
+  stage:
+    description: >-
+      Analysis stage. For report, post_init (the default when empty) is available and post_apply is
+      planned and refused. For scan, one of auto (the default when empty), pre_plan or post_plan,
+      passed to ctfkit as --stage; pre_plan reads the configuration in chdir with no plan file.
+    required: false
+    default: ""
+
+outputs:
+  receipt:
+    description: Path to the evidence receipt, empty when the receipt format was not requested.
+    value: ${{ steps.report.outputs.receipt }}
+  sarif:
+    description: Path to the CFF/SARIF findings file, empty when the sarif format was not requested.
+    value: ${{ steps.report.outputs.sarif }}
+  markdown:
+    description: >-
+      Path to the markdown written to the job summary: the report section for report (empty when
+      the markdown format was not requested), the text findings for scan.
+    value: ${{ steps.report.outputs.markdown }}
+  pr-comment:
+    description: >-
+      What pr-comment did: created, updated, skipped or failed. Empty when pr-comment is false.
+    value: ${{ steps.pr-comment.outputs.result }}
+  exit-code:
+    description: >-
+      ctfkit exit code. 0 ok, 1 findings at or above fail-on (or, for plan, sign and apply, an
+      outcome other than pass), 2 refusal or environment error. The step itself
+      fails on 1 and 2; read this output from a step that runs with continue-on-error.
+    value: ${{ steps.report.outputs.exit-code }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install the pinned ctfkit binary
+      shell: bash
+      env:
+        CTFKIT_VERSION: ${{ inputs.version }}
+        CTFKIT_STAGE: ${{ inputs.stage }}
+        CTFKIT_COMMAND: ${{ inputs.command }}
+        CTFKIT_PLAN: ${{ inputs.plan }}
+        CTFKIT_CHDIR: ${{ inputs.chdir }}
+        CTFKIT_FORMAT: ${{ inputs.format }}
+        CTFKIT_CONFIG: ${{ inputs.config }}
+        CTFKIT_EXCEPTIONS: ${{ inputs.exceptions }}
+        CTFKIT_CATALOG: ${{ inputs.catalog }}
+        CTFKIT_TESTS_JSON: ${{ inputs.tests-json }}
+        CTFKIT_ACTION_PATH: ${{ github.action_path }}
+        CTFKIT_REPOSITORY: ${{ inputs.repository }}
+        CTFKIT_PR_COMMENT: ${{ inputs.pr-comment }}
+        CTFKIT_SHA256: ${{ inputs.sha256 }}
+        CTFKIT_VERIFY_ATTESTATION: ${{ inputs.verify-attestation }}
+        CTFKIT_ARTIFACTS: ${{ inputs.artifacts }}
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        set -euo pipefail
+
+        # First, before anything can fail: forget what an earlier invocation of this action in the
+        # same job handed to the later steps. An invocation that fails here must not let the
+        # summary, upload or comment step publish the previous invocation's results as its own.
+        {
+          echo "CTFKIT_EXIT="
+          echo "CTFKIT_RECEIPT="
+          echo "CTFKIT_MARKDOWN="
+          echo "CTFKIT_SARIF="
+          echo "CTFKIT_SARIF_UPLOAD="
+          echo "CTFKIT_COMMENT_KEY="
+        } >> "${GITHUB_ENV}"
+
+        case "${CTFKIT_PR_COMMENT}" in
+          true|false) ;;
+          *)
+            echo "::error::input 'pr-comment' is '${CTFKIT_PR_COMMENT}'; use true or false." >&2
+            exit 1
+            ;;
+        esac
+
+        case "${CTFKIT_VERIFY_ATTESTATION}" in
+          true|false) ;;
+          *)
+            echo "::error::input 'verify-attestation' is '${CTFKIT_VERIFY_ATTESTATION}'; use true or false." >&2
+            exit 1
+            ;;
+        esac
+
+        if [ -n "${CTFKIT_SHA256}" ] && ! [[ "${CTFKIT_SHA256}" =~ ^[0-9a-fA-F]{64}$ ]]; then
+          echo "::error::input 'sha256' is not a SHA-256 digest of 64 hex digits." >&2
+          exit 1
+        fi
+
+        case ",${CTFKIT_FORMAT}," in
+          *,spacelift,*)
+            echo "::error::the spacelift projection is not available from this action; it is written by the Spacelift hooks in adapters/spacelift." >&2
+            exit 1
+            ;;
+        esac
+
+        # Resolved here so a missing policy file fails before ctfkit is downloaded. The catalog is
+        # checked only when it is a path: the literal `embedded` names the binary's own catalog.
+        for f in \
+          "${CTFKIT_CONFIG:-${CTFKIT_ACTION_PATH}/defaults/ctfkit.yaml}" \
+          "${CTFKIT_EXCEPTIONS:-${CTFKIT_ACTION_PATH}/defaults/exceptions.yaml}" \
+          "${CTFKIT_CATALOG}"; do
+          if [ "${f}" = "embedded" ]; then
+            continue
+          fi
+          if [ ! -f "${f}" ]; then
+            echo "::error::policy file not found: ${f}" >&2
+            exit 1
+          fi
+        done
+
+        case "${CTFKIT_COMMAND}" in
+          report)
+            if [ -n "${CTFKIT_STAGE}" ] && [ "${CTFKIT_STAGE}" != "post_init" ]; then
+              echo "::error::stage '${CTFKIT_STAGE}' is not available. post_init is available; post_apply is planned." >&2
+              exit 1
+            fi
+            if [ -n "${CTFKIT_TESTS_JSON}" ] && [ ! -f "${CTFKIT_TESTS_JSON}" ]; then
+              echo "::error::tests-json file not found: ${CTFKIT_TESTS_JSON}; write it with 'test -json' in an earlier step." >&2
+              exit 1
+            fi
+            ;;
+          scan)
+            case "${CTFKIT_STAGE}" in
+              pre_plan)
+                if [ -n "${CTFKIT_PLAN}" ]; then
+                  echo "::error::stage pre_plan reads configuration only; drop input 'plan' or use stage post_plan." >&2
+                  exit 1
+                fi
+                ;;
+              ""|auto|post_plan|post_init)
+                # post_init was this input's default before scan read it; keep it working.
+                if [ "${CTFKIT_STAGE}" = "post_init" ]; then
+                  echo "::warning::stage post_init is a report stage; scan treats it as auto. Drop the input, or set auto, pre_plan or post_plan."
+                fi
+                if [ -z "${CTFKIT_PLAN}" ]; then
+                  echo "::error::input 'plan' is required when command is scan; pass the output of 'show -json', or set stage: pre_plan to scan configuration only." >&2
+                  exit 1
+                fi
+                ;;
+              *)
+                echo "::error::stage '${CTFKIT_STAGE}' is not a scan stage. Use auto, pre_plan or post_plan." >&2
+                exit 1
+                ;;
+            esac
+            # ctfkit accepts a missing configuration directory at post_plan; here a mistyped
+            # chdir would scan nothing, so it fails before ctfkit is downloaded.
+            if [ -n "${CTFKIT_CHDIR}" ] && [ ! -d "${CTFKIT_CHDIR}" ]; then
+              echo "::error::chdir directory not found: ${CTFKIT_CHDIR}" >&2
+              exit 1
+            fi
+            # An absolute chdir is accepted inside the workspace only: the Security tab copy is
+            # made relative to the repository, which a path elsewhere on the runner is not.
+            case "${CTFKIT_CHDIR}" in
+              /*)
+                case "${CTFKIT_CHDIR%/}/" in
+                  "${GITHUB_WORKSPACE:-/nonexistent}"/*) ;;
+                  *)
+                    echo "::error::chdir ${CTFKIT_CHDIR} is outside the workspace; use a path relative to the checkout." >&2
+                    exit 1
+                    ;;
+                esac
+                ;;
+            esac
+            ;;
+          plan|sign|apply)
+            # ctfkit refuses every other missing gate flag itself; the artifact set is named here
+            # because the permission step below works on it before ctfkit runs.
+            if [ -z "${CTFKIT_ARTIFACTS}" ]; then
+              echo "::error::input 'artifacts' is required when command is ${CTFKIT_COMMAND}." >&2
+              exit 1
+            fi
+            ;;
+          *)
+            echo "::error::command '${CTFKIT_COMMAND}' is not recognized. Use report, scan, plan, sign or apply." >&2
+            exit 1
+            ;;
+        esac
+
+        version="${CTFKIT_VERSION#v}"
+        if [ -z "${version}" ]; then
+          echo "::error::input 'version' is required; pin the ctfkit release you reviewed." >&2
+          exit 1
+        fi
+        # A release version and nothing else: it becomes a tag and part of an asset name.
+        if ! [[ "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$ ]]; then
+          echo "::error::input 'version' is not a release version such as v0.2.0." >&2
+          exit 1
+        fi
+
+        case "$(uname -m)" in
+          x86_64|amd64) arch=x86_64 ;;
+          aarch64|arm64) arch=arm64 ;;
+          *) echo "::error::unsupported architecture $(uname -m)" >&2; exit 1 ;;
+        esac
+        os="$(uname -s)"
+
+        asset="ctfkit_${version}_${os}_${arch}.tar.gz"
+        workdir="$(mktemp -d)"
+        cd "${workdir}"
+
+        # gh authenticates with GH_TOKEN (the github-token input), so the same download works for a
+        # public release and for one in a private repository the token can read.
+        if ! command -v gh > /dev/null 2>&1; then
+          echo "::error::the gh CLI is required to download the ctfkit release; it is preinstalled on GitHub-hosted runners." >&2
+          exit 1
+        fi
+        gh release download "v${version}" --repo "${CTFKIT_REPOSITORY}" \
+          --pattern "${asset}" --pattern checksums.txt --dir .
+
+        sha256_check() {
+          if command -v sha256sum > /dev/null 2>&1; then
+            sha256sum --check "$1"
+          else
+            shasum --algorithm 256 --check "$1"
+          fi
+        }
+
+        # Exact match on the file name field: the name holds dots, so no pattern matching.
+        awk -v asset="${asset}" '$2 == asset' checksums.txt > asset.sha256
+        if [ ! -s asset.sha256 ]; then
+          echo "::error::${asset} is not listed in the release checksums file" >&2
+          exit 1
+        fi
+        sha256_check asset.sha256
+
+        # The checksums file shares the archive's release and token: it proves integrity only. The
+        # pinned digest and the attestation are the two checks that do not trust the release.
+        if [ -n "${CTFKIT_SHA256}" ]; then
+          printf '%s  %s\n' "$(printf '%s' "${CTFKIT_SHA256}" | tr 'A-F' 'a-f')" "${asset}" > pinned.sha256
+          if ! sha256_check pinned.sha256; then
+            echo "::error::${asset} does not match input 'sha256'" >&2
+            exit 1
+          fi
+        fi
+        # The attestation must come from the release workflow, built from the requested tag: any
+        # other workflow of the repository, or another tag, does not count.
+        if [ "${CTFKIT_VERIFY_ATTESTATION}" = "true" ]; then
+          verify_help="$(gh attestation verify --help 2>&1)" || verify_help=""
+          for flag in --signer-workflow --source-ref; do
+            case "${verify_help}" in
+              *"${flag}"*) ;;
+              *)
+                echo "::error::the gh CLI on this runner has no gh attestation verify ${flag}; update gh or set verify-attestation to false." >&2
+                exit 1
+                ;;
+            esac
+          done
+          if ! gh attestation verify "${asset}" --repo "${CTFKIT_REPOSITORY}" \
+            --signer-workflow "${CTFKIT_REPOSITORY}/.github/workflows/release.yml" \
+            --source-ref "refs/tags/v${version}"; then
+            echo "::error::${asset} has no build provenance attestation from the release workflow of ${CTFKIT_REPOSITORY} for v${version} that verifies" >&2
+            exit 1
+          fi
+        fi
+
+        tar -xzf "${asset}" ctfkit
+        install -d "${HOME}/.ctfkit/bin"
+        install -m 0755 ctfkit "${HOME}/.ctfkit/bin/ctfkit"
+        echo "${HOME}/.ctfkit/bin" >> "${GITHUB_PATH}"
+
+    # A downloaded artifact comes back as a 0755 directory of 0644 files; ctfkit refuses a set
+    # with wider modes. Only modes are restored, on regular files directly in the directory:
+    # contents are checked by ctfkit against candidate.json, and a symlink or any other entry is
+    # left for ctfkit to refuse.
+    - name: Restore the artifact set permissions
+      if: ${{ inputs.command == 'sign' || inputs.command == 'apply' }}
+      shell: bash
+      env:
+        CTFKIT_ARTIFACTS: ${{ inputs.artifacts }}
+      run: |
+        set -euo pipefail
+        dir="${CTFKIT_ARTIFACTS}"
+        # Strip every trailing slash and refuse a last component of . or ..:
+        # either would make the -L test below resolve through a symlink.
+        while [ "${dir}" != "${dir%/}" ]; do dir="${dir%/}"; done
+        case "/${dir}" in */. | */..) dir="" ;; esac
+        case "${dir}" in /* | "") ;; *) dir="./${dir}" ;; esac
+        if [ -z "${dir}" ] || [ -L "${dir}" ] || [ ! -d "${dir}" ]; then
+          echo "::error::artifacts ${CTFKIT_ARTIFACTS} is not a directory; download the artifact set there first." >&2
+          exit 1
+        fi
+        chmod 0700 "${dir}"
+        find "${dir}" -mindepth 1 -maxdepth 1 -type f -exec chmod 0600 {} +
+
+    - name: Check provider lock files
+      if: inputs.verify-lock != 'false'
+      shell: bash
+      env:
+        CTFKIT_VERIFY_LOCK: ${{ inputs.verify-lock }}
+        CTFKIT_COMMAND: ${{ inputs.command }}
+        CTFKIT_PATH: ${{ inputs.path }}
+        CTFKIT_CHDIR: ${{ inputs.chdir }}
+        CTFKIT_CONFIG: ${{ inputs.config }}
+        CTFKIT_ACTION_PATH: ${{ github.action_path }}
+      run: |
+        set -euo pipefail
+        if [ "${CTFKIT_VERIFY_LOCK}" != "true" ]; then
+          echo "::error::input 'verify-lock' must be true or false." >&2
+          exit 1
+        fi
+        config="${CTFKIT_CONFIG:-${CTFKIT_ACTION_PATH}/defaults/ctfkit.yaml}"
+        # report reads path; scan and the gate commands run on chdir
+        if [ "${CTFKIT_COMMAND}" = "report" ]; then dir="${CTFKIT_PATH:-.}"; else dir="${CTFKIT_CHDIR:-.}"; fi
+        # The text output quotes provider sources from the checkout: workflow commands stay off
+        # while it prints, as in the Run ctfkit step.
+        stop_token="$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')"
+        echo "::stop-commands::${stop_token}"
+        set +e
+        ctfkit verify-lock --format text --config "${config}" "${dir}"
+        code=$?
+        set -e
+        echo "::${stop_token}::"
+        if [ "${code}" -ne 0 ]; then
+          echo "::error::ctfkit verify-lock exited ${code}: 1 is a lock file finding, 2 an environment error." >&2
+          exit "${code}"
+        fi
+
+    - name: Run ctfkit
+      id: report
+      shell: bash
+      env:
+        CTFKIT_COMMAND: ${{ inputs.command }}
+        CTFKIT_PATH: ${{ inputs.path }}
+        CTFKIT_PLAN: ${{ inputs.plan }}
+        CTFKIT_CHDIR: ${{ inputs.chdir }}
+        CTFKIT_STAGE: ${{ inputs.stage }}
+        CTFKIT_FORMAT: ${{ inputs.format }}
+        CTFKIT_FAIL_ON: ${{ inputs.fail-on }}
+        CTFKIT_CONFIG: ${{ inputs.config }}
+        CTFKIT_EXCEPTIONS: ${{ inputs.exceptions }}
+        CTFKIT_CATALOG: ${{ inputs.catalog }}
+        CTFKIT_TESTS_JSON: ${{ inputs.tests-json }}
+        CTFKIT_ACTION_PATH: ${{ github.action_path }}
+        CTFKIT_ARTIFACTS: ${{ inputs.artifacts }}
+        CTFKIT_WORKSPACE: ${{ inputs.workspace }}
+        CTFKIT_ENVIRONMENT: ${{ inputs.environment }}
+        CTFKIT_TF_BIN: ${{ inputs.tf-bin }}
+        CTFKIT_ORG: ${{ inputs.org }}
+        CTFKIT_PROFILE: ${{ inputs.profile }}
+        CTFKIT_FLOOR: ${{ inputs.floor }}
+        CTFKIT_BUNDLE_DIR: ${{ inputs.bundle-dir }}
+        CTFKIT_SIGNER: ${{ inputs.signer }}
+      run: |
+        set -uo pipefail
+
+        # A fresh directory this invocation owns, outside the checkout. Nothing the repository
+        # committed can be mistaken for output, two invocations in one job cannot read each other's
+        # files, and anything found below was written by this run of ctfkit.
+        mkdir -p "${RUNNER_TEMP}/ctfkit"
+        out_dir="$(mktemp -d "${RUNNER_TEMP}/ctfkit/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-XXXXXX")"
+
+        # Every policy input is passed explicitly, the two files falling back to the copies bundled
+        # with this action. ctfkit is never left to discover one of these from the checkout.
+        config="${CTFKIT_CONFIG:-}"
+        exceptions="${CTFKIT_EXCEPTIONS:-}"
+        [ -n "${config}" ] || config="${CTFKIT_ACTION_PATH}/defaults/ctfkit.yaml"
+        [ -n "${exceptions}" ] || exceptions="${CTFKIT_ACTION_PATH}/defaults/exceptions.yaml"
+        # Passed through as given. The default, `embedded`, is a literal ctfkit understands, not a
+        # path: it pins the catalog compiled into the binary.
+        catalog="${CTFKIT_CATALOG}"
+        # --tests-json only when the caller wrote the file: ctfkit refuses an empty flag value.
+        tests_json_args=()
+        [ -z "${CTFKIT_TESTS_JSON}" ] || tests_json_args=(--tests-json "${CTFKIT_TESTS_JSON}")
+        # --chdir only when the caller named a directory: ctfkit refuses an empty flag value.
+        chdir_args=()
+        [ -z "${CTFKIT_CHDIR}" ] || chdir_args=(--chdir "${CTFKIT_CHDIR}")
+        # pre_plan has no plan to anchor it, so the configuration directory is always named.
+        [ "${CTFKIT_STAGE}" != "pre_plan" ] || chdir_args=(--chdir "${CTFKIT_CHDIR:-.}")
+        # Scan stages only; the install step refused anything else, and warned that post_init means
+        # auto here. Empty leaves ctfkit on auto.
+        stage="${CTFKIT_STAGE}"
+        [ "${stage}" != "post_init" ] || stage=""
+        stage_args=()
+        [ -z "${stage}" ] || stage_args=(--stage "${stage}")
+        plan_args=()
+        [ -z "${CTFKIT_PLAN}" ] || plan_args=(--plan "${CTFKIT_PLAN}")
+
+        # ctfkit's log output quotes module sources from the checkout. Workflow commands are off
+        # while it runs, so a line of it that starts with :: cannot set an output, add a mask or
+        # write an annotation. The token is random, so that output cannot turn them back on.
+        stop_token="$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')"
+        echo "::stop-commands::${stop_token}"
+        set +e
+        # The gate commands take the same signed inputs in every job. An empty value is passed as
+        # it is, and ctfkit refuses it.
+        gate_args=(--dir "${CTFKIT_CHDIR:-.}" --workspace "${CTFKIT_WORKSPACE}"
+          --environment "${CTFKIT_ENVIRONMENT}" --tf-bin "${CTFKIT_TF_BIN}" --org "${CTFKIT_ORG}"
+          --profile "${CTFKIT_PROFILE}" --floor "${CTFKIT_FLOOR}" --bundle-dir "${CTFKIT_BUNDLE_DIR}")
+        # --format sarif is pinned for scan: the Security tab is what this action feeds. text is
+        # rendered alongside for the job summary.
+        if [ "${CTFKIT_COMMAND}" = "plan" ]; then
+          ctfkit gate plan --out "${CTFKIT_ARTIFACTS}" "${gate_args[@]}"
+        elif [ "${CTFKIT_COMMAND}" = "sign" ]; then
+          ctfkit gate sign --candidate "${CTFKIT_ARTIFACTS}" "${gate_args[@]}" \
+            --signer "${CTFKIT_SIGNER}" --fail-on "${CTFKIT_FAIL_ON}"
+        elif [ "${CTFKIT_COMMAND}" = "apply" ]; then
+          ctfkit apply --artifacts "${CTFKIT_ARTIFACTS}" "${gate_args[@]}"
+        elif [ "${CTFKIT_COMMAND}" = "scan" ]; then
+          ctfkit scan \
+            ${stage_args[@]+"${stage_args[@]}"} \
+            ${plan_args[@]+"${plan_args[@]}"} \
+            ${chdir_args[@]+"${chdir_args[@]}"} \
+            --format sarif,text \
+            --out-dir "${out_dir}" \
+            --fail-on "${CTFKIT_FAIL_ON}" \
+            --config "${config}" \
+            --exceptions "${exceptions}" \
+            --catalog "${catalog}"
+        else
+          ctfkit report \
+            --path "${CTFKIT_PATH}" \
+            --format "${CTFKIT_FORMAT}" \
+            --out-dir "${out_dir}" \
+            --fail-on "${CTFKIT_FAIL_ON}" \
+            --config "${config}" \
+            --exceptions "${exceptions}" \
+            --catalog "${catalog}" \
+            ${tests_json_args[@]+"${tests_json_args[@]}"}
+        fi
+        code=$?
+        set -e
+        echo "::${stop_token}::"
+
+        echo "exit-code=${code}" >> "${GITHUB_OUTPUT}"
+        echo "CTFKIT_EXIT=${code}" >> "${GITHUB_ENV}"
+
+        # The directory this invocation is about: path for report, chdir for scan, '.' when unset,
+        # made relative to the workspace. Shown, it is reduced to a character set that cannot
+        # close a code span or an HTML comment. The comment key adds 8 hex digits of its SHA-256,
+        # so two directories that reduce alike (a b, a_b) keep separate comments.
+        if [ "${CTFKIT_COMMAND}" = "scan" ]; then raw_dir="${CTFKIT_CHDIR}"; else raw_dir="${CTFKIT_PATH}"; fi
+        ws="${GITHUB_WORKSPACE:-}"
+        ws="${ws%/}"
+        raw_dir="${raw_dir%/}"
+        if [ -n "${ws}" ]; then
+          [ "${raw_dir}" != "${ws}" ] || raw_dir="."
+          raw_dir="${raw_dir#"${ws}"/}"
+        fi
+        raw_dir="${raw_dir#./}"
+        [ -n "${raw_dir}" ] || raw_dir="."
+        key_dir="$(printf '%s' "${raw_dir}" | LC_ALL=C tr -c 'A-Za-z0-9._/@+-' '_')"
+        if command -v sha256sum > /dev/null 2>&1; then
+          key_hash="$(printf '%s' "${raw_dir}" | sha256sum | cut -c1-8)"
+        else
+          key_hash="$(printf '%s' "${raw_dir}" | shasum --algorithm 256 | cut -c1-8)"
+        fi
+        echo "CTFKIT_COMMENT_KEY=${key_dir}:${key_hash}" >> "${GITHUB_ENV}"
+
+        # scan has no markdown format, so its summary is ctfkit's own text output. It is HTML
+        # escaped inside <pre>, @ included so nothing mentions a user: module sources in it come
+        # from the checkout, and a pull request must not be able to inject markdown into the job
+        # summary or the pull request comment.
+        if [ "${CTFKIT_COMMAND}" = "scan" ] && [ -f "${out_dir}/findings.txt" ]; then
+          {
+            # shellcheck disable=SC2016 # the backticks are markdown, not a command substitution
+            printf '### ctfkit scan of `%s`\n\n<pre>\n' "${key_dir}"
+            sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/@/\&#64;/g' "${out_dir}/findings.txt"
+            printf '</pre>\n'
+          } > "${out_dir}/report.md"
+        fi
+
+        # The job environment is reset on every invocation, so a later step never uploads or
+        # summarizes a file an earlier invocation of this action wrote.
+        emit() {
+          if [ -f "${out_dir}/$2" ]; then
+            echo "$1=${out_dir}/$2" >> "${GITHUB_OUTPUT}"
+            echo "CTFKIT_$3=${out_dir}/$2" >> "${GITHUB_ENV}"
+          else
+            echo "$1=" >> "${GITHUB_OUTPUT}"
+            echo "CTFKIT_$3=" >> "${GITHUB_ENV}"
+          fi
+        }
+        emit receipt receipt.json RECEIPT
+        emit markdown report.md MARKDOWN
+        emit sarif findings.sarif SARIF
+
+        # ctfkit writes a location relative to --chdir, and code scanning resolves one against the
+        # repository root. The uploaded copy gets the chdir prefix back; the sarif output stays
+        # ctfkit's own file. Absolute and scheme-qualified URIs are left as they are.
+        upload=""
+        [ -f "${out_dir}/findings.sarif" ] && upload="${out_dir}/findings.sarif"
+        # An absolute chdir (the install step allows one only inside the workspace) is made
+        # relative to the checkout first, so the prefix never carries a runner path.
+        base="${CTFKIT_CHDIR%/}"
+        if [ -n "${GITHUB_WORKSPACE:-}" ]; then
+          [ "${base}" != "${GITHUB_WORKSPACE%/}" ] || base="."
+          base="${base#"${GITHUB_WORKSPACE%/}"/}"
+        fi
+        base="${base#./}"
+        if [ -n "${upload}" ] && [ "${CTFKIT_COMMAND}" = "scan" ] && [ -n "${base}" ] && [ "${base}" != "." ]; then
+          if ! command -v jq > /dev/null 2>&1; then
+            echo "::error::jq is required to prepare the upload when chdir is set; it is preinstalled on GitHub-hosted runners." >&2
+            exit 2
+          fi
+          upload="${out_dir}/findings.upload.sarif"
+          jq --arg base "${base}/" '
+            .runs[].results[]?.locations[]? |= (
+              if (.physicalLocation.artifactLocation.uri? | type) == "string"
+              then .physicalLocation.artifactLocation.uri |=
+                (if test("^/|^[A-Za-z][A-Za-z0-9+.-]*:") then . else $base + . end)
+              else . end)
+          ' "${out_dir}/findings.sarif" > "${upload}"
+        fi
+        echo "CTFKIT_SARIF_UPLOAD=${upload}" >> "${GITHUB_ENV}"
+
+        if [ "${code}" -ge 2 ]; then
+          echo "::error::ctfkit could not complete the analysis (exit ${code})" >&2
+          exit "${code}"
+        fi
+
+    # CTFKIT_SARIF_UPLOAD is set only when ctfkit wrote findings into this invocation's own
+    # temporary directory, so exit 2 with nothing written skips this step rather than failing on a
+    # missing artifact, and a findings file committed to the repository is never uploaded.
+    - name: Upload findings to the GitHub Security tab
+      if: ${{ always() && inputs.sarif == 'true' && env.CTFKIT_SARIF_UPLOAD != '' }}
+      uses: github/codeql-action/upload-sarif@1190a975f95ce23525efb6a3fc21ea29567c1b52 # v3.38.2
+      with:
+        sarif_file: ${{ env.CTFKIT_SARIF_UPLOAD }}
+        category: ctfkit
+
+    - name: Write the markdown report to the job summary
+      if: ${{ always() && env.CTFKIT_MARKDOWN != '' }}
+      shell: bash
+      run: cat "${CTFKIT_MARKDOWN}" >> "${GITHUB_STEP_SUMMARY}"
+
+    # One sticky comment per pull request, command and directory, carrying the job summary
+    # markdown. Runs before the exit code is re-applied, so a run with findings still comments. A
+    # comment that cannot be written is a warning: it never changes what ctfkit decided.
+    - name: Comment on the pull request
+      id: pr-comment
+      if: ${{ always() && inputs.pr-comment == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.comment-token }}
+        CTFKIT_COMMAND: ${{ inputs.command }}
+      run: |
+        set -uo pipefail
+        result() { echo "result=$1" >> "${GITHUB_OUTPUT}"; }
+        skip() { echo "::notice::pr-comment skipped: $*"; result skipped; exit 0; }
+        fail() {
+          echo "::warning::pr-comment failed: $*. The token needs pull-requests: write, and on a pull request from a fork the job token is read-only. The ctfkit result is unaffected."
+          result failed
+          exit 0
+        }
+
+        case "${GITHUB_EVENT_NAME:-}" in
+          pull_request|pull_request_target) ;;
+          *) skip "the ${GITHUB_EVENT_NAME:-unknown} event is not a pull request" ;;
+        esac
+        command -v jq > /dev/null 2>&1 || fail "jq is not installed"
+        command -v gh > /dev/null 2>&1 || fail "the gh CLI is not installed"
+        pr="$(jq -r '.pull_request.number // empty' "${GITHUB_EVENT_PATH:-/nonexistent}" 2> /dev/null)"
+        case "${pr}" in
+          "" | *[!0-9]*) skip "the event payload has no pull request number" ;;
+        esac
+        # Both are reset by the install step and set by the run step, so neither can be left over
+        # from an earlier invocation in this job.
+        if [ -z "${CTFKIT_MARKDOWN:-}" ] || [ ! -f "${CTFKIT_MARKDOWN}" ] || [ -z "${CTFKIT_COMMENT_KEY:-}" ]; then
+          skip "no markdown was written; ctfkit did not complete, or format leaves out markdown"
+        fi
+
+        # The marker keys the comment: report by path, scan by chdir, '.' when unset, as the run
+        # step wrote it: the reduced directory, which cannot end the HTML comment, and a hash of
+        # the directory itself.
+        marker="<!-- ctfkit:${CTFKIT_COMMAND}:${CTFKIT_COMMENT_KEY} -->"
+
+        # GitHub refuses a body over 65536 characters. 60000 leaves room for multi-unit characters.
+        # A longer report is cut at the last blank line, or at the last line break when that would
+        # drop more than half; a <pre> or a code fence the cut left open is closed; and a note
+        # points at the run for the rest.
+        body="$(mktemp "${RUNNER_TEMP:-/tmp}/ctfkit-comment-XXXXXX")"
+        run_url="${GITHUB_SERVER_URL:-https://github.com}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID:-0}"
+        jq -Rrs --arg marker "${marker}" --arg url "${run_url}" --argjson max 60000 '
+          def count(re): [match(re; "g")] | length;
+          ($marker + "\n\n") as $head
+          | if (($head + .) | length) <= $max then $head + .
+            else .[0:($max - ($head | length) - 300)] as $cut
+              | ($cut | split("\n\n") | .[:-1] | join("\n\n")) as $para
+              | ($cut | split("\n") | .[:-1] | join("\n")) as $line
+              | (if ($para | length) * 2 >= ($cut | length) then $para
+                 elif ($line | length) > 0 then $line else $cut end) as $kept
+              | $head + $kept
+                + (if ($kept | count("(?m)^ {0,3}(```|~~~)")) % 2 == 1 then "\n```" else "" end)
+                + (if ($kept | count("<pre>")) > ($kept | count("</pre>")) then "\n</pre>" else "" end)
+                + "\n\n---\n\n_Truncated to fit a comment. The full report is in the job summary of [this run](" + $url + ")._\n"
+            end' "${CTFKIT_MARKDOWN}" > "${body}" || fail "could not build the comment body"
+
+        # Only a comment this token wrote is updated: anyone can post a comment that starts with
+        # the marker, and editing theirs would put this report under their name. GET /user fails
+        # for the job token, which comments as github-actions[bot]; that fallback also requires
+        # the Bot account type. A login GET /user resolved is matched as it is.
+        login="$(gh api user --jq .login 2> /dev/null)" || login=""
+        want_bot=false
+        if [ -z "${login}" ]; then
+          login="github-actions[bot]"
+          want_bot=true
+        fi
+
+        comments="repos/${GITHUB_REPOSITORY}/issues/${pr}/comments"
+        existing="$(gh api --paginate "${comments}" \
+          | jq -rs --arg m "${marker}" --arg login "${login}" --argjson bot "${want_bot}" \
+            '[.[][] | select(.user.login == $login and ((.user.type == "Bot") or ($bot | not))
+                             and ((.body // "") | startswith($m)))] | first | .id // empty')" \
+          || fail "could not list the comments of pull request #${pr}"
+        if [ -n "${existing}" ]; then
+          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${existing}" -F "body=@${body}" > /dev/null \
+            || fail "could not update comment ${existing}"
+          result updated
+        else
+          gh api --method POST "${comments}" -F "body=@${body}" > /dev/null \
+            || fail "could not comment on pull request #${pr}"
+          result created
+        fi
+
+    - name: Apply the ctfkit exit code
+      if: ${{ always() }}
+      shell: bash
+      run: |
+        set -euo pipefail
+        # Unset when an earlier step failed before ctfkit ran; that step already failed the job.
+        code="${CTFKIT_EXIT:-0}"
+        if [ "${code}" -ne 0 ]; then
+          echo "::error::ctfkit exited ${code}: findings at or above fail-on (report, scan, sign), or a plan or apply that did not pass" >&2
+          exit "${code}"
+        fi

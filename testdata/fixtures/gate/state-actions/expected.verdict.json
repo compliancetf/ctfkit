@@ -1,0 +1,89 @@
+{
+  "format": "compliancetf.verdict/v1",
+  "org_id": "bobthecorp",
+  "workspace": "default",
+  "environment": "prod",
+  "run_id": "run-fixture",
+  "caller": {
+    "account_id": "",
+    "role_arn": "",
+    "region": ""
+  },
+  "plan_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "provenance": {},
+  "plan_format_version": "1.2",
+  "profile_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "bundle_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "content_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "floor_epoch": "7",
+  "provider_versions": {
+    "compliancetf/aws": "2.0.0",
+    "hashicorp/aws": "6.0.0"
+  },
+  "terraform_version": "1.16.3",
+  "nonce": "AAAAAAAAAAAAAAAAAAAAAA",
+  "issued_at": "2026-10-19T12:00:00Z",
+  "expires_at": "2026-10-20T12:00:00Z",
+  "instance_key_check": "0000000000000000000000000000000000000000000000000000000000000000",
+  "instances": [
+    {
+      "address": "aws_s3_bucket.imported",
+      "type": "aws_s3_bucket",
+      "action": "import",
+      "prior_identity_kind": "id",
+      "refreshed": "true",
+      "unknown_paths": [],
+      "decisions": [
+        {
+          "control": "s3_bucket_public_access_block_present",
+          "version": "1.0.0",
+          "result": "not_evaluable",
+          "action": "deny"
+        }
+      ],
+      "not_evaluable": [
+        {
+          "control": "s3_bucket_public_access_block_present",
+          "reason": "state_action"
+        }
+      ],
+      "exceptions": [],
+      "baselines": [],
+      "break_glass": []
+    },
+    {
+      "address": "aws_s3_bucket.moved",
+      "type": "aws_s3_bucket",
+      "action": "move",
+      "previous_address": "aws_s3_bucket.old",
+      "prior_identity_kind": "id",
+      "refreshed": "true",
+      "unknown_paths": [],
+      "decisions": [
+        {
+          "control": "s3_bucket_public_access_block_present",
+          "version": "1.0.0",
+          "result": "not_evaluable",
+          "action": "deny"
+        }
+      ],
+      "not_evaluable": [
+        {
+          "control": "s3_bucket_public_access_block_present",
+          "reason": "state_action"
+        }
+      ],
+      "exceptions": [],
+      "baselines": [],
+      "break_glass": []
+    }
+  ],
+  "exceptions": [],
+  "baselines": [],
+  "break_glass_receipts": [],
+  "signature": {
+    "kid": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "alg": "ES256",
+    "value": "AA"
+  }
+}

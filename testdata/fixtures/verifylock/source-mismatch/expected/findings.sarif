@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.lock.source_mismatch",
+              "shortDescription": {
+                "text": "A required_providers entry names, or a missing entry implies, the upstream source of a wrapped type"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.lock.source_mismatch",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "required_providers names registry.terraform.io/hashicorp/aws; use registry.compliance.tf/compliancetf/aws"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 4,
+                  "endLine": 6
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+                  "kind": "provider"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "16fb66519d1864b8944e1a0bc6f885c98cb8231b1921ed893985a0aca23ed7ac"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "pre_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false
+          }
+        },
+        {
+          "ruleId": "ctf.lock.source_mismatch",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "required_providers names registry.terraform.io/hashicorp/aws; use registry.compliance.tf/compliancetf/aws"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "modules/net/main.tf"
+                },
+                "region": {
+                  "startLine": 3,
+                  "endLine": 6
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+                  "kind": "provider"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "e63be8545b89ec0009411114a898335a9afc99d08ce91cf227a19ccb81291fc1"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "pre_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false
+          }
+        }
+      ]
+    }
+  ]
+}

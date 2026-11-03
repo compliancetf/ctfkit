@@ -1,0 +1,75 @@
+{
+  "behavior": "B6",
+  "assumption": "An override file with backend \"local\" replaces the root's backend for a scratch copy, a cloud block included (the design table expected an error for cloud)",
+  "cli": {
+    "name": "terraform",
+    "version": "1.16.6",
+    "platform": "darwin_arm64",
+    "binary_sha256": "27b7113783a1f7d71b711339bd235104961f7bcfe92dc6a9924206ee0eb75937",
+    "release_archive": "terraform_1.16.6_darwin_arm64.zip",
+    "release_archive_sha256": "85e1bc78ab45bdc5f82a7bac3929e37d072834a584d22583a2498dc67bb624cd"
+  },
+  "fake_provider_sha256": "dcb0571f6084f1d074a3ae02e0a8df62158e5eeb49b80e32d921e1b424eb9437",
+  "upstream": "registry.terraform.io/hashicorp/aws",
+  "inputs_sha256": "0b5af35681fa7f8e396bad5db62a159ac94f572f6a5bca2803d54ba85e724ab6",
+  "steps": [
+    {
+      "dir": "backend",
+      "run": [
+        "terraform",
+        "init",
+        "-input=false",
+        "-no-color"
+      ],
+      "exit": 0,
+      "output": [
+        "Initializing the backend...",
+        "",
+        "Successfully configured the backend \"local\"! Terraform will automatically",
+        "use this backend unless the backend configuration changes.",
+        "",
+        "Initializing provider plugins...",
+        "",
+        "Terraform has been successfully initialized!"
+      ]
+    },
+    {
+      "dir": "backend",
+      "cat": ".terraform/terraform.tfstate",
+      "filter": "backend_type",
+      "exit": 0,
+      "output": [
+        "backend local path=\"scratch.tfstate\""
+      ]
+    },
+    {
+      "dir": "cloud",
+      "run": [
+        "terraform",
+        "init",
+        "-input=false",
+        "-no-color"
+      ],
+      "exit": 0,
+      "output": [
+        "Initializing the backend...",
+        "",
+        "Successfully configured the backend \"local\"! Terraform will automatically",
+        "use this backend unless the backend configuration changes.",
+        "",
+        "Initializing provider plugins...",
+        "",
+        "Terraform has been successfully initialized!"
+      ]
+    },
+    {
+      "dir": "cloud",
+      "cat": ".terraform/terraform.tfstate",
+      "filter": "backend_type",
+      "exit": 0,
+      "output": [
+        "backend local path=\"scratch.tfstate\""
+      ]
+    }
+  ]
+}

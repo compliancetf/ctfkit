@@ -1,0 +1,33 @@
+{
+  "format_version": "1.2",
+  "resource_changes": [
+    {
+      "address": "edge_thing.one",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "after": {
+          "id": null,
+          "item": [],
+          "tags": {
+            "k": "\ud800"
+          }
+        },
+        "after_identity": null,
+        "after_sensitive": {},
+        "after_unknown": {
+          "id": true
+        },
+        "before": null,
+        "before_identity": null,
+        "before_sensitive": false
+      },
+      "mode": "managed",
+      "name": "one",
+      "provider_name": "registry.terraform.io/bobthecorp/edge",
+      "type": "edge_thing"
+    }
+  ],
+  "terraform_version": "1.16.3"
+}

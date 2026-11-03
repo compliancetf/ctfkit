@@ -1,0 +1,9 @@
+[
+  {
+    "address": "aws_s3_bucket.a",
+    "control": "s3_bucket_public_access_block_present",
+    "version": "1.0.0",
+    "result": "not_evaluable",
+    "reason": "wildcard"
+  }
+]

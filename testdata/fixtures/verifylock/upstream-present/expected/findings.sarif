@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.lock.upstream_present",
+              "shortDescription": {
+                "text": "The lock file installs the upstream provider of a wrapped type"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.lock.upstream_present",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Lock entry registry.opentofu.org/hashicorp/aws installs the upstream aws provider, which bypasses the compliance.tf wrapper registry.compliance.tf/compliancetf/aws"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".terraform.lock.hcl"
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "provider[\"registry.opentofu.org/hashicorp/aws\"]",
+                  "kind": "provider"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "ec42bd75ea478d8c30afc105cbc8c95344ff3fe24a80864e1de05e09e428d943"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "pre_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false
+          }
+        },
+        {
+          "ruleId": "ctf.lock.upstream_present",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "Lock entry registry.terraform.io/hashicorp/aws installs the upstream aws provider, which bypasses the compliance.tf wrapper registry.compliance.tf/compliancetf/aws"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".terraform.lock.hcl"
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+                  "kind": "provider"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "b1908056638ce4aec95aea428b0348abc6bb9e52d7316c6c88ed5a056873b564"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "pre_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false
+          }
+        }
+      ]
+    }
+  ]
+}

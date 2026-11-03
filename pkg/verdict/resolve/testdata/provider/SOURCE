@@ -1,0 +1,3 @@
+Verbatim copies of terraform-provider-aws internal/verdict/testdata/{situations,failclosed}
+at commit d0384ef (the decided-row cases; no_match, collision and no_verdict rows are
+matching and gate rows outside Resolve). Refresh by copying again; do not edit.

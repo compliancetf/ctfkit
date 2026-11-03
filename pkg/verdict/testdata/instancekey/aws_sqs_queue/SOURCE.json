@@ -1,0 +1,30 @@
+{
+  "comment": "Apply requests dumped by the terraform-provider-aws record build tag (internal/proxy/record_on.go) at provider_commit, driven from plan.json and schema.json by record/record_goldens_test.go (scripts/record-instancekey-apply.sh) through an in-process fake upstream. form is the apply RPC's: create (null prior), update, delete (null planned). Map keys are in sorted order, as Core's cty encoding writes them.",
+  "provider_commit": "2d3c3b168d24fb9cad6fd5dd79676cb4bbab1286",
+  "recorder_sha256": {
+    "internal/proxy/record_on.go": "4ca59fbbd2effbc1f2f5e2676d8f7070197940ea15a5ab853af8fbb788f7cedb",
+    "record/record_goldens_test.go": "e191fa149c7e00341bfedef3ffbcbc0c999096d3d0c7be3ba79c004fd39c79f0"
+  },
+  "records": [
+    {
+      "address": "aws_sqs_queue.new",
+      "form": "create",
+      "recorded_name": "aws_sqs_queue.ab908dab4cb9cc9c",
+      "sha256": {
+        "apply/aws_sqs_queue.new.create.msgpack": "7640750b286c253a5432ee0f38e13082e63e5dd923355fe056f8de6ede728602",
+        "apply/aws_sqs_queue.new.create.type.json": "90f41f2998619f1aef3a9ec626a279340649a5005745faf5971416407f3ac47b",
+        "envelope/aws_sqs_queue.new.create.json": "ef43a7223a0e67d556006bbfcda459c070887c01f9f90e691953e8ac6ad82905"
+      }
+    },
+    {
+      "address": "aws_sqs_queue.this",
+      "form": "update",
+      "recorded_name": "aws_sqs_queue.87954c016d8f1986",
+      "sha256": {
+        "apply/aws_sqs_queue.this.update.msgpack": "5e661dd0f70b5ee9b485ef7b6fb2863262a100956f319333481b2cf034b693c3",
+        "apply/aws_sqs_queue.this.update.type.json": "90f41f2998619f1aef3a9ec626a279340649a5005745faf5971416407f3ac47b",
+        "envelope/aws_sqs_queue.this.update.json": "64110339ee04d70aad44c56bfd297c1f05ac01e2a81c6483dbf2ee9c8b52fc10"
+      }
+    }
+  ]
+}

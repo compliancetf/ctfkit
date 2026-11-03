@@ -1,0 +1,6 @@
+# The organization names its endpoints, so the compliance.tf suffix no longer
+# admits a host by itself. The root's own call to the bobthecorp host is
+# ctf.coverage.module_source's subject at scan time; the served module's
+# nested call to that host is ctf.exec.module_endpoint's.
+allowed_endpoints:
+  - soc2.compliance.tf

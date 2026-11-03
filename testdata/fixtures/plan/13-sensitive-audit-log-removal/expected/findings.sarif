@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ctfkit",
+          "informationUri": "https://github.com/compliancetf/ctfkit",
+          "version": "1.0.0",
+          "rules": [
+            {
+              "id": "ctf.risk.sensitive_change_audit_log_removal",
+              "shortDescription": {
+                "text": "A change removes or narrows audit logging"
+              },
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "ctf.risk.sensitive_change_audit_log_removal",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "aws_cloudtrail.org is deleted, which stops the audit trail it records"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_cloudtrail.org",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "fa2da1737ab20fb3d412982d25474a512c12d4dd68ae9df868463d2c48956c5c"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            }
+          }
+        },
+        {
+          "ruleId": "ctf.risk.sensitive_change_audit_log_removal",
+          "level": "error",
+          "kind": "fail",
+          "message": {
+            "text": "aws_eks_cluster.platform narrows enabled_cluster_log_types to a strict subset of its prior value"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "main.tf"
+                },
+                "region": {
+                  "startLine": 14,
+                  "endLine": 24
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "aws_eks_cluster.platform",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "ctfkitFindingHash/v1": "94c8bcc05e26db40c479419ee85893341c2077794d9c4bebb1a0d2936b2e6eb0"
+          },
+          "properties": {
+            "ctf.schema": "1.0",
+            "ctf.stage": "post_plan",
+            "ctf.controlIds": [
+              "eks_cluster_control_plane_audit_logging_enabled"
+            ],
+            "ctf.frameworks": [
+              {
+                "id": "acsc_essential_eight",
+                "clauses": [
+                  "ACSC-EE-ML2-7.7"
+                ]
+              },
+              {
+                "id": "aws_well_architected_v10",
+                "clauses": [
+                  "Detection"
+                ]
+              },
+              {
+                "id": "iso_27001_2022",
+                "clauses": [
+                  "A.8.15"
+                ]
+              },
+              {
+                "id": "nis2",
+                "clauses": [
+                  "12",
+                  "3"
+                ]
+              },
+              {
+                "id": "pci_dss_v40",
+                "clauses": [
+                  "10.2.1",
+                  "10.2.1.1",
+                  "10.2.1.2",
+                  "10.2.1.3",
+                  "10.2.1.4",
+                  "10.2.1.5",
+                  "10.2.1.6",
+                  "10.2.1.7",
+                  "10.2.2",
+                  "10.3.1",
+                  "10.6.3",
+                  "5.3.4",
+                  "A1.2.1",
+                  "A1.2.3"
+                ]
+              }
+            ],
+            "ctf.preventive": true,
+            "ctf.evidence": {
+              "runId": "ctfkit-fixture-run",
+              "commit": "0000000000000000000000000000000000000000",
+              "signature": null
+            },
+            "ctf.attributes": [
+              "enabled_cluster_log_types"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

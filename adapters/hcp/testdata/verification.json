@@ -1,0 +1,24 @@
+{
+  "payload_version": 1,
+  "stage": "test",
+  "access_token": "test-token",
+  "capabilities": {
+    "outcomes": true
+  },
+  "configuration_version_download_url": null,
+  "configuration_version_id": null,
+  "is_speculative": false,
+  "organization_name": "bobthecorp",
+  "run_app_url": null,
+  "run_created_at": null,
+  "run_created_by": null,
+  "run_id": null,
+  "run_message": null,
+  "task_result_callback_url": "https://app.terraform.io/api/v2/task-results/00000000-0000-0000-0000-000000000000/callback",
+  "task_result_enforcement_level": "test",
+  "task_result_id": "taskrs-test",
+  "vcs_branch": null,
+  "workspace_app_url": null,
+  "workspace_id": null,
+  "workspace_name": null
+}

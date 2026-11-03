@@ -1,0 +1,26 @@
+schema_version: "1.0"
+
+organization:
+  name: bobthecorp
+  compliance_contact: compliance@bobthecorp.example
+
+exceptions:
+  - control: s3_bucket_object_lock_enabled
+    control_id: S3-004
+    resource: aws_s3_bucket.logs
+    resource_type: aws_s3_bucket
+    frameworks: [soc_2]
+
+    justification: "Scratch bucket for ETL output. Objects are deleted within 24 hours, which object lock retention would block."
+    data_classification: internal
+
+    approved_by: compliance@bobthecorp.example
+    approved_date: "2026-06-01"
+    approval_ticket: SEC-4711
+
+    review_date: "2027-06-01"
+    review_frequency: annual
+
+    compensating_controls:
+      - "24 hour lifecycle expiry on every object"
+      - "Bucket is reachable only from the platform VPC"
