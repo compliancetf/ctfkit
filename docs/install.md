@@ -10,7 +10,7 @@ Every tagged release has pre-built archives for Linux (x86_64, arm64, armv7), ma
 arm64) and Windows (x86_64), plus `checksums.txt`. Check the archive before you unpack it:
 
 ```bash
-V=0.3.0-preview.2 # x-release-please-version
+V=0.3.0-preview.3 # x-release-please-version
 gh release download "v$V" --repo compliancetf/ctfkit \
   --pattern "ctfkit_${V}_Linux_x86_64.tar.gz" --pattern checksums.txt
 awk -v f="ctfkit_${V}_Linux_x86_64.tar.gz" '$2 == f' checksums.txt | sha256sum -c -
@@ -54,7 +54,7 @@ as above, check it against `checksums.txt`, and install it with `dpkg -i`, `rpm 
 ```yaml
 repos:
   - repo: https://github.com/compliancetf/ctfkit
-    rev: v0.3.0-preview.2
+    rev: v0.3.0-preview.3
     hooks:
       - id: ctfkit
 ```
@@ -75,7 +75,7 @@ repository, the `.pre-commit-config.yaml` entry is:
 ```yaml
 repos:
   - repo: https://github.com/compliancetf/ctfkit
-    rev: v0.3.0-preview.2
+    rev: v0.3.0-preview.3
     hooks:
       - id: ctfkit-scan-dir
 ```
