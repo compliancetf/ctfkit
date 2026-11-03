@@ -69,7 +69,7 @@ Every release on [GitHub Releases](https://github.com/compliancetf/ctfkit/releas
 archives for Linux, macOS and Windows, Linux packages and `checksums.txt`:
 
 ```bash
-V=0.3.0-preview.2 # x-release-please-version
+V=0.3.0-preview.3 # x-release-please-version
 gh release download "v$V" --repo compliancetf/ctfkit \
     --pattern "ctfkit_${V}_Linux_x86_64.tar.gz" --pattern checksums.txt &&
   awk -v f="ctfkit_${V}_Linux_x86_64.tar.gz" '$2 == f' checksums.txt | sha256sum -c - &&
@@ -102,7 +102,7 @@ ctfkit config validate .ctfkit.yaml    # check it
 ```yaml
 repos:
   - repo: https://github.com/compliancetf/ctfkit
-    rev: v0.3.0-preview.2
+    rev: v0.3.0-preview.3
     hooks:
       - id: ctfkit
 ```
@@ -128,7 +128,7 @@ installed binary, see [docs/install.md](docs/install.md#pre-commit-hook).
       command: scan
       stage: pre_plan
       chdir: infra
-      version: v0.3.0-preview.2    # ctfkit release to install; x-release-please-version
+      version: v0.3.0-preview.3    # ctfkit release to install; x-release-please-version
   ```
 - Spacelift (preview): stack hooks, plan policy and governed apply:
   [adapters/spacelift](adapters/spacelift/README.md).
