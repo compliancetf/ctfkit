@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://github.com/compliancetf/ctfkit/compare/v0.3.0-preview.5...v0.3.0) (2026-11-04)
+
+
+### Features
+
+* plain semver releases; the action installs the latest ctfkit by default ([#17](https://github.com/compliancetf/ctfkit/issues/17)) ([e1127ab](https://github.com/compliancetf/ctfkit/commit/e1127ab032532d8f9337409639a26d793128affe))
+
+
+### Dependencies
+
+* bump golang.org/x/sys from 0.48.0 to 0.49.0 in the go-patch-minor group across 1 directory ([#14](https://github.com/compliancetf/ctfkit/issues/14)) ([58c9037](https://github.com/compliancetf/ctfkit/commit/58c90373786d396a4d8849a26d14d9d46d96905f))
+
 ## [0.3.0-preview.5](https://github.com/compliancetf/ctfkit/compare/v0.3.0-preview.4...v0.3.0-preview.5) (2026-11-04)
 
 
