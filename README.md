@@ -15,7 +15,7 @@ Try it on a directory of `.tf` files, before `terraform init`:
 ctfkit scan ./infra
 ```
 
-Release archives, Linux packages and checksums: [Install](#install).
+Homebrew, release archives, Linux packages and checksums: [Install](#install).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Go Version](https://img.shields.io/badge/Go-1.27+-00ADD8?logo=go)](https://go.dev/)
@@ -61,13 +61,21 @@ planned has code behind it today. v0.3.0 is the first stable release published h
 | [`evidence ship`](docs/evidence.md): provider evidence chains to S3 Object Lock and the provider-run receipt; `--api` always spools | preview | v0.3.0 |
 | [`runtask serve`](adapters/hcp/README.md): an advisory HCP Terraform and Terraform Enterprise run task | preview | v0.3.0 |
 | Container images (`ghcr.io/compliancetf/ctfkit`), SBOMs and build provenance attestations for release files | preview | v0.3.0 |
-| Homebrew cask, receipt signing | planned | |
+| [Homebrew formula](docs/install.md#homebrew) `compliancetf/tap/ctfkit`, for macOS and Linux | available | v0.3.0 |
+| Windows arm64 archive | available | v0.4.0 |
+| Receipt signing | planned | |
 
 ## Install
 
-Every release on [GitHub Releases](https://github.com/compliancetf/ctfkit/releases) has
+macOS and Linux, with [Homebrew](https://brew.sh):
+
+```bash
+brew install compliancetf/tap/ctfkit
+```
+
+Every release on [GitHub Releases](https://github.com/compliancetf/ctfkit/releases) also has
 archives for Linux, macOS and Windows, Linux packages and `checksums.txt`. This installs the
-newest release:
+newest Linux x86_64 release:
 
 ```bash
 gh release download --repo compliancetf/ctfkit \
@@ -78,9 +86,10 @@ gh release download --repo compliancetf/ctfkit \
   ctfkit version
 ```
 
-To pin a release instead, put its tag after `download`, such as `gh release download v1.2.3`.
+Homebrew and `gh release download` with no tag take the newest release. To pin one, put its tag
+after `download`, such as `gh release download v1.2.3`.
 
-Other platforms, deb, rpm and apk packages, a download without `gh`:
+Windows, other platforms, deb, rpm and apk packages, a download without `gh`:
 [docs/install.md](docs/install.md).
 
 ## Daily commands
@@ -176,7 +185,7 @@ Every key, `allowed_endpoints` included, and the exception registry:
 
 | Page | Covers |
 |---|---|
-| [docs/install.md](docs/install.md) | archives, packages, checksums, pre-commit with an installed binary |
+| [docs/install.md](docs/install.md) | Homebrew, archives, Windows, packages, checksums, pre-commit with an installed binary |
 | [docs/commands.md](docs/commands.md) | every command and flag, network and credentials per command, exit codes |
 | [docs/analyzers.md](docs/analyzers.md) | every rule, rule packs, code that runs before plan, lock file rules |
 | [docs/configuration.md](docs/configuration.md) | `.ctfkit.yaml` keys, the exception registry, the catalog |

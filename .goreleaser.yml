@@ -27,8 +27,6 @@ builds:
     ignore:
       - goos: windows
         goarch: arm
-      - goos: windows
-        goarch: arm64
     ldflags:
       - -s -w
       - -X main.version={{.Version}}
@@ -118,7 +116,9 @@ release:
   footer: |
     ### Installation
 
-    Download the archive for your platform and `checksums.txt` from the assets below, and
+    macOS and Linux: `brew install compliancetf/tap/ctfkit`.
+
+    Or download the archive for your platform and `checksums.txt` from the assets below, and
     check the archive with `sha256sum --ignore-missing -c checksums.txt` before unpacking it.
     `.deb`, `.rpm` and `.apk` packages are attached too, with an SPDX SBOM per archive.
 
@@ -130,31 +130,9 @@ release:
       --source-ref refs/tags/{{ .Tag }}
     ```
 
-# A cask, not a formula: `brews` is deprecated, and the formulas it generated were
-# hand-rolled wrappers around a pre-built binary, which is what a cask is actually for.
-# `directory` is omitted because casks default to `Casks`.
-homebrew_casks:
-  - name: ctfkit
-    binaries:
-      - ctfkit
-    homepage: https://github.com/compliancetf/ctfkit
-    description: "Run the same Terraform and OpenTofu checks across your pipelines"
-    repository:
-      owner: compliancetf
-      name: homebrew-tap
-      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
-    commit_author:
-      name: goreleaserbot
-      email: bot@goreleaser.com
-    # The release binaries are not signed or notarized, so macOS quarantines them and
-    # the first run is blocked. Homebrew strips the attribute on install instead.
-    # Remove this once the darwin builds are signed and notarized.
-    hooks:
-      post:
-        install: |
-          if OS.mac?
-            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/ctfkit"]
-          end
+# Homebrew: compliancetf/homebrew-tap renders its formula from checksums.txt and the build
+# provenance of each archive, so goreleaser publishes no cask and this repository holds no tap
+# token. release.yml asks the tap to update once the attestation exists.
 
 dockers:
   - image_templates:
