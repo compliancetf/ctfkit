@@ -34,10 +34,10 @@ jobs:
     env:
       # A released version this repository publishes, used by the action self-test. Bump it
       # when a release changes what the sample or the fixture below reports.
-      CTFKIT_SELFTEST_VERSION: 0.3.0-preview.5
+      CTFKIT_SELFTEST_VERSION: 0.3.0
       # The Linux x86_64 archive's line in that release's checksums.txt; bump it with the version.
       # The first self-test step pins it through the sha256 input.
-      CTFKIT_SELFTEST_SHA256: 3f386eaf2126d07acccef944d52f213dac6ec716ab164661812ec17faba52981
+      CTFKIT_SELFTEST_SHA256: 1f25d3dcd3c2ff4608b221c6598e18c076ed0b6be5909d94d4c75a134542ba4d
       REPORT_FIXTURE: testdata/fixtures/report/missing-manifest
     steps:
       - name: Checkout code

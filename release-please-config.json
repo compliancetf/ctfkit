@@ -66,8 +66,7 @@
       "extra-files": [
         "README.md",
         "docs/install.md"
-      ],
-      "release-as": "0.3.0"
+      ]
     }
   }
 }
