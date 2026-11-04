@@ -6,15 +6,15 @@
 
 [tools]
 
-# go.mod says `go 1.25`; CI tests and lints on 1.25.x only.
-"core:go" = "1.25"
+# go.mod says `go 1.27`; CI tests, lints and releases on 1.27.x only.
+"core:go" = "1.27"
 
 # `make lint` runs golangci-lint and .golangci.yml declares `version: 2`, so it must be
 # a v2.x. This version MUST equal the `golangci-lint-action` pin in
 # .github/workflows/test.yml - a linter built against a different Go release cannot read
 # this module's export data and reports every package as a `typecheck` failure.
 [tools."http:golangci-lint"]
-version = "2.6.1"
+version = "2.15.0"
 strip_components = 1
 checksum_url = 'https://github.com/golangci/golangci-lint/releases/download/v{{version}}/golangci-lint-{{version}}-checksums.txt'
 

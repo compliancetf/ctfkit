@@ -30,24 +30,24 @@ func (f *PrettyFormatter) Format(violations []validator.Violation) ([]byte, erro
 	var output strings.Builder
 
 	// Summary header
-	output.WriteString(fmt.Sprintf("\n%s Validation Results\n", color.CyanString("📋")))
+	fmt.Fprintf(&output, "\n%s Validation Results\n", color.CyanString("📋"))
 
 	if len(violations) == 0 {
-		output.WriteString(fmt.Sprintf("\n%s All checks passed!\n", color.GreenString("✅")))
+		fmt.Fprintf(&output, "\n%s All checks passed!\n", color.GreenString("✅"))
 		return []byte(output.String()), nil
 	}
 
 	// Violations
-	output.WriteString(fmt.Sprintf("\n%s Found %d violations:\n\n", color.RedString("❌"), len(violations)))
+	fmt.Fprintf(&output, "\n%s Found %d violations:\n\n", color.RedString("❌"), len(violations))
 
 	for _, v := range violations {
 		_, icon, colorize := severityDisplay(v.Severity)
 
-		output.WriteString(fmt.Sprintf("%s %s\n", icon, colorize(v.Message)))
-		output.WriteString(fmt.Sprintf("   File: %s:%d\n", v.File, v.Line))
-		output.WriteString(fmt.Sprintf("   Rule: %s\n", v.Rule))
+		fmt.Fprintf(&output, "%s %s\n", icon, colorize(v.Message))
+		fmt.Fprintf(&output, "   File: %s:%d\n", v.File, v.Line)
+		fmt.Fprintf(&output, "   Rule: %s\n", v.Rule)
 		if v.Remediation != "" {
-			output.WriteString(fmt.Sprintf("   Fix: %s\n", v.Remediation))
+			fmt.Fprintf(&output, "   Fix: %s\n", v.Remediation)
 		}
 		output.WriteString("\n")
 	}
