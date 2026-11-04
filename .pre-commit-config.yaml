@@ -1,7 +1,7 @@
 # Git hooks, run by prek (https://github.com/j178/prek; `pre-commit` reads the
 # same file). Install once per clone: `make hooks`.
 #   pre-commit: fast checks on the staged files
-#   pre-push:   the full gate, `make test` and `make lint` (run without the
+#   pre-push:   the push history guard, then the full gate, `make test` and `make lint` (run without the
 #               GIT_DIR-style variables git exports to hooks, so tests that
 #               create scratch repos stay in them)
 # Run everything by hand: `prek run --all-files` and
@@ -39,6 +39,14 @@ repos:
         entry: scripts/check-no-private-content.sh
         pass_filenames: false
         always_run: true
+
+      - id: check-push
+        name: push history guard
+        language: system
+        entry: scripts/check-push.sh
+        pass_filenames: false
+        always_run: true
+        stages: [pre-push]
 
       - id: make-test
         name: make test

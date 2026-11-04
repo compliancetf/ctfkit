@@ -34,12 +34,10 @@ jobs:
     env:
       # A released version this repository publishes, used by the action self-test. Bump it
       # when a release changes what the sample or the fixture below reports.
-      # The public repository starts with no release, so the self-test skips until this one
-      # exists: after the first public release, set this and the digest below to that release.
-      CTFKIT_SELFTEST_VERSION: 0.1.1
+      CTFKIT_SELFTEST_VERSION: 0.3.0-preview.5
       # The Linux x86_64 archive's line in that release's checksums.txt; bump it with the version.
       # The first self-test step pins it through the sha256 input.
-      CTFKIT_SELFTEST_SHA256: 86469b6f925369ab8ac1a78a6bfa9f3ce9036e136f47c75b7638bd7bdc28035e
+      CTFKIT_SELFTEST_SHA256: 3f386eaf2126d07acccef944d52f213dac6ec716ab164661812ec17faba52981
       REPORT_FIXTURE: testdata/fixtures/report/missing-manifest
     steps:
       - name: Checkout code
@@ -131,8 +129,8 @@ jobs:
       # last step checks outcome, exit code and outputs. These steps come last: the action
       # changes PATH and the job env, which no earlier gate should see.
 
-      # Until CTFKIT_SELFTEST_VERSION is released in compliancetf/ctfkit (a fresh public
-      # repository has no release), the self-test steps below skip with a notice.
+      # If CTFKIT_SELFTEST_VERSION is not released in compliancetf/ctfkit, the self-test steps
+      # below skip with a notice.
       - name: Check the self-test release exists
         id: selftest
         if: ${{ !cancelled() }}
@@ -144,7 +142,7 @@ jobs:
             echo "run=true" >> "${GITHUB_OUTPUT}"
           elif [[ ${err} == *"HTTP 404"* ]]; then
             echo "run=false" >> "${GITHUB_OUTPUT}"
-            echo "::notice::action self-test skipped: compliancetf/ctfkit has no release v${CTFKIT_SELFTEST_VERSION} yet; bump CTFKIT_SELFTEST_VERSION in test.yml after the first public release"
+            echo "::notice::action self-test skipped: compliancetf/ctfkit has no release v${CTFKIT_SELFTEST_VERSION} yet; set CTFKIT_SELFTEST_VERSION in test.yml to a published release"
           else
             echo "::error::cannot read release v${CTFKIT_SELFTEST_VERSION}: ${err}"
             exit 1
