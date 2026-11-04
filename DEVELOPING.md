@@ -165,6 +165,11 @@ of a private pattern list that maintainers keep outside this repository: set
 `COMPLIANCETF_PRIVATE_PATTERNS_FILE`, or copy the list to `.git/info/private-patterns`. Without
 the list that rule is skipped. The pre-commit hook and CI run it.
 
+`scripts/check-push.sh` is the pre-push history guard: it refuses a push when any local ref,
+`FETCH_HEAD` or the pushed commit reaches a root commit other than this repository's root
+(`6743a77`), so history from another repository cannot be published by accident, and it refuses to
+push `refs/dolt/*`.
+
 ## Releasing
 
 Releases are cut by [release-please](https://github.com/googleapis/release-please) from the
