@@ -179,9 +179,9 @@ conventional commits on master; goreleaser builds them.
    bumps `.release-please-manifest.json`, the pinned versions in `README.md` and `docs/install.md`
    (between `x-release-please` markers) and adds a `CHANGELOG.md` entry. `feat`, `fix`, `perf`,
    `deps` and `revert` commits are listed; the other types are hidden and open no release.
-2. Versioning is `prerelease` with the `preview` label (`release-please-config.json`): each
-   release adds one to the preview number. To ship `0.3.0`, set `"prerelease": false`. A
-   `Release-As: X.Y.Z` commit footer forces a version.
+2. Versions are plain semver (`release-please-config.json`): before 1.0.0, `feat` bumps the minor
+   and `fix` the patch. A `Release-As: X.Y.Z` commit footer, or `release-as` in the config, forces
+   a version; remove a `release-as` entry after the release it forced.
 3. The job token opens the release pull request, so Test and the PR title check do not run on it.
    Check the Test run of the master commit it was cut from, then merge it.
 4. On the merge, release-please creates the `vX.Y.Z` tag and the GitHub release with the changelog

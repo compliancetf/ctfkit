@@ -70,6 +70,8 @@ func readYAML(t *testing.T, path string, v any) {
 // workflow and the v9.9.9 tag, and otherwise exits $FAKE_ATTEST_EXIT.
 const fakeGh = `#!/bin/sh
 case "$1 $2" in
+  "api repos/compliancetf/ctfkit/releases/latest")
+    echo v9.9.9 ;;
   "release download")
     while [ $# -gt 0 ]; do [ "$1" = --dir ] && dir="$2"; shift; done
     cp "$FAKE_RELEASE"/* "$dir"/ ;;
@@ -115,7 +117,7 @@ func TestInstallStepAuthenticatesTheDownload(t *testing.T) {
 	}
 	readYAML(t, "action.yml", &action)
 	step := action.Runs.Steps[0]
-	if step.Name != "Install the pinned ctfkit binary" || strings.Contains(step.Run, "${{") {
+	if step.Name != "Install the ctfkit binary" || strings.Contains(step.Run, "${{") {
 		t.Fatalf("first step is %q; want the install step, reading its inputs from env only", step.Name)
 	}
 	actionPath, err := filepath.Abs(".")
@@ -137,11 +139,15 @@ func TestInstallStepAuthenticatesTheDownload(t *testing.T) {
 	write(t, script, step.Run, 0o600)
 
 	for _, tc := range []struct {
-		name, sha256, verify, attestExit string
-		oldGh                            bool   // gh without the binding flags
-		wantErr                          string // empty when the step must succeed
+		name, version, sha256, verify, attestExit string
+		oldGh                                     bool   // gh without the binding flags
+		wantErr                                   string // empty when the step must succeed
 	}{
 		{name: "no pin, no attestation"},
+		{name: "latest resolves to the newest release", version: "latest"},
+		{name: "empty version means latest", version: "-"},
+		{name: "latest refuses a pinned digest", version: "latest", sha256: sum, wantErr: "input 'sha256' needs a pinned input 'version'"},
+		{name: "version not a release", version: "main", wantErr: "is not latest or a release version"},
 		{name: "pinned digest matches", sha256: sum},
 		{name: "pinned digest in upper case", sha256: strings.ToUpper(sum)},
 		{name: "pinned digest differs", sha256: strings.Repeat("0", 64), wantErr: "does not match input 'sha256'"},
@@ -158,6 +164,13 @@ func TestInstallStepAuthenticatesTheDownload(t *testing.T) {
 			if verify == "" {
 				verify = "false"
 			}
+			version := tc.version // "" is a pinned v9.9.9, "-" an empty input
+			switch version {
+			case "":
+				version = "v9.9.9"
+			case "-":
+				version = ""
+			}
 			oldGh := ""
 			if tc.oldGh {
 				oldGh = "1"
@@ -167,8 +180,9 @@ func TestInstallStepAuthenticatesTheDownload(t *testing.T) {
 				"PATH=" + bin + string(os.PathListSeparator) + os.Getenv("PATH"),
 				"HOME=" + home, "TMPDIR=" + tmp,
 				"GITHUB_ENV=" + filepath.Join(tmp, "env"), "GITHUB_PATH=" + filepath.Join(tmp, "path"),
+				"GITHUB_OUTPUT=" + filepath.Join(tmp, "output"),
 				"FAKE_RELEASE=" + release, "FAKE_ATTEST_EXIT=" + tc.attestExit, "FAKE_GH_OLD=" + oldGh,
-				"CTFKIT_VERSION=v9.9.9", "CTFKIT_COMMAND=report", "CTFKIT_STAGE=", "CTFKIT_PLAN=",
+				"CTFKIT_VERSION=" + version, "CTFKIT_COMMAND=report", "CTFKIT_STAGE=", "CTFKIT_PLAN=",
 				"CTFKIT_CHDIR=", "CTFKIT_FORMAT=receipt,sarif,markdown", "CTFKIT_CONFIG=",
 				"CTFKIT_EXCEPTIONS=", "CTFKIT_CATALOG=embedded", "CTFKIT_TESTS_JSON=",
 				"CTFKIT_ACTION_PATH=" + actionPath, "CTFKIT_REPOSITORY=compliancetf/ctfkit",
@@ -183,6 +197,9 @@ func TestInstallStepAuthenticatesTheDownload(t *testing.T) {
 				}
 				if _, statErr := os.Stat(installed); statErr != nil {
 					t.Fatalf("ctfkit not installed: %v\n%s", statErr, out)
+				}
+				if got, _ := os.ReadFile(filepath.Join(tmp, "output")); !strings.Contains(string(got), "version=v9.9.9\n") {
+					t.Fatalf("output ctfkit-version not set to v9.9.9: %q", got)
 				}
 				return
 			}
@@ -317,6 +334,10 @@ func TestVerdictWorkflowTemplate(t *testing.T) {
 		}
 		if name != "plan" && (downloaded == "" || downloaded != previous) {
 			t.Errorf("%s downloads %q, want the artifact the previous job uploaded (%q)", name, downloaded, previous)
+		}
+		// latest is resolved once: sign and apply install the release the previous job used.
+		if want := "${{ needs." + job.Needs + ".outputs.ctfkit-version }}"; name != "plan" && ctfkit.With["version"] != want {
+			t.Errorf("%s version = %q, want %q", name, ctfkit.With["version"], want)
 		}
 		if signer := ctfkit.With["signer"]; (name == "sign") != strings.HasPrefix(signer, "awskms:") {
 			t.Errorf("%s signer = %q; only sign signs, with awskms", name, signer)

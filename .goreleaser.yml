@@ -159,7 +159,7 @@ homebrew_casks:
 dockers:
   - image_templates:
       - "ghcr.io/compliancetf/{{.ProjectName}}:{{ .Version }}-amd64"
-      # Empty on a prerelease tag, which goreleaser skips: a preview never moves latest.
+      # Empty on a prerelease tag, which goreleaser skips: a prerelease never moves latest.
       - "{{ if not .Prerelease }}ghcr.io/compliancetf/{{.ProjectName}}:latest-amd64{{ end }}"
     use: buildx
     dockerfile: Dockerfile
@@ -174,7 +174,7 @@ dockers:
 
   - image_templates:
       - "ghcr.io/compliancetf/{{.ProjectName}}:{{ .Version }}-arm64"
-      # Empty on a prerelease tag, which goreleaser skips: a preview never moves latest.
+      # Empty on a prerelease tag, which goreleaser skips: a prerelease never moves latest.
       - "{{ if not .Prerelease }}ghcr.io/compliancetf/{{.ProjectName}}:latest-arm64{{ end }}"
     use: buildx
     goarch: arm64
@@ -195,7 +195,7 @@ docker_manifests:
       - "ghcr.io/compliancetf/{{.ProjectName}}:{{ .Version }}-arm64"
 
   - name_template: "ghcr.io/compliancetf/{{.ProjectName}}:latest"
-    # auto: no latest manifest for a prerelease tag such as v0.3.0-preview.1.
+    # auto: no latest manifest for a prerelease tag such as v1.0.0-rc.1.
     skip_push: auto
     image_templates:
       - "ghcr.io/compliancetf/{{.ProjectName}}:latest-amd64"

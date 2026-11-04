@@ -7,21 +7,23 @@ token. User documentation lives at <https://compliance.tf/docs/ctfkit/>.
 ## Release archives
 
 Every tagged release has pre-built archives for Linux (x86_64, arm64, armv7), macOS (x86_64,
-arm64) and Windows (x86_64), plus `checksums.txt`. Check the archive before you unpack it:
+arm64) and Windows (x86_64), plus `checksums.txt`. This downloads the newest release and checks
+the archive before you unpack it:
 
 ```bash
-V=0.3.0-preview.5 # x-release-please-version
-gh release download "v$V" --repo compliancetf/ctfkit \
-  --pattern "ctfkit_${V}_Linux_x86_64.tar.gz" --pattern checksums.txt
-awk -v f="ctfkit_${V}_Linux_x86_64.tar.gz" '$2 == f' checksums.txt | sha256sum -c -
-tar -xzf "ctfkit_${V}_Linux_x86_64.tar.gz" ctfkit
-sudo install -m 0755 ctfkit /usr/local/bin/ctfkit
-ctfkit version
+gh release download --repo compliancetf/ctfkit \
+    --pattern 'ctfkit_*_Linux_x86_64.tar.gz' --pattern checksums.txt &&
+  sha256sum --ignore-missing -c checksums.txt &&
+  tar -xzf ctfkit_*_Linux_x86_64.tar.gz ctfkit &&
+  sudo install -m 0755 ctfkit /usr/local/bin/ctfkit &&
+  ctfkit version
 ```
 
-Other platforms follow the same pattern: `ctfkit_<version>_<Os>_<arch>.tar.gz`, such as
-`ctfkit_${V}_Darwin_arm64.tar.gz`, and a `.zip` for Windows. Releases before v0.3.0-preview.3
-were not published in this repository.
+`gh release download` without a tag takes the newest release. To pin one, put its tag after
+`download`, such as `gh release download v1.2.3`; pin in CI and in images you build, so a new
+release changes nothing until you move the pin. Other platforms follow the same pattern:
+`ctfkit_<version>_<Os>_<arch>.tar.gz`, such as `ctfkit_*_Darwin_arm64.tar.gz`, and a `.zip` for
+Windows. v0.3.0 is the first stable release published in this repository.
 
 `checksums.txt` comes from the same release as the archive. It shows that the download is intact
 and says nothing about who built it. To rule out a replaced release, pin the digest you reviewed.
@@ -30,16 +32,18 @@ The release workflow also creates a GitHub build provenance attestation covering
 `checksums.txt`. It shows which workflow run built the file:
 
 ```bash
-gh attestation verify "ctfkit_${V}_Linux_x86_64.tar.gz" --repo compliancetf/ctfkit \
+tag="$(gh release view --repo compliancetf/ctfkit --json tagName --jq .tagName)"
+gh attestation verify ctfkit_*_Linux_x86_64.tar.gz --repo compliancetf/ctfkit \
   --signer-workflow compliancetf/ctfkit/.github/workflows/release.yml \
-  --source-ref "refs/tags/v$V"
+  --source-ref "refs/tags/$tag"
 ```
 
 ### Without gh
 
-Download from the release page with any HTTP client, for example
-`https://github.com/compliancetf/ctfkit/releases/download/v<version>/ctfkit_<version>_Linux_x86_64.tar.gz`,
-and `checksums.txt` from the same directory. Check the file against `checksums.txt` as above.
+The newest release is always at <https://github.com/compliancetf/ctfkit/releases/latest>, and
+`https://github.com/compliancetf/ctfkit/releases/latest/download/checksums.txt` lists its archive
+names. Download with any HTTP client from the same directory, for example
+`https://github.com/compliancetf/ctfkit/releases/download/v<version>/ctfkit_<version>_Linux_x86_64.tar.gz`. Check the file against `checksums.txt` as above.
 
 ## deb, rpm and apk packages
 
@@ -60,6 +64,8 @@ repos:
 ```
 <!-- x-release-please-end -->
 
+`pre-commit autoupdate` moves `rev` to the newest release.
+
 The repository defines two hook ids. Pick one per repository:
 
 | Hook id | Runs | Pick it for |
@@ -68,7 +74,7 @@ The repository defines two hook ids. Pick one per repository:
 | `ctfkit-scan-dir` | `ctfkit scan --stage pre_plan .` once, from the repository root, whenever a Terraform or OpenTofu file changes | a module repository: the directory scan tells reusable modules from deployable roots, so `ctf.origin.provider_unpinned` stays quiet on the minimum-only constraints a module is meant to declare ([Provider constraints in reusable modules](analyzers.md#provider-constraints-in-reusable-modules)) |
 
 Both run on `.tf`, `.tofu`, `.tf.json` and `.tofu.json` files outside `.terraform/`.
-`ctfkit-scan-dir` is available since v0.3.0-preview.1. In a module
+`ctfkit-scan-dir` is available since v0.3.0. In a module
 repository, the `.pre-commit-config.yaml` entry is:
 
 <!-- x-release-please-start-version -->
@@ -105,14 +111,14 @@ For the behaviour of `ctfkit-scan-dir`, set `entry: ctfkit scan --stage pre_plan
 
 ## Container image
 
-Every release from v0.3.0-preview.3 on publishes a multi-arch image (linux/amd64, linux/arm64)
-with the binary on a distroless, non-root base:
+Every release publishes a multi-arch image (linux/amd64, linux/arm64) with the binary on a
+distroless, non-root base. `latest` is the newest release:
 
 ```bash
-docker run --rm -v "$PWD:/work" -w /work ghcr.io/compliancetf/ctfkit:<version> scan --stage pre_plan .
+docker run --rm -v "$PWD:/work" -w /work ghcr.io/compliancetf/ctfkit scan --stage pre_plan .
 ```
 
-Preview releases never move the `latest` tag. A Homebrew cask is planned.
+To pin a release, use its version as the tag, such as `ghcr.io/compliancetf/ctfkit:1.2.3`. A Homebrew cask is planned.
 
 ## Check the install
 

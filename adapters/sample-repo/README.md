@@ -211,8 +211,9 @@ normalization: `timestamp` is frozen to `2026-09-20T00:00:00Z`.
 
 ## Where the action comes from
 
-The workflow names `compliancetf/ctfkit-action@v0.2.1` and `version: v0.2.1`. The action lives in the
-public `compliancetf/ctfkit-action` repository and downloads the binary from the releases of the
-public `compliancetf/ctfkit` repository with the default job token.
+The workflow names `compliancetf/ctfkit-action@v0` and no `version`, so it runs the newest action
+and ctfkit releases; pin both for a reproducible run, as the
+[GitHub adapter](../github/README.md#usage) describes. The action lives in the public `compliancetf/ctfkit-action` repository and downloads the binary from
+the releases of the public `compliancetf/ctfkit` repository with the default job token.
 Inside `compliancetf/ctfkit` itself, the same step runs with `uses: ./adapters/github` from a
 workflow at the repository root.

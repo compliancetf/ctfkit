@@ -171,7 +171,7 @@ signing is planned.
 ## ctfkit verify-lock
 
 Check that lock files install the compliance.tf provider wrappers (preview since
-v0.3.0-preview.1).
+v0.3.0).
 
 ```bash
 ctfkit verify-lock                                    # every root under ., provider aws
@@ -191,7 +191,7 @@ file that does not parse.
 
 ## Governed apply commands
 
-`gate plan`, `gate sign`, `verdict verify` and `apply` (preview since v0.3.0-preview.1) take the
+`gate plan`, `gate sign`, `verdict verify` and `apply` (preview since v0.3.0) take the
 same signed inputs (`--org`, `--profile`, `--floor`, `--bundle-dir`) and run identity (`--dir`,
 `--workspace`, `--environment`, `--tf-bin`). Each one's flags, checks and exit codes are in
 [governed-apply.md](governed-apply.md). `gate sign` takes `-f sarif` to print its graph decisions
@@ -199,13 +199,13 @@ as SARIF, and `--fail-on` with `error`, `warning` or `note` (no `never`).
 
 ## ctfkit evidence ship
 
-Upload a run's evidence chains and write its receipt (preview since v0.3.0-preview.1). Flags,
+Upload a run's evidence chains and write its receipt (preview since v0.3.0). Flags,
 runner class, receipt status and exit codes: [evidence.md](evidence.md).
 
 ## ctfkit runtask serve
 
 Serve an advisory run task: findings and a receipt, no verdict (preview since
-v0.3.0-preview.1). It checks each request's HMAC-SHA512 signature and replay window, downloads
+v0.3.0). It checks each request's HMAC-SHA512 signature and replay window, downloads
 the run's plan JSON within a size and time limit, runs the `post_plan` analyzers, writes a
 receipt per run and posts the findings back as the task result. Setup, flags and the threat
 handling: [adapters/hcp](../adapters/hcp/README.md).

@@ -34,6 +34,12 @@ binary from the releases of the public `compliancetf/ctfkit` repository with the
 token; to install from a private copy, see
 [Installing from a private copy](#installing-from-a-private-copy).
 
+Examples on this page use `compliancetf/ctfkit-action@v0`, which follows the newest v0 release of
+the action, and leave out `version`, so the action installs the newest ctfkit release. For a
+reproducible pipeline, pin both: the action to a release commit SHA (Dependabot can bump it) and
+`version` to the ctfkit release you reviewed, such as `version: v1.2.3`. `sha256` needs a pinned
+`version`.
+
 ```yaml
 permissions:
   contents: read
@@ -45,29 +51,26 @@ steps:
   # report: coverage from the module cache
   - run: tofu init -input=false
     working-directory: examples/complete
-  - uses: compliancetf/ctfkit-action@v0.2.1
+  - uses: compliancetf/ctfkit-action@v0
     with:
       path: examples/complete
-      version: v0.2.1
 
   # scan: findings from the plan
   - run: |
       tofu plan -input=false -out=tfplan
       tofu show -json tfplan > plan.json
     working-directory: examples/complete
-  - uses: compliancetf/ctfkit-action@v0.2.1
+  - uses: compliancetf/ctfkit-action@v0
     with:
       command: scan
       plan: examples/complete/plan.json
-      version: v0.2.1
 
   # pre_plan scan: configuration only, no init, no plan, no credentials
-  - uses: compliancetf/ctfkit-action@v0.2.1
+  - uses: compliancetf/ctfkit-action@v0
     with:
       command: scan
       stage: pre_plan
       chdir: examples/complete
-      version: v0.2.1
 ```
 
 `workflow-template.yml` in this directory is the fuller module-author pattern: a matrix over roots
@@ -82,7 +85,7 @@ and examples, an init step that holds the registry token, a test run, then both 
 | `tests-json` | none | Output of `tofu test -json` or `terraform test -json` for the same root, written by an earlier step, passed as `--tests-json`. `report` never runs tofu or terraform itself. `report` only |
 | `plan` | none | Plan JSON from `show -json`. Required for `scan` unless `stage: pre_plan`, which refuses it; ignored for `report` |
 | `chdir` | none | Terraform configuration directory, passed as `--chdir`: the one the plan was made from, or the one a `pre_plan` scan reads (`.` when empty); see [Scanning one root of several](#scanning-one-root-of-several). `scan`; for `plan`, `sign` and `apply` it is passed as `--dir` |
-| `version` | none, required | Release version to install, with or without the leading `v`, such as `v0.2.0`; anything else is refused |
+| `version` | `latest` | ctfkit release to install: `latest`, the newest stable release when the job runs, or a release version with or without the leading `v`, such as `v1.2.3`; anything else is refused. The `ctfkit-version` output names the release installed |
 | `sha256` | none | SHA-256 of the release archive for the runner's OS and architecture. The download must match it; see [Authenticating the download](#authenticating-the-download) |
 | `verify-attestation` | `false` | `true` checks the archive with `gh attestation verify` against the build provenance attestation of the release workflow for the requested tag, and fails the step when it does not verify |
 | `repository` | `compliancetf/ctfkit` | Repository whose release holds the archive and `checksums.txt`. It is the repository `.goreleaser.yml` publishes to |
@@ -145,11 +148,10 @@ fine-grained personal access token with Contents: read on that repository. Store
 and pass it as `github-token`:
 
 ```yaml
-      - uses: compliancetf/ctfkit-action@v0.2.1
+      - uses: compliancetf/ctfkit-action@v0
         with:
           command: scan
           plan: plan.json
-          version: v0.2.1
           repository: <owner>/<your-ctfkit-copy>
           github-token: ${{ secrets.CTFKIT_COPY_TOKEN }}
 ```
@@ -165,22 +167,22 @@ download is intact, not who published it. Two optional inputs check the archive 
 the release cannot change:
 
 - `sha256`: the digest of the archive you reviewed, copied from its line in that release's
-  `checksums.txt`, such as `ctfkit_0.2.1_Linux_x86_64.tar.gz` on `ubuntu-latest`. A different
-  archive fails the step. A matrix over runner architectures needs one digest per archive.
+  `checksums.txt`, such as `ctfkit_<version>_Linux_x86_64.tar.gz` on `ubuntu-latest`, with `version` pinned to that release. A
+  different archive fails the step. A matrix over runner architectures needs one digest per archive.
 - `verify-attestation: true`: runs `gh attestation verify <archive> --repo <repository>
   --signer-workflow <repository>/.github/workflows/release.yml --source-ref refs/tags/v<version>`
   and fails the step unless the archive has a GitHub build provenance attestation made by that
-  repository's release workflow for the requested tag. It needs a gh with both flags. The release workflow creates one for every file in `checksums.txt`, but releases
-  published without attestations, v0.2.1 included, have none and fail this check. It stays off by
-  default for that reason.
+  repository's release workflow for the requested tag. It needs a gh with both flags. Every
+  release published here carries one for every file in `checksums.txt`; a release from a copy
+  without the release workflow has none and fails this check, so it stays off by default.
 
 ```yaml
-      - uses: compliancetf/ctfkit-action@v0.2.1
+      - uses: compliancetf/ctfkit-action@v0
         with:
           command: scan
           plan: plan.json
-          version: v0.2.1
-          sha256: <digest of ctfkit_0.2.1_Linux_x86_64.tar.gz from checksums.txt>
+          version: v1.2.3   # the release you reviewed
+          sha256: <digest of ctfkit_1.2.3_Linux_x86_64.tar.gz from its checksums.txt>
 ```
 
 A workflow inside `compliancetf/ctfkit` itself, such as its own self-test, needs no extra token:
@@ -196,7 +198,6 @@ checkout and names its own repository:
         with:
           command: scan
           plan: plan.json
-          version: v0.2.1
           repository: ${{ github.repository }}
 ```
 
@@ -212,7 +213,6 @@ the plan was made from:
           command: scan
           plan: infra/plan.json
           chdir: infra
-          version: v0.2.1
 ```
 
 `plan` stays relative to the checkout. ctfkit writes each finding's file relative to `chdir`, so the
@@ -232,7 +232,6 @@ when `chdir` is empty, and the same prefix rule applies to the uploaded copy:
           command: scan
           stage: pre_plan
           chdir: infra
-          version: v0.2.1
 ```
 
 ## Pull request comment
@@ -256,12 +255,11 @@ jobs:
         root: [infra/network, infra/storage]
     steps:
       - uses: actions/checkout@v7
-      - uses: compliancetf/ctfkit-action@v0.2.1
+      - uses: compliancetf/ctfkit-action@v0
         with:
           command: scan
           stage: pre_plan
           chdir: ${{ matrix.root }}
-          version: v0.2.1
           sarif: 'false'   # a private repository without code scanning
           pr-comment: 'true'
 ```

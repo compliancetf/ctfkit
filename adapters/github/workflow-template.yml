@@ -48,11 +48,10 @@ jobs:
 
       # command: report reads the module cache that init populated.
       - name: Report on the initialized root
-        uses: compliancetf/ctfkit-action@v0.2.1
+        uses: compliancetf/ctfkit-action@v0
         with:
           command: report
           path: ${{ matrix.root }}
-          version: v0.2.1
           fail-on: error
 
       # command: scan reads plan JSON instead. Drop these two steps if the root cannot be planned
@@ -64,9 +63,8 @@ jobs:
           tofu show -json tfplan > plan.json
 
       - name: Scan the plan
-        uses: compliancetf/ctfkit-action@v0.2.1
+        uses: compliancetf/ctfkit-action@v0
         with:
           command: scan
           plan: ${{ matrix.root }}/plan.json
-          version: v0.2.1
           fail-on: error

@@ -100,10 +100,12 @@ inputs:
     default: ""
   version:
     description: >-
-      ctfkit release to install, with or without the leading v (for example v0.2.0). The archive is
-      downloaded from that exact release tag and verified against the release checksums file before
-      it is unpacked. There is no default: pin the version you reviewed.
-    required: true
+      ctfkit release to install: latest (the default), or a release version with or without the
+      leading v, such as v0.3.0. latest resolves to the newest stable release of <repository> when
+      the job runs. The archive is downloaded from that release tag and verified against the release
+      checksums file before it is unpacked. Pin a version for a reproducible run; sha256 needs one.
+    required: false
+    default: latest
   sha256:
     description: >-
       SHA-256 of the release archive for this runner, as 64 hex digits: for example the
@@ -213,6 +215,11 @@ inputs:
     default: ""
 
 outputs:
+  ctfkit-version:
+    description: >-
+      The ctfkit release that was installed, such as v0.3.0, with latest resolved. Pass it to later
+      jobs that must run the same release.
+    value: ${{ steps.install.outputs.version }}
   receipt:
     description: Path to the evidence receipt, empty when the receipt format was not requested.
     value: ${{ steps.report.outputs.receipt }}
@@ -238,7 +245,8 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Install the pinned ctfkit binary
+    - name: Install the ctfkit binary
+      id: install
       shell: bash
       env:
         CTFKIT_VERSION: ${{ inputs.version }}
@@ -384,16 +392,32 @@ runs:
             ;;
         esac
 
-        version="${CTFKIT_VERSION#v}"
-        if [ -z "${version}" ]; then
-          echo "::error::input 'version' is required; pin the ctfkit release you reviewed." >&2
+        # gh authenticates with GH_TOKEN (the github-token input), so the same download works for a
+        # public release and for one in a private repository the token can read.
+        if ! command -v gh > /dev/null 2>&1; then
+          echo "::error::the gh CLI is required to download the ctfkit release; it is preinstalled on GitHub-hosted runners." >&2
           exit 1
         fi
+        version="${CTFKIT_VERSION:-latest}"
+        if [ "${version}" = "latest" ]; then
+          # A digest pins one archive; it cannot follow a moving latest.
+          if [ -n "${CTFKIT_SHA256}" ]; then
+            echo "::error::input 'sha256' needs a pinned input 'version', not latest." >&2
+            exit 1
+          fi
+          if ! version="$(gh api "repos/${CTFKIT_REPOSITORY}/releases/latest" --jq .tag_name)"; then
+            echo "::error::could not resolve the latest ctfkit release of ${CTFKIT_REPOSITORY}; set input 'version'." >&2
+            exit 1
+          fi
+          echo "Latest ctfkit release: ${version}"
+        fi
+        version="${version#v}"
         # A release version and nothing else: it becomes a tag and part of an asset name.
         if ! [[ "${version}" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$ ]]; then
-          echo "::error::input 'version' is not a release version such as v0.2.0." >&2
+          echo "::error::input 'version' is not latest or a release version such as v0.3.0." >&2
           exit 1
         fi
+        echo "version=v${version}" >> "${GITHUB_OUTPUT}"
 
         case "$(uname -m)" in
           x86_64|amd64) arch=x86_64 ;;
@@ -406,12 +430,6 @@ runs:
         workdir="$(mktemp -d)"
         cd "${workdir}"
 
-        # gh authenticates with GH_TOKEN (the github-token input), so the same download works for a
-        # public release and for one in a private repository the token can read.
-        if ! command -v gh > /dev/null 2>&1; then
-          echo "::error::the gh CLI is required to download the ctfkit release; it is preinstalled on GitHub-hosted runners." >&2
-          exit 1
-        fi
         gh release download "v${version}" --repo "${CTFKIT_REPOSITORY}" \
           --pattern "${asset}" --pattern checksums.txt --dir .
 

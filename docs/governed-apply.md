@@ -2,7 +2,7 @@
 
 ctfkit by compliance.tf can own the plan and apply steps of a Terraform or OpenTofu run, so
 that only a plan whose verdict admits it gets applied, at most once. Four commands make up the
-flow, all preview since v0.3.0-preview.1:
+flow, all preview since v0.3.0:
 
 | Command | Does | Network and credentials |
 |---|---|---|

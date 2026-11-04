@@ -41,42 +41,44 @@ misconfigured. ctfkit tells you what your estate requires, and which module clos
 ## Status
 
 This is pre-1.0. Everything below is labeled available, preview or planned; nothing labeled
-planned has code behind it today. Releases before v0.3.0-preview.3 were not published here.
+planned has code behind it today. v0.3.0 is the first stable release published here.
 
 | Capability | Status | Since |
 |---|---|---|
 | `scan`: credential-free analysis of a configuration (`pre_plan`) or its plan JSON (`post_plan`) | available | v0.1.0 |
 | SARIF ([CFF](docs/cff.md)), JSON, text, pretty, JUnit and Spacelift metadata output | available | v0.1.0 |
 | Pre-commit hook `ctfkit` | available | v0.1.0 |
-| Pre-commit hook `ctfkit-scan-dir`, for module repositories | available | v0.3.0-preview.1 |
+| Pre-commit hook `ctfkit-scan-dir`, for module repositories | available | v0.3.0 |
 | Resource-type, provider and tag allowlists | available | v0.1.0 |
 | [OPA example](adapters/opa/README.md): a Rego policy that decides on `scan -f json` output | available | v0.2.0 |
 | `report`: reads the module cache after `init` and writes README markdown, an evidence receipt, SARIF and Spacelift metadata; reports code that runs before plan in modules at any depth | preview | v0.2.0 |
 | Analyzer SDK (`pkg/ctfkit`) and conformance harness | preview | v0.2.0 |
 | [GitHub Action](adapters/github/README.md) and [Spacelift](adapters/spacelift/README.md) adapters | preview | v0.2.0 |
-| `verify-lock`: lock files install the compliance.tf provider wrappers, not the upstream providers | preview | v0.3.0-preview.1 |
-| [Governed apply](docs/governed-apply.md): `gate plan`, `gate sign`, `verdict verify`, `apply`; `floor_mode: online` refuses, as release builds have no Evidence API client yet | preview | v0.3.0-preview.1 |
-| [Spacelift governed apply](adapters/spacelift/README.md#governed-apply) | preview | v0.3.0-preview.1 |
-| [env0 custom flow](adapters/env0/README.md); run only against stubs, not yet on a live env0 account | preview | v0.3.0-preview.1 |
-| [`evidence ship`](docs/evidence.md): provider evidence chains to S3 Object Lock and the provider-run receipt; `--api` always spools | preview | v0.3.0-preview.1 |
-| [`runtask serve`](adapters/hcp/README.md): an advisory HCP Terraform and Terraform Enterprise run task | preview | v0.3.0-preview.1 |
-| Container images (`ghcr.io/compliancetf/ctfkit`), SBOMs and build provenance attestations for release files | preview | v0.3.0-preview.3 |
+| `verify-lock`: lock files install the compliance.tf provider wrappers, not the upstream providers | preview | v0.3.0 |
+| [Governed apply](docs/governed-apply.md): `gate plan`, `gate sign`, `verdict verify`, `apply`; `floor_mode: online` refuses, as release builds have no Evidence API client yet | preview | v0.3.0 |
+| [Spacelift governed apply](adapters/spacelift/README.md#governed-apply) | preview | v0.3.0 |
+| [env0 custom flow](adapters/env0/README.md); run only against stubs, not yet on a live env0 account | preview | v0.3.0 |
+| [`evidence ship`](docs/evidence.md): provider evidence chains to S3 Object Lock and the provider-run receipt; `--api` always spools | preview | v0.3.0 |
+| [`runtask serve`](adapters/hcp/README.md): an advisory HCP Terraform and Terraform Enterprise run task | preview | v0.3.0 |
+| Container images (`ghcr.io/compliancetf/ctfkit`), SBOMs and build provenance attestations for release files | preview | v0.3.0 |
 | Homebrew cask, receipt signing | planned | |
 
 ## Install
 
 Every release on [GitHub Releases](https://github.com/compliancetf/ctfkit/releases) has
-archives for Linux, macOS and Windows, Linux packages and `checksums.txt`:
+archives for Linux, macOS and Windows, Linux packages and `checksums.txt`. This installs the
+newest release:
 
 ```bash
-V=0.3.0-preview.5 # x-release-please-version
-gh release download "v$V" --repo compliancetf/ctfkit \
-    --pattern "ctfkit_${V}_Linux_x86_64.tar.gz" --pattern checksums.txt &&
-  awk -v f="ctfkit_${V}_Linux_x86_64.tar.gz" '$2 == f' checksums.txt | sha256sum -c - &&
-  tar -xzf "ctfkit_${V}_Linux_x86_64.tar.gz" ctfkit &&
+gh release download --repo compliancetf/ctfkit \
+    --pattern 'ctfkit_*_Linux_x86_64.tar.gz' --pattern checksums.txt &&
+  sha256sum --ignore-missing -c checksums.txt &&
+  tar -xzf ctfkit_*_Linux_x86_64.tar.gz ctfkit &&
   sudo install -m 0755 ctfkit /usr/local/bin/ctfkit &&
   ctfkit version
 ```
+
+To pin a release instead, put its tag after `download`, such as `gh release download v1.2.3`.
 
 Other platforms, deb, rpm and apk packages, a download without `gh`:
 [docs/install.md](docs/install.md).
@@ -108,6 +110,8 @@ repos:
 ```
 <!-- x-release-please-end -->
 
+`pre-commit autoupdate` moves `rev` to the newest release.
+
 | Hook id | Runs | Pick it for |
 |---|---|---|
 | `ctfkit` | `ctfkit scan --stage pre_plan <staged files>` | a repository of deployable roots |
@@ -119,17 +123,19 @@ installed binary, see [docs/install.md](docs/install.md#pre-commit-hook).
 ## CI
 
 - [GitHub Action](adapters/github/README.md) (preview; plan scans; governed apply in three jobs from
-  this repository's workflow template, which needs ctfkit-action v0.3.0, not published yet): its
+  this repository's workflow template): its
   default `command: report` reads the module cache, so it needs `init` to have run. For the path with no init, plan or credentials, use `command: scan`:
 
   ```yaml
-  - uses: compliancetf/ctfkit-action@v0.2.1
+  - uses: compliancetf/ctfkit-action@v0
     with:
       command: scan
       stage: pre_plan
       chdir: infra
-      version: v0.3.0-preview.5    # ctfkit release to install; x-release-please-version
   ```
+
+  `@v0` and no `version` run the newest action and ctfkit releases. For a reproducible pipeline,
+  pin the action to a release commit SHA and set `version` to the ctfkit release you reviewed.
 - Spacelift (preview): stack hooks, plan policy and governed apply:
   [adapters/spacelift](adapters/spacelift/README.md).
 - OPA (available): a Rego policy over `scan -f json` output: [adapters/opa](adapters/opa/README.md).
