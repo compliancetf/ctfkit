@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/compliancetf/ctfkit/compare/v0.3.0...v0.4.0) (2026-11-04)
+
+
+### Features
+
+* Homebrew formula in compliancetf/homebrew-tap and a Windows arm64 build ([#19](https://github.com/compliancetf/ctfkit/issues/19)) ([f49cc3b](https://github.com/compliancetf/ctfkit/commit/f49cc3ba97b13fe1afe8a2a142ad1412cd4f76ac))
+
 ## [0.3.0](https://github.com/compliancetf/ctfkit/compare/v0.3.0-preview.5...v0.3.0) (2026-11-04)
 
 
