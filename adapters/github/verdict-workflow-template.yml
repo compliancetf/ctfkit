@@ -21,7 +21,7 @@
 #
 # Third-party actions are pinned by commit SHA. Dependabot does not scan this file, so those pins
 # are bumped by hand. Pin compliancetf/ctfkit-action to the commit of the release you reviewed;
-# plan, sign and apply ship in the first action release after v0.2.1.
+# plan, sign and apply ship in ctfkit-action v0.3.0.
 name: ctfkit governed apply
 
 on:
@@ -38,7 +38,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  CTFKIT_VERSION: v0.3.0
+  CTFKIT_VERSION: v0.3.0-preview.5
   TOFU_VERSION: 1.12.6
   INFRA_ROOT: infra/prod
   INFRA_WORKSPACE: default

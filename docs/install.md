@@ -20,7 +20,7 @@ ctfkit version
 ```
 
 Other platforms follow the same pattern: `ctfkit_<version>_<Os>_<arch>.tar.gz`, such as
-`ctfkit_${V}_Darwin_arm64.tar.gz`, and a `.zip` for Windows. Releases before v0.3.0-preview.3
+`ctfkit_${V}_Darwin_arm64.tar.gz`, and a `.zip` for Windows. Releases before v0.3.0-preview.4
 were not published in this repository.
 
 `checksums.txt` comes from the same release as the archive. It shows that the download is intact
@@ -105,7 +105,7 @@ For the behaviour of `ctfkit-scan-dir`, set `entry: ctfkit scan --stage pre_plan
 
 ## Container image
 
-Every release from v0.3.0-preview.3 on publishes a multi-arch image (linux/amd64, linux/arm64)
+Every release from v0.3.0-preview.4 on publishes a multi-arch image (linux/amd64, linux/arm64)
 with the binary on a distroless, non-root base:
 
 ```bash

@@ -4,8 +4,7 @@
 # `tofu plan -out=tfplan && tofu show -json tfplan > plan.json`; see adapters/github/workflow-template.yml.
 #
 # The action lives in the public compliancetf/ctfkit-action repository and downloads the binary
-# from the private compliancetf/ctfkit releases. CTFKIT_RELEASE_TOKEN is a fine-grained token with
-# resource owner compliancetf, repository ctfkit and Contents: read.
+# from the public compliancetf/ctfkit releases with the default job token.
 name: ctfkit
 
 on:
@@ -27,10 +26,9 @@ jobs:
       # embedded, and config and exceptions default to the files bundled with the action, never
       # files discovered in this checkout.
       - name: Scan the plan
-        uses: compliancetf/ctfkit-action@v0.2.1
+        uses: compliancetf/ctfkit-action@v0.3.0
         with:
           command: scan
           plan: plan.json
-          version: v0.2.1
-          github-token: ${{ secrets.CTFKIT_RELEASE_TOKEN }}
+          version: v0.3.0-preview.5
           fail-on: error

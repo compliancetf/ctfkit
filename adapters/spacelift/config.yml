@@ -20,10 +20,10 @@ version: "1"
 test_defaults:
   # An image that carries the pinned ctfkit binary on PATH, plus the settings and exception files
   # the hooks read. The catalog needs no file: it is compiled into the binary. No runner image is
-  # published: build one on a Spacelift runner base with ctfkit v0.2.1 or later, following
-  # https://compliance.tf/docs/ctfkit/spacelift/, and push it to a registry your Spacelift workers
-  # can pull from. A distroless image has no shell and cannot run hooks, so it cannot be the runner
-  # image. A ctfkit container image is planned and not published.
+  # published: build one on a Spacelift runner base with ctfkit v0.3.0-preview.4 or later,
+  # following https://compliance.tf/docs/ctfkit/spacelift/, and push it to a registry your
+  # Spacelift workers can pull from. The ctfkit image, ghcr.io/compliancetf/ctfkit, is distroless
+  # with no shell and cannot run hooks, so it cannot be the runner image.
   runner_image: <your-registry>/ctfkit-runner:<tag>
 
   after_init:

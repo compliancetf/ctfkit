@@ -41,7 +41,7 @@ misconfigured. ctfkit tells you what your estate requires, and which module clos
 ## Status
 
 This is pre-1.0. Everything below is labeled available, preview or planned; nothing labeled
-planned has code behind it today. Releases before v0.3.0-preview.3 were not published here.
+planned has code behind it today. Releases before v0.3.0-preview.4 were not published here.
 
 | Capability | Status | Since |
 |---|---|---|
@@ -60,7 +60,7 @@ planned has code behind it today. Releases before v0.3.0-preview.3 were not publ
 | [env0 custom flow](adapters/env0/README.md); run only against stubs, not yet on a live env0 account | preview | v0.3.0-preview.1 |
 | [`evidence ship`](docs/evidence.md): provider evidence chains to S3 Object Lock and the provider-run receipt; `--api` always spools | preview | v0.3.0-preview.1 |
 | [`runtask serve`](adapters/hcp/README.md): an advisory HCP Terraform and Terraform Enterprise run task | preview | v0.3.0-preview.1 |
-| Container images (`ghcr.io/compliancetf/ctfkit`), SBOMs and build provenance attestations for release files | preview | v0.3.0-preview.3 |
+| Container images (`ghcr.io/compliancetf/ctfkit`), SBOMs and build provenance attestations for release files | preview | v0.3.0-preview.4 |
 | Homebrew cask, receipt signing | planned | |
 
 ## Install
@@ -119,11 +119,11 @@ installed binary, see [docs/install.md](docs/install.md#pre-commit-hook).
 ## CI
 
 - [GitHub Action](adapters/github/README.md) (preview; plan scans; governed apply in three jobs from
-  this repository's workflow template, which needs ctfkit-action v0.3.0, not published yet): its
+  this repository's workflow template): its
   default `command: report` reads the module cache, so it needs `init` to have run. For the path with no init, plan or credentials, use `command: scan`:
 
   ```yaml
-  - uses: compliancetf/ctfkit-action@v0.2.1
+  - uses: compliancetf/ctfkit-action@v0.3.0
     with:
       command: scan
       stage: pre_plan

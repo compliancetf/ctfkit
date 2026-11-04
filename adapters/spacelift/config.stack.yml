@@ -26,9 +26,9 @@
 # enforce or by the ctfkit:enforce stack label.
 version: "1"
 
-# Your own image with ctfkit v0.2.1 or later on PATH; see https://compliance.tf/docs/ctfkit/spacelift/.
-# A distroless image has no shell and cannot run hooks. A ctfkit container image is planned and not
-# published.
+# Your own image with ctfkit v0.3.0-preview.4 or later on PATH; see
+# https://compliance.tf/docs/ctfkit/spacelift/. The ctfkit image, ghcr.io/compliancetf/ctfkit, is
+# distroless with no shell and cannot run hooks, so it cannot be the runner image.
 runner_image: <your-registry>/ctfkit-runner:<tag>
 
 after_init:
