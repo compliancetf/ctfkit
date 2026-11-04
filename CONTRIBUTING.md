@@ -17,7 +17,7 @@ it. A small configuration that shows the problem helps more than a real one.
 
 ## Building from source
 
-ctfkit builds with Go 1.25 (see `go.mod`). From a checkout:
+ctfkit builds with Go 1.27 (see `go.mod`). From a checkout:
 
 ```bash
 make build                 # go build -o ctfkit ./cmd/ctfkit

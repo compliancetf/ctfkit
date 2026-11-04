@@ -775,7 +775,7 @@ func injectReadme(path string, body []byte, markers markdown.Markers) error {
 		return inputError("%s: %v", path, err)
 	}
 
-	if err = os.WriteFile(path, merged, info.Mode().Perm()); err != nil { // #nosec G306 -- the file's own mode, preserved
+	if err = os.WriteFile(path, merged, info.Mode().Perm()); err != nil { // #nosec G306 G703 -- the file's own mode, preserved; the path is the operator's own --readme value
 		return inputError("writing %s: %v", path, err)
 	}
 

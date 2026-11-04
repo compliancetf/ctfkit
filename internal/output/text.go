@@ -24,16 +24,16 @@ func (f *TextFormatter) Format(violations []validator.Violation) ([]byte, error)
 		return []byte(output.String()), nil
 	}
 
-	output.WriteString(fmt.Sprintf("Found %d violations:\n\n", len(violations)))
+	fmt.Fprintf(&output, "Found %d violations:\n\n", len(violations))
 
 	for _, v := range violations {
 		label, _, _ := severityDisplay(v.Severity)
 
-		output.WriteString(fmt.Sprintf("[%s] %s\n", label, v.Message))
-		output.WriteString(fmt.Sprintf("  File: %s:%d\n", v.File, v.Line))
-		output.WriteString(fmt.Sprintf("  Rule: %s\n", v.Rule))
+		fmt.Fprintf(&output, "[%s] %s\n", label, v.Message)
+		fmt.Fprintf(&output, "  File: %s:%d\n", v.File, v.Line)
+		fmt.Fprintf(&output, "  Rule: %s\n", v.Rule)
 		if v.Remediation != "" {
-			output.WriteString(fmt.Sprintf("  Fix: %s\n", v.Remediation))
+			fmt.Fprintf(&output, "  Fix: %s\n", v.Remediation)
 		}
 		output.WriteString("\n")
 	}
@@ -41,11 +41,11 @@ func (f *TextFormatter) Format(violations []validator.Violation) ([]byte, error)
 	// Summary. Every severity is counted, so the parts add up to the total: an
 	// omitted one made a finding disappear from the line that is meant to be
 	// the at-a-glance answer.
-	output.WriteString(fmt.Sprintf("Summary: %d total, %d errors, %d warnings, %d info\n",
+	fmt.Fprintf(&output, "Summary: %d total, %d errors, %d warnings, %d info\n",
 		len(violations),
 		countBySeverity(violations, validator.SeverityError),
 		countBySeverity(violations, validator.SeverityWarning),
-		countBySeverity(violations, validator.SeverityInfo)))
+		countBySeverity(violations, validator.SeverityInfo))
 
 	return []byte(output.String()), nil
 }

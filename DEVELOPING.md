@@ -47,7 +47,7 @@ Anything a user can read (README, help text, error strings, release notes, comma
 
 ## Setup
 
-Go 1.25 (`go.mod`); tool versions are pinned in `mise.toml` (`mise install`).
+Go 1.27 (`go.mod`); tool versions are pinned in `mise.toml` (`mise install`).
 
 ```bash
 make hooks                                   # prek install: pre-commit and pre-push hooks

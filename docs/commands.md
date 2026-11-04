@@ -227,7 +227,7 @@ What `config init` writes and what `config validate` checks: [configuration.md](
 ctfkit version <version>
   commit:   <full commit sha>
   built:    2026-10-27T14:02:11Z
-  go:       go1.25.14
+  go:       go1.27.3
   platform: linux/amd64
 ```
 

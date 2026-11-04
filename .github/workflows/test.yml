@@ -50,7 +50,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
         with:
-          go-version: '1.25.x'
+          go-version: '1.27.x'
           cache: true
 
       - name: Download dependencies
@@ -80,7 +80,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
         with:
-          version: v2.6.1
+          version: v2.15.0
           args: --timeout=5m
 
       # `make check` minus its test and lint targets: the race run below covers `make test`

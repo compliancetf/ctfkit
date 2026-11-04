@@ -18,7 +18,7 @@ ctfkit scan ./infra
 Release archives, Linux packages and checksums: [Install](#install).
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
-[![Go Version](https://img.shields.io/badge/Go-1.25+-00ADD8?logo=go)](https://go.dev/)
+[![Go Version](https://img.shields.io/badge/Go-1.27+-00ADD8?logo=go)](https://go.dev/)
 
 ## What it does and does not do
 
