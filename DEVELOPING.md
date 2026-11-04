@@ -189,7 +189,11 @@ conventional commits on master; goreleaser builds them.
 5. `release.yml` runs goreleaser on the tag: archives, `checksums.txt`, an SPDX SBOM per archive,
    deb, rpm and apk packages and ghcr.io images, uploaded to the existing release with the install
    notes appended. The `attest` job writes one build provenance attestation covering every file in
-   `checksums.txt`.
+   `checksums.txt`. The `homebrew` job then dispatches the `update-formula` workflow of
+   `compliancetf/homebrew-tap`, which verifies that attestation for each macOS and Linux archive
+   and pins the archives in `Formula/ctfkit.rb`. It needs the `HOMEBREW_TAP_TOKEN` secret, a token
+   that may run workflows in that repository only; without it the tap updates on its daily
+   schedule. Never edit the formula by hand.
 6. A maintainer can also push a `v*` tag by hand; `release.yml` then creates the release itself,
    with goreleaser's changelog.
 
