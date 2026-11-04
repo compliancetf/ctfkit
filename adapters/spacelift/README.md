@@ -355,7 +355,7 @@ overwrote the other.
 
 Both config files name `<your-registry>/ctfkit-runner:<tag>`. compliance.tf publishes no Spacelift
 runner image: build one on a Spacelift runner base image with a pinned, checksum-checked ctfkit
-release (v0.3.0-preview.4 or later) on `PATH`, push it somewhere your Spacelift workers can pull from, and
+release (v0.3.0 or later) on `PATH`, push it somewhere your Spacelift workers can pull from, and
 replace the placeholder. The recipe is in the [Spacelift guide](https://compliance.tf/docs/ctfkit/spacelift/).
 It builds on `public.ecr.aws/spacelift/runner-terraform`, which is Alpine, runs as user
 `spacelift` (uid 1983) and has `curl` but neither `jq` nor `gh`.
@@ -380,7 +380,7 @@ matches. It is per archive, so an image built for both amd64 and arm64 needs one
 A release that carries a GitHub build provenance attestation can also be checked on the build host
 before the image is built, with `gh attestation verify <archive> --repo compliancetf/ctfkit
 --signer-workflow compliancetf/ctfkit/.github/workflows/release.yml --source-ref
-refs/tags/v<version>`. Releases from v0.3.0-preview.4 on carry one; see
+refs/tags/v<version>`. Every release published here carries one; see
 [Authenticating the download](../github/README.md#authenticating-the-download).
 
 The container image built from the `Dockerfile` at the root of this repository cannot be the runner

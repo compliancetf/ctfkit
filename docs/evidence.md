@@ -2,7 +2,7 @@
 
 ctfkit by compliance.tf sends the evidence. The compliance.tf provider records that evidence
 during a run. You use `ctfkit evidence ship` to do this. The command has been in preview since
-v0.3.0-preview.1. It checks the provider's evidence chains, uploads them with a run manifest to
+v0.3.0. It checks the provider's evidence chains, uploads them with a run manifest to
 S3 Object Lock, and then writes the provider-run receipt.
 
 Network and credentials: it uploads to S3 and calls AWS KMS through `--signer`, both with the

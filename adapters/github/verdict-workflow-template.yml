@@ -20,8 +20,9 @@
 # the default job token, which the contents: read grant of each job allows.
 #
 # Third-party actions are pinned by commit SHA. Dependabot does not scan this file, so those pins
-# are bumped by hand. Pin compliancetf/ctfkit-action to the commit of the release you reviewed;
-# plan, sign and apply ship in ctfkit-action v0.3.0.
+# are bumped by hand. Pin compliancetf/ctfkit-action to the commit of the release you reviewed.
+# CTFKIT_VERSION latest is resolved once, in the plan job; sign and apply install the release plan
+# used, passed on as the ctfkit-version job output. Set it to a release such as v1.2.3 to pin the ctfkit you reviewed.
 name: ctfkit governed apply
 
 on:
@@ -38,7 +39,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  CTFKIT_VERSION: v0.3.0-preview.5
+  CTFKIT_VERSION: latest
   TOFU_VERSION: 1.12.6
   INFRA_ROOT: infra/prod
   INFRA_WORKSPACE: default
@@ -50,6 +51,8 @@ env:
 jobs:
   plan:
     runs-on: ubuntu-latest
+    outputs:
+      ctfkit-version: ${{ steps.plan.outputs.ctfkit-version }}
     permissions:
       contents: read
       id-token: write
@@ -74,7 +77,8 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Plan the candidate
-        uses: compliancetf/ctfkit-action@v0.3.0 # replace with the reviewed release commit SHA
+        id: plan
+        uses: compliancetf/ctfkit-action@v0 # replace with the reviewed release commit SHA
         with:
           command: plan
           artifacts: ${{ runner.temp }}/ctfkit-artifacts
@@ -98,6 +102,8 @@ jobs:
   sign:
     needs: plan
     runs-on: ubuntu-latest
+    outputs:
+      ctfkit-version: ${{ needs.plan.outputs.ctfkit-version }}
     permissions:
       contents: read
       id-token: write
@@ -126,7 +132,7 @@ jobs:
           path: ${{ runner.temp }}/ctfkit-artifacts
 
       - name: Sign the verdict
-        uses: compliancetf/ctfkit-action@v0.3.0 # replace with the reviewed release commit SHA
+        uses: compliancetf/ctfkit-action@v0 # replace with the reviewed release commit SHA
         with:
           command: sign
           artifacts: ${{ runner.temp }}/ctfkit-artifacts
@@ -139,7 +145,7 @@ jobs:
           profile: ${{ env.CTFKIT_PROFILE }}
           floor: ${{ env.CTFKIT_FLOOR }}
           bundle-dir: ${{ env.CTFKIT_BUNDLES }}
-          version: ${{ env.CTFKIT_VERSION }}
+          version: ${{ needs.plan.outputs.ctfkit-version }}
 
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -181,7 +187,7 @@ jobs:
           path: ${{ runner.temp }}/ctfkit-artifacts
 
       - name: Apply the signed set
-        uses: compliancetf/ctfkit-action@v0.3.0 # replace with the reviewed release commit SHA
+        uses: compliancetf/ctfkit-action@v0 # replace with the reviewed release commit SHA
         with:
           command: apply
           artifacts: ${{ runner.temp }}/ctfkit-artifacts
@@ -193,4 +199,4 @@ jobs:
           profile: ${{ env.CTFKIT_PROFILE }}
           floor: ${{ env.CTFKIT_FLOOR }}
           bundle-dir: ${{ env.CTFKIT_BUNDLES }}
-          version: ${{ env.CTFKIT_VERSION }}
+          version: ${{ needs.sign.outputs.ctfkit-version }}

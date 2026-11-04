@@ -3,9 +3,6 @@
   "release-type": "go",
   "include-component-in-tag": false,
   "include-v-in-tag": true,
-  "versioning": "prerelease",
-  "prerelease": true,
-  "prerelease-type": "preview",
   "bump-minor-pre-major": true,
   "changelog-sections": [
     {
@@ -69,7 +66,8 @@
       "extra-files": [
         "README.md",
         "docs/install.md"
-      ]
+      ],
+      "release-as": "0.3.0"
     }
   }
 }
