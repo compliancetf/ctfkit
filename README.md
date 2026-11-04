@@ -104,7 +104,7 @@ ctfkit config validate .ctfkit.yaml    # check it
 ```yaml
 repos:
   - repo: https://github.com/compliancetf/ctfkit
-    rev: v0.3.0-preview.5
+    rev: v0.3.0
     hooks:
       - id: ctfkit
 ```
