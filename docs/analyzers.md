@@ -3,7 +3,7 @@
 ctfkit by compliance.tf puts its analyzers inside the binary itself. When you run
 `ctfkit scan`, it uses control ids and replacement module sources from the catalog baked
 into that binary. So no catalog file, settings file, network, or credentials are needed. The
-preview command `ctfkit report` runs `post_init` rules after `init`. [stages.md](stages.md)
+command `ctfkit report` runs `post_init` rules after `init`. [stages.md](stages.md)
 tells you what each stage can and cannot see.
 
 ## Rules
@@ -44,7 +44,7 @@ module "s3_bucket" {
 
 Rule packs embedded in the binary tell the sensitive-change rules what to check. They are
 versioned, one per provider major version. They also say which attributes hold a resource's
-tags. `hashicorp/aws` v6 is available; a `hashicorp/google` v8 proof pack is in preview. If a
+tags. `hashicorp/aws` v6 is available; a `hashicorp/google` v8 proof pack is also available. If a
 plan changes resources for a provider that has no pack, `scan` prints one stderr line with that
 provider's name and leaves those resources unchecked. Providers that manage no infrastructure,
 like `hashicorp/random`, are not named. If the lock file pins a provider major with no pack,
@@ -95,7 +95,7 @@ configuration, before `plan` runs any of it. They run at two stages:
   in every file it reads: the root, the local modules under it, and the `./` or `../` local
   modules it calls outside it, such as `../shared`, and theirs in turn. Any configuration gets
   them, with or without a compliance.tf module. A file list is read as given.
-- `ctfkit report` (preview) runs after `init` and also reads the files of every module `init`
+- `ctfkit report` runs after `init` and also reads the files of every module `init`
   installed, at any depth, including remote modules, the modules they call, and `../` local
   modules beside the root.
 
@@ -234,7 +234,7 @@ module manifest at all exits 2 before them; `scan` still applies the pre_plan ru
 
 ## Lock file rules
 
-`ctfkit verify-lock` (preview) checks the `.terraform.lock.hcl` of every deployable root for the
+`ctfkit verify-lock` checks the `.terraform.lock.hcl` of every deployable root for the
 wrapped provider types: `--provider` (repeatable: `aws`, `azurerm`, `google`), else
 `wrapped_providers` in `.ctfkit.yaml`, else `aws`. `scan --stage pre_plan` runs the same rules on
 a directory when the settings file sets `wrapped_providers`. Flags and exit codes are in
@@ -252,5 +252,5 @@ a directory when the settings file sets `wrapped_providers`. Flags and exit code
 If you serve the wrapper under `hashicorp/aws` from a network mirror,
 `ctf.lock.upstream_present` fails. That's intentional. The lock still points at the upstream
 address. A planned check will verify the wrapper entry equals the pinned wrapper release.
-Before terraform starts, `ctfkit gate plan` (preview) runs these rules on the `--dir` root
+Before terraform starts, `ctfkit gate plan` runs these rules on the `--dir` root
 ([governed-apply.md](governed-apply.md#gate-plan)).

@@ -137,7 +137,7 @@ deny contains msg if {
 	msg := failed[_]
 }
 
-# Governed apply (preview). A stack whose plan command is ctfkit gate plan (workflow.yml) carries
+# Governed apply. A stack whose plan command is ctfkit gate plan (workflow.yml) carries
 # the label ctfkit:gate, and its run carries the metadata that command writes once the candidate
 # exists, under key ctfkit-gate. On such a stack the policy requires that metadata whether or not
 # the stack is enforced: the label is the admin's statement that the stack applies only through

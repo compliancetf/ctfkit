@@ -105,14 +105,14 @@ func openS3(ctx context.Context, _ string) (sink.S3API, error) {
 func (c *CLI) evidenceCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "evidence",
-		Short: "Upload a run's evidence chains and write its receipt (preview)",
+		Short: "Upload a run's evidence chains and write its receipt",
 	}
 	cmd.AddCommand(c.evidenceShipCommand())
 	return cmd
 }
 
-const evidenceShipLong = `Upload the evidence chains of one run and write its provider-run receipt
-(preview). It reads the chains in --chains (EVIDENCE_DIR/RUN_ID/) and the
+const evidenceShipLong = `Upload the evidence chains of one run and write its provider-run receipt.
+It reads the chains in --chains (EVIDENCE_DIR/RUN_ID/) and the
 signed inputs, signs a run manifest with the --signer key (your AWS KMS key),
 uploads the chains and the manifest to each --sink, then writes the receipt to
 --receipt; the receipt is not signed. It uses the network and your AWS
@@ -147,7 +147,7 @@ func (c *CLI) evidenceShipCommand() *cobra.Command {
 	opts := &evidenceShipOptions{}
 	cmd := &cobra.Command{
 		Use:   "ship --chains DIR --workspace NAME --org ID --profile FILE --floor FILE --bundle-dir DIR --signer URI --receipt FILE [--sink URI]... [--api] [--artifacts DIR]",
-		Short: "Upload a run's evidence chains and write its receipt (preview)",
+		Short: "Upload a run's evidence chains and write its receipt",
 		Long:  evidenceShipLong,
 		Example: `  ctfkit evidence ship --chains /var/lib/ctfkit/evidence/RUN_ID --artifacts .ctfkit-artifacts \
     --workspace default --signer awskms:KEY_ARN --receipt receipt.json \

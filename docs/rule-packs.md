@@ -22,7 +22,7 @@ pack's resource prefix, so a provider fact written into Go is caught in CI.
 | Pack | Status | Covers |
 |---|---|---|
 | `aws/v6` | available | the five sensitive-change classes, controls, tags |
-| `google/v8` | preview | a proof pack: Cloud SQL instance deletion protection, bucket and instance deletion or replacement, labels for tagging |
+| `google/v8` | available | a proof pack: Cloud SQL instance deletion protection, bucket and instance deletion or replacement, labels for tagging |
 
 ## Layout
 

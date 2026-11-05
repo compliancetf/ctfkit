@@ -1,4 +1,4 @@
-# Hook configuration for a stack whose plan command is ctfkit gate plan (preview).
+# Hook configuration for a stack whose plan command is ctfkit gate plan.
 #
 # Configure this in the STACK'S SETTINGS, next to the hooks of config.stack.yml, through the
 # Spacelift UI, API or terraform provider, not as a file in the stack repository. It goes with the

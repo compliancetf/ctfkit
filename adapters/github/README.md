@@ -5,7 +5,7 @@ pinned release of the binary, verifies it against the release checksums, runs on
 over what your workflow already produced, uploads the findings to the Security tab and writes the
 markdown report to the job summary.
 
-Status: preview. For `report` and `scan` the action does not run `init`, `plan`, `test`, `tag`,
+For `report` and `scan` the action does not run `init`, `plan`, `test`, `tag`,
 `commit` or `release`. Your workflow owns those, and the action reads what they produced. `plan`,
 `sign` and `apply` run ctfkit's gate commands, which run terraform themselves; see
 [Governed apply across three jobs](#governed-apply-across-three-jobs).
@@ -17,9 +17,9 @@ Status: preview. For `report` and `scan` the action does not run `init`, `plan`,
 | `report` (default) | the module cache, via `path` | `ctfkit report` | `init` |
 | `scan` | plan JSON, via `plan` | `ctfkit scan` | `init`, `plan`, `show -json` |
 | `scan` with `stage: pre_plan` | configuration in `chdir` | `ctfkit scan --stage pre_plan` | checkout only |
-| `plan` (preview) | configuration in `chdir`, signed inputs | `ctfkit gate plan --out <artifacts>` | checkout, terraform or tofu installed |
-| `sign` (preview) | the candidate in `artifacts` | `ctfkit gate sign --candidate <artifacts>` | `plan` in an earlier job, the artifact downloaded |
-| `apply` (preview) | the signed set in `artifacts` | `ctfkit apply --artifacts <artifacts>` | `sign` in an earlier job, the artifact downloaded |
+| `plan` | configuration in `chdir`, signed inputs | `ctfkit gate plan --out <artifacts>` | checkout, terraform or tofu installed |
+| `sign` | the candidate in `artifacts` | `ctfkit gate sign --candidate <artifacts>` | `plan` in an earlier job, the artifact downloaded |
+| `apply` | the signed set in `artifacts` | `ctfkit apply --artifacts <artifacts>` | `sign` in an earlier job, the artifact downloaded |
 
 `plan` is required when `command: scan`, unless `stage: pre_plan`, which reads configuration only
 and refuses a `plan`; the action fails with a clear message either way. `path` and `format` apply to
@@ -106,7 +106,7 @@ and examples, an init step that holds the registry token, a test run, then both 
 
 ## Governed apply across three jobs
 
-`verdict-workflow-template.yml` in this directory is a copyable workflow with three jobs (preview):
+`verdict-workflow-template.yml` in this directory is a copyable workflow with three jobs:
 
 | Job | Action `command` | Hands on |
 |---|---|---|

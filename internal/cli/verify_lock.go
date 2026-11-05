@@ -34,9 +34,9 @@ func (c *CLI) verifyLockCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "verify-lock [flags] [DIR]",
-		Short: "Check that lock files install the compliance.tf provider wrappers (preview)",
+		Short: "Check that lock files install the compliance.tf provider wrappers",
 		Long: `Check the lock files of every deployable root under DIR, the working directory
-by default (preview). Each root must install the compliance.tf provider
+by default. Each root must install the compliance.tf provider
 wrappers: its .terraform.lock.hcl has a hashed
 registry.compliance.tf/compliancetf entry for each wrapped type the root uses
 and no upstream hashicorp entry for a wrapped type, and its required_providers

@@ -4,7 +4,7 @@ ctfkit by compliance.tf runs a governed apply on env0 as one custom flow file, `
 steps around env0's own plan and apply. It covers Terraform and OpenTofu templates: each hook is on
 env0's Terraform step and on the matching OpenTofu step. There is no env0-specific code in ctfkit.
 
-Status: preview. The flow has run only against stub binaries; it has not yet run on a live env0
+The flow has run only against stub binaries; it has not yet run on a live env0
 account. The points marked [verify] below are what a live run has to confirm.
 
 ## Precondition: `verdict_required`

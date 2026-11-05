@@ -158,7 +158,7 @@ into `S`, and the verifier enforces it:
 | High | A6 | the plan is not tied to the commit it claims | configuration snapshot compared with the commit tree |
 | High | - | PR code reads data at plan time through data sources | least-privilege plan and feedback roles, no cloud role for forks |
 | Residual | - | `after_unknown`, ephemeral and write-only values; non-literal provider identity; drift; state tampering; resources outside Terraform; process controls | named in the claim |
-| Residual | - | a party who can rewrite the files on the CI runner rewrites a whole provider evidence chain and recomputes its hash links; `ctfkit evidence ship` (preview) detects an edit to part of a chain, not a full rewrite | known limit; closing it needs chain heads signed by the provider or the signed acknowledgement of the Evidence API, plus signed receipts (planned); release builds have no Evidence API client yet, so `--api` always spools |
+| Residual | - | a party who can rewrite the files on the CI runner rewrites a whole provider evidence chain and recomputes its hash links; `ctfkit evidence ship` detects an edit to part of a chain, not a full rewrite | known limit; closing it needs chain heads signed by the provider or the signed acknowledgement of the Evidence API, plus signed receipts (planned); release builds have no Evidence API client yet, so `--api` always spools |
 
 ## The claim evidence can support
 

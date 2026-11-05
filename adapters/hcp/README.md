@@ -4,8 +4,6 @@ ctfkit by compliance.tf serves an HCP Terraform or Terraform Enterprise (TFE) ru
 `ctfkit runtask serve`. The run task is advisory: it reports findings and writes a receipt for
 every run, and it never produces a verdict.
 
-Status: preview.
-
 ## What a run gets
 
 HCP and TFE run `terraform plan` themselves, so no `ctfkit gate plan` candidate exists for these
@@ -91,7 +89,7 @@ after the next restart. Keep the copies your evidence retention needs elsewhere 
 | Oversized or slow input | at most 64 request bodies read at once, none without a signature header of the right length; request body up to 1 MiB; plan JSON up to `--max-plan-bytes`; header, read, write and idle timeouts on the server; dial, TLS handshake and response header timeouts on outbound calls; `--timeout` per run; `--max-concurrent` runs at once |
 | Path traversal through ids | run and task result ids must match `[A-Za-z0-9_-]{1,128}`, and the receipt is written through an `os.Root` of `--receipt-dir`, exclusively, 0600, then synced with its directory |
 
-## Limits and residual risks of this preview
+## Limits and residual risks
 
 - The configuration version archive is not downloaded, so `pre_plan` analyzers do not run and
   findings are anchored to plan addresses only.

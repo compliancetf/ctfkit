@@ -100,7 +100,7 @@ as scan does. With no PATH, ctfkit prints this help and exits 0.`
 const rootExample = `  ctfkit scan ./infra                      # check .tf files before init
   ctfkit scan plan.json                    # check a plan: terraform show -json tfplan > plan.json
   ctfkit scan plan.json -f sarif --out findings.sarif
-  ctfkit report                            # after terraform init (preview)
+  ctfkit report                            # after terraform init
   ctfkit config init                       # write a starter .ctfkit.yaml`
 
 // rootUsageLines replaces cobra's usage lines on the root help only: the root
@@ -159,8 +159,8 @@ func (c *CLI) setupCommands() {
 
 	c.rootCmd.AddGroup(
 		&cobra.Group{ID: groupCheck, Title: "Check configurations and plans:"},
-		&cobra.Group{ID: groupGoverned, Title: "Governed apply (preview):"},
-		&cobra.Group{ID: groupRuntask, Title: "Run tasks (preview):"},
+		&cobra.Group{ID: groupGoverned, Title: "Governed apply:"},
+		&cobra.Group{ID: groupRuntask, Title: "Run tasks:"},
 		&cobra.Group{ID: groupSetup, Title: "Settings and help:"},
 	)
 	for _, g := range []struct {

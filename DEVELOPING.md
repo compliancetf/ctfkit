@@ -4,7 +4,7 @@ ctfkit by compliance.tf is an Apache-2.0 analyzer runtime for Terraform and Open
 configuration, plans and module manifests into consistent SARIF findings and an evidence receipt,
 and hands its results to the policy workflow the user already has. `scan`, `report` and
 `verify-lock` run inside CI offline: no network connection, no credentials, no terraform. The
-preview commands do not: `gate plan`, `gate sign`, `verdict verify` and `apply` run terraform,
+governed apply, evidence and run task commands do not: `gate plan`, `gate sign`, `verdict verify` and `apply` run terraform,
 `gate sign` and `evidence ship` call AWS KMS, `evidence ship` uploads to S3, and `runtask serve`
 serves HCP Terraform requests and downloads plans. When a compliance.tf module would have
 prevented a finding, it names the exact module source.
@@ -24,7 +24,7 @@ change it describes.
   ([CONTRIBUTING.md](CONTRIBUTING.md)), security reports follow [SECURITY.md](SECURITY.md).
 - Docs that describe a change ship in the same pull request. A behaviour change with no README,
   help-text or reference update is not done.
-- Label every capability available, preview or planned. Do not describe planned work as
+- Label every capability available or planned. Do not describe planned work as
   available.
 
 ### Public-facing text

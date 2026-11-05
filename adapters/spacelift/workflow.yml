@@ -1,4 +1,4 @@
-# Custom workflow for a governed apply with ctfkit by compliance.tf (preview).
+# Custom workflow for a governed apply with ctfkit by compliance.tf.
 #
 # Precondition: the org profile sets verdict_required. The ctfkit-gate metadata this workflow
 # writes is a marker that any planning-time command could write, not evidence of a verdict; see

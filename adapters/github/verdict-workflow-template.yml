@@ -1,4 +1,4 @@
-# Copyable workflow for a governed apply (preview): ctfkit gate plan, ctfkit gate sign and ctfkit
+# Copyable workflow for a governed apply : ctfkit gate plan, ctfkit gate sign and ctfkit
 # apply in three jobs, the artifact set moved between them as one GitHub artifact. Copy it to
 # .github/workflows/ctfkit-apply.yml in your infrastructure repository and edit the env block and
 # the repository variables it reads. It is a template, not a reusable workflow.

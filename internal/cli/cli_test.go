@@ -178,8 +178,8 @@ func TestRootHelp(t *testing.T) {
 		"Usage:\n  ctfkit COMMAND [flags]\n  ctfkit PATH... [flags]\n",
 		"Examples:\n  ctfkit scan ./infra",
 		"Check configurations and plans:\n  scan ", "\n  report ", "\n  verify-lock ",
-		"Governed apply (preview):\n  gate ", "\n  verdict ", "\n  apply ", "\n  evidence ",
-		"Run tasks (preview):\n  runtask ",
+		"Governed apply:\n  gate ", "\n  verdict ", "\n  apply ", "\n  evidence ",
+		"Run tasks:\n  runtask ",
 		"Settings and help:\n  config ", "\n  version ", "\n  completion ", "\n  help ",
 		"-f, --format LIST",
 	} {
@@ -194,24 +194,19 @@ func TestRootHelp(t *testing.T) {
 	}
 }
 
-// TestHelpText holds every command's help to the rules for public text: a
-// preview command says so in its Short, the text is plain ASCII, no help calls
+// TestHelpText holds every command's help to the rules for public text: no
+// Short carries a preview label, the text is plain ASCII, no help calls
 // ctfkit a policy engine, and the commands that run terraform are not called
 // offline.
 func TestHelpText(t *testing.T) {
-	preview := map[string]bool{
-		"report": true, "verify-lock": true, "gate": true, "gate plan": true, "gate sign": true,
-		"verdict": true, "verdict verify": true, "apply": true, "evidence": true, "evidence ship": true,
-		"runtask": true, "runtask serve": true,
-	}
 	runsTerraform := map[string]bool{"gate plan": true, "gate sign": true, "verdict verify": true, "apply": true}
 
 	var walk func(cmd *cobra.Command)
 	walk = func(cmd *cobra.Command) {
 		path := strings.TrimPrefix(cmd.CommandPath(), "ctfkit ")
 		text := cmd.Short + "\n" + cmd.Long + "\n" + cmd.Example + "\n" + cmd.Flags().FlagUsages()
-		if preview[path] != strings.HasSuffix(cmd.Short, " (preview)") {
-			t.Errorf("%s: Short %q, want the (preview) label exactly when the command is preview", path, cmd.Short)
+		if strings.Contains(strings.ToLower(cmd.Short), "preview") {
+			t.Errorf("%s: Short %q carries a preview label", path, cmd.Short)
 		}
 		for i, r := range text {
 			if r > 0x7f {

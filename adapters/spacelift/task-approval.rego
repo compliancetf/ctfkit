@@ -1,4 +1,4 @@
-# Spacelift approval policy for ctfkit by compliance.tf (sample, preview): no tasks on a
+# Spacelift approval policy for ctfkit by compliance.tf (sample): no tasks on a
 # ctfkit:gate stack.
 #
 # A task runs an arbitrary command in the stack's workspace with the stack's credentials, outside

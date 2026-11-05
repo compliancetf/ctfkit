@@ -4,8 +4,6 @@ One Terraform configuration, one finding, three places it shows up: the terminal
 Security tab and a Spacelift plan policy. Every output below was produced by ctfkit by compliance.tf
 from the `plan.json` committed here, and `sample_test.go` reproduces all three on every `go test`.
 
-Status: preview, alongside the two adapters it exercises.
-
 ## What you need
 
 - the `ctfkit` binary

@@ -24,14 +24,14 @@ Commands, in the order `ctfkit --help` groups them:
 | Group | Command | Does |
 |---|---|---|
 | Check configurations and plans | `scan` | Check a configuration (pre_plan) or a plan JSON (post_plan) |
-| | `report` | Report the controls compliance.tf modules enforce, after init (preview) |
-| | `verify-lock` | Check that lock files install the compliance.tf provider wrappers (preview) |
-| Governed apply (preview) | `gate plan` | Run terraform plan and write a candidate artifact set (preview) |
-| | `gate sign` | Decide a candidate and write `verdict.json`, signed with the AWS KMS key `--signer` names (preview) |
-| | `verdict verify` | Run every check of apply on an artifact set, apply nothing (preview) |
-| | `apply` | Apply the sealed plan of a checked artifact set (preview) |
-| | `evidence ship` | Upload a run's evidence chains and write its receipt (preview) |
-| Run tasks (preview) | `runtask serve` | Serve an advisory run task: findings and a receipt, no verdict (preview) |
+| | `report` | Report the controls compliance.tf modules enforce, after init |
+| | `verify-lock` | Check that lock files install the compliance.tf provider wrappers |
+| Governed apply | `gate plan` | Run terraform plan and write a candidate artifact set |
+| | `gate sign` | Decide a candidate and write `verdict.json`, signed with the AWS KMS key `--signer` names |
+| | `verdict verify` | Run every check of apply on an artifact set, apply nothing |
+| | `apply` | Apply the sealed plan of a checked artifact set |
+| | `evidence ship` | Upload a run's evidence chains and write its receipt |
+| Run tasks | `runtask serve` | Serve an advisory run task: findings and a receipt, no verdict |
 | Settings and help | `config init` | Write a starter .ctfkit.yaml in the working directory |
 | | `config validate` | Check a settings file and print what it sets |
 | | `version` | Print the version, commit, build date, Go version and platform |
@@ -122,7 +122,7 @@ The rules scan runs are contained within the [analyzers.md](analyzers.md) file.
 
 ## ctfkit report
 
-Report the controls compliance.tf modules enforce, after init (preview since v0.2.0).
+Report the controls compliance.tf modules enforce, after init (since v0.2.0).
 
 ```bash
 terraform init
@@ -170,7 +170,7 @@ signing is planned.
 
 ## ctfkit verify-lock
 
-Check that lock files install the compliance.tf provider wrappers (preview since
+Check that lock files install the compliance.tf provider wrappers (since
 v0.3.0).
 
 ```bash
@@ -191,7 +191,7 @@ file that does not parse.
 
 ## Governed apply commands
 
-`gate plan`, `gate sign`, `verdict verify` and `apply` (preview since v0.3.0) take the
+`gate plan`, `gate sign`, `verdict verify` and `apply` (since v0.3.0) take the
 same signed inputs (`--org`, `--profile`, `--floor`, `--bundle-dir`) and run identity (`--dir`,
 `--workspace`, `--environment`, `--tf-bin`). Each one's flags, checks and exit codes are in
 [governed-apply.md](governed-apply.md). `gate sign` takes `-f sarif` to print its graph decisions
@@ -199,12 +199,12 @@ as SARIF, and `--fail-on` with `error`, `warning` or `note` (no `never`).
 
 ## ctfkit evidence ship
 
-Upload a run's evidence chains and write its receipt (preview since v0.3.0). Flags,
+Upload a run's evidence chains and write its receipt (since v0.3.0). Flags,
 runner class, receipt status and exit codes: [evidence.md](evidence.md).
 
 ## ctfkit runtask serve
 
-Serve an advisory run task: findings and a receipt, no verdict (preview since
+Serve an advisory run task: findings and a receipt, no verdict (since
 v0.3.0). It checks each request's HMAC-SHA512 signature and replay window, downloads
 the run's plan JSON within a size and time limit, runs the `post_plan` analyzers, writes a
 receipt per run and posts the findings back as the task result. Setup, flags and the threat

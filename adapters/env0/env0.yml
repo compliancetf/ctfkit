@@ -1,4 +1,4 @@
-# env0 custom flow for a governed apply with ctfkit by compliance.tf (preview).
+# env0 custom flow for a governed apply with ctfkit by compliance.tf.
 #
 # Precondition: the org profile sets verdict_required. env0 still runs its own plan and apply,
 # and only verdict_required makes the provider refuse what that apply would change without a

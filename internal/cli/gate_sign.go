@@ -46,8 +46,8 @@ func (c *CLI) gateSignCommand() *cobra.Command {
 	opts := &gateSignOptions{format: formatText}
 	cmd := &cobra.Command{
 		Use:   "sign --candidate DIR --dir DIR --workspace NAME --environment NAME --tf-bin PATH --org ID --profile FILE --floor FILE --bundle-dir DIR --signer URI",
-		Short: "Decide a candidate and sign its verdict with your KMS key (preview)",
-		Long: `Decide a candidate artifact set (preview) and write verdict.json into
+		Short: "Decide a candidate and sign its verdict with your KMS key",
+		Long: `Decide a candidate artifact set and write verdict.json into
 --candidate, signed with the key --signer names (your AWS KMS key). gate sign
 verifies the set gate plan wrote and the signed inputs, runs terraform version,
 init and show -json on a sealed copy of the planfile (no plan, no apply),
