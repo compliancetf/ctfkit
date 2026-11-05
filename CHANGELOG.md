@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/compliancetf/ctfkit/compare/v0.4.0...v0.4.1) (2026-11-05)
+
+
+### Bug fixes
+
+* drop the preview label; every shipped command is available ([#22](https://github.com/compliancetf/ctfkit/issues/22)) ([6003e0f](https://github.com/compliancetf/ctfkit/commit/6003e0fd31793210641e5b1250302ecc4db10731))
+
 ## [0.4.0](https://github.com/compliancetf/ctfkit/compare/v0.3.0...v0.4.0) (2026-11-04)
 
 
