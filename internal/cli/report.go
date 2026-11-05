@@ -100,9 +100,9 @@ func (c *CLI) reportCommand() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "report",
-		Short: "Report the controls compliance.tf modules enforce, after init (preview)",
-		Long: `Report the controls that the compliance.tf modules of a configuration enforce
-(preview). Run it after terraform init or tofu init. It reads
+		Short: "Report the controls compliance.tf modules enforce, after init",
+		Long: `Report the controls that the compliance.tf modules of a configuration enforce.
+Run it after terraform init or tofu init. It reads
 .terraform/modules, the module manifests, .ctfkit.yaml and .ctf-exceptions.yaml
 in the working directory. It writes the formats --format lists (markdown by
 default) to stdout, --out or --out-dir. --readme FILE puts the markdown into the

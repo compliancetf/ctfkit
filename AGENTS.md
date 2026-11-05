@@ -18,6 +18,6 @@ The short version:
   of the maintainers, not here. If it is available in your session, follow its `AGENTS.md`. Never
   copy its content, names or ids into this repository, and keep no issue-tracker state here.
 - ctfkit produces findings; it is not a policy engine or a scanner. Findings, SARIF, JSON and
-  receipts are not signed. Label capabilities available, preview or planned.
+  receipts are not signed. Label capabilities available or planned.
 - Exit codes are a contract: `0` passed, `1` policy violations, `2` configuration or runtime
   error.

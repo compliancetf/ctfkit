@@ -2,8 +2,8 @@
 
 ## Supported versions
 
-Security fixes go into the latest release of ctfkit by compliance.tf, including a preview
-release when that is the latest. Older releases do not get fixes; upgrade to the latest
+Security fixes go into the latest release of ctfkit by compliance.tf, including a prerelease
+when that is the latest. Older releases do not get fixes; upgrade to the latest
 release to pick one up.
 
 ## Reporting a vulnerability

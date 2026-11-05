@@ -355,7 +355,7 @@ func summary(fs ctfkit.Findings) string {
 			other++
 		}
 	}
-	return fmt.Sprintf("ctfkit by compliance.tf (preview): %d error, %d warning and %d other findings", errs, warns, other)
+	return fmt.Sprintf("ctfkit by compliance.tf : %d error, %d warning and %d other findings", errs, warns, other)
 }
 
 func clip(s string) string {

@@ -1,5 +1,5 @@
 // Package hcp is the HCP Terraform and Terraform Enterprise run task adapter
-// behind `ctfkit runtask serve` (preview). It runs in advisory mode only: it
+// behind `ctfkit runtask serve`. It runs in advisory mode only: it
 // verifies the run task request, downloads the plan JSON of the run, runs the
 // post_plan analyzers over it, writes a provider-run receipt and posts the
 // task result back. It never produces a verdict: HCP and TFE run terraform

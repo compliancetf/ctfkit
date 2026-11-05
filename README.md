@@ -28,7 +28,7 @@ misconfigured. ctfkit tells you what your estate requires, and which module clos
 
 - `scan`, `report`, `verify-lock` and `config` run offline: they never run terraform or tofu
   and need no network or credentials. `report --readme` and `config init` write files.
-- The preview commands reach further ([per command](docs/commands.md#network-and-credentials)):
+- The governed apply, evidence and run task commands reach further ([per command](docs/commands.md#network-and-credentials)):
   `gate plan` and `apply` run terraform; `gate sign` and `verdict verify` run only terraform
   `version`, `init` and `show -json` on the sealed plan; `gate sign` and `evidence ship` call
   AWS KMS; `evidence ship` uploads to S3; `runtask serve` downloads plan JSON from HCP Terraform
@@ -40,7 +40,7 @@ misconfigured. ctfkit tells you what your estate requires, and which module clos
 
 ## Status
 
-This is pre-1.0. Everything below is labeled available, preview or planned; nothing labeled
+This is pre-1.0. Everything below is labeled available or planned; nothing labeled
 planned has code behind it today. v0.3.0 is the first stable release published here.
 
 | Capability | Status | Since |
@@ -51,16 +51,16 @@ planned has code behind it today. v0.3.0 is the first stable release published h
 | Pre-commit hook `ctfkit-scan-dir`, for module repositories | available | v0.3.0 |
 | Resource-type, provider and tag allowlists | available | v0.1.0 |
 | [OPA example](adapters/opa/README.md): a Rego policy that decides on `scan -f json` output | available | v0.2.0 |
-| `report`: reads the module cache after `init` and writes README markdown, an evidence receipt, SARIF and Spacelift metadata; reports code that runs before plan in modules at any depth | preview | v0.2.0 |
-| Analyzer SDK (`pkg/ctfkit`) and conformance harness | preview | v0.2.0 |
-| [GitHub Action](adapters/github/README.md) and [Spacelift](adapters/spacelift/README.md) adapters | preview | v0.2.0 |
-| `verify-lock`: lock files install the compliance.tf provider wrappers, not the upstream providers | preview | v0.3.0 |
-| [Governed apply](docs/governed-apply.md): `gate plan`, `gate sign`, `verdict verify`, `apply`; `floor_mode: online` refuses, as release builds have no Evidence API client yet | preview | v0.3.0 |
-| [Spacelift governed apply](adapters/spacelift/README.md#governed-apply) | preview | v0.3.0 |
-| [env0 custom flow](adapters/env0/README.md); run only against stubs, not yet on a live env0 account | preview | v0.3.0 |
-| [`evidence ship`](docs/evidence.md): provider evidence chains to S3 Object Lock and the provider-run receipt; `--api` always spools | preview | v0.3.0 |
-| [`runtask serve`](adapters/hcp/README.md): an advisory HCP Terraform and Terraform Enterprise run task | preview | v0.3.0 |
-| Container images (`ghcr.io/compliancetf/ctfkit`), SBOMs and build provenance attestations for release files | preview | v0.3.0 |
+| `report`: reads the module cache after `init` and writes README markdown, an evidence receipt, SARIF and Spacelift metadata; reports code that runs before plan in modules at any depth | available | v0.2.0 |
+| Analyzer SDK (`pkg/ctfkit`) and conformance harness | available | v0.2.0 |
+| [GitHub Action](adapters/github/README.md) and [Spacelift](adapters/spacelift/README.md) adapters | available | v0.2.0 |
+| `verify-lock`: lock files install the compliance.tf provider wrappers, not the upstream providers | available | v0.3.0 |
+| [Governed apply](docs/governed-apply.md): `gate plan`, `gate sign`, `verdict verify`, `apply`; `floor_mode: online` refuses, as release builds have no Evidence API client yet | available | v0.3.0 |
+| [Spacelift governed apply](adapters/spacelift/README.md#governed-apply) | available | v0.3.0 |
+| [env0 custom flow](adapters/env0/README.md); run only against stubs, not yet on a live env0 account | available | v0.3.0 |
+| [`evidence ship`](docs/evidence.md): provider evidence chains to S3 Object Lock and the provider-run receipt; `--api` always spools | available | v0.3.0 |
+| [`runtask serve`](adapters/hcp/README.md): an advisory HCP Terraform and Terraform Enterprise run task | available | v0.3.0 |
+| Container images (`ghcr.io/compliancetf/ctfkit`), SBOMs and build provenance attestations for release files | available | v0.3.0 |
 | [Homebrew formula](docs/install.md#homebrew) `compliancetf/tap/ctfkit`, for macOS and Linux | available | v0.3.0 |
 | Windows arm64 archive | available | v0.4.0 |
 | Receipt signing | planned | |
@@ -100,7 +100,7 @@ ctfkit ./infra                         # the same, short form
 ctfkit scan plan.json                  # post_plan: terraform show -json tfplan > plan.json
 ctfkit scan plan.json -f sarif --out findings.sarif
 ctfkit scan plan.json -f json --fail-on never > findings.json   # for OPA
-ctfkit report                          # after terraform init (preview)
+ctfkit report                          # after terraform init
 ctfkit config init                     # write a starter .ctfkit.yaml
 ctfkit config validate .ctfkit.yaml    # check it
 ```
@@ -131,7 +131,7 @@ installed binary, see [docs/install.md](docs/install.md#pre-commit-hook).
 
 ## CI
 
-- [GitHub Action](adapters/github/README.md) (preview; plan scans; governed apply in three jobs from
+- [GitHub Action](adapters/github/README.md) (plan scans; governed apply in three jobs from
   this repository's workflow template): its
   default `command: report` reads the module cache, so it needs `init` to have run. For the path with no init, plan or credentials, use `command: scan`:
 
@@ -145,11 +145,11 @@ installed binary, see [docs/install.md](docs/install.md#pre-commit-hook).
 
   `@v0` and no `version` run the newest action and ctfkit releases. For a reproducible pipeline,
   pin the action to a release commit SHA and set `version` to the ctfkit release you reviewed.
-- Spacelift (preview): stack hooks, plan policy and governed apply:
+- Spacelift : stack hooks, plan policy and governed apply:
   [adapters/spacelift](adapters/spacelift/README.md).
 - OPA (available): a Rego policy over `scan -f json` output: [adapters/opa](adapters/opa/README.md).
-- env0 (preview): a custom flow for governed apply: [adapters/env0](adapters/env0/README.md).
-- HCP Terraform and Terraform Enterprise run task (preview): `ctfkit runtask serve`, advisory
+- env0 : a custom flow for governed apply: [adapters/env0](adapters/env0/README.md).
+- HCP Terraform and Terraform Enterprise run task : `ctfkit runtask serve`, advisory
   findings and a receipt per run: [adapters/hcp](adapters/hcp/README.md).
 - Any other CI: `ctfkit scan infra -f sarif --out findings.sarif`.
 
@@ -190,14 +190,14 @@ Every key, `allowed_endpoints` included, and the exception registry:
 | [docs/analyzers.md](docs/analyzers.md) | every rule, rule packs, code that runs before plan, lock file rules |
 | [docs/configuration.md](docs/configuration.md) | `.ctfkit.yaml` keys, the exception registry, the catalog |
 | [docs/stages.md](docs/stages.md) | what each stage can and cannot see |
-| [docs/governed-apply.md](docs/governed-apply.md) | `gate plan`, `gate sign`, `verdict verify`, `apply`, run custody, preview limits |
+| [docs/governed-apply.md](docs/governed-apply.md) | `gate plan`, `gate sign`, `verdict verify`, `apply`, run custody, limits |
 | [docs/evidence.md](docs/evidence.md) | `evidence ship`, runner class, receipt status, known limit |
 | [docs/cff.md](docs/cff.md) | CFF, the findings format |
 | [docs/rule-packs.md](docs/rule-packs.md) | rule pack format and adding a provider |
 | [docs/threat-model.md](docs/threat-model.md) | threats and the planned plan-to-apply binding |
 
 The documentation site is <https://compliance.tf/docs/ctfkit/>, with a
-[Spacelift integration guide](https://compliance.tf/docs/ctfkit/spacelift/) (preview): runner
+[Spacelift integration guide](https://compliance.tf/docs/ctfkit/spacelift/) : runner
 image recipe, stack hooks, plan policy, per-stack `ctfkit:enforce` label. Related:
 [compliance.tf](https://compliance.tf), the module registry whose requirements ctfkit reports
 against, and [antonbabenko/pre-commit-terraform](https://github.com/antonbabenko/pre-commit-terraform),

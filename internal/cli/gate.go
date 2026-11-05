@@ -56,8 +56,8 @@ type gatePlanOptions struct {
 func (c *CLI) gateCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "gate",
-		Short: "Plan a candidate and decide its verdict (preview)",
-		Long: `Governed apply in three steps (preview): gate plan runs terraform plan and
+		Short: "Plan a candidate and decide its verdict",
+		Long: `Governed apply in three steps : gate plan runs terraform plan and
 writes a candidate artifact set, gate sign decides the candidate and writes
 verdict.json, signed with the key --signer names (your AWS KMS key), and ctfkit
 apply applies the sealed plan. ctfkit verdict verify runs the checks of apply
@@ -86,7 +86,7 @@ const (
 	runFlagsLine     = "    --dir infra --workspace default --environment prod --tf-bin /usr/bin/terraform \\\n"
 )
 
-const gatePlanLong = `Run terraform plan and write a candidate artifact set to --out (preview). gate
+const gatePlanLong = `Run terraform plan and write a candidate artifact set to --out. gate
 plan verifies the signed bundles, org profile and floor statement, checks the
 --dir lock file with the verify-lock rules, then runs terraform init, providers
 schema -json, plan and show -json in a run directory ctfkit owns and removes
@@ -119,7 +119,7 @@ func (c *CLI) gatePlanCommand() *cobra.Command {
 	opts := &gatePlanOptions{}
 	cmd := &cobra.Command{
 		Use:     "plan --out DIR --workspace NAME --environment NAME --tf-bin PATH --org ID --profile FILE --floor FILE --bundle-dir DIR",
-		Short:   "Run terraform plan and write a candidate artifact set (preview)",
+		Short:   "Run terraform plan and write a candidate artifact set",
 		Long:    gatePlanLong,
 		Example: "  ctfkit gate plan --out .ctfkit-artifacts \\\n" + runFlagsLine + signedFlagsLine,
 		Args:    noArgs,

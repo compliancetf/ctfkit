@@ -1,8 +1,8 @@
-# Governed apply (preview)
+# Governed apply
 
 ctfkit by compliance.tf can own the plan and apply steps of a Terraform or OpenTofu run, so
 that only a plan whose verdict admits it gets applied, at most once. Four commands make up the
-flow, all preview since v0.3.0:
+flow, all available since v0.3.0:
 
 | Command | Does | Network and credentials |
 |---|---|---|
@@ -212,7 +212,7 @@ terraform apply has run. `result.json` records the outcome.
 the set as it is. Exit 0 when `ctfkit apply` would run terraform apply, 2 when it could not run
 or refused.
 
-## Limits of this preview
+## Limits
 
 - Release builds have no Evidence API client, so `floor_mode: online` always refuses at apply.
 - Exceptions, baselines and receipts are not verified yet, so a provisional decision blocks.

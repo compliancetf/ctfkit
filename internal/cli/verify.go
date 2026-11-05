@@ -30,12 +30,12 @@ type applyOptions struct {
 }
 
 func (c *CLI) verdictCommand() *cobra.Command {
-	cmd := &cobra.Command{Use: "verdict", Short: "Check an artifact set without applying it (preview)"}
+	cmd := &cobra.Command{Use: "verdict", Short: "Check an artifact set without applying it"}
 	cmd.AddCommand(c.signedSetCommand(false))
 	return cmd
 }
 
-const verdictVerifyLong = `Run every check of ctfkit apply on an artifact set and apply nothing (preview).
+const verdictVerifyLong = `Run every check of ctfkit apply on an artifact set and apply nothing.
 It reads the set in --artifacts, the signed inputs and the --dir lock file, and
 runs terraform version, init and show -json on a sealed copy of the planfile
 (no plan, no apply); terraform may use the network and your backend
@@ -58,7 +58,7 @@ set.
 
 Details: docs/governed-apply.md`
 
-const applyLong = `Apply the sealed plan of a checked artifact set, at most once (preview). apply
+const applyLong = `Apply the sealed plan of a checked artifact set, at most once. apply
 first takes the set's owner lock and claims the set, then runs every check of
 ctfkit verdict verify on --artifacts and terraform apply on its sealed copy of
 the planfile; terraform uses the network and your cloud credentials. The
@@ -99,12 +99,12 @@ Details: docs/governed-apply.md`
 func (c *CLI) signedSetCommand(apply bool) *cobra.Command {
 	opts := &applyOptions{}
 	use := "verify --artifacts DIR --dir DIR --workspace NAME --environment NAME --tf-bin PATH --org ID --profile FILE --floor FILE --bundle-dir DIR"
-	short := "Run every check of apply on an artifact set, apply nothing (preview)"
+	short := "Run every check of apply on an artifact set, apply nothing"
 	long := verdictVerifyLong
 	example := "  ctfkit verdict verify --artifacts .ctfkit-artifacts \\\n" + runFlagsLine + signedFlagsLine
 	if apply {
 		use = "apply" + strings.TrimPrefix(use, "verify")
-		short = "Apply the sealed plan of a checked artifact set (preview)"
+		short = "Apply the sealed plan of a checked artifact set"
 		long = applyLong
 		example = "  ctfkit apply --artifacts .ctfkit-artifacts \\\n" + runFlagsLine + signedFlagsLine
 	}

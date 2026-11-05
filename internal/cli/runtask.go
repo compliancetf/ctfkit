@@ -41,13 +41,13 @@ type runtaskOptions struct {
 }
 
 func (c *CLI) runtaskCommand() *cobra.Command {
-	cmd := &cobra.Command{Use: "runtask", Short: "HCP Terraform and Terraform Enterprise run task (preview)"}
+	cmd := &cobra.Command{Use: "runtask", Short: "HCP Terraform and Terraform Enterprise run task"}
 	cmd.AddCommand(c.runtaskServeCommand())
 	return cmd
 }
 
 const runtaskServeLong = `Serve an advisory run task for HCP Terraform or Terraform Enterprise: findings
-and a receipt, no verdict (preview). It checks every flag and signed input
+and a receipt, no verdict. It checks every flag and signed input
 before it listens on --listen, and reads .ctfkit.yaml in the working directory.
 For each request signed with the key in --hmac-key-file, it downloads the plan
 JSON from --hostname (a redirect may go to --archive-host only), runs the
@@ -73,7 +73,7 @@ func (c *CLI) runtaskServeCommand() *cobra.Command {
 	opts := &runtaskOptions{listen: "127.0.0.1:8080", hostname: hcpHostname}
 	cmd := &cobra.Command{
 		Use:   "serve --hmac-key-file FILE --receipt-dir DIR --org ID --profile FILE --floor FILE --bundle-dir DIR",
-		Short: "Serve an advisory run task: findings and a receipt, no verdict (preview)",
+		Short: "Serve an advisory run task: findings and a receipt, no verdict",
 		Long:  runtaskServeLong,
 		Example: `  ctfkit runtask serve --listen 0.0.0.0:8443 --tls-cert tls.crt --tls-key tls.key \
     --hmac-key-file /etc/ctfkit/runtask.key --receipt-dir /var/lib/ctfkit/receipts \
@@ -131,7 +131,7 @@ func (c *CLI) runtaskServe(cmd *cobra.Command, opts *runtaskOptions) error {
 		scheme = "https"
 		ln = tls.NewListener(ln, tlsCfg)
 	}
-	cfg.Log.Printf("runtask serve (preview) listening on %s://%s", scheme, ln.Addr())
+	cfg.Log.Printf("runtask serve listening on %s://%s", scheme, ln.Addr())
 	served := make(chan error, 1)
 	go func() { served <- srv.Serve(ln) }()
 	select {

@@ -3,16 +3,15 @@
 ctfkit by compliance.tf runs on Spacelift as three small pieces: hooks, JSON files and a plan
 policy. There is no WASM module, no custom policy engine and no Spacelift-specific code in ctfkit.
 
-Status: preview.
 
 | File | Goes where | Does what |
 |---|---|---|
 | `config.yml` | `.spacelift/config.yml` in a **module repository** | Runs the report hook in every module test case |
 | `config.stack.yml` | a **consuming stack's settings**, not a file in the repository | Runs the report and scan hooks in every stack run |
 | `policy.rego` | A Spacelift **Plan policy**, attached to the stacks that run the hooks | Renders the hooks' results |
-| `workflow.yml` | a **governed-apply stack's** custom workflow, mounted from a context (preview) | Makes `ctfkit gate plan` the plan command and `ctfkit apply` the apply command |
-| `config.gate.yml` | the same stack's settings, next to `config.stack.yml` (preview) | Runs `ctfkit gate sign` in `before_apply` |
-| `task-approval.rego` | a Spacelift **Approval policy**, attached to every `ctfkit:gate` stack (sample, preview) | Rejects tasks on that stack |
+| `workflow.yml` | a **governed-apply stack's** custom workflow, mounted from a context | Makes `ctfkit gate plan` the plan command and `ctfkit apply` the apply command |
+| `config.gate.yml` | the same stack's settings, next to `config.stack.yml` | Runs `ctfkit gate sign` in `before_apply` |
+| `task-approval.rego` | a Spacelift **Approval policy**, attached to every `ctfkit:gate` stack (sample) | Rejects tasks on that stack |
 | `test/*.json` | Nothing; they are offline checks | Policy inputs for `opa eval` |
 
 ## Two hooks, two metadata keys
@@ -233,7 +232,7 @@ keeps the fixture honest if the policy ever goes back to counting.
 
 ## Governed apply
 
-Preview. A stack gets graph verdicts only when `ctfkit gate plan` makes its plan and `ctfkit apply`
+A stack gets graph verdicts only when `ctfkit gate plan` makes its plan and `ctfkit apply`
 applies that same artifact set, unregenerated. On Spacelift that takes three pieces, all owned by a
 platform admin, and one precondition.
 
@@ -241,8 +240,8 @@ Precondition: the org profile of a `ctfkit:gate` stack sets `verdict_required`. 
 metadata the plan policy requires is a marker, not evidence: any command that runs during
 planning can write it, including a committed `.spacelift/workflow.yml` or code terraform runs at
 plan time. Only `verdict_required` makes the provider refuse an apply that carries no verdict,
-whatever the policy saw. Before this adapter goes past preview, confirm on a live Spacelift
-account which workflow file wins when a mounted and a committed one both exist.
+whatever the policy saw. Still to confirm on a live Spacelift
+account: which workflow file wins when a mounted and a committed one both exist.
 
 | Piece | Where | Does what |
 |---|---|---|

@@ -13,7 +13,7 @@ inputs:
     description: >-
       Which ctfkit command to run. report (default) reads the module cache after the caller's init.
       scan reads the caller's plan JSON after init, plan and show -json. plan, sign and apply
-      (preview) run ctfkit gate plan, ctfkit gate sign and ctfkit apply on the artifact set in
+      run ctfkit gate plan, ctfkit gate sign and ctfkit apply on the artifact set in
       artifacts, one per job; see verdict-workflow-template.yml.
     required: false
     default: report
