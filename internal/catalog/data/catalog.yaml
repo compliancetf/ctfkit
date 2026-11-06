@@ -5,7 +5,7 @@
 # hosts maps each to the host label of its registry endpoint, which is what
 # {host} in a module source is replaced with.
 schema: ctf.catalog/1
-version: "2026.9.3"
+version: "2026.11.0"
 hosts:
   acsc_essential_eight: acscessentialeight
   acsc_ism_2023: acscism2023

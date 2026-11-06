@@ -19,8 +19,8 @@ import (
 func TestEmbeddedAnswersEveryInterfaceMethod(t *testing.T) {
 	c := catalog.Embedded()
 
-	if got := c.Version(); got.Version != "2026.9.3" || got.Provenance != "embedded" {
-		t.Errorf("Version() = %+v, want version 2026.9.3 from embedded", got)
+	if got := c.Version(); got.Version != "2026.11.0" || got.Provenance != "embedded" {
+		t.Errorf("Version() = %+v, want version 2026.11.0 from embedded", got)
 	}
 
 	// The catalog places a control on the resource type that actually carries
