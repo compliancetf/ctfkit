@@ -313,7 +313,7 @@ keep the manifest display name (`SOC 2`). No layer normalises the spelling.
 - 2026-09-21: the report cases were re-recorded under this rule by running
   `ctfkit report` with the argv below against the embedded release catalog.
   Every `receipt.json` and `findings.sarif` changed `soc2` to `soc_2`, and every
-  `findings.sarif` gained the run-level `ctf.catalogVersion` block (2026.9.3,
+  `findings.sarif` gained the run-level `ctf.catalogVersion` block (2026.11.0,
   embedded) the earlier recording predates. `report.md`,
   `ctfkit.custom.spacelift.json` and every exit code are unchanged. Before this
   date the receipts carried `soc2`, normalised from the manifests' `soc_2` by

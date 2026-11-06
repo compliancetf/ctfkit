@@ -238,6 +238,7 @@ func TestScanInputMisuse(t *testing.T) {
 		"two plans":                     {[]string{"--plan", plan, plan}, categoryInput},
 		"missing path":                  {[]string{filepath.Join(input, "nope")}, categoryInput},
 		"remediation host not in hosts": {[]string{"--remediation-host", "nope", input}, categoryInput},
+		"retired remediation host":      {[]string{"--remediation-host", "cis_v140", input}, categoryInput},
 		"catalog file missing":          {[]string{"--catalog", filepath.Join(input, "nope.yaml"), input}, categoryCatalog},
 		"exceptions file missing":       {[]string{"--exceptions", filepath.Join(input, "nope.yaml"), input}, categoryExceptions},
 		"invalid RE2 in settings":       {[]string{"--config", badSettings, input}, categorySettings},

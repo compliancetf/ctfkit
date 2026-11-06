@@ -5,7 +5,7 @@
 # hosts maps each to the host label of its registry endpoint, which is what
 # {host} in a module source is replaced with.
 schema: ctf.catalog/1
-version: "2026.9.3"
+version: "2026.11.0"
 hosts:
   acsc_essential_eight: acscessentialeight
   acsc_ism_2023: acscism2023
@@ -14,9 +14,6 @@ hosts:
   aws_well_architected_v10: awswellarchitected
   cccs_medium: cccsmedium
   cfr_part_11: cfrpart11
-  cis_v120: cisv120
-  cis_v130: cisv130
-  cis_v140: cisv140
   cis_v500: cisv500
   cis_v600: cis
   cis_v71_ig1: cisv71ig1
@@ -716,8 +713,6 @@ controls:
         - "11.10(e) Use of secure, computer-generated, time-stamped audit trails to independently record the date and time of operator entries and actions that create, modify, or delete electronic records"
         - "11.10(k) Use of appropriate controls over systems documentation that includes adequate controls over the distribution of, access to, and use of documentation for system operation and maintenance"
         - "11.300(d) Use of transaction safeguards to prevent unauthorized use of passwords and/or identification codes, and to detect and report in an immediate and urgent manner any attempts at their unauthorized use to the system security unit, and, as appropriate, to organizational management"
-      cis_v140:
-        - "3 Logging"
       cis_v500:
         - "3 Logging"
       cis_v600:
@@ -925,11 +920,6 @@ controls:
         - "11.10(e) Use of secure, computer-generated, time-stamped audit trails to independently record the date and time of operator entries and actions that create, modify, or delete electronic records"
         - "11.10(k) Use of appropriate controls over systems documentation that includes adequate controls over the distribution of, access to, and use of documentation for system operation and maintenance"
         - "11.300(d) Use of transaction safeguards to prevent unauthorized use of passwords and/or identification codes, and to detect and report in an immediate and urgent manner any attempts at their unauthorized use to the system security unit, and, as appropriate, to organizational management"
-      cis_v130:
-        - "3.4: Ensure CloudTrail trails are integrated with CloudWatch Logs"
-      cis_v140:
-        - "3 Logging"
-        - "3.4: Ensure CloudTrail trails are integrated with CloudWatch Logs"
       cis_v80_ig1:
         - "8.2 Collect Audit Logs"
       cisa_cyber_essentials:
@@ -1132,8 +1122,6 @@ controls:
       cfr_part_11:
         - "11.10(c) Protection of records to enable their accurate and ready retrieval throughout the records retention period"
         - "11.30 Controls for open systems"
-      cis_v140:
-        - "3 Logging"
       cis_v500:
         - "3 Logging"
       cis_v600:
@@ -1235,8 +1223,6 @@ controls:
       cfr_part_11:
         - "11.10(a) Validation of systems to ensure accuracy, reliability, consistent intended performance, and the ability to discern invalid or altered records"
         - "11.30 Controls for open systems"
-      cis_v140:
-        - "3 Logging"
       cis_v500:
         - "3 Logging"
       cis_v600:
@@ -1324,8 +1310,6 @@ controls:
         - "REL11-BP06: Send notifications when events impact availability"
       cccs_medium:
         - "AC-2(4): Automated Audit Actions"
-      cis_v120:
-        - "2.5: Ensure AWS Config is enabled in all regions"
       eu_gmp_annex_11:
         - "13 Incident Management"
       fedramp_low_rev_4:
@@ -2046,11 +2030,6 @@ controls:
       cfr_part_11:
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
         - "11.30 Controls for open systems"
-      cis_v130:
-        - "2.2.1: Ensure EBS volume encryption is enabled"
-      cis_v140:
-        - "2 Storage"
-        - "2.2.1: Ensure EBS volume encryption is enabled"
       cis_v500:
         - "5 Networking"
       cis_v600:
@@ -2150,11 +2129,6 @@ controls:
       cfr_part_11:
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
         - "11.30 Controls for open systems"
-      cis_v130:
-        - "2.2.1: Ensure EBS volume encryption is enabled"
-      cis_v140:
-        - "2 Storage"
-        - "2.2.1: Ensure EBS volume encryption is enabled"
       cis_v500:
         - "5 Networking"
       cis_v600:
@@ -2338,8 +2312,6 @@ controls:
       cfr_part_11:
         - "11.10(d) Limiting system access to authorized individuals"
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
-      cis_v140:
-        - "1 Identity and Access Management"
       cis_v500:
         - "1 Identity and Access Management"
       cis_v600:
@@ -2650,8 +2622,6 @@ controls:
       cfr_part_11:
         - "11.10(d) Limiting system access to authorized individuals"
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
-      cis_v140:
-        - "1 Identity and Access Management"
       cis_v500:
         - "1 Identity and Access Management"
       cis_v600:
@@ -4249,8 +4219,6 @@ controls:
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
         - "11.200 Electronic signature components and controls"
         - "11.300(b) Ensuring that identification code and password issuances are periodically checked, recalled, or revised (e.g., to cover such events as password aging)"
-      cis_v140:
-        - "1 Identity and Access Management"
       cis_v500:
         - "1 Identity and Access Management"
       cis_v600:
@@ -4499,8 +4467,6 @@ controls:
         - "Identity and access management"
       cccs_medium:
         - "IA-5(4): Automated Support for Password Strength Determination"
-      cis_v140:
-        - "1 Identity and Access Management"
       cis_v500:
         - "1 Identity and Access Management"
       cis_v600:
@@ -4563,8 +4529,6 @@ controls:
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
         - "11.200 Electronic signature components and controls"
         - "11.300(b) Ensuring that identification code and password issuances are periodically checked, recalled, or revised (e.g., to cover such events as password aging)"
-      cis_v140:
-        - "1 Identity and Access Management"
       cis_v500:
         - "1 Identity and Access Management"
       cis_v600:
@@ -4666,8 +4630,6 @@ controls:
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
         - "11.200 Electronic signature components and controls"
         - "11.300(b) Ensuring that identification code and password issuances are periodically checked, recalled, or revised (e.g., to cover such events as password aging)"
-      cis_v140:
-        - "1 Identity and Access Management"
       cis_v500:
         - "1 Identity and Access Management"
       cis_v600:
@@ -4895,8 +4857,6 @@ controls:
         - "CM-3(6): Cryptography Management"
       cfr_part_11:
         - "11.30 Controls for open systems"
-      cis_v140:
-        - "3 Logging"
       cis_v500:
         - "3 Logging"
       cis_v600:
@@ -6486,9 +6446,6 @@ controls:
       cfr_part_11:
         - "11.10(c) Protection of records to enable their accurate and ready retrieval throughout the records retention period"
         - "11.30 Controls for open systems"
-      cis_v140:
-        - "2 Storage"
-        - "2.3.1: Ensure that encryption is enabled for RDS Instances"
       cis_v500:
         - "2 Storage"
         - "2.2 Relational Database Service (RDS)"
@@ -8462,10 +8419,6 @@ controls:
       cfr_part_11:
         - "11.10(c) Protection of records to enable their accurate and ready retrieval throughout the records retention period"
         - "11.30 Controls for open systems"
-      cis_v130:
-        - "2.1.1: Ensure all S3 buckets employ encryption-at-rest"
-      cis_v140:
-        - "2 Storage"
       cis_v80_ig1:
         - "4.6 Securely Manage Enterprise Assets and Software"
       cisa_cyber_essentials:
@@ -8693,10 +8646,6 @@ controls:
       cfr_part_11:
         - "11.10(e) Use of secure, computer-generated, time-stamped audit trails to independently record the date and time of operator entries and actions that create, modify, or delete electronic records"
         - "11.10(k) Use of appropriate controls over systems documentation that includes adequate controls over the distribution of, access to, and use of documentation for system operation and maintenance"
-      cis_v130:
-        - "3.6: Ensure S3 bucket access logging is enabled on the CloudTrail S3 bucket"
-      cis_v140:
-        - "3.6: Ensure S3 bucket access logging is enabled on the CloudTrail S3 bucket"
       cis_v71_ig1:
         - "6.2: Activate Audit Logging"
       cis_v80_ig1:
@@ -8867,11 +8816,6 @@ controls:
         - "ACCUAI3.15: Update Frequency"
       aws_well_architected_v10:
         - "Infrastructure protection"
-      cis_v120:
-        - "1.2: Ensure multi-factor authentication (MFA) is enabled for all IAM users that have a console password"
-      cis_v140:
-        - "2 Storage"
-        - "2.1.3: Ensure MFA Delete is enable on S3 buckets"
       cis_v500:
         - "2 Storage"
         - "2.1 Simple Storage Service (S3)"
@@ -9074,8 +9018,6 @@ controls:
       cfr_part_11:
         - "11.10(e) Use of secure, computer-generated, time-stamped audit trails to independently record the date and time of operator entries and actions that create, modify, or delete electronic records"
         - "11.10(k) Use of appropriate controls over systems documentation that includes adequate controls over the distribution of, access to, and use of documentation for system operation and maintenance"
-      cis_v140:
-        - "3 Logging"
       cis_v500:
         - "3 Logging"
       cis_v600:
@@ -9247,8 +9189,6 @@ controls:
         - "11.10(d) Limiting system access to authorized individuals"
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
         - "11.10(k) Use of appropriate controls over systems documentation that includes adequate controls over the distribution of, access to, and use of documentation for system operation and maintenance"
-      cis_v140:
-        - "2.1.5: Ensure that S3 Buckets are configured with 'Block public access (bucket settings)'"
       cis_v80_ig1:
         - "3.3 Configure Data Access Control Lists"
       cisa_cyber_essentials:
@@ -9425,9 +9365,6 @@ controls:
         - "11.10(d) Limiting system access to authorized individuals"
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
         - "11.10(k) Use of appropriate controls over systems documentation that includes adequate controls over the distribution of, access to, and use of documentation for system operation and maintenance"
-      cis_v140:
-        - "2 Storage"
-        - "2.1.5: Ensure that S3 Buckets are configured with 'Block public access (bucket settings)'"
       cis_v500:
         - "2 Storage"
       cis_v600:
@@ -9576,10 +9513,6 @@ controls:
         - "11.10(d) Limiting system access to authorized individuals"
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
         - "11.10(k) Use of appropriate controls over systems documentation that includes adequate controls over the distribution of, access to, and use of documentation for system operation and maintenance"
-      cis_v130:
-        - "3.3: Ensure the S3 bucket used to store CloudTrail logs is not publicly accessible"
-      cis_v140:
-        - "3.3: Ensure the S3 bucket used to store CloudTrail logs is not publicly accessible"
       cis_v80_ig1:
         - "4.6 Securely Manage Enterprise Assets and Software"
       cisa_cyber_essentials:
@@ -9786,8 +9719,6 @@ controls:
         - "11.10(a) Validation of systems to ensure accuracy, reliability, consistent intended performance, and the ability to discern invalid or altered records"
         - "11.10(c) Protection of records to enable their accurate and ready retrieval throughout the records retention period"
         - "11.10(e) Use of secure, computer-generated, time-stamped audit trails to independently record the date and time of operator entries and actions that create, modify, or delete electronic records"
-      cis_v140:
-        - "2.1.3: Ensure MFA Delete is enable on S3 buckets"
       cis_v80_ig1:
         - "11.4 Establish and Maintain an Isolated Instance of Recovery Data"
       cisa_cyber_essentials:
@@ -9914,11 +9845,6 @@ controls:
         - "11.10(d) Limiting system access to authorized individuals"
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
         - "11.10(k) Use of appropriate controls over systems documentation that includes adequate controls over the distribution of, access to, and use of documentation for system operation and maintenance"
-      cis_v130:
-        - "1.20: Ensure that S3 Buckets are configured with 'Block public access (bucket settings)'"
-      cis_v140:
-        - "2 Storage"
-        - "2.1.5: Ensure that S3 Buckets are configured with 'Block public access (bucket settings)'"
       cis_v500:
         - "2 Storage"
       cis_v600:
@@ -10040,9 +9966,6 @@ controls:
         - "ACSC-EE-ML3-8.8: Regular backups ML3"
       cfr_part_11:
         - "11.10(g) Use of authority checks to ensure that only authorized individuals can use the system, electronically sign a record, access the operation or computer system input or output device, alter a record, or perform the operation at hand"
-      cis_v140:
-        - "2 Storage"
-        - "2.1.5: Ensure that S3 Buckets are configured with 'Block public access (bucket settings)'"
       cis_v500:
         - "2 Storage"
       cis_v600:
@@ -10680,8 +10603,6 @@ controls:
     clausesByFramework:
       acsc_essential_eight:
         - "ACSC-EE-ML3-7.10: Multi-factor authentication ML3"
-      cis_v120:
-        - "3.8: Ensure a log metric filter and alarm exist for S3 bucket policy changes"
       hipaa_final_omnibus_2013:
         - "164.308(a)(1)(ii)(D): Administrative Safeguards"
       hipaa_security_2003:

@@ -39,7 +39,7 @@ ERROR      ctf.coverage.module_source
   fix: use soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws ~> 5.0
 
 1 finding(s): 1 error, 0 warning, 0 note, 0 suppressed
-stage post_plan, catalog 2026.9.3 (embedded)
+stage post_plan, catalog 2026.11.0 (embedded)
 ctfkit: configuration directory /path/to/sample-repo (the working directory; name another with --chdir)
 ctfkit: 1 finding(s) at or above error
 ```
@@ -90,7 +90,7 @@ entries under `ctf.frameworks` cut for length:
 }
 ```
 
-The run carries `"ctf.catalogVersion": {"version": "2026.9.3", "origin": "embedded"}` in its
+The run carries `"ctf.catalogVersion": {"version": "2026.11.0", "origin": "embedded"}` in its
 properties.
 
 `.github/workflows/ctfkit.yml` runs the same scan through the action with `command: scan` and

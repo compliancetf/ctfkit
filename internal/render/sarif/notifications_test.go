@@ -18,7 +18,7 @@ func staleNotification() sarif.Notification {
 	return sarif.Notification{
 		DescriptorID: "ctf.catalog.stale",
 		Level:        ctfkit.LevelNote,
-		Text:         "catalog 2026.1.0 (file) is older than the embedded release 2026.9.3",
+		Text:         "catalog 2026.1.0 (file) is older than the embedded release 2026.11.0",
 	}
 }
 
