@@ -137,10 +137,21 @@ func (r DelegationUnresolved) Analyze(ctx context.Context, in ctfkit.AnalyzerInp
 			if control.Status != inventory.ControlDelegated || len(control.DelegatedTo) == 0 {
 				continue
 			}
-			finding, buildErr := newFinding(r.ID(), ctfkit.LevelWarning,
-				fmt.Sprintf(msgDelegationUnresolved,
-					control.ID, strings.Join(control.DelegatedTo, ", "), ctfkit.RedactSource(build.Source), build.Version), "",
-				[]ctfkit.ControlID{ctfkit.ControlID(control.ID)}, frameworkClauses(control), nil)
+			text := fmt.Sprintf(msgDelegationUnresolved,
+				control.ID, strings.Join(control.DelegatedTo, ", "), ctfkit.RedactSource(build.Source), build.Version)
+			controlIDs := []ctfkit.ControlID{ctfkit.ControlID(control.ID)}
+			// The id comes from a served manifest, which can be newer than the
+			// catalog this release embeds. ctf.controlIds holds catalog ids
+			// only, so an id the catalog lacks stays in the message and the
+			// finding is still reported, rather than failing the run.
+			if cat := a.input.Catalog; cat != nil {
+				if _, known := cat.Control(controlIDs[0]); !known {
+					text += fmt.Sprintf(msgControlNotInCatalog, cat.Version().Version)
+					controlIDs = nil
+				}
+			}
+			finding, buildErr := newFinding(r.ID(), ctfkit.LevelWarning, text, "",
+				controlIDs, frameworkClauses(control), nil)
 			if buildErr != nil {
 				return nil, buildErr
 			}
