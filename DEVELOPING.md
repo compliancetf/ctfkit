@@ -5,8 +5,9 @@ configuration, plans and module manifests into consistent SARIF findings and an 
 and hands its results to the policy workflow the user already has. `scan`, `report` and
 `verify-lock` run inside CI offline: no network connection, no credentials, no terraform. The
 governed apply, evidence and run task commands do not: `gate plan`, `gate sign`, `verdict verify` and `apply` run terraform,
-`gate sign` and `evidence ship` call AWS KMS, `evidence ship` uploads to S3, and `runtask serve`
-serves HCP Terraform requests and downloads plans. When a compliance.tf module would have
+`gate sign` and `evidence ship` call AWS KMS, `evidence ship` uploads to S3, `runtask serve`
+serves HCP Terraform requests and downloads plans, and `catalog pull` downloads the full control
+catalog from the compliance.tf registry. When a compliance.tf module would have
 prevented a finding, it names the exact module source.
 
 User-facing behaviour: [README.md](README.md) and the `docs/` pages it indexes

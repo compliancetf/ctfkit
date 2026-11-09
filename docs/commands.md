@@ -49,6 +49,7 @@ Commands, in the order `ctfkit --help` groups them:
 | `apply` | runs terraform `version`, `init`, `show -json` and `apply` on the sealed plan (network, cloud credentials) |
 | `evidence ship` | uploads to S3 and signs the run manifest with the AWS KMS key `--signer` names (network, AWS credentials); the receipt is not signed; runs no terraform |
 | `runtask serve` | listens for HCP Terraform or Terraform Enterprise requests, downloads plan JSON from the configured host and posts the task result back (network) |
+| `catalog pull` | downloads the full control catalog from the compliance.tf registry with your registry token (network, registry token); runs no terraform |
 
 terraform `init` configures the backend, so with a remote backend the commands that run it use
 the network and your backend credentials.
@@ -220,6 +221,23 @@ ctfkit config validate .ctfkit.yaml -f json
 ```
 
 What `config init` writes and what `config validate` checks: [configuration.md](configuration.md#config-init-and-config-validate).
+
+## ctfkit catalog pull
+
+```bash
+ctfkit catalog pull                                  # latest full catalog to ~/.ctf/control-requirements.yaml
+ctfkit catalog pull --version 2026.1109.0            # one published version
+ctfkit catalog pull --out catalog.yaml               # any file, then pass --catalog catalog.yaml
+```
+
+Downloads the full control catalog from `registry.compliance.tf` (`--host` names another
+registry), checks it against the `X-Catalog-Sha256` header the registry sends, validates it as
+`--catalog` would, and replaces the destination in one step, so scan and report never read half a
+file. It authenticates with the token terraform uses for that host: `TF_TOKEN_<host>` (for
+example `TF_TOKEN_registry_compliance_tf`), else `~/.terraform.d/credentials.tfrc.json` as
+written by `terraform login`. The full catalog needs a paid plan; without one the registry answers
+403 and ctfkit keeps using the catalog built into the binary. Exit 0 on success, 2 on any failure,
+with nothing written.
 
 ## ctfkit version
 

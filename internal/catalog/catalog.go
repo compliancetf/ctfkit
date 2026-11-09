@@ -133,6 +133,26 @@ func Load(path string) (*FileCatalog, error) {
 	return c, nil
 }
 
+// HomePath is the file Resolve reads when no --catalog is named, and the
+// default destination of catalog pull.
+func HomePath() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("%w: no home directory: %w", ErrCatalog, err)
+	}
+	return filepath.Join(home, homeRelPath), nil
+}
+
+// Validate applies every check Load applies to catalog bytes that are not on
+// disk yet, and returns the version they declare.
+func Validate(b []byte) (string, error) {
+	c, err := parse(b, provenanceFile)
+	if err != nil {
+		return "", err
+	}
+	return c.version.Version, nil
+}
+
 // Resolve applies the lookup order to the --catalog value: a file when one is
 // named, the literal "embedded" to pin the release catalog past a home file,
 // otherwise the home file when it exists and the release catalog when it does

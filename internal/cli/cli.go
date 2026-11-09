@@ -48,6 +48,9 @@ type CLI struct {
 	// calls; nil uses the adapter's own. Tests replace it to trust a test
 	// server's certificate, no flag or env does.
 	runtaskTransport http.RoundTripper
+	// catalogTransport is the transport of catalog pull; nil is the default.
+	// Tests replace it to trust a test server's certificate.
+	catalogTransport http.RoundTripper
 	// openS3 opens an evidence sink's S3 client and evidenceAPI is the
 	// Evidence API run ingest, both for ctfkit evidence ship; tests replace
 	// both.
@@ -170,7 +173,7 @@ func (c *CLI) setupCommands() {
 		{groupCheck, []*cobra.Command{c.scanCommand(), c.reportCommand(), c.verifyLockCommand()}},
 		{groupGoverned, []*cobra.Command{c.gateCommand(), c.verdictCommand(), c.signedSetCommand(true), c.evidenceCommand()}},
 		{groupRuntask, []*cobra.Command{c.runtaskCommand()}},
-		{groupSetup, []*cobra.Command{c.configCommand(), c.versionCommand()}},
+		{groupSetup, []*cobra.Command{c.configCommand(), c.catalogCommand(), c.versionCommand()}},
 	} {
 		for _, cmd := range g.cmds {
 			cmd.GroupID = g.id
