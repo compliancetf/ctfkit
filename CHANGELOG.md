@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.5.0](https://github.com/compliancetf/ctfkit/compare/v0.4.1...v0.5.0) (2026-11-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* **catalog:** with the embedded catalog, findings carry control ids and frameworks for CIS v6.0 controls only. A control-keyed exception for a control outside CIS v6.0 no longer matches; use a rule entry or load the full catalog. ctf.policy.disabled_control_unknown is reported at error level instead of warning.
+
+### Features
+
+* **catalog:** embed the CIS AWS Benchmark v6.0 controls only ([#28](https://github.com/compliancetf/ctfkit/issues/28)) ([4daade7](https://github.com/compliancetf/ctfkit/commit/4daade780d8c397800f01c27e7e52d036ebc199a))
+
+
+### Bug fixes
+
+* **catalog:** retire CIS AWS Benchmark v1.2.0, v1.3.0 and v1.4.0 ([#24](https://github.com/compliancetf/ctfkit/issues/24)) ([3306cd8](https://github.com/compliancetf/ctfkit/commit/3306cd868d9454982ccb5ff5c3e58a89c13090da))
+
 ## [0.4.1](https://github.com/compliancetf/ctfkit/compare/v0.4.0...v0.4.1) (2026-11-05)
 
 
