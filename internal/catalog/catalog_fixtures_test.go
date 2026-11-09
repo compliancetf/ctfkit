@@ -15,14 +15,17 @@ import (
 // manifestName is the file a served module carries at the root of its scope.
 const manifestName = "compliancetf-manifest.json"
 
-// fixtureRoot holds the recorded .terraform/modules trees the report command
-// is built against. They are the closest thing in the repo to what a customer
-// actually downloads.
-const fixtureRoot = "../../testdata/fixtures/report"
+// fixtureRoot holds the recorded .terraform/modules trees the report and
+// post_init cases are built against. They are the closest thing in the repo to
+// what a customer actually downloads, and a re-record from the live registry
+// refreshes them, so a catalog that lags the served manifests fails here.
+const fixtureRoot = "../../testdata/fixtures"
 
 // A finding whose control id the catalog cannot resolve is refused by
 // ValidateFor, so any id a served manifest can name has to be in the embedded
-// release catalog. The fixture manifests are the sample of real served
+// release catalog, whether it applied the control or listed it as not
+// applicable. (delegation_unresolved tolerates an unknown id, but then the
+// finding carries no control id.) The fixture manifests are the sample of real served
 // manifests this repo has, so they are the sample this is asserted over.
 //
 // The embedded catalog once held 16 hand-written controls, and 10
@@ -90,6 +93,9 @@ type manifestDoc struct {
 		ControlID          string              `json:"control_id"`
 		ClausesByFramework map[string][]string `json:"clauses_by_framework"`
 	} `json:"controls"`
+	Build struct {
+		ControlsNotApplicable []string `json:"controls_not_applicable"`
+	} `json:"build"`
 }
 
 func fixtureControlIDs(t *testing.T) []string {
@@ -100,6 +106,9 @@ func fixtureControlIDs(t *testing.T) []string {
 			if c.ControlID != "" {
 				seen[c.ControlID] = true
 			}
+		}
+		for _, id := range doc.Build.ControlsNotApplicable {
+			seen[id] = true
 		}
 	})
 

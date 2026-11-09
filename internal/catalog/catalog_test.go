@@ -19,8 +19,8 @@ import (
 func TestEmbeddedAnswersEveryInterfaceMethod(t *testing.T) {
 	c := catalog.Embedded()
 
-	if got := c.Version(); got.Version != "2026.11.0" || got.Provenance != "embedded" {
-		t.Errorf("Version() = %+v, want version 2026.11.0 from embedded", got)
+	if got := c.Version(); got.Version != "2026.11.1" || got.Provenance != "embedded" {
+		t.Errorf("Version() = %+v, want version 2026.11.1 from embedded", got)
 	}
 
 	// The catalog places a control on the resource type that actually carries
@@ -77,12 +77,12 @@ func TestEmbeddedAnswersEveryInterfaceMethod(t *testing.T) {
 	// A framework the control catalog lists for a control but records no
 	// clause for is left out of the release catalog, so every framework
 	// Frameworks reports has something to cite. The control catalog places
-	// s3_bucket_object_lock_enabled in fedramp_moderate_rev_4 with no clause,
+	// s3_bucket_object_lock_enabled in nist_800_171_rev_2 with no clause,
 	// which is why it is not listed. That membership was once kept
 	// as an empty clause list, and a finding carried it as a framework with
 	// nothing to cite.
-	if got := c.Frameworks("s3_bucket_object_lock_enabled"); contains(got, "fedramp_moderate_rev_4") {
-		t.Errorf("Frameworks(s3_bucket_object_lock_enabled) = %v, want no fedramp_moderate_rev_4: it records no clause", got)
+	if got := c.Frameworks("s3_bucket_object_lock_enabled"); contains(got, "nist_800_171_rev_2") {
+		t.Errorf("Frameworks(s3_bucket_object_lock_enabled) = %v, want no nist_800_171_rev_2: it records no clause", got)
 	}
 	for _, fw := range c.Frameworks("s3_bucket_object_lock_enabled") {
 		if len(c.Framework("s3_bucket_object_lock_enabled", fw)) == 0 {
@@ -111,8 +111,9 @@ func TestEmbeddedAnswersEveryInterfaceMethod(t *testing.T) {
 		t.Errorf("Modules() returned %d entries, want 2: s3-bucket and sqs", len(got))
 	}
 
-	// The sqs module covers aws_sqs_queue and enforces the controls the
-	// control catalog places on that type, derived rather than listed.
+	// The sqs module covers aws_sqs_queue, and every control it claims sits on
+	// that type. The catalog may place further controls on the type that the
+	// module does not claim; module_source leaves those off its finding.
 	sqs, found := c.ModuleFor("aws_sqs_queue")
 	if !found {
 		t.Fatal("ModuleFor(aws_sqs_queue) not found")
@@ -120,9 +121,10 @@ func TestEmbeddedAnswersEveryInterfaceMethod(t *testing.T) {
 	if sqs.Source != "{host}.compliance.tf/terraform-aws-modules/sqs/aws" || sqs.Version != "~> 4.0" {
 		t.Errorf("ModuleFor(aws_sqs_queue) = %s %s, want the sqs module at ~> 4.0", sqs.Source, sqs.Version)
 	}
-	for _, id := range c.ControlsFor("aws_sqs_queue") {
-		if !contains(sqs.Controls, id) {
-			t.Errorf("control %s sits on aws_sqs_queue but the sqs module does not enforce it", id)
+	onType := c.ControlsFor("aws_sqs_queue")
+	for _, id := range sqs.Controls {
+		if !contains(onType, id) {
+			t.Errorf("the sqs module claims %s, which the catalog does not place on aws_sqs_queue", id)
 		}
 	}
 

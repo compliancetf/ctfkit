@@ -178,8 +178,7 @@
                 "id": "nist_csf_v2",
                 "clauses": [
                   "PR.DS-4",
-                  "PR.PT-5",
-                  "RC.RP-04"
+                  "PR.PT-5"
                 ]
               },
               {

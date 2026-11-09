@@ -67,13 +67,15 @@
               {
                 "id": "acsc_ism_2023",
                 "clauses": [
+                  "ISM-1707",
                   "ISM-1814"
                 ]
               },
               {
                 "id": "aws_control_tower",
                 "clauses": [
-                  "5.1.1"
+                  "5.1.1",
+                  "CT-5.1.1"
                 ]
               },
               {
@@ -85,7 +87,8 @@
               {
                 "id": "aws_well_architected_v10",
                 "clauses": [
-                  "Data protection"
+                  "Data protection",
+                  "SEC08-BP04"
                 ]
               },
               {

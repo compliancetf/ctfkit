@@ -72,6 +72,12 @@
                 ]
               },
               {
+                "id": "fedramp_moderate_rev_4",
+                "clauses": [
+                  "SC-28"
+                ]
+              },
+              {
                 "id": "ffiec",
                 "clauses": [
                   "D2.MA.Ma.B.1"
@@ -116,7 +122,8 @@
               {
                 "id": "pci_dss_v40",
                 "clauses": [
-                  "10.3.4"
+                  "10.3.4",
+                  "10.5.1"
                 ]
               },
               {

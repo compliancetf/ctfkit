@@ -92,6 +92,12 @@
                 "clauses": [
                   "PR.DS-01"
                 ]
+              },
+              {
+                "id": "soc_2",
+                "clauses": [
+                  "PI1.3"
+                ]
               }
             ],
             "ctf.preventive": true,
