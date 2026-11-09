@@ -27,7 +27,7 @@
           "level": "error",
           "kind": "fail",
           "message": {
-            "text": "Module source disables s3_bucket_versioning_enabled, which is not a control id in catalog 2026.11.1; it is a typo, or a control outside this catalog (the embedded catalog holds CIS v6.0 only; name a full catalog with --catalog)"
+            "text": "Module source disables s3_bucket_versioning_enabled, which is not a control id in catalog 2026.11.1; it is a typo, or a control outside this catalog (the embedded catalog holds the CIS v6.0 controls only; name a full catalog with --catalog)"
           },
           "locations": [
             {

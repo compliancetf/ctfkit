@@ -92,8 +92,8 @@ const (
 	msgDelegationUnresolved = "Control %s is delegated to scope %s of %s %s; " +
 		"no instantiated module instance governs that scope, " +
 		"so this configuration has no evidence the control is enforced"
-	msgControlNotInCatalog = "; the control catalog %s does not hold this control id " +
-		"(the embedded catalog holds CIS v6.0 only), so the finding carries no control id"
+	msgControlNotInCatalog = "; the control catalog %s does not hold this control id%s, " +
+		"so the finding carries no control id"
 	msgObligationUnknown = "Manifest obligation token %s is not in the list this ctfkit release ships; " +
 		"the obligation is reported unchanged and never blocks"
 	msgResourceUnattested = "This configuration declares %d resource block(s) of its own " +

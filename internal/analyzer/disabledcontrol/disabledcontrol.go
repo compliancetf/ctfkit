@@ -74,8 +74,7 @@ const (
 const (
 	msgDisabledControl = "Module source disables control %s"
 	msgUnknown         = "Module source disables %s, which is not a control id in catalog %s; " +
-		"it is a typo, or a control outside this catalog (the embedded catalog holds CIS v6.0 only; " +
-		"name a full catalog with --catalog)"
+		"it is a typo, or a control outside this catalog%s"
 )
 
 // schemaVersion is the findings format version every finding carries.
@@ -184,7 +183,7 @@ func newFinding(d disable, ref ctfkit.ControlRef, known bool, cat ctfkit.Control
 
 	if !known {
 		return ctfkit.NewFinding(ruleUnknown, ctfkit.LevelError, ctfkit.KindFail,
-			ctfkit.Message{Text: fmt.Sprintf(msgUnknown, d.token, cat.Version().Version)},
+			ctfkit.Message{Text: fmt.Sprintf(msgUnknown, d.token, cat.Version().Version, catalog.EmbeddedSubsetNote(cat.Version()))},
 			locations,
 			ctfkit.Properties{Schema: schemaVersion, Stage: ctfkit.PrePlan})
 	}

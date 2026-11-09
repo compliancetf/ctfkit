@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -757,8 +758,35 @@ func TestReportToleratesAControlTheCatalogLacks(t *testing.T) {
 			t.Errorf("%s was not written", name)
 		}
 	}
-	if sarif := readFile(t, filepath.Join(outDir, "findings.sarif")); !bytes.Contains(sarif, []byte("Control "+unknown+" ")) {
-		t.Errorf("findings.sarif does not name %s in a delegation finding", unknown)
+	var doc struct {
+		Runs []struct {
+			Results []struct {
+				RuleID  string `json:"ruleId"`
+				Message struct {
+					Text string `json:"text"`
+				} `json:"message"`
+				Properties struct {
+					ControlIDs []string `json:"ctf.controlIds"`
+				} `json:"properties"`
+			} `json:"results"`
+		} `json:"runs"`
+	}
+	if err := json.Unmarshal(readFile(t, filepath.Join(outDir, "findings.sarif")), &doc); err != nil {
+		t.Fatalf("findings.sarif does not parse: %v", err)
+	}
+	found := false
+	for _, r := range doc.Runs[0].Results {
+		if r.RuleID != "ctf.coverage.delegation_unresolved" || !strings.Contains(r.Message.Text, "Control "+unknown+" ") {
+			continue
+		}
+		found = true
+		if len(r.Properties.ControlIDs) != 0 || !strings.Contains(r.Message.Text, "does not hold this control id") {
+			t.Errorf("delegation finding for %s: controlIds %v, message %q; want no control id and the gap named",
+				unknown, r.Properties.ControlIDs, r.Message.Text)
+		}
+	}
+	if !found {
+		t.Errorf("findings.sarif has no delegation finding naming %s", unknown)
 	}
 }
 

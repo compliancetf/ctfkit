@@ -439,3 +439,27 @@ func contains[T comparable](haystack []T, needle T) bool {
 	}
 	return false
 }
+
+// The CIS-subset hint belongs only to the embedded catalog's content: a copy
+// of it read as a file gets the hint, and a catalog of any other version,
+// such as the full one, does not, since telling its user to pass --catalog
+// would be wrong.
+func TestEmbeddedSubsetNoteFollowsTheEmbeddedVersion(t *testing.T) {
+	embedded := catalog.Embedded().Version().Version
+	for _, tc := range []struct {
+		name     string
+		version  ctfkit.CatalogVersion
+		wantNote bool
+	}{
+		{"embedded", ctfkit.CatalogVersion{Version: embedded, Provenance: "embedded"}, true},
+		{"a file copy of it", ctfkit.CatalogVersion{Version: embedded, Provenance: "file"}, true},
+		{"another catalog", ctfkit.CatalogVersion{Version: "2099.1.0", Provenance: "home"}, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			note := catalog.EmbeddedSubsetNote(tc.version)
+			if got := strings.Contains(note, "CIS v6.0"); got != tc.wantNote {
+				t.Errorf("EmbeddedSubsetNote(%+v) = %q, want a CIS note: %v", tc.version, note, tc.wantNote)
+			}
+		})
+	}
+}
