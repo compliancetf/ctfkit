@@ -66,6 +66,7 @@ func TestCatalogPull(t *testing.T) {
 		{name: "a refusal passes the server message on", status: 403, body: []byte(`{"error": "The full control catalog needs a paid plan."}`), wantErr: "answered 403: The full control catalog needs a paid plan."},
 		{name: "an invalid catalog writes nothing", status: 200, sha: hex.EncodeToString(func() []byte { s := sha256.Sum256([]byte("schema: x\n")); return s[:] }()), body: []byte("schema: x\n"), wantErr: "downloaded catalog"},
 		{name: "a malformed version is refused before any request", status: 200, sha: good, body: body, args: []string{"--version", "2026.0105.0"}, wantErr: "not a catalog version"},
+		{name: "an oversize body writes nothing", status: 200, sha: good, body: bytes.Repeat([]byte("a"), maxCatalogBytes+1), wantErr: "larger than"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -82,6 +83,9 @@ func TestCatalogPull(t *testing.T) {
 				}
 				if statErr == nil {
 					t.Error("a file was written although the pull failed")
+				}
+				if leftovers, _ := filepath.Glob(filepath.Join(filepath.Dir(dest), ".catalog-*")); len(leftovers) > 0 {
+					t.Errorf("temporary files left behind: %v", leftovers)
 				}
 				return
 			}
@@ -107,13 +111,14 @@ func TestRegistryTokenReadsTheCredentialsFile(t *testing.T) {
 	home := t.TempDir()
 	t.Setenv("HOME", home)
 	t.Setenv("USERPROFILE", home)
+	t.Setenv("APPDATA", home)
 	t.Setenv(tokenEnvName("registry.example.test"), "")
-	dir := filepath.Join(home, ".terraform.d")
-	if err := os.MkdirAll(dir, 0o750); err != nil {
+	path := credentialsFile()
+	if err := os.MkdirAll(filepath.Dir(path), 0o750); err != nil {
 		t.Fatal(err)
 	}
 	creds := `{"credentials": {"registry.example.test": {"token": "from-file"}}}`
-	if err := os.WriteFile(filepath.Join(dir, "credentials.tfrc.json"), []byte(creds), 0o600); err != nil {
+	if err := os.WriteFile(path, []byte(creds), 0o600); err != nil {
 		t.Fatal(err)
 	}
 
@@ -134,5 +139,45 @@ func TestTokenEnvName(t *testing.T) {
 		if got := tokenEnvName(host); got != want {
 			t.Errorf("tokenEnvName(%s) = %s, want %s", host, got, want)
 		}
+	}
+}
+
+// A --host that is not a plain host name is refused before any token lookup
+// or request: no path or scheme in the URL, and no name whose TF_TOKEN_
+// variable aliases another host's.
+func TestCatalogPullRefusesBadHosts(t *testing.T) {
+	for _, host := range []string{"registry_compliance.tf", "evil.example/x", "https://registry.compliance.tf", "user@registry.compliance.tf", "Registry.Compliance.tf", ""} {
+		c := New("test")
+		c.rootCmd.SetOut(new(bytes.Buffer))
+		c.rootCmd.SetErr(new(bytes.Buffer))
+		c.rootCmd.SetArgs([]string{"catalog", "pull", "--host", host, "--out", filepath.Join(t.TempDir(), "c.yaml")})
+		err := c.Execute()
+		if err == nil || ExitCode(err) != ExitEnvironment || !strings.Contains(err.Error(), "not a registry host name") {
+			t.Errorf("--host %q: err = %v, want exit 2 naming the host", host, err)
+		}
+	}
+}
+
+// A write that fails after the download leaves neither the destination nor a
+// temporary file behind.
+func TestCatalogPullWriteFailureLeavesNoTempFile(t *testing.T) {
+	body := catalog.EmbeddedBytes()
+	sum := sha256.Sum256(body)
+	srv, _ := catalogServer(t, 200, hex.EncodeToString(sum[:]), body)
+	t.Setenv(tokenEnvName(strings.TrimPrefix(srv.URL, "https://")), "bobthecorp-token")
+	dir := t.TempDir()
+	dest := filepath.Join(dir, "is-a-directory")
+	if err := os.Mkdir(dest, 0o750); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dest, "keep"), nil, 0o600); err != nil {
+		t.Fatal(err)
+	}
+
+	if _, err := runCatalogPull(t, srv, "--out", dest); err == nil || ExitCode(err) != ExitEnvironment {
+		t.Fatalf("err = %v, want exit 2 when the destination is a non-empty directory", err)
+	}
+	if leftovers, _ := filepath.Glob(filepath.Join(dir, ".catalog-*")); len(leftovers) > 0 {
+		t.Errorf("temporary files left behind: %v", leftovers)
 	}
 }

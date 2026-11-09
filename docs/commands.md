@@ -234,8 +234,11 @@ Downloads the full control catalog from `registry.compliance.tf` (`--host` names
 registry), checks it against the `X-Catalog-Sha256` header the registry sends, validates it as
 `--catalog` would, and replaces the destination in one step, so scan and report never read half a
 file. It authenticates with the token terraform uses for that host: `TF_TOKEN_<host>` (for
-example `TF_TOKEN_registry_compliance_tf`), else `~/.terraform.d/credentials.tfrc.json` as
-written by `terraform login`. The full catalog needs a paid plan; without one the registry answers
+example `TF_TOKEN_registry_compliance_tf`), else the `credentials.tfrc.json` that
+`terraform login` writes (`~/.terraform.d/`, or `%APPDATA%\terraform.d\` on Windows). `--host`
+sends that host's token to that host, so name only a registry you trust. The hash catches a
+damaged or truncated download; trust in where the catalog came from rests on the TLS connection
+to the registry, and the catalog is not signed. The full catalog needs a paid plan; without one the registry answers
 403 and ctfkit keeps using the catalog built into the binary. Exit 0 on success, 2 on any failure,
 with nothing written.
 

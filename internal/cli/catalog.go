@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 	"time"
 
@@ -26,6 +27,11 @@ const defaultCatalogHost = "registry.compliance.tf"
 
 // maxCatalogBytes bounds the download; the server refuses to serve more.
 const maxCatalogBytes = 8 << 20
+
+// catalogHostPattern is a lowercase DNS name with an optional port. It keeps
+// --host out of the URL path and rules out names such as registry_compliance.tf
+// whose TF_TOKEN_ variable would alias another host's.
+var catalogHostPattern = regexp.MustCompile(`^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*(:[0-9]{1,5})?$`)
 
 // catalogVersionPattern is the name of one published catalog version.
 var catalogVersionPattern = regexp.MustCompile(`^\d{4}\.[1-9]\d{2,3}\.(0|[1-9]\d*)$`)
@@ -59,11 +65,14 @@ func (c *CLI) catalogPullCommand() *cobra.Command {
 	f := cmd.Flags()
 	f.StringVar(&version, "version", "", "catalog `VERSION` to download (default: the latest)")
 	f.StringVar(&out, "out", "", "write to `FILE` (default: ~/.ctf/control-requirements.yaml)")
-	f.StringVar(&host, "host", defaultCatalogHost, "registry `HOST` to download from")
+	f.StringVar(&host, "host", defaultCatalogHost, "registry `HOST` to download from; it receives that host's token")
 	return cmd
 }
 
 func (c *CLI) catalogPull(cmd *cobra.Command, host, version, out string) error {
+	if !catalogHostPattern.MatchString(host) {
+		return inputError("--host %q is not a registry host name such as %s", host, defaultCatalogHost)
+	}
 	file := "latest.yaml"
 	if version != "" {
 		if !catalogVersionPattern.MatchString(version) {
@@ -165,9 +174,7 @@ func registryToken(host string) (string, error) {
 	if t := os.Getenv(tokenEnvName(host)); t != "" {
 		return t, nil
 	}
-	home, err := os.UserHomeDir()
-	if err == nil {
-		path := filepath.Join(home, ".terraform.d", "credentials.tfrc.json")
+	if path := credentialsFile(); path != "" {
 		b, readErr := os.ReadFile(path) // #nosec G304 -- the operator's own terraform credentials file
 		if readErr == nil {
 			var f struct {
@@ -187,6 +194,22 @@ func registryToken(host string) (string, error) {
 	}
 	return "", fmt.Errorf("no registry token for %s: set %s or run terraform login %s",
 		host, tokenEnvName(host), host)
+}
+
+// credentialsFile is where terraform login writes tokens: %APPDATA%\terraform.d
+// on Windows, ~/.terraform.d elsewhere. Empty when neither base is known.
+func credentialsFile() string {
+	if runtime.GOOS == "windows" {
+		if appData := os.Getenv("APPDATA"); appData != "" {
+			return filepath.Join(appData, "terraform.d", "credentials.tfrc.json")
+		}
+		return ""
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return ""
+	}
+	return filepath.Join(home, ".terraform.d", "credentials.tfrc.json")
 }
 
 // tokenEnvName is terraform's variable name for a host's token: dots become
