@@ -2,7 +2,9 @@
 
 ctfkit by compliance.tf puts its analyzers inside the binary itself. When you run
 `ctfkit scan`, it uses control ids and replacement module sources from the catalog baked
-into that binary. So no catalog file, settings file, network, or credentials are needed. The
+into that binary, which holds the CIS AWS Benchmark v6.0 controls
+([configuration.md](configuration.md#catalog) covers the full catalog). So no catalog file,
+settings file, network, or credentials are needed. The
 command `ctfkit report` runs `post_init` rules after `init`. [stages.md](stages.md)
 tells you what each stage can and cannot see.
 
@@ -36,7 +38,7 @@ resource "aws_s3_bucket" "logs" {
 
 # finding: the module source switches a control off
 module "s3_bucket" {
-  source = "soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_versioning_enabled"
+  source = "soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_enforces_ssl"
 }
 ```
 

@@ -138,9 +138,9 @@ registry.
 schema_version: "1.0"
 
 exceptions:
-  - control: s3_bucket_object_lock_enabled
+  - rule: ctf.coverage.module_source
     resource: aws_s3_bucket.logs
-    justification: "Scratch bucket for ETL output. Objects are deleted within 24 hours, which object lock retention would block."
+    justification: "Scratch bucket for ETL output; it stays a raw aws_s3_bucket on purpose."
     approved_by: compliance@bobthecorp.example
     approval_ticket: SEC-4711
     review_date: "2027-06-01"
@@ -148,7 +148,7 @@ exceptions:
 
 | Key | Rule |
 |---|---|
-| `control` or `rule` | exactly one per entry: a control id, or a rule id such as `ctf.policy.floating_ref`. Findings with no control id, such as the provider and pinning checks, need a `rule` entry |
+| `control` or `rule` | exactly one per entry: a control id, or a rule id such as `ctf.policy.floating_ref`. Findings with no control id, such as the provider and pinning checks, need a `rule` entry. A `control` entry matches only ids the loaded catalog holds; the embedded catalog holds the CIS v6.0 controls only ([catalog](#catalog)) |
 | `resource` | required; the address of the resource the exception covers |
 | `approved_by`, `approvals` | at least one approver across the two; `approvals` is a list |
 | `review_date` | required, `YYYY-MM-DD` in UTC; the exception holds through the end of that day |
@@ -170,7 +170,27 @@ An exception matches one address exactly, and no exception covers an address tha
 
 ## Catalog
 
-Control ids and replacement module sources come from the catalog embedded in the binary.
-`--catalog FILE` replaces it with a local YAML file; `--catalog embedded` pins the embedded one
-and ignores `~/.ctf/control-requirements.yaml`. `--remediation-host ID` picks the framework whose
+Control ids and replacement module sources come from a control catalog. The catalog embedded in
+the binary holds the CIS AWS Benchmark v6.0 controls only, each with its CIS v6.0 clauses, and the
+compliance.tf module entries. It needs no network or token, so every run has a catalog. The full
+catalog, with every control and every framework, is a separate file: name it with
+`--catalog FILE`, or place it at `~/.ctf/control-requirements.yaml`. Downloading it with
+`ctfkit catalog pull` is planned. `--catalog embedded` pins the embedded catalog and ignores the
+home file; the GitHub Action and Spacelift configurations pass it by default, so give them the
+file instead when you have the full catalog. `--remediation-host ID` picks the framework whose
 registry host goes into the suggested module source.
+
+With the embedded catalog, a control outside CIS v6.0 is a control the catalog does not hold:
+
+- `ctf.coverage.delegation_unresolved` names the id in its message and carries no
+  `ctf.controlIds`; `report` still completes. When a catalog holding the id is loaded, the
+  finding carries it again and its fingerprint changes.
+- `?disable=` of such a control is `ctf.policy.disabled_control_unknown`, an error like
+  `ctf.policy.disabled_control`, with no control id.
+- `ctf.risk.sensitive_change_*` findings still fire, without a control id or frameworks.
+- An exception entry keyed by `control` matches only ids the loaded catalog holds; use a `rule`
+  entry to waive such a finding.
+
+A `ctf.coverage.module_source` finding on a raw resource lists only the controls the suggested
+module enforces. The catalog can place more controls on the same resource type, and those are
+left off, because the finding does not claim the module closes them.

@@ -458,6 +458,20 @@ them separately), so a catalog release does not by itself change every case.
   unchanged. `10-post-apply-state` records the planned post_apply stage, which
   scan refuses with exit 2, so no renderer writes it and it keeps no
   fingerprint until that stage ships.
+- 2026-11-09: the embedded catalog holds the CIS AWS Benchmark v6.0 controls
+  only, with CIS v6.0 clauses. Every case joins it, so results carry CIS
+  control ids and `cis_v600` frameworks only, and a control outside CIS v6.0
+  has none. The raw-bucket `module_source` result in `01-`, `06-` and `07-`
+  now carries no control id, so the exception file of `06-` and `07-` waives it
+  with a `rule: ctf.coverage.module_source` entry instead of a control entry;
+  `06-` still exits 0 and `07-` still records the lapsed entry. `03-` disables
+  `s3_bucket_versioning_enabled`, which is outside CIS v6.0, so it records
+  `ctf.policy.disabled_control_unknown`, now at error level. Delegation
+  warnings for controls outside CIS v6.0 name the id and carry no control id.
+  The SARIF goldens were re-recorded with `CTFKIT_RERECORD=1` through
+  `TestScanFixtureParity`, `TestReportSARIFParity` and
+  `TestReportExecFixtures`, and the report projections through
+  `TestReportProjections` and `TestReportSpaceliftParity`.
 
 A diff against the committed bytes is the failure. Changing an expected file is
 a specification change and needs the owning spec changed in the same pull

@@ -325,10 +325,11 @@ they stand: the settings file leaves every key at the ctfkit default, and the ex
 empty, so nothing is suppressed.
 
 `catalog` defaults to the literal `embedded`, which pins the release catalog compiled into the
-binary you pinned with `version`. Nothing to ship, nothing to keep current, and control ids,
-framework clauses and the compliance.tf module source that closes each gap always resolve. A path
-overrides it, and a catalog file **replaces** the embedded one wholesale rather than adding to it,
-so point this at a catalog you maintain or leave it alone.
+binary you pinned with `version`. Nothing to ship and nothing to keep current; the compliance.tf
+module source that closes each gap always resolves, and control ids and clauses resolve for the
+CIS AWS Benchmark v6.0 controls the embedded catalog holds. A path overrides it, and a catalog file
+**replaces** the embedded one wholesale rather than adding to it; point this at the full catalog
+file to get every control and framework ([configuration](../../docs/configuration.md#catalog)).
 
 The action fails in the install step, before the binary is downloaded, if `config` or `exceptions`
 names a file that is not there. `embedded` is a literal rather than a path, so it is not checked

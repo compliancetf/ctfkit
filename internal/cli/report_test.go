@@ -2,6 +2,7 @@ package cli
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -717,6 +718,75 @@ func TestReportNoManifestsAtAll(t *testing.T) {
 	}
 	if !strings.Contains(err.Error(), "compliancetf-manifest.json") {
 		t.Errorf("diagnostic does not name what is missing: %q", err.Error())
+	}
+}
+
+// TestReportToleratesAControlTheCatalogLacks runs report over a served
+// manifest that delegates a control id the embedded catalog does not hold, as
+// a manifest served after this release can. The run completes with the
+// recorded case's exit code and writes every projection, rather than exiting
+// 2; the unknown id is named in the delegation finding.
+func TestReportToleratesAControlTheCatalogLacks(t *testing.T) {
+	const (
+		delegated = `"control_id": "s3_bucket_event_notifications_enabled"`
+		unknown   = "s3_control_from_a_newer_catalog"
+	)
+
+	root := filepath.Join(t.TempDir(), "input")
+	if err := os.CopyFS(root, os.DirFS(absFixture(t, "delegated-without-sibling"))); err != nil {
+		t.Fatalf("copy the fixture: %v", err)
+	}
+	manifest := filepath.Join(root, ".terraform", "modules", "s3_bucket", "compliancetf-manifest.json")
+	body := readFile(t, manifest)
+	if !bytes.Contains(body, []byte(delegated)) {
+		t.Fatalf("the fixture manifest no longer delegates %s", delegated)
+	}
+	body = bytes.Replace(body, []byte(delegated), []byte(`"control_id": "`+unknown+`"`), 1)
+	if err := os.WriteFile(manifest, body, 0o600); err != nil {
+		t.Fatalf("write the manifest: %v", err)
+	}
+
+	outDir := t.TempDir()
+	t.Chdir(t.TempDir())
+	code, err := runReportErr(t, append([]string{"--path", root, "--out-dir", outDir, "--format", "markdown,receipt,sarif"}, fixtureContext...)...)
+	if code != ExitOK {
+		t.Fatalf("exit code = %d (%v), want %d as the recorded case", code, err, ExitOK)
+	}
+
+	for _, name := range []string{"report.md", "receipt.json", "findings.sarif"} {
+		if !exists(filepath.Join(outDir, name)) {
+			t.Errorf("%s was not written", name)
+		}
+	}
+	var doc struct {
+		Runs []struct {
+			Results []struct {
+				RuleID  string `json:"ruleId"`
+				Message struct {
+					Text string `json:"text"`
+				} `json:"message"`
+				Properties struct {
+					ControlIDs []string `json:"ctf.controlIds"`
+				} `json:"properties"`
+			} `json:"results"`
+		} `json:"runs"`
+	}
+	if err := json.Unmarshal(readFile(t, filepath.Join(outDir, "findings.sarif")), &doc); err != nil {
+		t.Fatalf("findings.sarif does not parse: %v", err)
+	}
+	found := false
+	for _, r := range doc.Runs[0].Results {
+		if r.RuleID != "ctf.coverage.delegation_unresolved" || !strings.Contains(r.Message.Text, "Control "+unknown+" ") {
+			continue
+		}
+		found = true
+		if len(r.Properties.ControlIDs) != 0 || !strings.Contains(r.Message.Text, "does not hold this control id") {
+			t.Errorf("delegation finding for %s: controlIds %v, message %q; want no control id and the gap named",
+				unknown, r.Properties.ControlIDs, r.Message.Text)
+		}
+	}
+	if !found {
+		t.Errorf("findings.sarif has no delegation finding naming %s", unknown)
 	}
 }
 

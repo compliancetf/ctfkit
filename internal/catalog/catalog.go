@@ -61,6 +61,19 @@ const (
 	provenanceHome     = "home"
 )
 
+// EmbeddedSubsetNote is what a finding message adds about a control id the
+// loaded catalog lacks: when that catalog is the embedded one, which holds the
+// CIS v6.0 controls only, it says so and names the way to a full catalog. The
+// test is the version, not the provenance, so a file copy of the embedded
+// catalog gets the same text. Any other catalog gets nothing, since the hint
+// would be wrong for it.
+func EmbeddedSubsetNote(v ctfkit.CatalogVersion) string {
+	if v.Version != Embedded().Version().Version {
+		return ""
+	}
+	return " (the embedded catalog holds the CIS v6.0 controls only; name a full catalog with --catalog)"
+}
+
 //go:embed data/catalog.yaml
 var embeddedYAML []byte
 

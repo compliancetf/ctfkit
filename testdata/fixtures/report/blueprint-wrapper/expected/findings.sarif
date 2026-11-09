@@ -32,7 +32,7 @@
       },
       "properties": {
         "ctf.catalogVersion": {
-          "version": "2026.11.0",
+          "version": "2026.11.1",
           "origin": "embedded"
         }
       },
@@ -42,7 +42,7 @@
           "level": "warning",
           "kind": "fail",
           "message": {
-            "text": "Control s3_bucket_event_notifications_enabled is delegated to scope modules/notification of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced"
+            "text": "Control s3_bucket_event_notifications_enabled is delegated to scope modules/notification of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced; the control catalog 2026.11.1 does not hold this control id (the embedded catalog holds the CIS v6.0 controls only; name a full catalog with --catalog), so the finding carries no control id"
           },
           "locations": [
             {
@@ -54,14 +54,12 @@
             }
           ],
           "partialFingerprints": {
-            "ctfkitFindingHash/v1": "251c581b0f545e28517024232f414f990e06500b9ef589b10d99b97780411411"
+            "ctfkitFindingHash/v1": "2794fde7cc7b2ec766ff90c2381ac495d06bb7a498b91d2a8eb65a6829e95d0e"
           },
           "properties": {
             "ctf.schema": "1.0",
             "ctf.stage": "post_init",
-            "ctf.controlIds": [
-              "s3_bucket_event_notifications_enabled"
-            ],
+            "ctf.controlIds": [],
             "ctf.frameworks": [
               {
                 "id": "soc_2",
@@ -83,7 +81,7 @@
           "level": "warning",
           "kind": "fail",
           "message": {
-            "text": "Control s3_public_access_block_account is delegated to scope modules/account-public-access of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced"
+            "text": "Control s3_public_access_block_account is delegated to scope modules/account-public-access of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced; the control catalog 2026.11.1 does not hold this control id (the embedded catalog holds the CIS v6.0 controls only; name a full catalog with --catalog), so the finding carries no control id"
           },
           "locations": [
             {
@@ -95,14 +93,12 @@
             }
           ],
           "partialFingerprints": {
-            "ctfkitFindingHash/v1": "2eddea466b73c6008131b925d70394dc0e845d4ca0e6223d68ba9085ad25d036"
+            "ctfkitFindingHash/v1": "2ad012c11637ce508e88229ea05833443df9b0ed58f57554e24512f6d9f183d3"
           },
           "properties": {
             "ctf.schema": "1.0",
             "ctf.stage": "post_init",
-            "ctf.controlIds": [
-              "s3_public_access_block_account"
-            ],
+            "ctf.controlIds": [],
             "ctf.frameworks": [
               {
                 "id": "soc_2",

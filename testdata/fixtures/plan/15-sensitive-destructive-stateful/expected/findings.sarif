@@ -94,114 +94,14 @@
             }
           ],
           "partialFingerprints": {
-            "ctfkitFindingHash/v1": "a89511d807566ae7de834a27afc1635eaad23a5a3e6235be381189505d2ecb99"
+            "ctfkitFindingHash/v1": "c6e1e99c1ef5877c619b88b4d0fa85dc74a3ad7f1a818267fe35be0c4928ed59"
           },
           "properties": {
             "ctf.schema": "1.0",
             "ctf.stage": "post_plan",
-            "ctf.controlIds": [
-              "rds_db_instance_deletion_protection_enabled"
-            ],
-            "ctf.frameworks": [
-              {
-                "id": "cfr_part_11",
-                "clauses": [
-                  "11.10(a)"
-                ]
-              },
-              {
-                "id": "cisa_cyber_essentials",
-                "clauses": [
-                  "Your Data-4",
-                  "Your Systems-3"
-                ]
-              },
-              {
-                "id": "eu_gmp_annex_11",
-                "clauses": [
-                  "7.1"
-                ]
-              },
-              {
-                "id": "fedramp_low_rev_4",
-                "clauses": [
-                  "SC-5"
-                ]
-              },
-              {
-                "id": "fedramp_moderate_rev_4",
-                "clauses": [
-                  "SC-5"
-                ]
-              },
-              {
-                "id": "ffiec",
-                "clauses": [
-                  "D5.IR.Pl.B.6"
-                ]
-              },
-              {
-                "id": "hipaa_final_omnibus_2013",
-                "clauses": [
-                  "164.308(a)(7)(ii)(C)"
-                ]
-              },
-              {
-                "id": "nist_800_53_rev_4",
-                "clauses": [
-                  "SC-5"
-                ]
-              },
-              {
-                "id": "nist_800_53_rev_5",
-                "clauses": [
-                  "CA-7(4)(c)",
-                  "CM-3(a)",
-                  "CP-1(a)(1)(b)",
-                  "CP-2(5)",
-                  "CP-2(a)",
-                  "CP-2(d)",
-                  "CP-2(e)",
-                  "SA-15(a)(4)",
-                  "SC-22",
-                  "SC-5(2)",
-                  "SI-13(5)"
-                ]
-              },
-              {
-                "id": "nist_csf_v11",
-                "clauses": [
-                  "RC.RP-1"
-                ]
-              },
-              {
-                "id": "nist_csf_v2",
-                "clauses": [
-                  "PR.DS-4",
-                  "PR.PT-5",
-                  "RC.RP-04"
-                ]
-              },
-              {
-                "id": "nydfs_23",
-                "clauses": [
-                  "500.02(a)"
-                ]
-              },
-              {
-                "id": "rbi_itf_nbfc",
-                "clauses": [
-                  "8.1"
-                ]
-              },
-              {
-                "id": "soc_2",
-                "clauses": [
-                  "C1.1"
-                ]
-              }
-            ],
-            "ctf.preventive": true,
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
             "ctf.evidence": {
               "runId": "ctfkit-fixture-run",
               "commit": "0000000000000000000000000000000000000000",

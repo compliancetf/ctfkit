@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 
@@ -357,6 +358,37 @@ func TestResourcesInsideAnUnservedModuleAreClassified(t *testing.T) {
 	}
 	if got := findings[1].Subject(); got != "module.vendor.aws_s3_bucket.this" {
 		t.Errorf("second finding is about %s, want the vendored bucket", got)
+	}
+}
+
+// TestRawResourceCarriesOnlyTheModulesControls records that a raw-resource
+// finding names only the controls the replacement module enforces. The catalog
+// places s3_bucket_enforces_ssl on aws_s3_bucket, but the s3-bucket module
+// does not claim it, so the finding must not say the module closes it.
+func TestRawResourceCarriesOnlyTheModulesControls(t *testing.T) {
+	cat := fixtureCatalog(t)
+	if !slices.Contains(cat.ControlsFor("aws_s3_bucket"), "s3_bucket_enforces_ssl") {
+		t.Fatal("the catalog no longer places s3_bucket_enforces_ssl on aws_s3_bucket; pick another unclaimed control")
+	}
+	module, _ := cat.ModuleFor("aws_s3_bucket")
+
+	in := ctfkit.AnalyzerInput{
+		Stage:    ctfkit.PostPlan,
+		PlanJSON: planWithResources("aws_s3_bucket.raw", "aws_s3_bucket"),
+		Catalog:  cat,
+	}
+	findings := analyzeTyped(t, in)
+	if len(findings) != 1 {
+		t.Fatalf("produced %d finding(s), want the raw-resource error", len(findings))
+	}
+	ids := findings[0].Props.ControlIDs
+	if slices.Contains(ids, "s3_bucket_enforces_ssl") {
+		t.Errorf("finding carries s3_bucket_enforces_ssl, which the s3-bucket module does not claim: %v", ids)
+	}
+	for _, id := range ids {
+		if !slices.Contains(module.Controls, id) {
+			t.Errorf("finding carries %s, which the s3-bucket module does not enforce", id)
+		}
 	}
 }
 

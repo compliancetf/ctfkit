@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"sort"
 	"strings"
 	"testing"
 
@@ -19,75 +18,53 @@ import (
 func TestEmbeddedAnswersEveryInterfaceMethod(t *testing.T) {
 	c := catalog.Embedded()
 
-	if got := c.Version(); got.Version != "2026.11.0" || got.Provenance != "embedded" {
-		t.Errorf("Version() = %+v, want version 2026.11.0 from embedded", got)
+	if got := c.Version(); got.Version != "2026.11.1" || got.Provenance != "embedded" {
+		t.Errorf("Version() = %+v, want version 2026.11.1 from embedded", got)
 	}
 
-	// The catalog places a control on the resource type that actually carries
-	// the setting, so most of the S3 controls sit on a sub-resource rather
-	// than on aws_s3_bucket. Object lock is set on the bucket itself.
-	ids := c.ControlsFor("aws_s3_bucket")
-	if !contains(ids, "s3_bucket_object_lock_enabled") {
-		t.Errorf("ControlsFor(aws_s3_bucket) = %v, want it to contain s3_bucket_object_lock_enabled", ids)
+	// The embedded catalog holds the CIS v6.0 controls only. A control sits on
+	// the resource type that carries the setting: MFA delete is set on the
+	// versioning sub-resource, SSL enforcement on the bucket.
+	if ids := c.ControlsFor("aws_s3_bucket"); !contains(ids, "s3_bucket_enforces_ssl") {
+		t.Errorf("ControlsFor(aws_s3_bucket) = %v, want it to contain s3_bucket_enforces_ssl", ids)
 	}
-	if got := c.ControlsFor("aws_s3_bucket_versioning"); !contains(got, "s3_bucket_versioning_enabled") {
-		t.Errorf("ControlsFor(aws_s3_bucket_versioning) = %v, want it to contain s3_bucket_versioning_enabled", got)
+	if got := c.ControlsFor("aws_s3_bucket_versioning"); !contains(got, "s3_bucket_mfa_delete_enabled") {
+		t.Errorf("ControlsFor(aws_s3_bucket_versioning) = %v, want it to contain s3_bucket_mfa_delete_enabled", got)
 	}
 	if got := c.ControlsFor("aws_s3_bucket_object"); len(got) != 0 {
 		t.Errorf("ControlsFor(aws_s3_bucket_object) = %v, want empty for a type the catalog does not cover", got)
 	}
 
-	ref, ok := c.Control("s3_bucket_logging_enabled")
+	ref, ok := c.Control("s3_bucket_mfa_delete_enabled")
 	if !ok {
-		t.Fatal("Control(s3_bucket_logging_enabled) not found")
+		t.Fatal("Control(s3_bucket_mfa_delete_enabled) not found")
 	}
-	if ref.Name == "" || !reflect.DeepEqual(ref.ResourceTypes, []string{"aws_s3_bucket_logging"}) {
-		t.Errorf("Control(s3_bucket_logging_enabled) = %+v, want the bucket-logging entry", ref)
+	if ref.Name == "" || !reflect.DeepEqual(ref.ResourceTypes, []string{"aws_s3_bucket_versioning"}) {
+		t.Errorf("Control(s3_bucket_mfa_delete_enabled) = %+v, want the bucket-versioning entry", ref)
 	}
 	if _, found := c.Control("no_such_control"); found {
 		t.Error("Control(no_such_control) reported found")
 	}
-
-	// Framework ids are the ids a served manifest carries. The membership list
-	// is long and grows with the catalog, so what is asserted is that it is
-	// sorted and carries the two the fixtures exercise, not its exact content.
-	fws := c.Frameworks("s3_bucket_logging_enabled")
-	if !sort.StringsAreSorted(fws) {
-		t.Errorf("Frameworks(s3_bucket_logging_enabled) = %v, want it sorted", fws)
+	// A control outside CIS v6.0 is not in the embedded catalog.
+	if _, found := c.Control("s3_bucket_logging_enabled"); found {
+		t.Error("Control(s3_bucket_logging_enabled) found, want only CIS v6.0 controls embedded")
 	}
-	for _, want := range []string{"soc_2", "pci_dss_v40"} {
-		if !contains(fws, want) {
-			t.Errorf("Frameworks(s3_bucket_logging_enabled) = %v, want it to contain %s", fws, want)
-		}
+
+	if got := c.Frameworks("s3_bucket_mfa_delete_enabled"); !reflect.DeepEqual(got, []string{"cis_v600"}) {
+		t.Errorf("Frameworks(s3_bucket_mfa_delete_enabled) = %v, want [cis_v600]", got)
 	}
 	if got := c.Frameworks("no_such_control"); len(got) != 0 {
 		t.Errorf("Frameworks(no_such_control) = %v, want empty", got)
 	}
 
-	if got := c.Framework("s3_bucket_logging_enabled", "soc_2"); len(got) == 0 {
-		t.Error("Framework(s3_bucket_logging_enabled, soc_2) returned no clause")
+	if got := c.Framework("s3_bucket_mfa_delete_enabled", "cis_v600"); len(got) == 0 {
+		t.Error("Framework(s3_bucket_mfa_delete_enabled, cis_v600) returned no clause")
 	}
-	if got := c.Framework("s3_bucket_logging_enabled", "gdpr"); len(got) != 0 {
-		t.Errorf("Framework(s3_bucket_logging_enabled, gdpr) = %v, want empty for a framework it does not map to", got)
+	if got := c.Framework("s3_bucket_mfa_delete_enabled", "soc_2"); len(got) != 0 {
+		t.Errorf("Framework(s3_bucket_mfa_delete_enabled, soc_2) = %v, want empty: only CIS v6.0 clauses are embedded", got)
 	}
-	if got := c.Framework("no_such_control", "soc_2"); len(got) != 0 {
-		t.Errorf("Framework(no_such_control, soc_2) = %v, want empty", got)
-	}
-
-	// A framework the control catalog lists for a control but records no
-	// clause for is left out of the release catalog, so every framework
-	// Frameworks reports has something to cite. The control catalog places
-	// s3_bucket_object_lock_enabled in fedramp_moderate_rev_4 with no clause,
-	// which is why it is not listed. That membership was once kept
-	// as an empty clause list, and a finding carried it as a framework with
-	// nothing to cite.
-	if got := c.Frameworks("s3_bucket_object_lock_enabled"); contains(got, "fedramp_moderate_rev_4") {
-		t.Errorf("Frameworks(s3_bucket_object_lock_enabled) = %v, want no fedramp_moderate_rev_4: it records no clause", got)
-	}
-	for _, fw := range c.Frameworks("s3_bucket_object_lock_enabled") {
-		if len(c.Framework("s3_bucket_object_lock_enabled", fw)) == 0 {
-			t.Errorf("Frameworks(s3_bucket_object_lock_enabled) lists %s, which has no clause", fw)
-		}
+	if got := c.Framework("no_such_control", "cis_v600"); len(got) != 0 {
+		t.Errorf("Framework(no_such_control, cis_v600) = %v, want empty", got)
 	}
 
 	mod, ok := c.ModuleFor("aws_s3_bucket")
@@ -100,8 +77,8 @@ func TestEmbeddedAnswersEveryInterfaceMethod(t *testing.T) {
 	if mod.Version != "~> 5.0" {
 		t.Errorf("ModuleFor(aws_s3_bucket).Version = %q, want ~> 5.0", mod.Version)
 	}
-	if !contains(mod.Controls, "s3_bucket_versioning_enabled") {
-		t.Errorf("ModuleFor(aws_s3_bucket).Controls = %v, want it to enforce s3_bucket_versioning_enabled", mod.Controls)
+	if !contains(mod.Controls, "s3_bucket_restrict_public_write_access") {
+		t.Errorf("ModuleFor(aws_s3_bucket).Controls = %v, want it to enforce s3_bucket_restrict_public_write_access", mod.Controls)
 	}
 	if _, ok := c.ModuleFor("aws_lambda_function"); ok {
 		t.Error("ModuleFor(aws_lambda_function) reported a module")
@@ -161,23 +138,23 @@ func TestReturnedValuesAreCopies(t *testing.T) {
 		t.Error("ControlsFor shares its slice with the catalog")
 	}
 
-	ref, _ := c.Control("s3_bucket_logging_enabled")
+	ref, _ := c.Control("s3_bucket_mfa_delete_enabled")
 	ref.ResourceTypes[0] = "clobbered"
-	ref.ClausesByFramework["soc_2"][0] = "clobbered"
-	again, _ := c.Control("s3_bucket_logging_enabled")
-	if again.ResourceTypes[0] == "clobbered" || again.ClausesByFramework["soc_2"][0] == "clobbered" {
+	ref.ClausesByFramework["cis_v600"][0] = "clobbered"
+	again, _ := c.Control("s3_bucket_mfa_delete_enabled")
+	if again.ResourceTypes[0] == "clobbered" || again.ClausesByFramework["cis_v600"][0] == "clobbered" {
 		t.Error("Control shares its slices with the catalog")
 	}
 
-	fws := c.Frameworks("s3_bucket_logging_enabled")
+	fws := c.Frameworks("s3_bucket_mfa_delete_enabled")
 	fws[0] = "clobbered"
-	if c.Frameworks("s3_bucket_logging_enabled")[0] == "clobbered" {
+	if c.Frameworks("s3_bucket_mfa_delete_enabled")[0] == "clobbered" {
 		t.Error("Frameworks shares its slice with the catalog")
 	}
 
-	clauses := c.Framework("s3_bucket_logging_enabled", "soc_2")
+	clauses := c.Framework("s3_bucket_mfa_delete_enabled", "cis_v600")
 	clauses[0] = "clobbered"
-	if c.Framework("s3_bucket_logging_enabled", "soc_2")[0] == "clobbered" {
+	if c.Framework("s3_bucket_mfa_delete_enabled", "cis_v600")[0] == "clobbered" {
 		t.Error("Framework shares its slice with the catalog")
 	}
 
@@ -196,8 +173,8 @@ func TestReturnedValuesAreCopies(t *testing.T) {
 	}
 
 	hosts := c.Hosts()
-	hosts["soc_2"] = "clobbered"
-	if c.Hosts()["soc_2"] == "clobbered" {
+	hosts["cis_v600"] = "clobbered"
+	if c.Hosts()["cis_v600"] == "clobbered" {
 		t.Error("Hosts shares its map with the catalog")
 	}
 }
@@ -461,4 +438,28 @@ func contains[T comparable](haystack []T, needle T) bool {
 		}
 	}
 	return false
+}
+
+// The CIS-subset hint belongs only to the embedded catalog's content: a copy
+// of it read as a file gets the hint, and a catalog of any other version,
+// such as the full one, does not, since telling its user to pass --catalog
+// would be wrong.
+func TestEmbeddedSubsetNoteFollowsTheEmbeddedVersion(t *testing.T) {
+	embedded := catalog.Embedded().Version().Version
+	for _, tc := range []struct {
+		name     string
+		version  ctfkit.CatalogVersion
+		wantNote bool
+	}{
+		{"embedded", ctfkit.CatalogVersion{Version: embedded, Provenance: "embedded"}, true},
+		{"a file copy of it", ctfkit.CatalogVersion{Version: embedded, Provenance: "file"}, true},
+		{"another catalog", ctfkit.CatalogVersion{Version: "2099.1.0", Provenance: "home"}, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			note := catalog.EmbeddedSubsetNote(tc.version)
+			if got := strings.Contains(note, "CIS v6.0"); got != tc.wantNote {
+				t.Errorf("EmbeddedSubsetNote(%+v) = %q, want a CIS note: %v", tc.version, note, tc.wantNote)
+			}
+		})
+	}
 }
