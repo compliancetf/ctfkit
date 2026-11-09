@@ -5,8 +5,7 @@ organization:
   compliance_contact: compliance@bobthecorp.example
 
 exceptions:
-  - control: s3_bucket_object_lock_enabled
-    control_id: S3-004
+  - rule: ctf.coverage.module_source
     resource: aws_s3_bucket.logs
     resource_type: aws_s3_bucket
     frameworks: [soc_2]

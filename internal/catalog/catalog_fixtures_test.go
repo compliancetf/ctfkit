@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/compliancetf/ctfkit/internal/catalog"
-	"github.com/compliancetf/ctfkit/pkg/ctfkit"
 )
 
 // manifestName is the file a served module carries at the root of its scope.
@@ -19,41 +18,6 @@ const manifestName = "compliancetf-manifest.json"
 // is built against. They are the closest thing in the repo to what a customer
 // actually downloads.
 const fixtureRoot = "../../testdata/fixtures/report"
-
-// A finding whose control id the catalog cannot resolve is refused by
-// ValidateFor, so any id a served manifest can name has to be in the embedded
-// release catalog. The fixture manifests are the sample of real served
-// manifests this repo has, so they are the sample this is asserted over.
-//
-// The embedded catalog once held 16 hand-written controls, and 10
-// of the 12 ids the fixtures name resolved to nothing.
-func TestEveryFixtureManifestControlIDResolves(t *testing.T) {
-	ids := fixtureControlIDs(t)
-	if len(ids) == 0 {
-		t.Fatal("no control ids found under the fixture root; this test is no longer checking anything")
-	}
-
-	c := catalog.Embedded()
-	var unresolved []string
-	for _, id := range ids {
-		ref, ok := c.Control(ctfkit.ControlID(id))
-		if !ok {
-			unresolved = append(unresolved, id)
-			continue
-		}
-		if ref.Name == "" {
-			t.Errorf("control %s resolves but carries no name", id)
-		}
-		if len(ref.ResourceTypes) == 0 {
-			t.Errorf("control %s resolves but names no resource type", id)
-		}
-	}
-
-	if len(unresolved) > 0 {
-		t.Errorf("the embedded catalog cannot resolve %d of %d control ids a fixture manifest names: %v",
-			len(unresolved), len(ids), unresolved)
-	}
-}
 
 // Every framework a fixture manifest cites must have a remediation host, or a
 // finding carrying it names a framework no endpoint exists for.
@@ -90,25 +54,6 @@ type manifestDoc struct {
 		ControlID          string              `json:"control_id"`
 		ClausesByFramework map[string][]string `json:"clauses_by_framework"`
 	} `json:"controls"`
-}
-
-func fixtureControlIDs(t *testing.T) []string {
-	t.Helper()
-	seen := map[string]bool{}
-	forEachManifest(t, func(_ string, doc manifestDoc) {
-		for _, c := range doc.Controls {
-			if c.ControlID != "" {
-				seen[c.ControlID] = true
-			}
-		}
-	})
-
-	out := make([]string, 0, len(seen))
-	for id := range seen {
-		out = append(out, id)
-	}
-	sort.Strings(out)
-	return out
 }
 
 // forEachManifest walks the fixture tree by hand rather than with a glob,

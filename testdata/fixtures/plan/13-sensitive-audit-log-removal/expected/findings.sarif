@@ -87,61 +87,14 @@
             }
           ],
           "partialFingerprints": {
-            "ctfkitFindingHash/v1": "94c8bcc05e26db40c479419ee85893341c2077794d9c4bebb1a0d2936b2e6eb0"
+            "ctfkitFindingHash/v1": "a5efdc03d728b30d3809794a2ca79fde5e2e167abab34151a2dd4ae64643bdd2"
           },
           "properties": {
             "ctf.schema": "1.0",
             "ctf.stage": "post_plan",
-            "ctf.controlIds": [
-              "eks_cluster_control_plane_audit_logging_enabled"
-            ],
-            "ctf.frameworks": [
-              {
-                "id": "acsc_essential_eight",
-                "clauses": [
-                  "ACSC-EE-ML2-7.7"
-                ]
-              },
-              {
-                "id": "aws_well_architected_v10",
-                "clauses": [
-                  "Detection"
-                ]
-              },
-              {
-                "id": "iso_27001_2022",
-                "clauses": [
-                  "A.8.15"
-                ]
-              },
-              {
-                "id": "nis2",
-                "clauses": [
-                  "12",
-                  "3"
-                ]
-              },
-              {
-                "id": "pci_dss_v40",
-                "clauses": [
-                  "10.2.1",
-                  "10.2.1.1",
-                  "10.2.1.2",
-                  "10.2.1.3",
-                  "10.2.1.4",
-                  "10.2.1.5",
-                  "10.2.1.6",
-                  "10.2.1.7",
-                  "10.2.2",
-                  "10.3.1",
-                  "10.6.3",
-                  "5.3.4",
-                  "A1.2.1",
-                  "A1.2.3"
-                ]
-              }
-            ],
-            "ctf.preventive": true,
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
+            "ctf.preventive": false,
             "ctf.evidence": {
               "runId": "ctfkit-fixture-run",
               "commit": "0000000000000000000000000000000000000000",

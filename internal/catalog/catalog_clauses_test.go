@@ -8,7 +8,6 @@ import (
 	"gopkg.in/yaml.v3"
 
 	"github.com/compliancetf/ctfkit/internal/catalog"
-	"github.com/compliancetf/ctfkit/pkg/ctfkit"
 )
 
 // shippedControl is the part of a catalog-1 controls[] entry these tests read.
@@ -53,25 +52,20 @@ func TestNoEmptyClauseList(t *testing.T) {
 	}
 }
 
-// Plan fixture 03 records a disabled_control finding on
-// s3_bucket_versioning_enabled citing four SOC 2 clauses. Every clause the
-// control catalog records for a framework has to reach the release catalog, so
-// all four are asserted here, by clause identifier. The framework id is the
-// catalog id, soc_2.
-func TestFixture03ControlCarriesItsSOC2Clauses(t *testing.T) {
-	const control = "s3_bucket_versioning_enabled"
-	const framework = "soc_2"
-	want := []string{"A1.2", "C1.2", "CC7.4", "PI1.5"}
-
-	clauses := catalog.Embedded().Framework(ctfkit.ControlID(control), framework)
-	have := make(map[string]bool, len(clauses))
-	for _, id := range catalog.ClauseIdentifiers(clauses) {
-		have[id] = true
-	}
-
-	for _, id := range want {
-		if !have[id] {
-			t.Errorf("%s / %s does not cite %s; it cites %v", control, framework, id, clauses)
+// The embedded catalog is public and holds the CIS AWS Benchmark v6.0
+// controls only, each citing CIS v6.0 clauses only. The full catalog is
+// delivered separately. This fails if a regeneration embeds more than that
+// subset, so a full catalog cannot reach the repository by accident.
+func TestEmbeddedCatalogIsTheCISSubset(t *testing.T) {
+	const framework = "cis_v600"
+	for _, c := range shippedControls(t) {
+		if len(c.ClausesByFramework[framework]) == 0 {
+			t.Errorf("%s cites no %s clause; the embedded catalog holds CIS v6.0 controls only", c.ID, framework)
+		}
+		for fw := range c.ClausesByFramework {
+			if fw != framework {
+				t.Errorf("%s cites %s; the embedded catalog carries %s clauses only", c.ID, fw, framework)
+			}
 		}
 	}
 }

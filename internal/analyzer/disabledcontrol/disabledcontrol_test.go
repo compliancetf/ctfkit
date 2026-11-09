@@ -58,7 +58,9 @@ func TestFixtures(t *testing.T) {
 }
 
 // TestFixture03ControlIDs is the acceptance line of this analyzer, stated on its
-// own so a regression names it.
+// own so a regression names it. Fixture 03 disables s3_bucket_mfa_delete_enabled,
+// a control outside the embedded CIS v6.0 catalog, so it is reported as an
+// unknown disable: an error like a known one, with no control id.
 func TestFixture03ControlIDs(t *testing.T) {
 	config, err := loader.LoadConfig(filepath.Join(fixtureRoot, "03-ctf-module-disabled-control", "input"))
 	if err != nil {
@@ -68,9 +70,10 @@ func TestFixture03ControlIDs(t *testing.T) {
 	if len(findings) != 1 {
 		t.Fatalf("got %d findings, want 1", len(findings))
 	}
-	got := findings[0].Props.ControlIDs
-	if want := []ctfkit.ControlID{"s3_bucket_versioning_enabled"}; !reflect.DeepEqual(got, want) {
-		t.Errorf("ctf.controlIds = %v, want %v", got, want)
+	f := findings[0]
+	if f.RuleID != "ctf.policy.disabled_control_unknown" || f.Level != ctfkit.LevelError || len(f.Props.ControlIDs) != 0 {
+		t.Errorf("got %s %s %v, want ctf.policy.disabled_control_unknown error with no control id",
+			f.RuleID, f.Level, f.Props.ControlIDs)
 	}
 }
 
@@ -83,47 +86,47 @@ func TestCases(t *testing.T) {
 		{
 			name: "multiple ids in one parameter",
 			hcl: `module "b" {
-  source = "https://soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws?version=5.16.1&disable=s3_bucket_versioning_enabled,s3_bucket_logging_enabled"
+  source = "https://soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws?version=5.16.1&disable=s3_bucket_mfa_delete_enabled,s3_bucket_enforces_ssl"
 }`,
 			want: []string{
-				"ctf.policy.disabled_control error s3_bucket_logging_enabled module.b",
-				"ctf.policy.disabled_control error s3_bucket_versioning_enabled module.b",
+				"ctf.policy.disabled_control error s3_bucket_enforces_ssl module.b",
+				"ctf.policy.disabled_control error s3_bucket_mfa_delete_enabled module.b",
 			},
 		},
 		{
 			name: "repeated parameter",
 			hcl: `module "b" {
-  source = "https://bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_logging_enabled&disable=s3_bucket_versioning_enabled"
+  source = "https://bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_enforces_ssl&disable=s3_bucket_mfa_delete_enabled"
 }`,
 			want: []string{
-				"ctf.policy.disabled_control error s3_bucket_logging_enabled module.b",
-				"ctf.policy.disabled_control error s3_bucket_versioning_enabled module.b",
+				"ctf.policy.disabled_control error s3_bucket_enforces_ssl module.b",
+				"ctf.policy.disabled_control error s3_bucket_mfa_delete_enabled module.b",
 			},
 		},
 		{
 			name: "duplicate id reported once",
 			hcl: `module "b" {
-  source = "https://soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_logging_enabled,s3_bucket_logging_enabled"
+  source = "https://soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_enforces_ssl,s3_bucket_enforces_ssl"
 }`,
-			want: []string{"ctf.policy.disabled_control error s3_bucket_logging_enabled module.b"},
+			want: []string{"ctf.policy.disabled_control error s3_bucket_enforces_ssl module.b"},
 		},
 		{
 			name: "unknown id",
 			hcl: `module "b" {
-  source = "https://soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_versoning_enabled,s3_bucket_logging_enabled"
+  source = "https://soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_mfa_delet_enabled,s3_bucket_enforces_ssl"
 }`,
 			want: []string{
-				"ctf.policy.disabled_control error s3_bucket_logging_enabled module.b",
-				"ctf.policy.disabled_control_unknown warning - module.b",
+				"ctf.policy.disabled_control error s3_bucket_enforces_ssl module.b",
+				"ctf.policy.disabled_control_unknown error - module.b",
 			},
 		},
 		{
 			name: "non compliance.tf host ignored",
 			hcl: `module "b" {
-  source = "https://example.com/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_versioning_enabled"
+  source = "https://example.com/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_mfa_delete_enabled"
 }
 module "c" {
-  source = "https://compliance.tf.example.com/x/y/aws?disable=s3_bucket_versioning_enabled"
+  source = "https://compliance.tf.example.com/x/y/aws?disable=s3_bucket_mfa_delete_enabled"
 }`,
 		},
 		{
@@ -193,9 +196,9 @@ func TestUnknownIDCarriesNoControlID(t *testing.T) {
 func TestSubdirectoryAndJSONFilesRead(t *testing.T) {
 	config := &ctfkit.ConfigArchive{Files: []ctfkit.ConfigFile{
 		{Path: "envs/prod/main.tf", Bytes: []byte(`module "b" {
-  source = "https://soc2.compliance.tf/m/aws?disable=s3_bucket_versioning_enabled"
+  source = "https://soc2.compliance.tf/m/aws?disable=s3_bucket_mfa_delete_enabled"
 }`)},
-		{Path: "json.tf.json", Bytes: []byte(`{"module": {"j": {"source": "https://soc2.compliance.tf/m/aws?disable=s3_bucket_logging_enabled"}}}`)},
+		{Path: "json.tf.json", Bytes: []byte(`{"module": {"j": {"source": "https://soc2.compliance.tf/m/aws?disable=s3_bucket_enforces_ssl"}}}`)},
 	}}
 	var got []string
 	for _, f := range run(t, config) {
@@ -211,10 +214,10 @@ func TestSubdirectoryAndJSONFilesRead(t *testing.T) {
 // inside a query value must not truncate the source and hide the block.
 func TestDoubleColonInQueryDoesNotBlind(t *testing.T) {
 	config := &ctfkit.ConfigArchive{Files: []ctfkit.ConfigFile{{Path: "main.tf", Bytes: []byte(`module "b" {
-  source = "https://soc2.compliance.tf/m/aws?disable=s3_bucket_versioning_enabled&disable=a::b"
+  source = "https://soc2.compliance.tf/m/aws?disable=s3_bucket_mfa_delete_enabled&disable=a::b"
 }
 module "g" {
-  source = "git::https://soc2.compliance.tf/m/aws?disable=s3_bucket_logging_enabled"
+  source = "git::https://soc2.compliance.tf/m/aws?disable=s3_bucket_enforces_ssl"
 }`)}}}
 	var got []string
 	for _, f := range run(t, config) {

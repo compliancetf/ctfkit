@@ -36,8 +36,8 @@ Imported test results: 3 run(s), 2 passed, 1 failed, 0 errored, 0 skipped.
 | Level | Rule | Detail |
 |---|---|---|
 | error | `ctf.coverage.tests_failed` | Imported test results report 1 failed and 0 errored run(s) of 3 |
-| warning | `ctf.coverage.delegation_unresolved` | Control s3_bucket_event_notifications_enabled is delegated to scope modules/notification of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced |
-| warning | `ctf.coverage.delegation_unresolved` | Control s3_public_access_block_account is delegated to scope modules/account-public-access of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced |
+| warning | `ctf.coverage.delegation_unresolved` | Control s3_bucket_event_notifications_enabled is delegated to scope modules/notification of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced; the control catalog 2026.11.1 does not hold this control id (the embedded catalog holds CIS v6.0 only), so the finding carries no control id |
+| warning | `ctf.coverage.delegation_unresolved` | Control s3_public_access_block_account is delegated to scope modules/account-public-access of bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws 5.16.1-1e4b692ae5e0a847; no instantiated module instance governs that scope, so this configuration has no evidence the control is enforced; the control catalog 2026.11.1 does not hold this control id (the embedded catalog holds CIS v6.0 only), so the finding carries no control id |
 
 ### Consumer obligations
 

@@ -39,7 +39,7 @@ ERROR      ctf.coverage.module_source
   fix: use soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws ~> 5.0
 
 1 finding(s): 1 error, 0 warning, 0 note, 0 suppressed
-stage post_plan, catalog 2026.11.0 (embedded)
+stage post_plan, catalog 2026.11.1 (embedded)
 ctfkit: configuration directory /path/to/sample-repo (the working directory; name another with --chdir)
 ctfkit: 1 finding(s) at or above error
 ```
@@ -53,8 +53,7 @@ are on stderr: the first names the configuration directory scan read, because no
 ctfkit scan plan.json --format sarif --out findings.sarif
 ```
 
-The file validates against `schema/cff-1.schema.json`. Its one result, with the 12 framework
-entries under `ctf.frameworks` cut for length:
+The file validates against `schema/cff-1.schema.json`. Its one result:
 
 ```json
 {
@@ -74,13 +73,13 @@ entries under `ctf.frameworks` cut for length:
     }
   ],
   "partialFingerprints": {
-    "ctfkitFindingHash/v1": "9e1995ab80e155592243a5be43596692f5f0cb9ae4fcfff31ceffadf6c4afaed"
+    "ctfkitFindingHash/v1": "deafc9e0cddf7aa354fd4c20899332ef5528aca5d154aac6ed845927df16eb65"
   },
   "properties": {
     "ctf.schema": "1.0",
     "ctf.stage": "post_plan",
-    "ctf.controlIds": [ "s3_bucket_object_lock_enabled" ],
-    "ctf.frameworks": [ "..." ],
+    "ctf.controlIds": [],
+    "ctf.frameworks": [],
     "ctf.preventive": true,
     "ctf.remediation": {
       "moduleSource": "soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws",
@@ -90,7 +89,7 @@ entries under `ctf.frameworks` cut for length:
 }
 ```
 
-The run carries `"ctf.catalogVersion": {"version": "2026.11.0", "origin": "embedded"}` in its
+The run carries `"ctf.catalogVersion": {"version": "2026.11.1", "origin": "embedded"}` in its
 properties.
 
 `.github/workflows/ctfkit.yml` runs the same scan through the action with `command: scan` and

@@ -56,7 +56,7 @@ func Descriptors() []sarif.RuleDescriptor {
 		{
 			ID:               ruleUnknown,
 			ShortDescription: "A compliance.tf module source disables a token the control catalog does not hold",
-			Level:            ctfkit.LevelWarning,
+			Level:            ctfkit.LevelError,
 		},
 	}
 }
@@ -74,7 +74,8 @@ const (
 const (
 	msgDisabledControl = "Module source disables control %s"
 	msgUnknown         = "Module source disables %s, which is not a control id in catalog %s; " +
-		"the token is a typo or the catalog is behind"
+		"it is a typo, or a control outside this catalog (the embedded catalog holds CIS v6.0 only; " +
+		"name a full catalog with --catalog)"
 )
 
 // schemaVersion is the findings format version every finding carries.
@@ -109,8 +110,10 @@ func (DisabledControl) Analyze(ctx context.Context, in ctfkit.AnalyzerInput) (ct
 	return analyze(ctx, in, true)
 }
 
-// Unknown is ctf.policy.disabled_control_unknown: one warning per disable
-// token the catalog does not hold.
+// Unknown is ctf.policy.disabled_control_unknown: one error per disable token
+// the catalog does not hold. It is an error, like a known disable: the
+// embedded catalog holds only the CIS v6.0 controls, so a real control outside
+// it lands here, and a weaker level would let that disable pass CI.
 type Unknown struct{}
 
 // ID returns the rule id.
@@ -180,7 +183,7 @@ func newFinding(d disable, ref ctfkit.ControlRef, known bool, cat ctfkit.Control
 	}}
 
 	if !known {
-		return ctfkit.NewFinding(ruleUnknown, ctfkit.LevelWarning, ctfkit.KindFail,
+		return ctfkit.NewFinding(ruleUnknown, ctfkit.LevelError, ctfkit.KindFail,
 			ctfkit.Message{Text: fmt.Sprintf(msgUnknown, d.token, cat.Version().Version)},
 			locations,
 			ctfkit.Properties{Schema: schemaVersion, Stage: ctfkit.PrePlan})

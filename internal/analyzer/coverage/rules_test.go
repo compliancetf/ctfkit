@@ -405,7 +405,7 @@ func TestDelegationUnresolvedToleratesAControlTheCatalogLacks(t *testing.T) {
 					},
 					Controls: []ctfkit.ManifestControl{
 						{ControlID: unknown, Status: ctfkit.ManifestControlDelegated, AppliesIn: []string{"modules/flow-log"}},
-						{ControlID: "s3_bucket_versioning_enabled", Status: ctfkit.ManifestControlDelegated, AppliesIn: []string{"modules/flow-log"}},
+						{ControlID: "s3_bucket_mfa_delete_enabled", Status: ctfkit.ManifestControlDelegated, AppliesIn: []string{"modules/flow-log"}},
 					},
 				},
 			}},
@@ -421,7 +421,7 @@ func TestDelegationUnresolvedToleratesAControlTheCatalogLacks(t *testing.T) {
 		if _, err := f.ValidateFor(f.RuleID, ctfkit.PostInit, cat); err != nil {
 			t.Errorf("the runner would refuse %q: %v", f.Message.Text, err)
 		}
-		for _, id := range []string{unknown, "s3_bucket_versioning_enabled"} {
+		for _, id := range []string{unknown, "s3_bucket_mfa_delete_enabled"} {
 			if strings.Contains(f.Message.Text, "Control "+id+" ") {
 				byID[id] = f
 			}
@@ -433,7 +433,7 @@ func TestDelegationUnresolvedToleratesAControlTheCatalogLacks(t *testing.T) {
 		t.Errorf("unknown id: controlIds %v, message %q; want no control id and a message naming the gap",
 			f.Props.ControlIDs, f.Message.Text)
 	}
-	if f := byID["s3_bucket_versioning_enabled"]; len(f.Props.ControlIDs) != 1 ||
+	if f := byID["s3_bucket_mfa_delete_enabled"]; len(f.Props.ControlIDs) != 1 ||
 		strings.Contains(f.Message.Text, "does not hold") {
 		t.Errorf("known id: controlIds %v, message %q; want its control id and the plain message",
 			f.Props.ControlIDs, f.Message.Text)

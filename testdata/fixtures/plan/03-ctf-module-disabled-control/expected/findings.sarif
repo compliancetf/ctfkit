@@ -10,9 +10,9 @@
           "version": "1.0.0",
           "rules": [
             {
-              "id": "ctf.policy.disabled_control",
+              "id": "ctf.policy.disabled_control_unknown",
               "shortDescription": {
-                "text": "A compliance.tf module source disables a control"
+                "text": "A compliance.tf module source disables a token the control catalog does not hold"
               },
               "defaultConfiguration": {
                 "level": "error"
@@ -23,11 +23,11 @@
       },
       "results": [
         {
-          "ruleId": "ctf.policy.disabled_control",
+          "ruleId": "ctf.policy.disabled_control_unknown",
           "level": "error",
           "kind": "fail",
           "message": {
-            "text": "Module source disables control s3_bucket_versioning_enabled"
+            "text": "Module source disables s3_bucket_versioning_enabled, which is not a control id in catalog 2026.11.1; it is a typo, or a control outside this catalog (the embedded catalog holds CIS v6.0 only; name a full catalog with --catalog)"
           },
           "locations": [
             {
@@ -49,227 +49,13 @@
             }
           ],
           "partialFingerprints": {
-            "ctfkitFindingHash/v1": "4e4c770271b3130285f7d6e347c5a1c819b92e747f3d7cff53ded67b6c4bc9a4"
+            "ctfkitFindingHash/v1": "80286157d40184dc0a0a12561878d97674e9842b983da01caa3fe5de5a03dd82"
           },
           "properties": {
             "ctf.schema": "1.0",
             "ctf.stage": "pre_plan",
-            "ctf.controlIds": [
-              "s3_bucket_versioning_enabled"
-            ],
-            "ctf.frameworks": [
-              {
-                "id": "acsc_essential_eight",
-                "clauses": [
-                  "ACSC-EE-ML3-7.9"
-                ]
-              },
-              {
-                "id": "acsc_ism_2023",
-                "clauses": [
-                  "ISM-1814"
-                ]
-              },
-              {
-                "id": "aws_control_tower",
-                "clauses": [
-                  "5.1.1"
-                ]
-              },
-              {
-                "id": "aws_genai_v2",
-                "clauses": [
-                  "ACCUAI3.15"
-                ]
-              },
-              {
-                "id": "aws_well_architected_v10",
-                "clauses": [
-                  "Data protection"
-                ]
-              },
-              {
-                "id": "cfr_part_11",
-                "clauses": [
-                  "11.10(a)",
-                  "11.10(c)",
-                  "11.10(e)"
-                ]
-              },
-              {
-                "id": "cis_v80_ig1",
-                "clauses": [
-                  "11.4"
-                ]
-              },
-              {
-                "id": "cisa_cyber_essentials",
-                "clauses": [
-                  "Booting Up: Things to Do First-1",
-                  "Your Data-4",
-                  "Your Systems-3"
-                ]
-              },
-              {
-                "id": "eu_gmp_annex_11",
-                "clauses": [
-                  "16",
-                  "17",
-                  "4.8",
-                  "5",
-                  "7.1",
-                  "7.2"
-                ]
-              },
-              {
-                "id": "fedramp_low_rev_4",
-                "clauses": [
-                  "AU-9",
-                  "CP-10",
-                  "CP-9",
-                  "SC-5"
-                ]
-              },
-              {
-                "id": "fedramp_moderate_rev_4",
-                "clauses": [
-                  "AU-9(2)",
-                  "CP-10",
-                  "CP-9(b))",
-                  "SC-5",
-                  "SI-12"
-                ]
-              },
-              {
-                "id": "ffiec",
-                "clauses": [
-                  "D5.IR.Pl.B.6"
-                ]
-              },
-              {
-                "id": "hipaa_final_omnibus_2013",
-                "clauses": [
-                  "164.308(a)(1)(ii)(B)",
-                  "164.308(a)(7)(i)",
-                  "164.308(a)(7)(ii)(A)",
-                  "164.308(a)(7)(ii)(B)",
-                  "164.308(a)(7)(ii)(C)",
-                  "164.312(a)(2)(ii)",
-                  "164.312(c)(1)",
-                  "164.312(c)(2)"
-                ]
-              },
-              {
-                "id": "hipaa_security_2003",
-                "clauses": [
-                  "164.312(c)(2)"
-                ]
-              },
-              {
-                "id": "iso_27001_2022",
-                "clauses": [
-                  "A.8.10",
-                  "A.8.13"
-                ]
-              },
-              {
-                "id": "nist_800_171_rev_2",
-                "clauses": [
-                  "3.3.8"
-                ]
-              },
-              {
-                "id": "nist_800_53_rev_4",
-                "clauses": [
-                  "CP-10",
-                  "SI-12"
-                ]
-              },
-              {
-                "id": "nist_800_53_rev_5",
-                "clauses": [
-                  "AU-9(2)",
-                  "CP-1(2)",
-                  "CP-10",
-                  "CP-10(2)",
-                  "CP-2(5)",
-                  "CP-6(1)",
-                  "CP-6(2)",
-                  "CP-6(a)",
-                  "CP-9(a)",
-                  "CP-9(b)",
-                  "CP-9(c)",
-                  "PM-11(b)",
-                  "PM-17(b)",
-                  "SC-16(1)",
-                  "SC-5(2)",
-                  "SI-1(a)(2)",
-                  "SI-13(5)"
-                ]
-              },
-              {
-                "id": "nist_csf_v11",
-                "clauses": [
-                  "ID.BE-5",
-                  "PR.DS-4",
-                  "PR.IP-4",
-                  "PR.IP-9",
-                  "PR.PT-5",
-                  "RC.RP-1",
-                  "RS.RP-1"
-                ]
-              },
-              {
-                "id": "nist_csf_v2",
-                "clauses": [
-                  "RC.RP-02"
-                ]
-              },
-              {
-                "id": "nydfs_23",
-                "clauses": [
-                  "500.02(b)(5)"
-                ]
-              },
-              {
-                "id": "pci_dss_v321",
-                "clauses": [
-                  "10.5.3",
-                  "10.5.5",
-                  "Current audit trail files are protected from unauthorized modifications via access control mechanisms, physical segregation, and/or network segregation",
-                  "For a sample of system components that store cardholder data examine files and system records to verify that the data stored does not exceed the requirements defined in the data retention policy and observe the deletion mechanism to verify data is deleted securely",
-                  "Interview system administrators and examine system configurations and permissions to verify that audit trails are secured so that they cannot be altered",
-                  "Keep cardholder data storage to a minimum by implementing data retention and disposal policies, procedures and processes"
-                ]
-              },
-              {
-                "id": "pci_dss_v40",
-                "clauses": [
-                  "10.3.4"
-                ]
-              },
-              {
-                "id": "rbi_cyber_security",
-                "clauses": [
-                  "Annex I (12)"
-                ]
-              },
-              {
-                "id": "rbi_itf_nbfc",
-                "clauses": [
-                  "8.III"
-                ]
-              },
-              {
-                "id": "soc_2",
-                "clauses": [
-                  "A1.2",
-                  "C1.2",
-                  "CC7.4",
-                  "PI1.5"
-                ]
-              }
-            ],
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
             "ctf.preventive": false,
             "ctf.evidence": {
               "runId": "ctfkit-fixture-run",

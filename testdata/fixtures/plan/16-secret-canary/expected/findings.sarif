@@ -58,42 +58,13 @@
             }
           ],
           "partialFingerprints": {
-            "ctfkitFindingHash/v1": "8778886fdb7ff050cbf56a4a35bc7e8df1f17f520a6ce459d9cec3c74ab4791a"
+            "ctfkitFindingHash/v1": "4a0c5fb03b258e7dc2dd8a8b4e9a176e4fd1f2de669884052a276f00232c1568"
           },
           "properties": {
             "ctf.schema": "1.0",
             "ctf.stage": "post_plan",
-            "ctf.controlIds": [
-              "sqs_queue_dead_letter_queue_configured",
-              "sqs_queue_encrypted_at_rest",
-              "sqs_queue_encrypted_with_kms_cmk"
-            ],
-            "ctf.frameworks": [
-              {
-                "id": "aws_well_architected_v10",
-                "clauses": [
-                  "Data protection"
-                ]
-              },
-              {
-                "id": "eu_gmp_annex_11",
-                "clauses": [
-                  "7.1"
-                ]
-              },
-              {
-                "id": "iso_27001_2022",
-                "clauses": [
-                  "A.8.24"
-                ]
-              },
-              {
-                "id": "nist_csf_v2",
-                "clauses": [
-                  "PR.DS-01"
-                ]
-              }
-            ],
+            "ctf.controlIds": [],
+            "ctf.frameworks": [],
             "ctf.preventive": true,
             "ctf.evidence": {
               "runId": "ctfkit-fixture-run",

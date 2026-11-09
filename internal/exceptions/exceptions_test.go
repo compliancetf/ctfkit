@@ -19,9 +19,10 @@ var fixtureNow = time.Date(2026, 9, 20, 0, 0, 0, 0, time.UTC)
 const (
 	versioning = ctfkit.ControlID("s3_bucket_versioning_enabled")
 	bucket     = "aws_s3_bucket.logs"
-	// waived is the control fixtures 06 and 07 waive: the one control id the
-	// raw-bucket finding carries under the embedded catalog.
-	waived = ctfkit.ControlID("s3_bucket_object_lock_enabled")
+	// waivedRule is the rule fixtures 06 and 07 waive on the bucket: the raw
+	// aws_s3_bucket module_source finding, which under the embedded CIS
+	// catalog carries no control id.
+	waivedRule = "ctf.coverage.module_source"
 )
 
 func fixtureDir(t *testing.T, name string) string {
@@ -37,18 +38,18 @@ func TestTheSentinelFixtureMatchesAndIsValid(t *testing.T) {
 		t.Fatalf("Discover() error = %v, want nil", err)
 	}
 
-	e, ok := reg.Match(waived, bucket, fixtureNow)
+	e, ok := reg.MatchRule(waivedRule, bucket, fixtureNow)
 	if !ok {
-		t.Fatalf("Match(%s, %s) not found", waived, bucket)
+		t.Fatalf("MatchRule(%s, %s) not found", waivedRule, bucket)
 	}
 	if e.ID != "SEC-4711" {
 		t.Errorf("ID = %q, want SEC-4711", e.ID)
 	}
-	if e.ControlID != waived {
-		t.Errorf("ControlID = %q, want %q", e.ControlID, waived)
+	if e.RuleID != waivedRule {
+		t.Errorf("RuleID = %q, want %q", e.RuleID, waivedRule)
 	}
-	if e.RuleID != "" {
-		t.Errorf("RuleID = %q, want empty on a control entry", e.RuleID)
+	if e.ControlID != "" {
+		t.Errorf("ControlID = %q, want empty on a rule entry", e.ControlID)
 	}
 	if e.Justification == "" {
 		t.Error("Justification is empty, want the reason the file records")
@@ -70,9 +71,9 @@ func TestTheExpiredFixtureMatchesAndIsNotValid(t *testing.T) {
 		t.Fatalf("Discover() error = %v, want nil", err)
 	}
 
-	e, ok := reg.Match(waived, bucket, fixtureNow)
+	e, ok := reg.MatchRule(waivedRule, bucket, fixtureNow)
 	if !ok {
-		t.Fatalf("Match(%s, %s) not found", waived, bucket)
+		t.Fatalf("MatchRule(%s, %s) not found", waivedRule, bucket)
 	}
 	if e.ID != "SEC-4108" {
 		t.Errorf("ID = %q, want SEC-4108", e.ID)
@@ -336,14 +337,14 @@ func TestReturnedValuesAreCopies(t *testing.T) {
 		t.Fatalf("Discover() error = %v, want nil", err)
 	}
 
-	first, _ := reg.Match(waived, bucket, fixtureNow)
+	first, _ := reg.MatchRule(waivedRule, bucket, fixtureNow)
 	if len(first.Approvers) == 0 {
 		t.Fatal("the fixture entry records no approver")
 	}
 	want := first.Approvers[0]
 	first.Approvers[0] = "attacker@example.invalid"
 
-	second, _ := reg.Match(waived, bucket, fixtureNow)
+	second, _ := reg.MatchRule(waivedRule, bucket, fixtureNow)
 	if second.Approvers[0] != want {
 		t.Errorf("Approvers[0] = %q after a caller wrote to its copy, want %q", second.Approvers[0], want)
 	}
@@ -365,8 +366,8 @@ func TestFileExceptionsSatisfiesTheInterface(t *testing.T) {
 	}
 }
 
-// finding is a finding over the fixture bucket carrying the one control id
-// both fixture files waive.
+// finding is the raw-bucket module_source finding both fixture files waive by
+// rule. Under the embedded CIS catalog it carries no control id.
 func finding(t *testing.T) ctfkit.Finding {
 	t.Helper()
 	f, err := ctfkit.NewFinding("ctf.coverage.module_source", ctfkit.LevelError, ctfkit.KindFail,
@@ -374,7 +375,7 @@ func finding(t *testing.T) ctfkit.Finding {
 		[]ctfkit.Location{{LogicalLocations: []ctfkit.LogicalLocation{{
 			FullyQualifiedName: bucket, Kind: ctfkit.LogicalLocationResource,
 		}}}},
-		ctfkit.Properties{Schema: "1.0", Stage: ctfkit.PostPlan, ControlIDs: []ctfkit.ControlID{waived}})
+		ctfkit.Properties{Schema: "1.0", Stage: ctfkit.PostPlan})
 	if err != nil {
 		t.Fatalf("NewFinding() error = %v", err)
 	}
