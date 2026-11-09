@@ -32,7 +32,8 @@ misconfigured. ctfkit tells you what your estate requires, and which module clos
   `gate plan` and `apply` run terraform; `gate sign` and `verdict verify` run only terraform
   `version`, `init` and `show -json` on the sealed plan; `gate sign` and `evidence ship` call
   AWS KMS; `evidence ship` uploads to S3; `runtask serve` downloads plan JSON from HCP Terraform
-  and posts results back.
+  and posts results back; `catalog pull` downloads the full control catalog from the
+  compliance.tf registry with your registry token.
 - `gate sign` writes `verdict.json` signed with the key named by `--signer` (your AWS KMS key),
   and `evidence ship` signs the run manifest with its `--signer` key. Findings, SARIF, JSON and
   receipts are not signed; receipt signing is planned. compliance.tf does not sign, attest or
