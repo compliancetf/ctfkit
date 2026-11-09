@@ -316,7 +316,13 @@ func resourceFinding(p planned, ruleID string, stage ctfkit.Stage, in ctfkit.Ana
 	// not this analyzer, has to change to meet that fixture.
 	moduleSource := strings.ReplaceAll(module.Source, "{host}",
 		remediationHost(in.Catalog, in.Metadata.Frameworks))
-	controls := in.Catalog.ControlsFor(p.resourceType)
+	// Only the controls the named module enforces: the remediation is attached
+	// to the finding, and ModuleRef.Controls must hold every id it carries. The
+	// catalog may place further controls on the type that this module does not
+	// close, and naming them here would say it does.
+	controls := slices.DeleteFunc(slices.Clone(in.Catalog.ControlsFor(p.resourceType)), func(id ctfkit.ControlID) bool {
+		return !slices.Contains(module.Controls, id)
+	})
 
 	finding, err := newFinding(ruleID, ctfkit.LevelError, stage,
 		fmt.Sprintf(msgRawResource, p.resourceType, moduleSource),
