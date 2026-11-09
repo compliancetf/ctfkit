@@ -174,3 +174,12 @@ Control ids and replacement module sources come from the catalog embedded in the
 `--catalog FILE` replaces it with a local YAML file; `--catalog embedded` pins the embedded one
 and ignores `~/.ctf/control-requirements.yaml`. `--remediation-host ID` picks the framework whose
 registry host goes into the suggested module source.
+
+A `ctf.coverage.module_source` finding on a raw resource lists only the controls the suggested
+module enforces. The catalog can place more controls on the same resource type, and those are
+left off, because the finding does not claim the module closes them.
+
+A module manifest served after this release can name a control id the catalog does not hold
+yet. `report` still completes. A `ctf.coverage.delegation_unresolved` finding for such a control
+names the id in its message and carries no `ctf.controlIds`. When a later catalog adds the id,
+the finding carries it again and its fingerprint changes.

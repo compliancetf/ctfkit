@@ -720,6 +720,48 @@ func TestReportNoManifestsAtAll(t *testing.T) {
 	}
 }
 
+// TestReportToleratesAControlTheCatalogLacks runs report over a served
+// manifest that delegates a control id the embedded catalog does not hold, as
+// a manifest served after this release can. The run completes with the
+// recorded case's exit code and writes every projection, rather than exiting
+// 2; the unknown id is named in the delegation finding.
+func TestReportToleratesAControlTheCatalogLacks(t *testing.T) {
+	const (
+		delegated = `"control_id": "s3_bucket_event_notifications_enabled"`
+		unknown   = "s3_control_from_a_newer_catalog"
+	)
+
+	root := filepath.Join(t.TempDir(), "input")
+	if err := os.CopyFS(root, os.DirFS(absFixture(t, "delegated-without-sibling"))); err != nil {
+		t.Fatalf("copy the fixture: %v", err)
+	}
+	manifest := filepath.Join(root, ".terraform", "modules", "s3_bucket", "compliancetf-manifest.json")
+	body := readFile(t, manifest)
+	if !bytes.Contains(body, []byte(delegated)) {
+		t.Fatalf("the fixture manifest no longer delegates %s", delegated)
+	}
+	body = bytes.Replace(body, []byte(delegated), []byte(`"control_id": "`+unknown+`"`), 1)
+	if err := os.WriteFile(manifest, body, 0o600); err != nil {
+		t.Fatalf("write the manifest: %v", err)
+	}
+
+	outDir := t.TempDir()
+	t.Chdir(t.TempDir())
+	code, err := runReportErr(t, append([]string{"--path", root, "--out-dir", outDir, "--format", "markdown,receipt,sarif"}, fixtureContext...)...)
+	if code != ExitOK {
+		t.Fatalf("exit code = %d (%v), want %d as the recorded case", code, err, ExitOK)
+	}
+
+	for _, name := range []string{"report.md", "receipt.json", "findings.sarif"} {
+		if !exists(filepath.Join(outDir, name)) {
+			t.Errorf("%s was not written", name)
+		}
+	}
+	if sarif := readFile(t, filepath.Join(outDir, "findings.sarif")); !bytes.Contains(sarif, []byte("Control "+unknown+" ")) {
+		t.Errorf("findings.sarif does not name %s in a delegation finding", unknown)
+	}
+}
+
 // TestReportPolicyFileDiagnostics asserts that an unreadable policy file stops
 // the run rather than falling back silently, and that each one reports its own
 // diagnostic category so a caller can tell which file to go and fix.

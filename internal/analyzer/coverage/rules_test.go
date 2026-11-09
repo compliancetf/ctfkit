@@ -380,6 +380,66 @@ func TestDelegationUnresolvedNeedsAScope(t *testing.T) {
 	}
 }
 
+// TestDelegationUnresolvedToleratesAControlTheCatalogLacks records that a
+// served manifest newer than the embedded catalog does not fail the run: the
+// unknown id stays in the message, ctf.controlIds stays empty, and the
+// finding passes the runner's check. A known id keeps its control id.
+func TestDelegationUnresolvedToleratesAControlTheCatalogLacks(t *testing.T) {
+	const unknown = "vpc_control_from_a_newer_catalog"
+	cat := fixtureCatalog(t)
+	in := ctfkit.AnalyzerInput{
+		Stage:   ctfkit.PostInit,
+		Catalog: cat,
+		Modules: &ctfkit.ModuleInventory{
+			Root: ".",
+			Instances: []ctfkit.ModuleInstance{{
+				Key: "vpc",
+				Dir: ".terraform/modules/vpc",
+				Manifest: &ctfkit.Manifest{
+					SchemaVersion: "3.5",
+					ScopePath:     ".",
+					Module: ctfkit.ManifestModule{
+						RegistrySource: "bobthecorp.compliance.tf/terraform-aws-modules/vpc/aws",
+						Version:        "6.7.3",
+						Frameworks:     []string{"iso_27001_2022"},
+					},
+					Controls: []ctfkit.ManifestControl{
+						{ControlID: unknown, Status: ctfkit.ManifestControlDelegated, AppliesIn: []string{"modules/flow-log"}},
+						{ControlID: "s3_bucket_versioning_enabled", Status: ctfkit.ManifestControlDelegated, AppliesIn: []string{"modules/flow-log"}},
+					},
+				},
+			}},
+		},
+	}
+
+	findings := analyzeOne(t, coverage.DelegationUnresolved{}, in)
+	if len(findings) != 2 {
+		t.Fatalf("got %d finding(s), want 2", len(findings))
+	}
+	byID := make(map[string]ctfkit.Finding, len(findings))
+	for _, f := range findings {
+		if _, err := f.ValidateFor(f.RuleID, ctfkit.PostInit, cat); err != nil {
+			t.Errorf("the runner would refuse %q: %v", f.Message.Text, err)
+		}
+		for _, id := range []string{unknown, "s3_bucket_versioning_enabled"} {
+			if strings.Contains(f.Message.Text, "Control "+id+" ") {
+				byID[id] = f
+			}
+		}
+	}
+
+	if f := byID[unknown]; len(f.Props.ControlIDs) != 0 ||
+		!strings.Contains(f.Message.Text, "does not hold this control id") {
+		t.Errorf("unknown id: controlIds %v, message %q; want no control id and a message naming the gap",
+			f.Props.ControlIDs, f.Message.Text)
+	}
+	if f := byID["s3_bucket_versioning_enabled"]; len(f.Props.ControlIDs) != 1 ||
+		strings.Contains(f.Message.Text, "does not hold") {
+		t.Errorf("known id: controlIds %v, message %q; want its control id and the plain message",
+			f.Props.ControlIDs, f.Message.Text)
+	}
+}
+
 // Every rule of the family that quotes a module source, manifest_missing
 // (the instance source as written) and posture_degraded and
 // delegation_unresolved (the manifest's registry source), quotes it through
