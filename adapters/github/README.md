@@ -93,7 +93,7 @@ and examples, an init step that holds the registry token, a test run, then both 
 | `fail-on` | `error` | Lowest level that fails the step: `error`, `warning`, `note`, `never`. `sign` takes `error`, `warning` or `note` |
 | `config` | bundled | ctfkit settings file |
 | `exceptions` | bundled | Exception registry |
-| `catalog` | `embedded` | Control catalog; `embedded` pins the one in the binary |
+| `catalog` | `embedded` | Control catalog: `embedded` pins the one in the binary, `pull` downloads the full catalog (paid plan, token in `TF_TOKEN_registry_compliance_tf`), or a path; see [Nothing is read from the checkout](#nothing-is-read-from-the-checkout) |
 | `sarif` | `true` | Upload the findings to the Security tab. Set `'false'` on a private repository without code scanning |
 | `pr-comment` | `false` | Keep one comment with the job summary on the pull request; see [Pull request comment](#pull-request-comment) |
 | `comment-token` | `${{ github.token }}` | Token for the pull request comment only, never used for the download |
@@ -331,8 +331,23 @@ CIS AWS Benchmark v6.0 controls the embedded catalog holds. A path overrides it,
 **replaces** the embedded one wholesale rather than adding to it; point this at the full catalog
 file to get every control and framework ([configuration](../../docs/configuration.md#catalog)).
 
+`catalog: pull` downloads the full catalog with `ctfkit catalog pull` before `scan` or `report`.
+It needs a paid plan and the registry token in `TF_TOKEN_registry_compliance_tf` on the step; ctfkit
+sends that token to `registry.compliance.tf` only. The file goes to a directory of its own under
+`RUNNER_TEMP`, outside the output directory the summary, upload and comment steps read, and is
+deleted when the step ends. A failed pull fails the step with exit code `2` and ctfkit does not run.
+`scan` and `report` stay offline; only the pull uses the network.
+
+```yaml
+- uses: compliancetf/ctfkit-action@v0
+  env:
+    TF_TOKEN_registry_compliance_tf: ${{ secrets.COMPLIANCETF_REGISTRY_TOKEN }}
+  with:
+    catalog: pull
+```
+
 The action fails in the install step, before the binary is downloaded, if `config` or `exceptions`
-names a file that is not there. `embedded` is a literal rather than a path, so it is not checked
+names a file that is not there. `embedded` and `pull` are literals rather than paths, so they are not checked
 that way.
 
 ## SARIF is what this action produces

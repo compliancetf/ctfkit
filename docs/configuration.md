@@ -176,8 +176,8 @@ compliance.tf module entries. It needs no network or token, so every run has a c
 catalog, with every control and every framework, is a separate file: name it with
 `--catalog FILE`, or place it at `~/.ctf/control-requirements.yaml`, which
 [`ctfkit catalog pull`](commands.md#ctfkit-catalog-pull) writes. `--catalog embedded` pins the embedded catalog and ignores the
-home file; the GitHub Action and Spacelift configurations pass it by default, so give them the
-file instead when you have the full catalog. `--remediation-host ID` picks the framework whose
+home file; the GitHub Action and Spacelift configurations pass it by default. With the full
+catalog, set the action's `catalog` input to `pull`, or give either adapter the file. `--remediation-host ID` picks the framework whose
 registry host goes into the suggested module source.
 
 With the embedded catalog, a control outside CIS v6.0 is a control the catalog does not hold:
