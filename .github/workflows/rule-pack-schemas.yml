@@ -2,7 +2,9 @@ name: Rule pack schemas
 
 # Weekly: regenerate each rule pack's provider schema snapshot, validate every pack against it,
 # and open (or update) one pull request with the snapshots, the validation result and draft rules
-# for tracked attributes that are new. A person reviews and merges it; nothing here merges.
+# for tracked attributes that are new. The pull request is squash-merged here only when validation
+# passed, the rule pack tests pass on the committed files, and it changes nothing but schema.json
+# snapshots, which are not embedded in the binary. Draft rules stay in its body for a person.
 # docs/rule-packs.md describes the flow.
 #
 # Two jobs, so the job that runs third-party provider binaries holds no write scope: generate
@@ -72,7 +74,7 @@ jobs:
           mkdir -p "${out}"
           {
             echo "Weekly refresh of the rule pack schema snapshots by scripts/refresh-rule-pack-schemas.sh."
-            echo "Review before merging: drafts are starting points, and nothing merges this automatically."
+            echo "Snapshot-only refreshes that pass validation and the rule pack tests merge automatically. Draft rules below are starting points for a person, never merged by this workflow."
             echo
             if [ -f "${proposals}/new-majors.md" ]; then
               echo "### New provider majors"
@@ -115,8 +117,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: write # push the pull request branch
-      pull-requests: write # open or update the pull request
+      contents: write # push the pull request branch, squash-merge it
+      pull-requests: write # open, update or merge the pull request
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -136,7 +138,23 @@ jobs:
           rm -rf internal/rulepack/rules
           cp -R "${RUNNER_TEMP}/out/rules" internal/rulepack/rules
 
+      # The job token's pull request starts no Test run, so the tests that read the snapshots run
+      # here, on exactly the files the pull request commits, in a job that runs no provider binary.
+      - name: Setup Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: '1.27.x'
+          cache: true
+
+      - name: Test the rule packs
+        id: test
+        run: |
+          set +e
+          go test ./internal/rulepack/... ./internal/analyzer/...
+          echo "exit=$?" >> "${GITHUB_OUTPUT}"
+
       - name: Open or update the pull request
+        id: cpr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           branch: chore/rule-pack-schemas
@@ -145,6 +163,35 @@ jobs:
           commit-message: 'chore(rulepack): refresh provider schema snapshots'
           title: 'chore(rulepack): refresh provider schema snapshots'
           body-path: ${{ runner.temp }}/out/body.md
+
+      # Merged only when every changed file is a schema.json snapshot: those are read by the tests
+      # and the generator, never embedded, so the binary and its findings do not change. A
+      # chore commit opens no release. Anything else waits for a person.
+      - name: Merge a snapshot-only refresh
+        if: >-
+          steps.cpr.outputs.pull-request-number != '' &&
+          steps.cpr.outputs.pull-request-operation != 'closed' &&
+          needs.generate.outputs.validation == '0' &&
+          steps.test.outputs.exit == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ steps.cpr.outputs.pull-request-number }}
+          HEAD_SHA: ${{ steps.cpr.outputs.pull-request-head-sha }}
+        run: |
+          set -euo pipefail
+          files="$(gh pr view "${PR}" --repo "${GITHUB_REPOSITORY}" --json files --jq '.files[].path')"
+          if [ -z "${files}" ] || printf '%s\n' "${files}" | grep -qvE '^internal/rulepack/rules/[a-z0-9]+/v[0-9]+/schema\.json$'; then
+            echo "Pull request #${PR} changes more than schema.json snapshots; leaving it for review."
+            exit 0
+          fi
+          gh pr merge "${PR}" --repo "${GITHUB_REPOSITORY}" --squash --delete-branch --match-head-commit "${HEAD_SHA}"
+          echo "Merged #${PR}: schema.json snapshots only, validation and rule pack tests passed." >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Fail when the rule pack tests fail
+        if: steps.test.outputs.exit != '0'
+        run: |
+          echo "::error::the rule pack tests fail on the refreshed snapshots; see this job's log"
+          exit 1
 
       - name: Fail when a pack no longer matches its provider
         if: needs.generate.outputs.validation != '0'

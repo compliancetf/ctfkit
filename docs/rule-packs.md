@@ -209,9 +209,14 @@ instead of never firing.
 release within the pack's major, regenerates `schema.json` with `cmd/rulepackgen`, and writes
 draft rules for tracked attributes that are new since the previous snapshot and that no rule
 reads yet. It then runs the snapshot test and opens or updates one pull request,
-`chore/rule-pack-schemas`, with the snapshots, the validation result and the drafts. A person
-reviews it; nothing merges automatically. A validation failure also fails the run, since a pull
-request opened with the job token does not start the Test workflow.
+`chore/rule-pack-schemas`, with the snapshots, the validation result and the drafts. A pull
+request opened with the job token does not start the Test workflow, so the `pull-request` job runs
+the rule pack and analyzer tests on the files it commits. When validation and those tests pass and
+every changed file is a `schema.json` snapshot, the job squash-merges the pull request; snapshots
+are not embedded, so the binary does not change and the `chore` commit opens no release. Anything
+else, including a validation or test failure, stays open for a person and fails the run. Draft
+rules are never merged: each one changes findings, so a person checks the attribute in the
+provider documentation and adds it in a `feat(rulepack)` pull request.
 
 The workflow pins the Terraform release it generates with (`TERRAFORM_VERSION`) and runs in two
 jobs. `generate` installs the providers and runs their binaries with a read-only token, then
