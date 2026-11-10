@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -659,6 +660,34 @@ func TestServeHTTPBusy(t *testing.T) {
 		time.Sleep(10 * time.Millisecond)
 	}
 	hs.hcp.waitResult(t)
+}
+
+// TestServeHTTPSlowBodiesDoNotStarveSigned: unauthenticated peers trickling
+// small bodies on every read slot do not turn a signed request away with 503.
+func TestServeHTTPSlowBodiesDoNotStarveSigned(t *testing.T) {
+	t.Parallel()
+	hs := newHarness(t)
+	var wg sync.WaitGroup
+	writers := make([]*io.PipeWriter, 0, maxRequests)
+	for range maxRequests {
+		pr, pw := io.Pipe()
+		writers = append(writers, pw)
+		req := httptest.NewRequest(http.MethodPost, "/", pr)
+		req.Header.Set(SignatureHeader, strings.Repeat("a", 2*sha512.Size))
+		wg.Go(func() { hs.h.ServeHTTP(httptest.NewRecorder(), req) })
+		if _, err := pw.Write([]byte("{")); err != nil { // returns once the handler reads the body
+			t.Fatal(err)
+		}
+	}
+	body := hs.payload("verification.json", nil)
+	got := hs.send(http.MethodPost, body, sign(testKey, body))
+	for _, pw := range writers {
+		_ = pw.Close()
+	}
+	wg.Wait()
+	if got != http.StatusOK {
+		t.Fatalf("signed request while slow bodies are read: %d, want 200", got)
+	}
 }
 
 func TestRedact(t *testing.T) {
