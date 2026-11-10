@@ -196,6 +196,9 @@ func TestProtectedPathsPinnedToHeadSHA(t *testing.T) {
 		`gh api "repos/$REPO/compare/$base...$head" >"$RUNNER_TEMP/compare.json"`,
 		`[[ $total =~ ^[0-9]+$ ]]`,
 		`scripts/protected-paths.sh --compare "$REPO" "$BASE" "$HEAD"`,
+		// Commit authors are self-declared; the owner path also needs every push by the owner.
+		`gh api --method GET --paginate "repos/$REPO/activity"`,
+		`[ -z "$pushers" ] && [ -n "$pushed" ]`,
 	} {
 		if !strings.Contains(s, want) {
 			t.Errorf("protected-paths.yml: missing %q", want)

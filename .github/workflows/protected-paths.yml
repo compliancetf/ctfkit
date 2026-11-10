@@ -6,7 +6,11 @@
 #   - no protected path touched (.github/protected-paths): success.
 #   - protected, owner PR: success, and the step summary lists the protected
 #     files. Owner PR means: the API's PR author, the PR's head repository is
-#     this repository, and every commit's GitHub author is the owner. The
+#     this repository, every commit's GitHub author is the owner, and every
+#     push to the head branch was made by the owner. The commit author comes
+#     from the commit's self-declared email, so anyone who can push could
+#     claim it; the pusher comes from the repository activity API, which
+#     records who pushed, and that is what binds the head to the owner. The
 #     owner is compared by numeric user id (OWNER_ID below); the gate fails
 #     if the login in .github/protected-paths no longer resolves to that id.
 #   - protected, anyone else (Dependabot, third parties): auto-merge is
@@ -145,7 +149,18 @@ jobs:
             total=$(jq -r .total_commits "$RUNNER_TEMP/compare.json")
             [[ $total =~ ^[0-9]+$ ]] || { echo "::error::bad commit count: $total"; exit 1; }
             others=$(awk -F'\t' -v id="$OWNER_ID" '$1 != id' "$RUNNER_TEMP/commits.tsv")
-            if [ "$listed" -eq "$total" ] && [ -z "$others" ]; then owner_author=true; fi
+            # The commit author above is self-declared. Every push, force push
+            # and creation of the head branch must also be by the owner, and
+            # one of them must have put this head there; anything else, or an
+            # activity entry not yet recorded, leaves the status pending.
+            gh api --method GET --paginate "repos/$REPO/activity" \
+              -f ref="refs/heads/$(jq -r .head.ref "$RUNNER_TEMP/pr.json")" -f per_page=100 \
+              --jq '.[] | [(.actor.id // 0 | tostring), .after] | @tsv' >"$RUNNER_TEMP/pushes.tsv"
+            pushers=$(awk -F'\t' -v id="$OWNER_ID" '$1 != id' "$RUNNER_TEMP/pushes.tsv")
+            pushed=$(awk -F'\t' -v id="$OWNER_ID" -v head="$head" '$1 == id && $2 == head' "$RUNNER_TEMP/pushes.tsv")
+            if [ "$listed" -eq "$total" ] && [ -z "$others" ] && [ -z "$pushers" ] && [ -n "$pushed" ]; then
+              owner_author=true
+            fi
           fi
           {
             echo "pr=$pr"
@@ -200,7 +215,7 @@ jobs:
             note="No protected path touched."
           elif [ "$OWNER_AUTHOR" = true ]; then
             desc="owner-authored PR"
-            note="Owner PR (author, head repository and every commit) touches protected paths; no extra approval needed."
+            note="Owner PR (author, head repository, every commit and every push) touches protected paths; no extra approval needed."
           else
             # Pending first, so a later API failure never leaves an older
             # success standing on this head.
