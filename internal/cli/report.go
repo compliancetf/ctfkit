@@ -834,7 +834,8 @@ func writeOut(dir, name string, body []byte) error {
 // there must not lead a write to a file outside it. A path outside the
 // working directory is the operator's own and is opened as named.
 func openOutDir(dir string) (*os.Root, error) {
-	if !filepath.IsLocal(dir) {
+	dir, inside := underWorkingDir(dir)
+	if !inside {
 		return os.OpenRoot(dir)
 	}
 	cwd, err := os.OpenRoot(".")
@@ -860,7 +861,8 @@ func ensureOutDir(dir string) error {
 }
 
 func mkdirOut(dir string) error {
-	if !filepath.IsLocal(dir) {
+	dir, inside := underWorkingDir(dir)
+	if !inside {
 		return os.MkdirAll(dir, 0o755) //nolint:gosec // G301: an artifact directory a pipeline reads, not a secret store
 	}
 	cwd, err := os.OpenRoot(".")
@@ -869,6 +871,27 @@ func mkdirOut(dir string) error {
 	}
 	defer func() { _ = cwd.Close() }()
 	return cwd.MkdirAll(dir, 0o755) //nolint:gosec // G301: as above
+}
+
+// underWorkingDir returns dir relative to the working directory and true when
+// dir names a path inside it, absolute or not, so "$PWD/out" gets the same
+// symlink confinement as "out". Otherwise it returns dir unchanged and false.
+func underWorkingDir(dir string) (string, bool) {
+	if filepath.IsLocal(dir) {
+		return dir, true
+	}
+	if !filepath.IsAbs(dir) {
+		return dir, false
+	}
+	cwd, err := os.Getwd()
+	if err != nil {
+		return dir, false
+	}
+	rel, err := filepath.Rel(cwd, dir)
+	if err != nil || !filepath.IsLocal(rel) {
+		return dir, false
+	}
+	return rel, true
 }
 
 // writeAll reports a short write as the error it is.

@@ -3,6 +3,7 @@ package cli
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -74,6 +75,7 @@ func TestScanOutRefusesSymlinkOutOfWorkingDir(t *testing.T) {
 		{"out-dir parent is a symlink", map[string]string{"a": "."}, nil, []string{"--format", "sarif,json", "--out-dir", "a/out"}},
 		{"file in out-dir is a symlink", map[string]string{"out/findings.sarif": "target.txt"}, []string{"out"}, []string{"--format", "sarif,json", "--out-dir", "out"}},
 		{"out is a symlink", map[string]string{"lock.sarif": "target.txt"}, nil, []string{"--format", "sarif", "--out", "lock.sarif"}},
+		{"absolute out-dir under a symlink", map[string]string{"a": "."}, nil, []string{"--format", "sarif,json", "--out-dir", "{work}/a/out"}},
 	}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
@@ -93,7 +95,11 @@ func TestScanOutRefusesSymlinkOutOfWorkingDir(t *testing.T) {
 				}
 			}
 
-			got := runScanIn(t, work, append(append([]string{"scan", filepath.Join(input, "plan.json")}, tc.args...), scanRunContext...)...)
+			args := make([]string, len(tc.args))
+			for i, a := range tc.args {
+				args[i] = strings.ReplaceAll(a, "{work}", work)
+			}
+			got := runScanIn(t, work, append(append([]string{"scan", filepath.Join(input, "plan.json")}, args...), scanRunContext...)...)
 
 			if got.code != ExitEnvironment {
 				t.Errorf("exit %d, want 2: %v", got.code, got.err)
