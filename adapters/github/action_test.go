@@ -450,3 +450,71 @@ func actionStep(t *testing.T, name string) string {
 	t.Fatalf("action.yml has no step %q", name)
 	return ""
 }
+
+// TestRunStepCatalogPull runs the run step with catalog: pull. The pulled
+// catalog lands outside the output directory, is the one scan reads, and is
+// deleted when the step ends; a failed pull skips ctfkit and reports exit 2.
+func TestRunStepCatalogPull(t *testing.T) {
+	bin, tmp := t.TempDir(), t.TempDir()
+	// Every call is logged. catalog pull writes its --out file unless
+	// $PULL_EXIT is set; scan records whether its --catalog file exists.
+	write(t, filepath.Join(bin, "ctfkit"), `#!/bin/sh
+printf '%s\n' "$*" >> "$ARGV_FILE"
+if [ "$1 $2" = "catalog pull" ]; then
+  [ -z "$PULL_EXIT" ] || exit "$PULL_EXIT"
+  : > "$4"
+  exit 0
+fi
+while [ $# -gt 0 ]; do [ "$1" = --catalog ] && [ -f "$2" ] && echo present >> "$ARGV_FILE"; shift; done
+exit 0
+`, 0o700)
+	script := filepath.Join(tmp, "run.sh")
+	write(t, script, actionStep(t, "Run ctfkit"), 0o600)
+
+	for name, tc := range map[string]struct {
+		pullExit, wantCode string
+		wantCalls          int
+	}{
+		"pulled":      {wantCode: "0", wantCalls: 2},
+		"pull failed": {pullExit: "2", wantCode: "2", wantCalls: 1},
+	} {
+		t.Run(name, func(t *testing.T) {
+			runnerTemp, argv, outFile := t.TempDir(), filepath.Join(t.TempDir(), "argv"), filepath.Join(t.TempDir(), "out")
+			c := exec.Command("bash", "--noprofile", "--norc", script)
+			c.Env = []string{
+				"PATH=" + bin + string(os.PathListSeparator) + os.Getenv("PATH"), "ARGV_FILE=" + argv,
+				"PULL_EXIT=" + tc.pullExit, "TF_TOKEN_registry_compliance_tf=bobthecorp-token",
+				"RUNNER_TEMP=" + runnerTemp, "GITHUB_RUN_ID=1", "GITHUB_RUN_ATTEMPT=1",
+				"GITHUB_OUTPUT=" + outFile, "GITHUB_ENV=" + filepath.Join(tmp, "env"),
+				"CTFKIT_COMMAND=scan", "CTFKIT_PATH=.", "CTFKIT_PLAN=", "CTFKIT_CHDIR=infra", "CTFKIT_STAGE=pre_plan",
+				"CTFKIT_FORMAT=", "CTFKIT_FAIL_ON=error", "CTFKIT_CONFIG=c.yaml", "CTFKIT_EXCEPTIONS=e.yaml",
+				"CTFKIT_CATALOG=pull", "CTFKIT_TESTS_JSON=", "CTFKIT_ACTION_PATH=.", "CTFKIT_ARTIFACTS=",
+				"CTFKIT_WORKSPACE=", "CTFKIT_ENVIRONMENT=", "CTFKIT_TF_BIN=", "CTFKIT_ORG=", "CTFKIT_PROFILE=",
+				"CTFKIT_FLOOR=", "CTFKIT_BUNDLE_DIR=", "CTFKIT_SIGNER=",
+			}
+			out, _ := c.CombinedOutput()
+			raw, err := os.ReadFile(argv) //nolint:gosec // test temp file
+			if err != nil {
+				t.Fatalf("ctfkit never ran: %v\n%s", err, out)
+			}
+			calls := strings.Split(strings.TrimSpace(string(raw)), "\n")
+			if !strings.HasPrefix(calls[0], "catalog pull --out "+filepath.Join(runnerTemp, "ctfkit", "catalog-")) {
+				t.Fatalf("first call = %q, want catalog pull into its own directory", calls[0])
+			}
+			pulled := strings.TrimPrefix(calls[0], "catalog pull --out ")
+			if n := len(calls) - strings.Count(string(raw), "present\n"); n != tc.wantCalls {
+				t.Fatalf("ctfkit ran %d times, want %d:\n%s\n%s", n, tc.wantCalls, raw, out)
+			}
+			if tc.wantCalls == 2 && (!strings.Contains(calls[1], "--catalog "+pulled) || calls[len(calls)-1] != "present") {
+				t.Errorf("scan did not read the pulled catalog:\n%s", raw)
+			}
+			if _, err := os.Stat(filepath.Dir(pulled)); err == nil {
+				t.Errorf("pulled catalog directory %s left behind", filepath.Dir(pulled))
+			}
+			got, _ := os.ReadFile(outFile) //nolint:gosec // test temp file
+			if !strings.Contains(string(got), "exit-code="+tc.wantCode+"\n") {
+				t.Errorf("outputs = %q, want exit-code=%s\n%s", got, tc.wantCode, out)
+			}
+		})
+	}
+}

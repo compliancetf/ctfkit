@@ -387,7 +387,11 @@ image. It is distroless with no shell, and Spacelift runs hooks through a shell.
 
 The image needs the settings and exception files at the two `/opt/ctfkit/` paths. It needs no
 catalog: `--catalog embedded` uses the one compiled into the binary, so the catalog is pinned by the
-binary version and cannot drift from it.
+binary version and cannot drift from it. The embedded catalog holds the CIS AWS Benchmark v6.0
+controls. For the full catalog (paid plan), run `ctfkit catalog pull --out FILE` in an earlier hook
+with the registry token in `TF_TOKEN_registry_compliance_tf`, from a secret environment variable,
+and pass `--catalog FILE` instead of `embedded`. Keep that file out of the stack's uploaded
+artifacts: the full catalog is licensed to your organization.
 
 ## What the output does not claim
 

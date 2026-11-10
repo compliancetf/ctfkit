@@ -162,9 +162,13 @@ inputs:
   catalog:
     description: >-
       Control catalog. The default, the literal embedded, pins the release catalog compiled into the
-      binary and ignores any catalog on the runner, so control ids and remediation module sources
-      always resolve. A path overrides it and replaces that catalog wholesale, so only point this at
-      a catalog you maintain. Never discovered from the checkout.
+      binary (the CIS AWS Benchmark v6.0 controls) and ignores any catalog on the runner, so control
+      ids and remediation module sources always resolve. The literal pull downloads the full catalog
+      with ctfkit catalog pull before scan or report, authenticated by the registry token the
+      calling step puts in TF_TOKEN_registry_compliance_tf; it needs a paid plan, and a failed pull
+      fails the step with exit code 2. The downloaded file stays outside the output directory and is
+      deleted after the run. A path replaces the catalog wholesale, so only point this at a catalog
+      you maintain. Never discovered from the checkout.
     required: false
     default: embedded
   sarif:
@@ -310,12 +314,13 @@ runs:
         esac
 
         # Resolved here so a missing policy file fails before ctfkit is downloaded. The catalog is
-        # checked only when it is a path: the literal `embedded` names the binary's own catalog.
+        # checked only when it is a path: the literal `embedded` names the binary's own catalog and
+        # `pull` one the run step downloads.
         for f in \
           "${CTFKIT_CONFIG:-${CTFKIT_ACTION_PATH}/defaults/ctfkit.yaml}" \
           "${CTFKIT_EXCEPTIONS:-${CTFKIT_ACTION_PATH}/defaults/exceptions.yaml}" \
           "${CTFKIT_CATALOG}"; do
-          if [ "${f}" = "embedded" ]; then
+          if [ "${f}" = "embedded" ] || [ "${f}" = "pull" ]; then
             continue
           fi
           if [ ! -f "${f}" ]; then
@@ -582,8 +587,10 @@ runs:
         [ -n "${config}" ] || config="${CTFKIT_ACTION_PATH}/defaults/ctfkit.yaml"
         [ -n "${exceptions}" ] || exceptions="${CTFKIT_ACTION_PATH}/defaults/exceptions.yaml"
         # Passed through as given. The default, `embedded`, is a literal ctfkit understands, not a
-        # path: it pins the catalog compiled into the binary.
+        # path: it pins the catalog compiled into the binary. `pull` is replaced below by the file
+        # ctfkit catalog pull writes.
         catalog="${CTFKIT_CATALOG}"
+        pull_code=0
         # --tests-json only when the caller wrote the file: ctfkit refuses an empty flag value.
         tests_json_args=()
         [ -z "${CTFKIT_TESTS_JSON}" ] || tests_json_args=(--tests-json "${CTFKIT_TESTS_JSON}")
@@ -607,6 +614,16 @@ runs:
         stop_token="$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')"
         echo "::stop-commands::${stop_token}"
         set +e
+        # The full catalog is private: it goes to a directory of its own, never out_dir, so it is not
+        # handed to the upload and summary steps, and it is deleted when this step ends. The token
+        # comes from the calling step's env; ctfkit sends it to the registry host only.
+        if [ "${catalog}" = "pull" ] && { [ "${CTFKIT_COMMAND}" = "scan" ] || [ "${CTFKIT_COMMAND}" = "report" ]; }; then
+          catalog_dir="$(mktemp -d "${RUNNER_TEMP}/ctfkit/catalog-XXXXXX")"
+          trap 'rm -rf "${catalog_dir}"' EXIT
+          catalog="${catalog_dir}/catalog.yaml"
+          ctfkit catalog pull --out "${catalog}"
+          pull_code=$?
+        fi
         # The gate commands take the same signed inputs in every job. An empty value is passed as
         # it is, and ctfkit refuses it.
         gate_args=(--dir "${CTFKIT_CHDIR:-.}" --workspace "${CTFKIT_WORKSPACE}"
@@ -614,7 +631,9 @@ runs:
           --profile "${CTFKIT_PROFILE}" --floor "${CTFKIT_FLOOR}" --bundle-dir "${CTFKIT_BUNDLE_DIR}")
         # --format sarif is pinned for scan: the Security tab is what this action feeds. text is
         # rendered alongside for the job summary.
-        if [ "${CTFKIT_COMMAND}" = "plan" ]; then
+        if [ "${pull_code}" -ne 0 ]; then
+          (exit "${pull_code}")
+        elif [ "${CTFKIT_COMMAND}" = "plan" ]; then
           ctfkit gate plan --out "${CTFKIT_ARTIFACTS}" "${gate_args[@]}"
         elif [ "${CTFKIT_COMMAND}" = "sign" ]; then
           ctfkit gate sign --candidate "${CTFKIT_ARTIFACTS}" "${gate_args[@]}" \
@@ -646,6 +665,9 @@ runs:
         code=$?
         set -e
         echo "::${stop_token}::"
+        if [ "${pull_code}" -ne 0 ]; then
+          echo "::error::ctfkit catalog pull exited ${pull_code}, so ctfkit did not run. Set TF_TOKEN_registry_compliance_tf on the step to a registry token of a paid plan, or use catalog: embedded." >&2
+        fi
 
         echo "exit-code=${code}" >> "${GITHUB_OUTPUT}"
         echo "CTFKIT_EXIT=${code}" >> "${GITHUB_ENV}"
