@@ -214,8 +214,14 @@ func newFinding(d disable, ref ctfkit.ControlRef, known bool, cat ctfkit.Control
 // the one bypass that leaves no trace in the resource. The address is
 // module.<name> relative to the file's own module; the uri says which file.
 func collect(config *ctfkit.ConfigArchive) ([]disable, error) {
+	// The local modules the walk did not read ("../", or a skipped directory
+	// such as .terraform.d) are installed by init too, so they are read here.
+	files := config.Files
+	for _, module := range config.LocalModules {
+		files = append(files[:len(files):len(files)], module.Files...)
+	}
 	var out []disable
-	for _, file := range config.Files {
+	for _, file := range files {
 		body, err := parse(file)
 		if err != nil {
 			return nil, err

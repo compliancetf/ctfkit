@@ -210,6 +210,34 @@ func TestSubdirectoryAndJSONFilesRead(t *testing.T) {
 	}
 }
 
+// TestLocalModuleFilesRead covers the local modules the walk did not read: a
+// "../" module outside the root and a module in a skipped directory such as
+// .terraform.d. A disable there is installed by init like any other.
+func TestLocalModuleFilesRead(t *testing.T) {
+	config := &ctfkit.ConfigArchive{
+		Files: []ctfkit.ConfigFile{{Path: "main.tf", Bytes: []byte(`module "m" {
+  source = "./.terraform.d/m"
+}`)}},
+		LocalModules: []ctfkit.LocalModule{
+			{Dir: ".terraform.d/m", Files: []ctfkit.ConfigFile{{Path: ".terraform.d/m/main.tf", Bytes: []byte(`module "s3" {
+  source = "soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_enforces_ssl"
+}`)}}},
+			{Dir: "../shared", Files: []ctfkit.ConfigFile{{Path: "../shared/main.tf", Bytes: []byte(`module "b" {
+  source = "soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws?disable=s3_bucket_mfa_delete_enabled"
+}`)}}},
+			{Dir: "../missing", Unread: true},
+		},
+	}
+	var got []string
+	for _, f := range run(t, config) {
+		got = append(got, f.Locations[0].PhysicalLocation.ArtifactLocation.URI+" "+f.Subject())
+	}
+	want := []string{"../shared/main.tf module.b", ".terraform.d/m/main.tf module.s3"}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
 // TestDoubleColonInQueryDoesNotBlind guards the forced-getter strip: a "::"
 // inside a query value must not truncate the source and hide the block.
 func TestDoubleColonInQueryDoesNotBlind(t *testing.T) {
