@@ -1,5 +1,5 @@
 // Package sink writes evidence objects to write-once customer evidence sinks (phase 3
-// "Evidence shipping and receipt"). A put that fails is spooled under .ctfkit/spool/ and
+// "Evidence shipping and receipt"). A put that fails is spooled in the directory the caller names and
 // retried by the next Drain. Errors never carry object bodies.
 package sink
 
