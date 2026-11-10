@@ -9,6 +9,14 @@
 # changed, missing or extra file stops the next job. The artifact transfer drops file modes; the
 # action restores 0700 and 0600 before ctfkit reads the set.
 #
+# The planfile is uploaded as is, unencrypted. A saved plan can hold the prior state, the
+# configuration and input variable values, including values marked sensitive. Anyone who can
+# download this repository's workflow artifacts can read it while the artifact exists: everyone
+# with read access, and for a public repository any signed-in GitHub user. Use this template in a
+# private repository only. sign and apply need the same bytes, so the planfile cannot be left out;
+# each artifact is kept for one day, the shortest retention GitHub allows. Encrypting the set is
+# planned.
+#
 # Each artifact is named after the run attempt. Re-running only a failed job looks for an
 # artifact of the new attempt, which does not exist, so it fails: re-run all jobs, which plans
 # again. ctfkit apply consumes the set on its runner; a set is applied at most once.

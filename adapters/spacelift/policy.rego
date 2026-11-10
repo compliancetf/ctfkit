@@ -55,6 +55,11 @@ enforcing if enforce_stack
 # Each hook writes its own metadata key, so after_init and after_plan never overwrite each other:
 # `ctfkit report` writes ctfkit.custom.spacelift.json, `ctfkit scan` writes
 # ctfkit-scan.custom.spacelift.json. A stack run is expected to carry both.
+#
+# Both files are read when this policy runs, after the planning phase. Code the configuration runs
+# at plan time (an `external` data source program, a provider binary) can rewrite either one,
+# including the ctfkit report verdict that carries the ctf.exec.* findings for that code. The
+# verdicts hold only against configurations whose plan runs no code you have not vetted.
 keys := {"ctfkit", "ctfkit-scan"}
 
 schema := "ctfkit.spacelift/1"

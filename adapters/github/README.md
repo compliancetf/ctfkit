@@ -121,6 +121,14 @@ transfer drops file modes, and ctfkit refuses a set that is not a 0700 directory
 for `sign` and `apply` the action first restores those modes on the regular files of `artifacts`;
 it changes no content and leaves anything else for ctfkit to refuse.
 
+The artifacts are not encrypted. `planfile` is the saved plan as terraform or tofu wrote it, and a
+saved plan can hold the prior state, the configuration and input variable values, including values
+marked `sensitive`. Anyone who can download the repository's workflow artifacts can read it for as
+long as the artifact exists: everyone with read access, and for a public repository any signed-in
+GitHub user. Use the template in a private repository only. `sign` and `apply` need the same bytes,
+so the planfile cannot be left out of the set. ctfkit's digests protect the set's integrity, not its
+confidentiality. Encrypting the set is planned.
+
 What the template sets up:
 
 - No stored cloud keys. Each job assumes its own AWS role with GitHub OIDC
@@ -131,7 +139,7 @@ What the template sets up:
   can hold it and the apply role's trust policy can name that environment.
 - The same terraform binary in every job, installed without a wrapper: ctfkit records its SHA-256
   at `plan` and refuses another one.
-- Artifacts named after the run attempt and kept for one day. Re-running only a failed job finds
+- Artifacts named after the run attempt and kept for one day, the shortest retention GitHub allows. Re-running only a failed job finds
   no artifact for the new attempt and fails, so a retry plans again rather than reusing an old set.
 - One run per branch at a time (`concurrency`), and third-party actions pinned by commit SHA.
 

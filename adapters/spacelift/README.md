@@ -33,6 +33,27 @@ script takes the first regular file among `spacelift.plan`, `*.plan` and `*.tfpl
 that fails. With no plan file it logs one stderr line and exits 0, so the policy reports the
 `ctfkit-scan` key missing. `ctfkit scan` is its last command, so a tool error still fails the hook.
 
+### What plan-time code can change
+
+Spacelift reads every `*.custom.spacelift.json` file from the project root when it evaluates the
+plan policy, after the planning phase and its hooks have run. The removal at the start of each hook
+covers files left by an earlier run or committed to the repository. It does not cover a file
+rewritten later in the same run.
+
+Code that the configuration runs during `terraform plan`, such as an `external` data source program
+or a provider binary, runs in the same working directory as the same user. It runs after
+`after_init` and can keep running past `after_plan`. Such code can rewrite
+`ctfkit.custom.spacelift.json` with a `pass` verdict, and that file is the only one that carries
+the `ctf.exec.*` findings for provisioners and `external` data sources. It can also rewrite
+`ctfkit-scan.custom.spacelift.json`, or anything a later hook reads. No hook order prevents this:
+once untrusted code has run on the worker, nothing written after it is evidence.
+
+Treat both keys the way the governed-apply section treats `ctfkit-gate`: as reliable for a
+configuration whose plan runs only code you have vetted, and not as a control against a pull request
+that brings its own plan-time code. To keep such code from running at all, restrict what the plan
+can execute outside ctfkit: an allowlist of providers in the runner image's CLI configuration, and
+no `external` data source in configurations the stack plans.
+
 ### The verdict decides, not the counts
 
 ctfkit computes a `verdict` for each file when it writes it: `fail` when any unsuppressed
