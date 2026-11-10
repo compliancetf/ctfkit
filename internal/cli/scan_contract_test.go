@@ -290,6 +290,7 @@ func TestScanFailOnPrecedence(t *testing.T) {
 // TestScanProjections checks the shape of json and junit, and that text and
 // pretty end in the --watermark banner when one is set.
 func TestScanProjections(t *testing.T) {
+	t.Setenv("HOME", t.TempDir()) // no ~/.ctf catalog file: the json projection names the embedded catalog
 	input := fixtureInput(t, "04-floating-ref")
 	run := func(format string, extra ...string) string {
 		t.Helper()
