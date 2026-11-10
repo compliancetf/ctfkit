@@ -109,6 +109,9 @@ scan never runs terraform; produce the plan JSON yourself with
 Outputs:
 
 - One format goes to stdout or `--out FILE`; several need `--out-dir DIR`.
+- An `--out` or `--out-dir` path inside the working directory must stay inside it: a symlink
+  on the way that leads out of it (one a checkout can carry) is exit 2, and nothing is written
+  there. The same holds for `report` and `verify-lock`.
 - `spacelift` writes `ctfkit-scan.custom.spacelift.json` in the working directory, always.
 - The SARIF output uses [CFF](cff.md). CFF is the ctfkit findings format and a draft profile
   of SARIF 2.1.0.

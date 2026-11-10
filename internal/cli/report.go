@@ -804,32 +804,71 @@ func (c *CLI) emit(cmd *cobra.Command, plan outputPlan, name string, body []byte
 		if err := ensureOutDir(plan.dir); err != nil {
 			return err
 		}
-		path := filepath.Join(plan.dir, name)
-		if err := os.WriteFile(path, body, 0o600); err != nil {
-			return inputError("writing %s: %v", path, err)
-		}
-		return nil
+		return writeOut(plan.dir, name, body)
 
 	case plan.single != "" && plan.single != "-":
-		if err := os.WriteFile(plan.single, body, 0o600); err != nil {
-			return inputError("writing %s: %v", plan.single, err)
-		}
-		return nil
+		return writeOut(filepath.Dir(plan.single), filepath.Base(plan.single), body)
 	}
 
 	return writeAll(cmd.OutOrStdout(), body)
+}
+
+// writeOut writes body as name in dir, 0600 for a new file, through an
+// os.Root of dir, so a symlink at name cannot send the write out of dir.
+func writeOut(dir, name string, body []byte) error {
+	path := filepath.Join(dir, name)
+	root, err := openOutDir(dir)
+	if err == nil {
+		err = root.WriteFile(name, body, 0o600)
+		_ = root.Close()
+	}
+	if err != nil {
+		return inputError("writing %s: %v", path, err)
+	}
+	return nil
+}
+
+// openOutDir opens an output directory. One inside the working directory is
+// opened through an os.Root of the working directory: in CI that is the
+// analyzed checkout, whose content is untrusted, so a symlink committed
+// there must not lead a write to a file outside it. A path outside the
+// working directory is the operator's own and is opened as named.
+func openOutDir(dir string) (*os.Root, error) {
+	if !filepath.IsLocal(dir) {
+		return os.OpenRoot(dir)
+	}
+	cwd, err := os.OpenRoot(".")
+	if err != nil {
+		return nil, err
+	}
+	defer func() { _ = cwd.Close() }()
+	return cwd.OpenRoot(dir)
 }
 
 // ensureOutDir creates --out-dir with its parents, as mkdir -p does, so a CI
 // hook can name a directory such as .ctfkit without a separate step. report
 // and scan both call it. 0755 because the directory holds artifacts a
 // pipeline collects, not secrets; the files inside stay 0600. A path that
-// exists and is not a directory is an input error.
+// exists and is not a directory is an input error, and so is one inside the
+// working directory that a symlink leads out of it (see openOutDir).
 func ensureOutDir(dir string) error {
-	if err := os.MkdirAll(dir, 0o755); err != nil { //nolint:gosec // G301: an artifact directory a pipeline reads, not a secret store
+	err := mkdirOut(dir)
+	if err != nil {
 		return inputError("--out-dir %s: %v", dir, err)
 	}
 	return nil
+}
+
+func mkdirOut(dir string) error {
+	if !filepath.IsLocal(dir) {
+		return os.MkdirAll(dir, 0o755) //nolint:gosec // G301: an artifact directory a pipeline reads, not a secret store
+	}
+	cwd, err := os.OpenRoot(".")
+	if err != nil {
+		return err
+	}
+	defer func() { _ = cwd.Close() }()
+	return cwd.MkdirAll(dir, 0o755) //nolint:gosec // G301: as above
 }
 
 // writeAll reports a short write as the error it is.
