@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/compliancetf/ctfkit/compare/v0.6.0...v0.7.0) (2026-11-10)
+
+
+### Features
+
+* **action:** add catalog: pull to download the full control catalog ([#31](https://github.com/compliancetf/ctfkit/issues/31)) ([57e6625](https://github.com/compliancetf/ctfkit/commit/57e6625ae194b935855af8f58447657eac4f87c4))
+
 ## [0.6.0](https://github.com/compliancetf/ctfkit/compare/v0.5.0...v0.6.0) (2026-11-09)
 
 

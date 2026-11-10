@@ -96,7 +96,7 @@ as above, check it against `checksums.txt`, and install it with `dpkg -i`, `rpm 
 ```yaml
 repos:
   - repo: https://github.com/compliancetf/ctfkit
-    rev: v0.6.0
+    rev: v0.7.0
     hooks:
       - id: ctfkit
 ```
@@ -119,7 +119,7 @@ repository, the `.pre-commit-config.yaml` entry is:
 ```yaml
 repos:
   - repo: https://github.com/compliancetf/ctfkit
-    rev: v0.6.0
+    rev: v0.7.0
     hooks:
       - id: ctfkit-scan-dir
 ```
