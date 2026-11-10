@@ -94,6 +94,11 @@ func classify(raw string, endpoints []string) source {
 	hasScheme := unschemed != s
 	s = unschemed
 
+	// Everything after '#' is a URL fragment that the getter never sends, so
+	// it must not decide the host: "https://evil.example#.compliance.tf/..."
+	// fetches from evil.example.
+	s, _, _ = strings.Cut(s, "#")
+
 	query := ""
 	if i := strings.IndexByte(s, '?'); i >= 0 {
 		query, s = s[i+1:], s[:i]
