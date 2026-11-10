@@ -92,7 +92,10 @@ The child environment holds only `PATH`, `TF_IN_AUTOMATION`, `TF_WORKSPACE` and 
 
 `candidate.json` (`format` `compliancetf.candidate/v1`) lists the instance keys of every managed
 change under the run's `ctfkit-run.key` and binds the digest of `schema.json` as
-`schema_digest`. A change the instance key format cannot key (no schema entry for its type, no
+`schema_digest`. It records the sha256 of `--tf-bin` as `terraform_digest`, and again in
+`provenance`, which gate sign copies into the signed verdict; verdict verify and apply refuse a
+`terraform_digest` that differs from the signed one, so a binary swapped after gate sign never
+runs. A change the instance key format cannot key (no schema entry for its type, no
 prior id for an update or delete, and the other cases of the format) exits 2 and names each such
 resource; no candidate is written.
 

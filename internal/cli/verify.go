@@ -265,7 +265,8 @@ func (c *CLI) checkSigned(cmd *cobra.Command, opts *applyOptions, files map[stri
 }
 
 // checkBinding: the verdict names the candidate's scope, plan, inputs,
-// versions and provenance.
+// versions and provenance, and the terraform_digest --tf-bin is pinned to is
+// the one the signed provenance names.
 func checkBinding(doc *verdict.Document, cand *candidate) error {
 	prov, err := json.Marshal(cand.Provenance)
 	if err == nil {
@@ -285,6 +286,7 @@ func checkBinding(doc *verdict.Document, cand *candidate) error {
 		{"profile_digest", doc.ProfileDigest, cand.ProfileDigest}, {"bundle_digest", doc.BundleDigest, cand.BundleDigest},
 		{"content_digest", doc.ContentDigest, cand.ContentDigest}, {"floor_epoch", doc.FloorEpoch, cand.FloorEpoch},
 		{"terraform_version", doc.TerraformVersion, cand.TerraformVersion}, {"provenance", string(docProv), string(prov)},
+		{"terraform_digest", cand.Provenance.TerraformDigest, cand.TerraformDigest},
 	} {
 		if f.got != f.want {
 			return fmt.Errorf("%s differs", f.name)

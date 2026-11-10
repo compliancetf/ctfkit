@@ -73,6 +73,7 @@ func resign(t *testing.T, inputs, set string, edit func(d *verdict.Document)) {
 type refusal struct {
 	inputs, plan string
 	mutate       func(t *testing.T, set string)
+	swapTF       func(cand map[string]any, digest string) // edits candidate.json for a swapped --tf-bin
 	c            func(t *testing.T) *CLI
 	want         string
 	consumed     bool // ctfkit apply read the exact set, so the refusal consumes it
@@ -135,6 +136,14 @@ func refusals() map[string]refusal {
 				m["artifacts"].(map[string]any)[artifactPlanfile] = rawDigest(other)
 			})
 		}, want: "plan_digest differs", consumed: true},
+		// The terraform binary is swapped after gate sign and candidate.json
+		// names its digest: the digest gate plan recorded is signed.
+		"terraform-swapped": {plan: linked, swapTF: func(m map[string]any, d string) { m["terraform_digest"] = d },
+			want: "terraform_digest differs", consumed: true},
+		"terraform-and-provenance-swapped": {plan: linked, swapTF: func(m map[string]any, d string) {
+			m["terraform_digest"] = d
+			m["provenance"].(map[string]any)["terraform_digest"] = d
+		}, want: "provenance differs", consumed: true},
 		"incomplete-set": {plan: linked, mutate: func(t *testing.T, s string) {
 			if err := os.Remove(filepath.Join(s, artifactFindings)); err != nil {
 				t.Fatal(err)
@@ -194,6 +203,21 @@ func refuse(t *testing.T, tc refusal, cmd ...string) string {
 	f, set := signedSet(t, inputs, plan)
 	if tc.mutate != nil {
 		tc.mutate(t, set)
+	}
+	if tc.swapTF != nil {
+		b, err := os.ReadFile(f.bin)
+		if err == nil {
+			b = append(b, "# other bytes\n"...)
+			err = os.WriteFile(f.bin, b, 0o700) //nolint:gosec // G306: an executable test fake
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+		d, err := fileDigest(f.bin)
+		if err != nil {
+			t.Fatal(err)
+		}
+		rewriteCandidate(t, set, func(m map[string]any) { tc.swapTF(m, d) })
 	}
 	c := applyCLI(t, inputs, signNow, signNow)
 	if tc.c != nil {
