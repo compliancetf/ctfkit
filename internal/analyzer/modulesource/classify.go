@@ -174,6 +174,13 @@ func hostClass(host string, endpoints []string, query string) classification {
 // isServedHost reports whether host is a compliance.tf endpoint.
 func isServedHost(host string, endpoints []string) bool {
 	host = strings.ToLower(host)
+	// A served host is a plain DNS name. Escapes, backslashes and userinfo
+	// let a getter read a different host than the suffix test sees.
+	if strings.ContainsFunc(host, func(r rune) bool {
+		return (r < 'a' || r > 'z') && (r < '0' || r > '9') && r != '-' && r != '.'
+	}) {
+		return false
+	}
 	if len(endpoints) > 0 {
 		for _, endpoint := range endpoints {
 			if normalizeEndpoint(endpoint) == host {
