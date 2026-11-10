@@ -4,9 +4,10 @@
 //
 //   - ctf.exec.provisioner: a provisioner block, local-exec, remote-exec or
 //     file alike, in a resource or removed block.
-//   - ctf.exec.external_data: a data block of a type that runs a local
-//     program when it is read. Which types do is rule-pack data
-//     (rules/defaults.yaml, program_data_sources), not code here.
+//   - ctf.exec.external_data: a data, ephemeral or action block of a type
+//     that runs a local program when it is read, opened or invoked. Which
+//     types do is rule-pack data (rules/defaults.yaml, program_data_sources,
+//     program_ephemeral_resources and program_actions), not code here.
 //   - ctf.exec.module_endpoint: a module called from inside another module,
 //     installed from a source the endpoint allowlist does not admit, read the
 //     way ctf.coverage.module_source reads it. A call the root makes is
@@ -72,7 +73,7 @@ func Descriptors() []sarif.RuleDescriptor {
 		},
 		{
 			ID:               ruleExternalData,
-			ShortDescription: "The configuration or a module it installs declares a data source that runs a local program",
+			ShortDescription: "The configuration or a module it installs declares a data source, ephemeral resource or action that runs a local program",
 			Level:            ctfkit.LevelError,
 		},
 		{
@@ -97,8 +98,11 @@ const schemaVersion = "1.0"
 // and query removed, never with an attribute value: a command, a program or a
 // script is not quoted.
 const (
-	msgProvisioner    = "Provisioner %s in %s runs when this configuration is applied, with the access of the machine that applies it"
-	msgExternalData   = "Data source %s runs a local program when this configuration is planned, with the access of the machine that plans it"
+	msgProvisioner      = "Provisioner %s in %s runs when this configuration is applied, with the access of the machine that applies it"
+	msgExternalData     = "Data source %s runs a local program when this configuration is planned, with the access of the machine that plans it"
+	msgProgramEphemeral = "Ephemeral resource %s runs a local program when this configuration is planned or applied, " +
+		"with the access of the machine that runs it"
+	msgProgramAction  = "Action %s runs a local program when this configuration is applied, with the access of the machine that applies it"
 	msgModuleEndpoint = "Module %s is installed from %s, which is not an allowed module endpoint; " +
 		"its code runs when this configuration is planned and applied"
 	msgModuleUninspected = "Module %s names a local directory that does not exist, " +
@@ -215,7 +219,17 @@ func externalData(ctx context.Context, in ctfkit.AnalyzerInput, stage ctfkit.Sta
 	if err := ctx.Err(); err != nil {
 		return nil, fmt.Errorf("codeexec: %w", err)
 	}
-	types := rulepack.Embedded().ProgramDataSources()
+	pack := rulepack.Embedded()
+	kinds := []struct {
+		types   []string
+		blocks  func(*parser.ParseResult) []parser.DataSource
+		mode    string
+		message string
+	}{
+		{pack.ProgramDataSources(), func(p *parser.ParseResult) []parser.DataSource { return p.DataSources }, "data.", msgExternalData},
+		{pack.ProgramEphemeralResources(), func(p *parser.ParseResult) []parser.DataSource { return p.EphemeralResources }, "ephemeral.", msgProgramEphemeral},
+		{pack.ProgramActions(), func(p *parser.ParseResult) []parser.DataSource { return p.Actions }, "action.", msgProgramAction},
+	}
 	var out ctfkit.Findings
 	for _, s := range scopes(in, stage) {
 		for _, file := range s.files {
@@ -223,18 +237,20 @@ func externalData(ctx context.Context, in ctfkit.AnalyzerInput, stage ctfkit.Sta
 			if err != nil {
 				return nil, err
 			}
-			for _, d := range parsed.DataSources {
-				if !slices.Contains(types, d.Type) {
-					continue
+			for _, kind := range kinds {
+				for _, d := range kind.blocks(parsed) {
+					if !slices.Contains(kind.types, d.Type) {
+						continue
+					}
+					address := s.prefix + scoped(d.Scope) + kind.mode + d.Type + "." + d.Name
+					f, err := newFinding(ruleExternalData, ctfkit.LevelError, stage,
+						fmt.Sprintf(kind.message, address),
+						s.uri(file.Path), d.Location.Region(), address, ctfkit.LogicalLocationResource)
+					if err != nil {
+						return nil, err
+					}
+					out = append(out, f)
 				}
-				address := s.prefix + scoped(d.Scope) + "data." + d.Type + "." + d.Name
-				f, err := newFinding(ruleExternalData, ctfkit.LevelError, stage,
-					fmt.Sprintf(msgExternalData, address),
-					s.uri(file.Path), d.Location.Region(), address, ctfkit.LogicalLocationResource)
-				if err != nil {
-					return nil, err
-				}
-				out = append(out, f)
 			}
 		}
 	}

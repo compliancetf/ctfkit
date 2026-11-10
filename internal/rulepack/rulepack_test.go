@@ -125,12 +125,19 @@ func change(provider string, actions ...tfjson.Action) *tfjson.ResourceChange {
 		Change: &tfjson.Change{Actions: actions}}
 }
 
-// The external data source runs a program at plan time, and the embedded
-// defaults say so; the accessor hands out a copy.
+// The external and local_command data sources run a program at plan time,
+// local_command also as an ephemeral resource and an action, and the embedded
+// defaults say so; the accessors hand out copies.
 func TestProgramDataSources(t *testing.T) {
 	got := rulepack.Embedded().ProgramDataSources()
-	if strings.Join(got, ",") != "external" {
-		t.Fatalf("ProgramDataSources = %q, want [external]", got)
+	if strings.Join(got, ",") != "external,local_command" {
+		t.Fatalf("ProgramDataSources = %q, want [external local_command]", got)
+	}
+	if eph := rulepack.Embedded().ProgramEphemeralResources(); strings.Join(eph, ",") != "local_command" {
+		t.Errorf("ProgramEphemeralResources = %q, want [local_command]", eph)
+	}
+	if act := rulepack.Embedded().ProgramActions(); strings.Join(act, ",") != "local_command" {
+		t.Errorf("ProgramActions = %q, want [local_command]", act)
 	}
 	got[0] = "changed"
 	if rulepack.Embedded().ProgramDataSources()[0] != "external" {

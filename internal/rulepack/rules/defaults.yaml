@@ -27,3 +27,14 @@ no_rules:
 # type as a data block writes it.
 program_data_sources:
   - external
+  - local_command
+
+# Ephemeral resource types that run a local program when the configuration
+# opens them, at plan and at apply. Reported with ctf.exec.external_data.
+program_ephemeral_resources:
+  - local_command
+
+# Action types that run a local program at apply, through a lifecycle
+# action_trigger or on -invoke. Reported with ctf.exec.external_data.
+program_actions:
+  - local_command

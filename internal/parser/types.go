@@ -14,6 +14,11 @@ type ParseResult struct {
 	Variables []Variable
 	// DataSources are the data blocks.
 	DataSources []DataSource
+	// EphemeralResources are the ephemeral blocks, which are opened at plan.
+	EphemeralResources []DataSource
+	// Actions are the action blocks, which run at apply through a lifecycle
+	// action_trigger or on -invoke.
+	Actions []DataSource
 	// Provisioners are the provisioner blocks of every resource and removed
 	// block, the only blocks Terraform and OpenTofu run one from.
 	Provisioners []Provisioner
@@ -112,6 +117,8 @@ func (pr *ParseResult) Merge(other *ParseResult) {
 	pr.Resources = append(pr.Resources, other.Resources...)
 	pr.Variables = append(pr.Variables, other.Variables...)
 	pr.DataSources = append(pr.DataSources, other.DataSources...)
+	pr.EphemeralResources = append(pr.EphemeralResources, other.EphemeralResources...)
+	pr.Actions = append(pr.Actions, other.Actions...)
 	pr.Provisioners = append(pr.Provisioners, other.Provisioners...)
 	pr.Files = append(pr.Files, other.Files...)
 	pr.Errors = append(pr.Errors, other.Errors...)

@@ -148,6 +148,8 @@ func extractBlocks(body hcl.Body, filename string, result *ParseResult) {
 			{Type: "data", LabelNames: []string{"type", "name"}},
 			{Type: "removed"},
 			{Type: "check", LabelNames: []string{"name"}},
+			{Type: "ephemeral", LabelNames: []string{"type", "name"}},
+			{Type: "action", LabelNames: []string{"type", "name"}},
 		},
 	})
 
@@ -185,6 +187,16 @@ func extractBlocks(body hcl.Body, filename string, result *ParseResult) {
 			result.DataSources = append(result.DataSources, DataSource{
 				Type: block.Labels[0], Name: block.Labels[1], Location: locationFromBlock(filename, block),
 			})
+		case "ephemeral", "action":
+			if len(block.Labels) != 2 {
+				continue
+			}
+			d := DataSource{Type: block.Labels[0], Name: block.Labels[1], Location: locationFromBlock(filename, block)}
+			if block.Type == "ephemeral" {
+				result.EphemeralResources = append(result.EphemeralResources, d)
+			} else {
+				result.Actions = append(result.Actions, d)
+			}
 		case "check":
 			if len(block.Labels) != 1 {
 				continue

@@ -21,7 +21,7 @@ tells you what each stage can and cannot see.
 | `ctf.policy.tagging` | post_plan | planned resources missing the tags `tags` or `required_tags` ask for |
 | `ctf.risk.sensitive_change_*` | post_plan | changes that open public access, grant wildcard IAM, remove audit logging, turn off encryption at rest, or delete, replace or unprotect a stateful resource |
 | `ctf.exec.provisioner` | pre_plan, post_init | a provisioner in a `resource` or `removed` block, in any file `scan` reads ([Code that runs before plan](#code-that-runs-before-plan)) |
-| `ctf.exec.external_data` | pre_plan, post_init | a `data "external"` block, in any file `scan` reads |
+| `ctf.exec.external_data` | pre_plan, post_init | a `data "external"` block, or a `local_command` data source, ephemeral resource or action, in any file `scan` reads |
 | `ctf.exec.module_endpoint` | post_init | a module called from inside another module whose source `allowed_endpoints` does not admit |
 | `ctf.exec.module_uninspected` | pre_plan, post_init | a module call whose files were not inspected, such as a `../` local module directory a directory scan calls that does not exist yet (warning) |
 
@@ -104,7 +104,7 @@ configuration, before `plan` runs any of it. They run at two stages:
 | Rule | Stage | Level | Fires when |
 |---|---|---|---|
 | `ctf.exec.provisioner` | pre_plan, post_init | error | a `resource` or `removed` block declares a provisioner: `local-exec`, `remote-exec`, `file` or any other |
-| `ctf.exec.external_data` | pre_plan, post_init | error | a `data "external"` block, or a block of another data source type the built-in rule pack lists as running a local program, at top level or scoped to a `check` block (reported as `check.<name>.data.external.<name>`) |
+| `ctf.exec.external_data` | pre_plan, post_init | error | a `data "external"` block, or a block of another data source type the built-in rule pack lists as running a local program, at top level or scoped to a `check` block (reported as `check.<name>.data.external.<name>`); also an `ephemeral` or `action` block of a type the rule pack lists as running a local program, such as `local_command` from `hashicorp/local` (reported as `ephemeral.<type>.<name>` or `action.<type>.<name>`; an action runs at apply through a lifecycle `action_trigger`) |
 | `ctf.exec.module_endpoint` | post_init | error | a module called from inside another module comes from a source `allowed_endpoints` does not admit; only a `./` or `../` path or a registry address on an allowed endpoint is admitted ([allowed_endpoints](configuration.md#allowed_endpoints)) |
 | `ctf.exec.module_uninspected` | pre_plan, post_init | warning | a module call whose files were not inspected: in `scan`, a `../` local module directory that does not exist yet; in an SDK-built archive with no call graph, a `./` or `../` call whose directory it does not carry; in `report`, a module block `.terraform/modules/modules.json` holds no record for |
 

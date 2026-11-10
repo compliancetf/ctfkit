@@ -30,7 +30,7 @@
             {
               "id": "ctf.exec.external_data",
               "shortDescription": {
-                "text": "The configuration or a module it installs declares a data source that runs a local program"
+                "text": "The configuration or a module it installs declares a data source, ephemeral resource or action that runs a local program"
               },
               "defaultConfiguration": {
                 "level": "error"
