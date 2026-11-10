@@ -17,6 +17,8 @@ import (
 	"strings"
 	"testing"
 
+	tfjson "github.com/hashicorp/terraform-json"
+
 	"github.com/compliancetf/ctfkit/internal/sign"
 	"github.com/compliancetf/ctfkit/pkg/verdict"
 	"github.com/compliancetf/ctfkit/pkg/verdict/instancekey"
@@ -303,12 +305,14 @@ func TestGateSignNoSigner(t *testing.T) {
 	}
 }
 
-// TestGateSignBypass: a governed plan holding a hashicorp/aws resource of
-// either registry, matched in any case, fails the gate (exit 1) and is never
-// signed (A29). It is the compensating control for the verify-lock exemption
-// of those two lock entries (boundUpstream).
+// TestGateSignBypass: a governed plan holding an AWS resource of any provider
+// other than the compliance.tf one (hashicorp/aws of either registry, a fork
+// in another namespace, awscc), matched in any case, fails the gate (exit 1)
+// and is never signed (A29). It is the compensating control for the
+// verify-lock exemption of the hashicorp/aws lock entries (boundUpstream).
 func TestGateSignBypass(t *testing.T) {
-	for _, hashi := range []string{"registry.terraform.io/hashicorp/aws", "registry.opentofu.org/hashicorp/aws", "Registry.OpenTofu.org/HashiCorp/AWS"} {
+	for _, hashi := range []string{"registry.terraform.io/hashicorp/aws", "registry.opentofu.org/hashicorp/aws", "Registry.OpenTofu.org/HashiCorp/AWS",
+		"registry.terraform.io/bobthecorp/aws", "registry.terraform.io/hashicorp/awscc", "registry.terraform.io/bobthecorp/amazon"} {
 		t.Run(hashi, func(t *testing.T) { gateSignBypass(t, hashi) })
 	}
 }
@@ -334,11 +338,36 @@ func gateSignBypass(t *testing.T, hashi string) {
 	f := newFakeTFSchema(t, filepath.Join(dir, "plan.json"), filepath.Join(dir, "schema.json"), 0)
 	cand := planCandidate(t, inputs, f)
 	code, msg := runGate(signCLI(t, inputs, verdictKeyL), signArgs(inputs, f.bin, cand))
-	if code != ExitFindings || !strings.Contains(msg, "hashicorp/aws directly for aws_s3_bucket.logs") {
+	if code != ExitFindings || !strings.Contains(msg, "outside the compliance.tf provider for aws_s3_bucket.logs") {
 		t.Fatalf("exit %d (%s), want 1", code, msg)
 	}
 	if _, err := os.Lstat(filepath.Join(cand, artifactVerdict)); !errors.Is(err, fs.ErrNotExist) {
 		t.Fatal("a bypassed plan was signed")
+	}
+}
+
+// TestBypassed: only AWS resource changes of a provider outside the
+// compliance.tf namespace are listed; other providers (random, null) are not.
+func TestBypassed(t *testing.T) {
+	for _, tc := range []struct {
+		provider, typ string
+		want          bool
+	}{
+		{"registry.compliance.tf/compliancetf/aws", "aws_s3_bucket", false},
+		{"Registry.Compliance.TF/CompliancETF/aws", "aws_s3_bucket", false},
+		{"registry.terraform.io/hashicorp/aws", "aws_s3_bucket", true},
+		{"registry.opentofu.org/hashicorp/aws", "aws_s3_bucket", true},
+		{"registry.terraform.io/bobthecorp/aws", "aws_s3_bucket", true},
+		{"registry.terraform.io/hashicorp/awscc", "awscc_s3_bucket", true},
+		{"registry.terraform.io/bobthecorp/amazon", "aws_s3_bucket", true},
+		{"registry.terraform.io/hashicorp/random", "random_id", false},
+		{"registry.terraform.io/hashicorp/null", "null_resource", false},
+		{"registry.terraform.io/bobthecorp/awsome", "awsome_thing", false},
+	} {
+		plan := &tfjson.Plan{ResourceChanges: []*tfjson.ResourceChange{nil, {Address: tc.typ + ".x", Type: tc.typ, ProviderName: tc.provider}}}
+		if got := len(bypassed(plan)) == 1; got != tc.want {
+			t.Errorf("%s %s: bypassed %v, want %v", tc.provider, tc.typ, got, tc.want)
+		}
 	}
 }
 
