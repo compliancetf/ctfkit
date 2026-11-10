@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/compliancetf/ctfkit/compare/v0.5.0...v0.6.0) (2026-11-09)
+
+
+### Features
+
+* **catalog:** add ctfkit catalog pull ([#29](https://github.com/compliancetf/ctfkit/issues/29)) ([43d6ce4](https://github.com/compliancetf/ctfkit/commit/43d6ce47a2c6e0bcda6c35fc7c552afd61f77f13))
+
 ## [0.5.0](https://github.com/compliancetf/ctfkit/compare/v0.4.1...v0.5.0) (2026-11-09)
 
 
