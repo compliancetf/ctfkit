@@ -1,6 +1,6 @@
 {
   "provider": "registry.terraform.io/hashicorp/aws",
-  "version": "6.70.0",
+  "version": "6.72.0",
   "resources": {
     "aws_agentregistry_registry": {
       "encryption_configuration": {
@@ -61,6 +61,24 @@
     },
     "aws_bedrockagentcore_policy_engine": {
       "encryption_key_arn": "string"
+    },
+    "aws_bedrockdataautomation_blueprint": {
+      "encryption_configuration": {
+        "kms_encryption_context": "map",
+        "kms_key_id": "string"
+      }
+    },
+    "aws_bedrockdataautomation_library": {
+      "encryption_configuration": {
+        "kms_encryption_context": "map",
+        "kms_key_id": "string"
+      }
+    },
+    "aws_bedrockdataautomation_project": {
+      "encryption_configuration": {
+        "kms_encryption_context": "map",
+        "kms_key_id": "string"
+      }
     },
     "aws_chatbot_slack_channel_configuration": {
       "logging_level": "string"
@@ -129,6 +147,7 @@
       "is_organization_trail": "bool",
       "kms_key_id": "string",
       "name": "string",
+      "recursive_logging": "bool",
       "region": "string",
       "s3_bucket_name": "string",
       "s3_key_prefix": "string",
@@ -291,6 +310,7 @@
       "monitoring_interval": "number",
       "monitoring_role_arn": "string",
       "multi_az": "bool",
+      "multi_tenant": "bool",
       "nchar_character_set_name": "string",
       "network_type": "string",
       "option_group_name": "string",

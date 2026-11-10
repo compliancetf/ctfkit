@@ -1,6 +1,6 @@
 {
   "provider": "registry.terraform.io/hashicorp/google",
-  "version": "8.8.1",
+  "version": "8.10.0",
   "resources": {
     "google_active_directory_domain": {
       "deletion_protection": "bool"
@@ -455,6 +455,9 @@
     "google_oracle_database_goldengate_connection_assignment": {
       "deletion_protection": "bool"
     },
+    "google_oracle_database_odb_dns_zone": {
+      "deletion_protection": "bool"
+    },
     "google_oracle_database_odb_network": {
       "deletion_protection": "bool"
     },
@@ -515,6 +518,17 @@
     "google_sql_database_instance": {
       "available_maintenance_versions": "list",
       "backupdr_backup": "string",
+      "blue_green_deployment": {
+        "active_environment": "string",
+        "delete_old_source_on_destroy": "bool",
+        "deployment_name": "string",
+        "old_source_instance_connection_name": "string",
+        "old_source_instance_name": "string",
+        "target_database_version": "string",
+        "target_instance_connection_name": "string",
+        "target_instance_ip_addresses": "object",
+        "target_instance_name": "string"
+      },
       "clone": {
         "allocated_ip_range": "string",
         "database_names": "list",
@@ -525,6 +539,7 @@
         "source_project": "string"
       },
       "connection_name": "string",
+      "database_center_integration": "string",
       "database_version": "string",
       "deletion_policy": "string",
       "deletion_protection": "bool",
@@ -650,6 +665,12 @@
         "update": "string"
       }
     },
+    "google_storage_batch_operations_job": {
+      "logging_config": {
+        "log_action_states": "list",
+        "log_actions": "list"
+      }
+    },
     "google_storage_bucket": {
       "autoclass": {
         "enabled": "bool",
@@ -751,6 +772,11 @@
         "crypto_key_name": "string"
       }
     },
+    "google_vertex_ai_custom_job": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
     "google_vertex_ai_dataset": {
       "encryption_spec": {
         "kms_key_name": "string"
@@ -799,6 +825,11 @@
         "kms_key_name": "string"
       }
     },
+    "google_vertex_ai_pipeline_job": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
     "google_vertex_ai_rag_corpus": {
       "encryption_spec": {
         "kms_key_name": "string"
@@ -810,6 +841,11 @@
       }
     },
     "google_vertex_ai_tensorboard": {
+      "encryption_spec": {
+        "kms_key_name": "string"
+      }
+    },
+    "google_vertex_ai_training_pipeline": {
       "encryption_spec": {
         "kms_key_name": "string"
       }
