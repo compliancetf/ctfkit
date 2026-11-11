@@ -92,7 +92,10 @@ The child environment holds only `PATH`, `TF_IN_AUTOMATION`, `TF_WORKSPACE` and 
 
 `candidate.json` (`format` `compliancetf.candidate/v1`) lists the instance keys of every managed
 change under the run's `ctfkit-run.key` and binds the digest of `schema.json` as
-`schema_digest`. A change the instance key format cannot key (no schema entry for its type, no
+`schema_digest`. It records the sha256 of `--tf-bin` as `terraform_digest`, and again in
+`provenance`, which gate sign copies into the signed verdict; verdict verify and apply refuse a
+`terraform_digest` that differs from the signed one, so a binary swapped after gate sign never
+runs. A change the instance key format cannot key (no schema entry for its type, no
 prior id for an update or delete, and the other cases of the format) exits 2 and names each such
 resource; no candidate is written.
 
@@ -123,9 +126,13 @@ candidate planned under another profile, bundle set, content digest or floor epo
 or environment the profile does not allow, and a `--tf-bin` other than the one gate plan ran. It
 shows the planfile again with terraform (`version`, `init`, `show -json` on a sealed copy),
 recomputes the instance keys with `ctfkit-run.key` and `schema.json` and refuses any difference
-from `candidate.json`. A governed plan with a `registry.terraform.io/hashicorp/aws` or
-`registry.opentofu.org/hashicorp/aws` resource exits 1 before anything is signed, and no
-`verdict.json` is written.
+from `candidate.json`. A governed plan with an AWS resource of any provider outside
+`registry.compliance.tf/compliancetf/` exits 1 before anything is signed, and no `verdict.json`
+is written. An AWS resource is one whose provider type is `aws` or `awscc` (hashicorp/aws of
+either registry, a fork in another namespace, awscc) or whose resource type starts with `aws_`
+or `awscc_`. Providers that manage no AWS resource, such as `random` or `null`, are allowed. A
+fork that also renames its resource types is not recognized; a signed provider allowlist is
+planned.
 
 Then it decides each graph control of the bundles for every managed change, and deletion guards
 on the full plan, and writes `verdict.json` (0600) next to the candidate. `--format sarif`
@@ -135,7 +142,7 @@ that is not a pass.
 Exit codes: 0 when the shared decision state machine admits the plan and no graph finding
 reaches `--fail-on` (`error`, `warning` or `note`; default `error`); 1 when the state machine
 does not admit the plan or a graph finding reaches `--fail-on`; 2 when it could not run or
-refused, with no `verdict.json` left. Apart from the upstream `hashicorp/aws` case above, an exit
+refused, with no `verdict.json` left. Apart from the AWS provider case above, an exit
 1 still signs and writes the verdict. `apply` refuses a plan the state machine does not admit; `--fail-on` changes only gate sign's exit code,
 never what the verdict admits.
 

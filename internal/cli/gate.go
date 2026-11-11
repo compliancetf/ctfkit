@@ -227,7 +227,7 @@ func (c *CLI) gatePlan(cmd *cobra.Command, opts *gatePlanOptions) error {
 		SchemaDigest: rawDigest(res.schema), Instances: instances,
 		Provenance: provenance{
 			Tool: "ctfkit gate plan", Refresh: "true", Targeted: "false",
-			ArgvDigest: res.argvDigest, TerraformVersion: res.tfVersion, Workspace: opts.workspace,
+			ArgvDigest: res.argvDigest, TerraformVersion: res.tfVersion, TerraformDigest: tfDigest, Workspace: opts.workspace,
 		},
 	}
 	if err = writeCandidate(opts.out, secret, res, findings, &cand); err != nil {
@@ -430,12 +430,15 @@ func deposedSuffix(d string) string {
 
 // provenance holds the fields gate plan establishes today; backend, module
 // tree, lockfile, caller and state fields come with their binding tasks.
+// gate sign copies it into the signed verdict, so TerraformDigest signs the
+// --tf-bin that verdict verify and apply pin terraform to.
 type provenance struct {
 	Tool             string `json:"tool"`
 	Refresh          string `json:"refresh"`
 	Targeted         string `json:"targeted"`
 	ArgvDigest       string `json:"argv_digest"`
 	TerraformVersion string `json:"terraform_version"`
+	TerraformDigest  string `json:"terraform_digest"`
 	Workspace        string `json:"workspace"`
 }
 

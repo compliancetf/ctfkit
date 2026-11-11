@@ -12,7 +12,9 @@ import (
 	"io"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -71,9 +73,10 @@ Exit codes:
   2  could not run, or refused
 
 On exit 1: verdict.json is written and signed, except when a governed profile's
-plan uses the upstream hashicorp/aws provider directly; then no verdict.json is
-written: move those resources to the compliance.tf provider and run gate plan
-again. ctfkit apply refuses a verdict that does not admit the plan; a
+plan manages AWS resources through a provider other than compliance.tf
+(hashicorp/aws, a fork of it, or awscc); then no verdict.json is written:
+move those resources to the compliance.tf provider and run gate plan again.
+ctfkit apply refuses a verdict that does not admit the plan; a
 --fail-on finding changes the exit code only, and the verdict still admits the
 plan. A candidate that holds a verdict.json makes a rerun exit 2.
 
@@ -190,7 +193,7 @@ func (c *CLI) gateSign(cmd *cobra.Command, opts *gateSignOptions) error {
 	}
 	if ver.Profile.Governed {
 		if addrs := bypassed(plan); len(addrs) > 0 {
-			return &ExitError{Code: ExitFindings, Message: "gate sign: governed plan uses the upstream hashicorp/aws directly for " +
+			return &ExitError{Code: ExitFindings, Message: "gate sign: governed plan manages AWS resources outside the compliance.tf provider for " +
 				strings.Join(addrs, ", ") + "; use the compliance.tf provider. No verdict written"}
 		}
 	}
@@ -375,14 +378,31 @@ func (c *CLI) verdictHeader(cand *candidate, ver *verdict.Verified, set *signSet
 		InstanceKeyCheck: instancekey.KeyCheck(check), Baselines: []verdict.BaselineRef{}, BreakGlassReceipts: []json.RawMessage{}}, nil
 }
 
+// awsTypes are the provider types, and the resource type prefixes, of
+// providers that manage AWS resources: the wrapped aws and its unwrapped
+// sibling awscc.
+var awsTypes = []string{"aws", "awscc"}
+
 // bypassed lists the changes a governed plan routes around the compliance.tf
-// provider: any resource of hashicorp/aws from either registry (A29), the
-// addresses verify-lock exempts in the lock file (boundUpstream).
+// provider (A29): an AWS resource of any provider outside the compliance.tf
+// namespace, matched by provider type (hashicorp/aws of either registry, a
+// fork in another namespace, awscc) or by resource type prefix (a fork under
+// another type name). Providers that manage no AWS resource (random, null)
+// are not listed.
+// shortcut: a fork that also renames its resource types is not recognized;
+// a signed provider allowlist of the profile closes that once it exists.
 func bypassed(plan *tfjson.Plan) []string {
 	var out []string
 	for _, rc := range plan.ResourceChanges {
-		if rc != nil && (strings.EqualFold(rc.ProviderName, "registry.terraform.io/hashicorp/aws") ||
-			strings.EqualFold(rc.ProviderName, "registry.opentofu.org/hashicorp/aws")) {
+		if rc == nil {
+			continue
+		}
+		source := strings.ToLower(rc.ProviderName)
+		if strings.HasPrefix(source, "registry.compliance.tf/compliancetf/") {
+			continue
+		}
+		pt, rt := path.Base(source), strings.ToLower(rc.Type)
+		if slices.ContainsFunc(awsTypes, func(t string) bool { return pt == t || strings.HasPrefix(rt, t+"_") }) {
 			out = append(out, rc.Address)
 		}
 	}
