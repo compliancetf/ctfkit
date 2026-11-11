@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.7.1](https://github.com/compliancetf/ctfkit/compare/v0.7.0...v0.7.1) (2026-11-11)
+
+
+### Bug fixes
+
+* **analyzer:** close module source and program-execution coverage gaps ([#36](https://github.com/compliancetf/ctfkit/issues/36)) ([85281dc](https://github.com/compliancetf/ctfkit/commit/85281dc13a9da0a9a803c1b8d9d9dd403613c474))
+* **cli:** confine output paths and harden runtask, evidence spool and markdown values ([#38](https://github.com/compliancetf/ctfkit/issues/38)) ([751bda1](https://github.com/compliancetf/ctfkit/commit/751bda1048e3611fd069c898720390d35339f3b1))
+* **gate:** bind the terraform digest and refuse forked AWS providers under governed profiles ([#37](https://github.com/compliancetf/ctfkit/issues/37)) ([c8ade14](https://github.com/compliancetf/ctfkit/commit/c8ade144e2a01624b495005a4431e693ece9c9e2))
+
 ## [0.7.0](https://github.com/compliancetf/ctfkit/compare/v0.6.0...v0.7.0) (2026-11-10)
 
 
