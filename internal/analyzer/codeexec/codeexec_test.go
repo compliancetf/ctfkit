@@ -136,6 +136,55 @@ func TestEverySuffixInADownloadedModule(t *testing.T) {
 	}
 }
 
+// A provider can run a local program from a data source, an ephemeral
+// resource (opened at plan) or an action (run at apply, through a lifecycle
+// action_trigger or -invoke). Each listed type is reported at both stages.
+func TestProgramEphemeralResourcesAndActions(t *testing.T) {
+	const dir = ".terraform/modules/app"
+	files := map[string]string{
+		"a.tf": `ephemeral "local_command" "e" {}
+action "local_command" "a" {
+  config {}
+}
+resource "terraform_data" "t" {
+  lifecycle {
+    action_trigger {
+      events  = [after_create]
+      actions = [action.local_command.a]
+    }
+  }
+}
+data "local_command" "d" {}
+ephemeral "random_password" "not_a_program" {}`,
+		"b.tf.json": `{"ephemeral": {"local_command": {"j": {}}}, "action": {"local_command": {"k": {}}}}`,
+	}
+	post := ctfkit.AnalyzerInput{Stage: ctfkit.PostInit, Modules: &ctfkit.ModuleInventory{Instances: []ctfkit.ModuleInstance{
+		instance("app", "./app", dir, files),
+	}}}
+	want := []string{
+		"ctf.exec.external_data|module.app.action.local_command.a|" + dir + "/a.tf",
+		"ctf.exec.external_data|module.app.action.local_command.k|" + dir + "/b.tf.json",
+		"ctf.exec.external_data|module.app.data.local_command.d|" + dir + "/a.tf",
+		"ctf.exec.external_data|module.app.ephemeral.local_command.e|" + dir + "/a.tf",
+		"ctf.exec.external_data|module.app.ephemeral.local_command.j|" + dir + "/b.tf.json",
+	}
+	if got := analyze(t, post); strings.Join(got, "\n") != strings.Join(want, "\n") {
+		t.Errorf("post_init got\n%s\nwant\n%s", strings.Join(got, "\n"), strings.Join(want, "\n"))
+	}
+
+	pre := ctfkit.AnalyzerInput{Stage: ctfkit.PrePlan, Config: &ctfkit.ConfigArchive{Files: []ctfkit.ConfigFile{
+		{Path: "main.tf", Bytes: []byte(files["a.tf"])},
+	}}}
+	wantPre := []string{
+		"ctf.exec.external_data|action.local_command.a|main.tf",
+		"ctf.exec.external_data|data.local_command.d|main.tf",
+		"ctf.exec.external_data|ephemeral.local_command.e|main.tf",
+	}
+	if got := analyzeAt(t, ctfkit.PrePlan, pre); strings.Join(got, "\n") != strings.Join(wantPre, "\n") {
+		t.Errorf("pre_plan got\n%s\nwant\n%s", strings.Join(got, "\n"), strings.Join(wantPre, "\n"))
+	}
+}
+
 // Only the files directly in the root are the root module's: a local module
 // is an instance read from its own directory, and a directory nothing calls is
 // not part of the configuration.

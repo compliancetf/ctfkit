@@ -60,6 +60,8 @@ type Set struct {
 	defaults           Tags
 	noRules            []string
 	programDataSources []string
+	programEphemeral   []string
+	programActions     []string
 }
 
 // Pack is the rules and facts of one provider major version.
@@ -231,6 +233,16 @@ func (s *Set) ResourcePrefixes() []string {
 // The slice is a copy.
 func (s *Set) ProgramDataSources() []string { return slices.Clone(s.programDataSources) }
 
+// ProgramEphemeralResources returns the ephemeral resource types defaults.yaml
+// lists under program_ephemeral_resources: those that run a local program
+// when they are opened. The slice is a copy.
+func (s *Set) ProgramEphemeralResources() []string { return slices.Clone(s.programEphemeral) }
+
+// ProgramActions returns the action types defaults.yaml lists under
+// program_actions: those that run a local program when they are invoked. The
+// slice is a copy.
+func (s *Set) ProgramActions() []string { return slices.Clone(s.programActions) }
+
 // Unpacked returns the provider addresses of the managed resources a plan
 // changes that no pack describes, sorted and deduplicated. A provider that
 // manages no infrastructure, which defaults.yaml lists under no_rules, is
@@ -342,6 +354,8 @@ func Parse(fsys fs.FS) (*Set, error) {
 		Tags               Tags     `yaml:"tags"`
 		NoRules            []string `yaml:"no_rules"`
 		ProgramDataSources []string `yaml:"program_data_sources"`
+		ProgramEphemeral   []string `yaml:"program_ephemeral_resources"`
+		ProgramActions     []string `yaml:"program_actions"`
 	}
 	if err := decode(fsys, path.Join(Root, "defaults.yaml"), &defaults); err != nil {
 		return nil, err
@@ -352,8 +366,16 @@ func Parse(fsys fs.FS) (*Set, error) {
 	if slices.Contains(defaults.ProgramDataSources, "") {
 		return nil, errors.New("rules/defaults.yaml: program_data_sources holds an empty type")
 	}
+	if slices.Contains(defaults.ProgramEphemeral, "") {
+		return nil, errors.New("rules/defaults.yaml: program_ephemeral_resources holds an empty type")
+	}
+	if slices.Contains(defaults.ProgramActions, "") {
+		return nil, errors.New("rules/defaults.yaml: program_actions holds an empty type")
+	}
 	s.defaults = defaults.Tags
 	s.programDataSources = defaults.ProgramDataSources
+	s.programEphemeral = defaults.ProgramEphemeral
+	s.programActions = defaults.ProgramActions
 	for _, source := range defaults.NoRules {
 		s.noRules = append(s.noRules, sourceKey(source))
 	}

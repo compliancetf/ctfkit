@@ -14,7 +14,7 @@ Five analyzers read packs:
 | `ctf.policy.tagging` | the tag attributes of the pack for each changed resource's provider |
 | `ctf.coverage.module_source` | the resource prefix of every pack: only those resources are migration candidates |
 | `ctf.graph.companion` | `identities.yaml`: which identity form each resource attribute holds |
-| `ctf.exec.external_data` | `program_data_sources` in `defaults.yaml`: the data source types that run a local program |
+| `ctf.exec.external_data` | `program_data_sources`, `program_ephemeral_resources` and `program_actions` in `defaults.yaml`: the data source, ephemeral resource and action types that run a local program |
 
 A test in `internal/analyzer` fails on any string literal in analyzer code that holds a
 pack's resource prefix, so a provider fact written into Go is caught in CI.
@@ -66,8 +66,11 @@ attributes `defaults.yaml` names. Providers that manage no infrastructure, such 
 
 `program_data_sources` in `defaults.yaml` lists the data source types that run a program on
 the machine that plans the configuration, as a `data` block writes the type: today
-`external`, from `hashicorp/external`. `ctfkit scan --stage pre_plan` and `ctfkit report`
-report every such block with `ctf.exec.external_data`. The type is listed here rather than in a provider pack because the
+`external`, from `hashicorp/external`, and `local_command`, from `hashicorp/local`.
+`program_ephemeral_resources` and `program_actions` list the `ephemeral` and `action` block
+types that run a program when they are opened or invoked: today `local_command`, from
+`hashicorp/local`. `ctfkit scan --stage pre_plan` and `ctfkit report` report every such block
+with `ctf.exec.external_data`. The type is listed here rather than in a provider pack because the
 rule does not depend on the provider version.
 
 ## provider.yaml
