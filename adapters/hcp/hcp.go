@@ -45,9 +45,11 @@ const (
 	maxPayloadBytes = 1 << 20 // a run task request is a few KiB
 	maxTokenBytes   = 4096    // access_token
 	maxSeen         = 100_000 // task results remembered for replay protection
-	maxRequests     = 64      // request bodies read at once
-	futureSkew      = 5 * time.Minute
-	minHMACKeyBytes = 16
+	maxRequests     = 64      // request bodies over unslottedBodyBytes read at once
+	// unslottedBodyBytes is read before a body takes a read slot.
+	unslottedBodyBytes = 64 << 10
+	futureSkew         = 5 * time.Minute
+	minHMACKeyBytes    = 16
 )
 
 // Stages that carry a plan JSON URL.
@@ -238,20 +240,30 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.reject(w, r, http.StatusMethodNotAllowed, "method "+r.Method)
 		return
 	}
-	// Unauthenticated work stays small: a bounded number of bodies are read
-	// at once, and none without a signature of the right shape.
-	select {
-	case h.requests <- struct{}{}:
-		defer func() { <-h.requests }()
-	default:
-		h.reject(w, r, http.StatusServiceUnavailable, "too many requests being read")
-		return
-	}
+	// Unauthenticated work stays small: no body is read without a signature
+	// of the right shape, and only a body larger than a run task request
+	// takes one of a bounded number of read slots. A genuine request (a few
+	// KiB) never waits for a slot, so slow unauthenticated bodies holding
+	// every slot cannot turn it away. The unslotted prefix costs a
+	// connection no more than the header limit already does.
 	if len(r.Header.Get(SignatureHeader)) != 2*sha512.Size {
 		h.reject(w, r, http.StatusUnauthorized, "signature missing or invalid")
 		return
 	}
-	body, err := io.ReadAll(http.MaxBytesReader(w, r.Body, maxPayloadBytes))
+	src := http.MaxBytesReader(w, r.Body, maxPayloadBytes)
+	body, err := io.ReadAll(io.LimitReader(src, unslottedBodyBytes))
+	if err == nil && len(body) == unslottedBodyBytes {
+		select {
+		case h.requests <- struct{}{}:
+			defer func() { <-h.requests }()
+		default:
+			h.reject(w, r, http.StatusServiceUnavailable, "too many requests being read")
+			return
+		}
+		var rest []byte
+		rest, err = io.ReadAll(src)
+		body = append(body, rest...)
+	}
 	if err != nil {
 		h.reject(w, r, http.StatusRequestEntityTooLarge, "request body unreadable or over 1 MiB")
 		return

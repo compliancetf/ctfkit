@@ -3,6 +3,7 @@ package cli
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -56,5 +57,60 @@ func TestScanOutDirIsCreated(t *testing.T) {
 	var exit *ExitError
 	if got.code != ExitEnvironment || !asExitError(got.err, &exit) || exit.Category != categoryInput {
 		t.Errorf("--out-dir naming a file: exit %d, err %v; want exit 2, category input", got.code, got.err)
+	}
+}
+
+// A destination inside the working directory, which in CI is the analyzed
+// checkout, is resolved inside it: a symlink committed there cannot send a
+// projection to a file outside it.
+func TestScanOutRefusesSymlinkOutOfWorkingDir(t *testing.T) {
+	input := fixtureInput(t, "01-raw-s3-no-ctf")
+	tests := []struct {
+		name  string
+		links map[string]string // link path in the work dir -> target relative to the victim dir
+		dirs  []string
+		args  []string
+	}{
+		{"out-dir is a symlink", map[string]string{"out": "."}, nil, []string{"--format", "sarif,json", "--out-dir", "out"}},
+		{"out-dir parent is a symlink", map[string]string{"a": "."}, nil, []string{"--format", "sarif,json", "--out-dir", "a/out"}},
+		{"file in out-dir is a symlink", map[string]string{"out/findings.sarif": "target.txt"}, []string{"out"}, []string{"--format", "sarif,json", "--out-dir", "out"}},
+		{"out is a symlink", map[string]string{"lock.sarif": "target.txt"}, nil, []string{"--format", "sarif", "--out", "lock.sarif"}},
+		{"absolute out-dir under a symlink", map[string]string{"a": "."}, nil, []string{"--format", "sarif,json", "--out-dir", "{work}/a/out"}},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			victim, work := t.TempDir(), t.TempDir()
+			target := filepath.Join(victim, "target.txt")
+			if err := os.WriteFile(target, []byte("ORIGINAL"), 0o600); err != nil {
+				t.Fatal(err)
+			}
+			for _, d := range tc.dirs {
+				if err := os.Mkdir(filepath.Join(work, d), 0o700); err != nil {
+					t.Fatal(err)
+				}
+			}
+			for link, to := range tc.links {
+				if err := os.Symlink(filepath.Join(victim, to), filepath.Join(work, link)); err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			args := make([]string, len(tc.args))
+			for i, a := range tc.args {
+				args[i] = strings.ReplaceAll(a, "{work}", work)
+			}
+			got := runScanIn(t, work, append(append([]string{"scan", filepath.Join(input, "plan.json")}, args...), scanRunContext...)...)
+
+			if got.code != ExitEnvironment {
+				t.Errorf("exit %d, want 2: %v", got.code, got.err)
+			}
+			if b, _ := os.ReadFile(target); string(b) != "ORIGINAL" {
+				t.Errorf("target outside the working directory was overwritten: %.40q", b)
+			}
+			entries, _ := os.ReadDir(victim)
+			if len(entries) != 1 {
+				t.Errorf("victim dir holds %d entries, want only target.txt", len(entries))
+			}
+		})
 	}
 }

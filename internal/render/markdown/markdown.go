@@ -200,8 +200,13 @@ func Inject(readme, report []byte, markers Markers) ([]byte, error) {
 // mention or a table column. The characters it rewrites never occur in the
 // recorded fixtures, so the frozen bytes are unchanged; a hostile value renders
 // as visible entities instead. Inside a code span the entities show as written,
-// which is the point: they are inert.
+// which is the point: they are inert. A line break becomes a space, so a value
+// cannot end its code span or paragraph and start a heading or table, and "]("
+// is broken up, so it cannot form a link or an image.
 var inline = strings.NewReplacer(
+	"\r", " ",
+	"\n", " ",
+	"](", "]&#40;",
 	"&", "&amp;",
 	"<", "&lt;",
 	">", "&gt;",

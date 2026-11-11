@@ -648,3 +648,24 @@ func TestRenderEscapesHostileValues(t *testing.T) {
 		t.Errorf("zero-control bullet missing or wrong; want %q in:\n%s", want, document)
 	}
 }
+
+// TestRenderEscapesInjectedMarkdown: a module key or source from modules.json
+// cannot end its code span with a line break or render as a link or image.
+func TestRenderEscapesInjectedMarkdown(t *testing.T) {
+	tests := []struct {
+		name, key, source, want string
+	}{
+		{"blank line in key", "x\n\n## Injected", "./m", "- `x  ## Injected` (./m)"},
+		{"carriage return in key", "x\r\n# Injected", "./m", "- `x  # Injected` (./m)"},
+		{"link in source", "x", "[src](https://example.invalid/q)", "- `x` ([src]&#40;https://example.invalid/q))"},
+		{"image in key", "![i](https://example.invalid/i.png)", "./m", "- `![i]&#40;https://example.invalid/i.png)` (./m)"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			blocks := missingManifestBlocks([]inventory.Instance{{Key: tc.key, Source: tc.source}})
+			if got := blocks[len(blocks)-1]; got != tc.want {
+				t.Errorf("bullet = %q, want %q", got, tc.want)
+			}
+		})
+	}
+}

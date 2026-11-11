@@ -18,6 +18,9 @@ const runCLIEnv = "CTFKIT_TEST_RUN_CLI"
 
 func TestMain(m *testing.M) {
 	if os.Getenv(runCLIEnv) != "1" {
+		// Each evidence ship test runs from its own temp working directory,
+		// which keeps its spool apart from every other test's and the user's.
+		spoolDir = filepath.Join(".ctfkit", "spool")
 		os.Exit(m.Run())
 	}
 

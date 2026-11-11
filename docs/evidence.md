@@ -38,8 +38,10 @@ ctfkit evidence ship --chains /var/lib/ctfkit/evidence/<run id> --artifacts .ctf
 4. For each `--sink`, it writes the chains and the manifest once. Object Lock is COMPLIANCE, and
    retention matches that sink's `min_retention_days`. If you pass `--api`, the manifest goes to
    the Evidence API.
-5. If an upload or post fails, it goes into `.ctfkit/spool/` in the working directory. The next
-   run starts by retrying it.
+5. If an upload or post fails, it goes into `ctfkit/spool/` under the user cache directory
+   (`$XDG_CACHE_HOME` or `~/.cache` on Linux, `~/Library/Caches` on macOS), never the working
+   directory, so files a checkout carries are not shipped. The next run by the same user starts
+   by retrying it. Without `HOME` the command exits 2.
 6. Writes the receipt (`ctf.evidence.receipt/1`, kind `provider-run`) to `--receipt` and fsyncs it
    with its directory before the command exits.
 

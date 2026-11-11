@@ -535,6 +535,41 @@ func pendingSpool(t *testing.T) (int, error) {
 	return sp.Pending()
 }
 
+// TestEvidenceShipIgnoresWorkingDirSpool: an entry a checkout carries under
+// .ctfkit/spool, owned by the runner with the spool's modes as a checkout
+// under umask 077 makes it, is not shipped as an earlier run's retry.
+func TestEvidenceShipIgnoresWorkingDirSpool(t *testing.T) {
+	t.Chdir(t.TempDir())
+	home := t.TempDir()
+	t.Setenv("HOME", home)
+	t.Setenv("XDG_CACHE_HOME", filepath.Join(home, ".cache"))
+	saved := spoolDir
+	spoolDir = userSpoolDir()
+	t.Cleanup(func() { spoolDir = saved })
+	if !strings.HasPrefix(spoolDir, home+string(filepath.Separator)) {
+		t.Fatalf("spool %q is not in the user cache directory under %s", spoolDir, home)
+	}
+	planted, err := sink.OpenSpool(filepath.Join(".ctfkit", "spool"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	const key = "bobthecorp/default/planted/x.json"
+	for _, name := range []string{"s3://bobthecorp-evidence/compliancetf", "s3://bobthecorp-evidence/compliancetf/"} {
+		if err = planted.Add(name, sink.Object{Key: key, Body: []byte(`{"planted":true}`)}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	up := &fakeS3{}
+	if code, stderr, _ := runShip(t, "enforced", shipCases["enforced"], up, &fakeAPI{}, ""); code != ExitOK {
+		t.Fatalf("exit %d, want 0: %s", code, stderr)
+	}
+	for _, k := range up.puts {
+		if strings.HasSuffix(k, key) {
+			t.Errorf("a working-directory spool entry was shipped: %s", k)
+		}
+	}
+}
+
 // TestEvidenceShipSpoolRetry: objects a failed run spooled are shipped by the
 // next run from the same directory, and the next receipt is enforced.
 func TestEvidenceShipSpoolRetry(t *testing.T) {

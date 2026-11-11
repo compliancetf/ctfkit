@@ -27,7 +27,19 @@ import (
 )
 
 // spoolDir holds evidence objects whose put failed, retried by the next run.
-var spoolDir = filepath.Join(".ctfkit", "spool")
+// It is in the user cache directory, not the working directory: in CI that is
+// often a checkout, and an entry committed there would pass every owner and
+// mode check and ship as an earlier run's object. Empty when there is no user
+// cache directory.
+var spoolDir = userSpoolDir()
+
+func userSpoolDir() string {
+	dir, err := os.UserCacheDir()
+	if err != nil {
+		return ""
+	}
+	return filepath.Join(dir, "ctfkit", "spool")
+}
 
 // alertBreakGlassDegraded is raised when a run with a break-glass record has
 // degraded evidence.
@@ -117,9 +129,10 @@ signed inputs, signs a run manifest with the --signer key (your AWS KMS key),
 uploads the chains and the manifest to each --sink, then writes the receipt to
 --receipt; the receipt is not signed. It uses the network and your AWS
 credentials. The sinks use S3 Object Lock, so uploaded objects cannot be
-deleted while their retention lasts. A failed upload is kept under
-.ctfkit/spool/ in the working directory and retried on the next run. With
---artifacts, the artifact set ctfkit apply consumed, the run counts as a CI run.
+deleted while their retention lasts. A failed upload is kept in ctfkit/spool/
+under the user cache directory, never the working directory, and retried on
+the next run. With --artifacts, the artifact set ctfkit apply consumed, the
+run counts as a CI run.
 
 Refuses (exit 2, nothing uploaded, no receipt written) when:
   - a flag is missing, or --receipt exists
@@ -136,7 +149,7 @@ Exit codes:
 
 On exit 2: stderr names the cause. A refusal uploads nothing and writes no
 receipt. A failure after the uploads started leaves the uploaded objects in the
-sink and failed uploads in .ctfkit/spool/, and a failed receipt write can leave
+sink and failed uploads in the spool, and a failed receipt write can leave
 a partial or complete --receipt file: do not use it. Fix the cause and run again
 with a --receipt path that does not exist; every run, exit 0 and 1 included,
 needs a new one.
@@ -502,6 +515,9 @@ func (c *CLI) ship(ctx context.Context, stderr io.Writer, opts *evidenceShipOpti
 		targets = append(targets, target{sk: api, objects: objects[len(objects)-1:]})
 	}
 
+	if spoolDir == "" {
+		return nil, environmentError(errors.New("spool: no user cache directory; set HOME or XDG_CACHE_HOME"))
+	}
 	sp, err := sink.OpenSpool(spoolDir)
 	if err != nil {
 		return nil, environmentError(err)
