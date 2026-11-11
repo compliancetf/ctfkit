@@ -20,6 +20,14 @@
 # compiled into the binary and ignores ~/.ctf/control-requirements.yaml, so control ids and
 # remediation module sources always resolve and no catalog file has to be shipped or kept current.
 #
+# Spacelift reads every *.custom.spacelift.json from the project root when it evaluates the plan
+# policy, after the planning phase and its hooks. Code the configuration runs at plan time, such as
+# an `external` data source program or a provider binary, runs in the same working directory as
+# the same user, after after_init and possibly beyond after_plan, so it can rewrite either file,
+# including the ctfkit report verdict that carries the ctf.exec.* findings. Neither file is
+# evidence against code that ran during the plan: see "What plan-time code can change" in the
+# adapter README.
+#
 # Both hooks render a format list of exactly `spacelift`, which by contract exits 0 on findings, so
 # neither can turn the run red however the threshold is set. Exit 2, a tool error, still fails the
 # hook, and nothing here suppresses that. Whether a stack is enforced is decided in policy.rego, by
