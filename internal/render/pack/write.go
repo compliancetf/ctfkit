@@ -6,7 +6,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"path"
 	"sort"
+	"strings"
 	"time"
 )
 
@@ -28,6 +30,25 @@ var schemaJSON []byte
 // zipTime is the modification time of every zip entry, the earliest a zip
 // header can hold, so two runs over the same input write the same entries.
 var zipTime = time.Date(1980, 1, 1, 0, 0, 0, 0, time.UTC)
+
+// checkEntryName refuses a zip entry name that could leave the directory it
+// is extracted into or that names one file two ways: an absolute path, a ".."
+// or empty segment, a backslash, or any name path.Clean would change. A module
+// key from modules.json is part of a manifest's entry name, so this is where
+// a hostile key stops.
+func checkEntryName(name string) error {
+	bad := name == "" || strings.HasPrefix(name, "/") || strings.Contains(name, `\`) ||
+		path.Clean(name) != name
+	for _, seg := range strings.Split(name, "/") {
+		if seg == "" || seg == "." || seg == ".." {
+			bad = true
+		}
+	}
+	if bad {
+		return fmt.Errorf("evidence pack: refusing the zip entry name %q", name)
+	}
+	return nil
+}
 
 // File is one entry of the zip.
 type File struct {
@@ -72,14 +93,16 @@ func Write(w io.Writer, p *Pack, attachments []File) error {
 	if err != nil {
 		return err
 	}
-	docs = append(docs, attachments...)
-	files := docs
+	files := append(docs, attachments...) //nolint:gocritic // docs is not used again
 	sort.Slice(files, func(i, j int) bool { return files[i].Name < files[j].Name })
 
 	zw := zip.NewWriter(w)
 	for i, f := range files {
 		if i > 0 && files[i-1].Name == f.Name {
 			return fmt.Errorf("evidence pack: two entries named %s", f.Name)
+		}
+		if err := checkEntryName(f.Name); err != nil {
+			return err
 		}
 		h := &zip.FileHeader{Name: f.Name, Method: zip.Deflate, Modified: zipTime}
 		h.SetMode(0o644)

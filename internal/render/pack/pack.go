@@ -399,6 +399,9 @@ func (p *Pack) addScope(in Input) ([]File, error) {
 			m.Version = inst.Manifest.Module.Version
 			m.ManifestSHA256 = inst.ManifestSHA256
 			m.ManifestFile = "manifests/" + inst.Key + "/" + manifestName
+			if err := checkEntryName(m.ManifestFile); err != nil {
+				return nil, err
+			}
 			files = append(files, File{Name: m.ManifestFile, Body: body})
 
 			for _, fw := range inst.Manifest.Module.Frameworks {
@@ -504,12 +507,12 @@ func (p *Pack) addNotEnforced(inv *ctfkit.ModuleInventory, cat ctfkit.ControlCat
 	listed := map[string]bool{}
 	superseded := map[string]string{}
 	types := map[string]bool{}
-	sources := map[string]bool{}
+	var sources []string
 	for _, inst := range instances(inv) {
 		if inst.Manifest == nil {
 			continue
 		}
-		sources[sourcePath(inst.Source)] = true
+		sources = append(sources, inst.Source)
 		for _, c := range inst.Manifest.Controls {
 			listed[c.ControlID] = true
 			if ref, ok := cat.Control(ctfkit.ControlID(c.ControlID)); ok {
@@ -523,7 +526,7 @@ func (p *Pack) addNotEnforced(inv *ctfkit.ModuleInventory, cat ctfkit.ControlCat
 		}
 	}
 	for _, m := range cat.Modules() {
-		if sources[sourcePath(m.Source)] {
+		if installedFrom(m.Source, sources) {
 			for _, rt := range m.ResourceTypes {
 				types[rt] = true
 			}
@@ -553,15 +556,35 @@ func (p *Pack) addNotEnforced(inv *ctfkit.ModuleInventory, cat ctfkit.ControlCat
 	sort.Slice(p.NotEnforced, func(i, j int) bool { return p.NotEnforced[i].ID < p.NotEnforced[j].ID })
 }
 
-// sourcePath drops the host from a module source, so the catalog template
-// "{host}.compliance.tf/a/b/aws" and the installed "org.compliance.tf/a/b/aws"
-// compare equal.
-func sourcePath(source string) string {
-	_, path, ok := strings.Cut(source, "/")
-	if !ok {
-		return source
+// hostPlaceholder is what a catalog module source carries in place of the
+// registry host label.
+const (
+	hostPlaceholder = "{host}"
+	registryDomain  = ".compliance.tf"
+)
+
+// installedFrom reports whether a catalog module source names one of the
+// installed sources. Only a catalog source whose host is the template
+// "{host}.compliance.tf" ignores the host, and then only against an installed
+// host of the form <label>.compliance.tf; every other pair compares the whole
+// source, so the same path on another registry does not match.
+func installedFrom(catalogSource string, installed []string) bool {
+	tmplHost, tmplPath, _ := strings.Cut(catalogSource, "/")
+	templated := tmplHost == hostPlaceholder+registryDomain
+	for _, src := range installed {
+		if src == catalogSource {
+			return true
+		}
+		if !templated {
+			continue
+		}
+		host, path, ok := strings.Cut(src, "/")
+		label, isRegistry := strings.CutSuffix(strings.ToLower(host), registryDomain)
+		if ok && isRegistry && label != "" && !strings.Contains(label, ".") && path == tmplPath {
+			return true
+		}
 	}
-	return path
+	return false
 }
 
 // addRegister lists, per framework, every clause the mapping cites with the

@@ -118,7 +118,7 @@ func RenderMarkdown(p *Pack) (File, error) {
 		for _, nc := range p.NoClause {
 			w("- %s %s\n", code(nc.ID), cell(nc.Name))
 			for _, f := range nc.Frameworks {
-				w("  - %s: %s\n", cell(fwName(f.Framework)), orNotSet(f.Reason))
+				w("  - %s: %s\n", cell(fwName(f.Framework)), orNotSet(cell(f.Reason)))
 			}
 		}
 		w("\n")
@@ -135,11 +135,11 @@ func RenderMarkdown(p *Pack) (File, error) {
 	} else {
 		w("| Control | Resource types | Layer | Reason |\n|---|---|---|---|\n")
 		for _, ne := range p.NotEnforced {
-			reason := orNotSet(ne.Reason)
+			reason := orNotSet(cell(ne.Reason))
 			if ne.SupersededBy != "" {
 				reason += " Replaced in this build by " + code(ne.SupersededBy) + "."
 			}
-			w("| %s %s | %s | %s | %s |\n", code(ne.ID), cell(ne.Name), codes(ne.ResourceTypes), orNotSet(ne.Layer), reason)
+			w("| %s %s | %s | %s | %s |\n", code(ne.ID), cell(ne.Name), codes(ne.ResourceTypes), orNotSet(cell(ne.Layer)), reason)
 		}
 		w("\n")
 	}

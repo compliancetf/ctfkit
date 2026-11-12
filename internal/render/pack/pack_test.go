@@ -356,3 +356,127 @@ func names(files []File) []string {
 	}
 	return out
 }
+
+// A module key is part of a zip entry name, so a key that climbs out of the
+// manifests directory, or names one entry two ways, stops the build.
+func TestBuildRefusesAHostileModuleKey(t *testing.T) {
+	for _, key := range []string{"../../x", "a/../b", "/abs", `a\b`, "a//b", "./a", ".."} {
+		t.Run(key, func(t *testing.T) {
+			in, _ := fixture(t)
+			in.Modules.Instances[1].Key = key
+			if _, _, err := Build(in); err == nil || !strings.Contains(err.Error(), "refusing the zip entry name") {
+				t.Fatalf("Build = %v, want a refused entry name", err)
+			}
+		})
+	}
+}
+
+func TestCheckEntryName(t *testing.T) {
+	cases := []struct {
+		name string
+		ok   bool
+	}{
+		{"pack.json", true},
+		{"manifests/s3_bucket.notification/compliancetf-manifest.json", true},
+		{"", false},
+		{"/etc/passwd", false},
+		{"manifests/../../x/compliancetf-manifest.json", false},
+		{"manifests/a\\b", false},
+		{"manifests//x", false},
+		{"manifests/./x", false},
+		{"manifests/x/", false},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if err := checkEntryName(tc.name); (err == nil) != tc.ok {
+				t.Errorf("checkEntryName(%q) = %v, want ok %v", tc.name, err, tc.ok)
+			}
+		})
+	}
+}
+
+func TestWriteRefusesAHostileEntryName(t *testing.T) {
+	in, _ := fixture(t)
+	p, attachments, err := Build(in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = Write(new(bytes.Buffer), p, append(attachments, File{Name: "../evil"})); err == nil {
+		t.Fatal("Write accepted the entry ../evil")
+	}
+}
+
+func TestInstalledFrom(t *testing.T) {
+	const tmpl = "{host}.compliance.tf/terraform-aws-modules/s3-bucket/aws"
+	cases := []struct {
+		name      string
+		catalog   string
+		installed string
+		want      bool
+	}{
+		{"label host under the placeholder", tmpl, "bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws", true},
+		{"same path on another registry", tmpl, "other.example/terraform-aws-modules/s3-bucket/aws", false},
+		{"a host only ending in the domain", tmpl, "a.b.compliance.tf/terraform-aws-modules/s3-bucket/aws", false},
+		{"the bare domain", tmpl, "compliance.tf/terraform-aws-modules/s3-bucket/aws", false},
+		{"another module path", tmpl, "bobthecorp.compliance.tf/terraform-aws-modules/vpc/aws", false},
+		{"a submodule of the same package", tmpl, "bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws//modules/notification", false},
+		{"no placeholder compares whole", "soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws", "bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws", false},
+		{"no placeholder, same source", "soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws", "soc2.compliance.tf/terraform-aws-modules/s3-bucket/aws", true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := installedFrom(tc.catalog, []string{tc.installed}); got != tc.want {
+				t.Errorf("installedFrom(%q, %q) = %v, want %v", tc.catalog, tc.installed, got, tc.want)
+			}
+		})
+	}
+}
+
+// The module entry of the catalog widens section 6 only for a module from a
+// compliance.tf registry host.
+func TestNotEnforcedIgnoresAnotherRegistry(t *testing.T) {
+	in, _ := fixture(t)
+	in.Modules.Instances[1].Source = "other.example/terraform-aws-modules/s3-bucket/aws"
+	in.Modules.Instances[1].Manifest.Controls = nil
+	p, _, err := Build(in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(p.NotEnforced) != 0 {
+		t.Errorf("NotEnforced = %+v, want none: the module is not from the catalog's registry", p.NotEnforced)
+	}
+
+	in.Modules.Instances[1].Source = "bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws"
+	if p, _, err = Build(in); err != nil {
+		t.Fatal(err)
+	}
+	if len(p.NotEnforced) == 0 {
+		t.Error("NotEnforced is empty for a module from a compliance.tf registry host")
+	}
+}
+
+// Catalog text reaches the Markdown escaped: a | or a line break in a reason
+// or a layer cannot break the table or the list. A layer this build does not
+// know is printed as written.
+func TestMarkdownEscapesCatalogText(t *testing.T) {
+	p := &Pack{
+		NoClause: []NoClauseControl{{ID: "c1", Name: "C1", Frameworks: []NoClauses{{Framework: "soc_2", Reason: "a | b\nc"}}}},
+		NotEnforced: []NotEnforced{{
+			ID: "c2", Name: "C2", ResourceTypes: []string{"aws_s3_bucket"},
+			Layer: "account|x", Reason: "line one\nline | two",
+		}},
+	}
+	md, err := RenderMarkdown(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	body := string(md.Body)
+	for _, want := range []string{
+		"  - soc_2: a \\| b c\n",
+		"| `c2` C2 | `aws_s3_bucket` | account\\|x | line one line \\| two |\n",
+	} {
+		if !strings.Contains(body, want) {
+			t.Errorf("pack.md does not contain %q:\n%s", want, body)
+		}
+	}
+}
