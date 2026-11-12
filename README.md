@@ -81,6 +81,7 @@ ctfkit scan plan.json                  # post_plan: terraform show -json tfplan 
 ctfkit scan plan.json -f sarif --out findings.sarif
 ctfkit scan plan.json -f json --fail-on never > findings.json   # for OPA
 ctfkit report                          # after terraform init
+ctfkit report --out-dir out/           # also the evidence pack: evidence-pack.pdf and .zip, unsigned
 ctfkit config init                     # write a starter .ctfkit.yaml
 ctfkit config validate .ctfkit.yaml    # check it
 ```

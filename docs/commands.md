@@ -144,7 +144,7 @@ manifest.
 | `--path DIR` | module root or example directory (repeatable; default `.`) |
 | `-f`, `--format LIST` | `markdown` (default), `receipt`, `sarif`, `spacelift` |
 | `--out FILE` | output for a single format; `-` is stdout |
-| `--out-dir DIR` | directory for `report.md`, `receipt.json` and `findings.sarif`, and always `evidence-pack.zip` ([evidence pack](#evidence-pack)) |
+| `--out-dir DIR` | directory for `report.md`, `receipt.json` and `findings.sarif`, and always `evidence-pack.pdf` and `evidence-pack.zip` ([evidence pack](#evidence-pack)) |
 | `--readme FILE` | inject the markdown section between the markers in this file |
 | `--markers START,END` | marker pair (default `<!-- CTFKIT_REPORT_START -->,<!-- CTFKIT_REPORT_END -->`) |
 | `--tests-json FILE` | `tofu test -json` or `terraform test -json` output for this root, written by an earlier step; report runs no tests |
@@ -171,11 +171,19 @@ signing is planned.
 
 ### Evidence pack
 
-With `--out-dir`, `report` also writes `evidence-pack.zip`, one pack for the release it reports
-on, for readers who do not run ctfkit: QA and compliance staff and external auditors. It holds:
+With `--out-dir`, `report` also writes the evidence pack, one pack for the release it reports
+on, for readers who do not run ctfkit: QA and compliance staff and external auditors. It writes
+two files:
+
+- `evidence-pack.pdf`, the pack as an A4 PDF, for an auditor to open directly. It is the same
+  file as the `evidence-pack.pdf` inside the zip.
+- `evidence-pack.zip`, the whole pack.
+
+The zip holds:
 
 | Entry | What it is |
 |---|---|
+| `evidence-pack.pdf` | the pack as a PDF: a cover, a contents page, the sections below and annex A; every page has a running header, the unsigned notice and "Page n of N" |
 | `pack.md` | the pack as Markdown |
 | `pack.json` | the same content as data, schema `ctf.evidence.pack/1` |
 | `pack-1.schema.json` | the schema of `pack.json` |
@@ -191,15 +199,18 @@ reason, 7 Enforcement tests, and annex A, the clause register per framework. A v
 not hold reads "None" or "Not set".
 
 - Section 7 lists the results of `--tests-json` when it is given, and otherwise says no tests
-  were supplied.
+  were supplied. `--tests-json` names the `tofu test -json` or `terraform test -json` output an
+  earlier CI step wrote; report runs no tests, and the pack records the file's sha256.
 - The coverage view uses the catalog the run loaded. With the full catalog from
   `ctfkit catalog pull` it is complete; with the embedded catalog, which holds the CIS v6.0
   controls only, the pack says so. Enforcement layers and not-applicable reasons come from the
   optional catalog fields ([configuration](configuration.md#catalog)).
-- Entries are sorted and carry a fixed timestamp, so the same inputs give the same entries.
+- Entries are sorted and carry a fixed timestamp, so the same inputs give the same entries. The
+  PDF is deterministic too: its creation date is the pack's generation time, with a fixed
+  producer and no random ids.
 
-The pack is not signed and reads "Unsigned. Not independently attested." compliance.tf does not
-sign, attest or verify it.
+The pack is not signed and every rendering reads "Unsigned. Not independently attested." It is
+not independently attested, and compliance.tf does not sign, attest or verify it.
 
 ## ctfkit verify-lock
 
