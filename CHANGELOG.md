@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/compliancetf/ctfkit/compare/v0.8.0...v0.9.0) (2026-11-12)
+
+
+### Features
+
+* **sarif:** rule name, help, docs link, tags and severity for code scanning ([#44](https://github.com/compliancetf/ctfkit/issues/44)) ([55503bb](https://github.com/compliancetf/ctfkit/commit/55503bbe98381b4752e6b3ddfb262eaf7e82e969))
+
 ## [0.8.0](https://github.com/compliancetf/ctfkit/compare/v0.7.1...v0.8.0) (2026-11-12)
 
 
