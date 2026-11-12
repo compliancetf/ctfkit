@@ -18,8 +18,8 @@ func TestReportEvidencePack(t *testing.T) {
 	t.Chdir(goldenRoot(t))
 
 	for _, name := range recordedCases(t) {
-		if !rerecording() && !exists(filepath.Join("testdata/fixtures/report", name, "expected", "pack.json")) {
-			continue // schema-4-stub stops before it renders anything
+		if packExempt[name] {
+			continue
 		}
 
 		t.Run(name, func(t *testing.T) {
@@ -54,6 +54,10 @@ func TestReportEvidencePack(t *testing.T) {
 		})
 	}
 }
+
+// packExempt are the recorded cases that stop with exit 2 before anything is
+// rendered, so they have no pack golden. Every other case must have one.
+var packExempt = map[string]bool{"schema-4-stub": true}
 
 // The pack carries the receipt and the SARIF even when --format names
 // neither, and a run with no --out-dir writes no pack.
