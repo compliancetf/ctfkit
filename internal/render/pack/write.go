@@ -60,9 +60,9 @@ type File struct {
 // Pack only, so every document says the same thing.
 type Renderer func(p *Pack) (File, error)
 
-// renderers are the documents every zip holds. A new rendering, such as the
-// PDF, is one more entry here.
-var renderers = []Renderer{RenderJSON, RenderMarkdown}
+// renderers are the documents every zip holds. A new rendering is one more
+// entry here.
+var renderers = []Renderer{RenderJSON, RenderMarkdown, RenderPDF}
 
 // RenderJSON renders pack.json: indented JSON with a trailing newline.
 func RenderJSON(p *Pack) (File, error) {
@@ -86,14 +86,12 @@ func Documents(p *Pack) ([]File, error) {
 	return out, nil
 }
 
-// Write writes the zip: the rendered documents and the attachments, sorted
-// by name, each stamped with the same fixed time.
-func Write(w io.Writer, p *Pack, attachments []File) error {
-	docs, err := Documents(p)
-	if err != nil {
-		return err
-	}
-	files := append(docs, attachments...) //nolint:gocritic // docs is not used again
+// Write writes the zip: the documents Documents rendered and the
+// attachments, sorted by name, each stamped with the same fixed time.
+func Write(w io.Writer, docs, attachments []File) error {
+	files := make([]File, 0, len(docs)+len(attachments))
+	files = append(files, docs...)
+	files = append(files, attachments...)
 	sort.Slice(files, func(i, j int) bool { return files[i].Name < files[j].Name })
 
 	zw := zip.NewWriter(w)

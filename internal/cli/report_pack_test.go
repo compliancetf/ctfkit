@@ -12,8 +12,9 @@ import (
 
 // TestReportEvidencePack is the golden gate of the evidence pack: every
 // recorded case run with --out-dir writes evidence-pack.zip, whose pack.md and
-// pack.json match expected/pack.md and expected/pack.json, and whose receipt
-// and SARIF are the bytes the same run writes beside it.
+// pack.json match expected/pack.md and expected/pack.json, and whose receipt,
+// SARIF and PDF are the bytes the same run writes beside it. The PDF has no
+// golden; internal/render/pack tests its structure and determinism.
 func TestReportEvidencePack(t *testing.T) {
 	t.Chdir(goldenRoot(t))
 
@@ -51,6 +52,7 @@ func TestReportEvidencePack(t *testing.T) {
 			assertSameBytes(t, pack.FileJSON, readFile(t, filepath.Join(expected, pack.FileJSON)), entries[pack.FileJSON])
 			assertSameBytes(t, pack.FileReceipt, readFile(t, filepath.Join(dir, fileReceipt)), entries[pack.FileReceipt])
 			assertSameBytes(t, pack.FileSARIF, readFile(t, filepath.Join(dir, fileSARIF)), entries[pack.FileSARIF])
+			assertSameBytes(t, pack.FilePDF, readFile(t, filepath.Join(dir, pack.FilePDF)), entries[pack.FilePDF])
 		})
 	}
 }
@@ -72,7 +74,7 @@ func TestReportEvidencePackFollowsOutDir(t *testing.T) {
 			t.Fatalf("exit code = %d, want the recorded one", code)
 		}
 		entries := readZip(t, filepath.Join(dir, pack.ZipName))
-		for _, want := range []string{pack.FileReceipt, pack.FileSARIF, pack.FileSchema, pack.FileJSON, pack.FileMarkdown,
+		for _, want := range []string{pack.FileReceipt, pack.FileSARIF, pack.FileSchema, pack.FileJSON, pack.FileMarkdown, pack.FilePDF,
 			"manifests/s3_bucket/compliancetf-manifest.json"} {
 			if entries[want] == nil {
 				t.Errorf("the zip holds no %s", want)
@@ -87,7 +89,7 @@ func TestReportEvidencePackFollowsOutDir(t *testing.T) {
 		dir := t.TempDir()
 		args := append([]string{"--path", fixturePath(name), "--out", filepath.Join(dir, "report.md")}, fixtureContext...)
 		runReport(t, args...)
-		if exists(filepath.Join(dir, pack.ZipName)) {
+		if exists(filepath.Join(dir, pack.ZipName)) || exists(filepath.Join(dir, pack.FilePDF)) {
 			t.Error("a run with no --out-dir wrote an evidence pack")
 		}
 	})

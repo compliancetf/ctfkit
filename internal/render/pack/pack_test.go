@@ -246,10 +246,10 @@ func TestWriteIsDeterministic(t *testing.T) {
 		t.Fatal(err)
 	}
 	var first, second bytes.Buffer
-	if err = Write(&first, p, attachments); err != nil {
+	if err = Write(&first, mustDocuments(t, p), attachments); err != nil {
 		t.Fatal(err)
 	}
-	if err = Write(&second, p, attachments); err != nil {
+	if err = Write(&second, mustDocuments(t, p), attachments); err != nil {
 		t.Fatal(err)
 	}
 	if !bytes.Equal(first.Bytes(), second.Bytes()) {
@@ -268,7 +268,7 @@ func TestWriteIsDeterministic(t *testing.T) {
 		}
 	}
 	want := []string{
-		"findings.sarif", "manifests/s3_bucket/compliancetf-manifest.json",
+		"evidence-pack.pdf", "findings.sarif", "manifests/s3_bucket/compliancetf-manifest.json",
 		"pack-1.schema.json", "pack.json", "pack.md", "receipt.json",
 	}
 	if !reflect.DeepEqual(got, want) {
@@ -282,7 +282,7 @@ func TestWriteRefusesADuplicateEntry(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = Write(new(bytes.Buffer), p, append(attachments, File{Name: FileJSON})); err == nil {
+	if err = Write(new(bytes.Buffer), mustDocuments(t, p), append(attachments, File{Name: FileJSON})); err == nil {
 		t.Fatal("Write accepted two pack.json entries")
 	}
 }
@@ -401,7 +401,7 @@ func TestWriteRefusesAHostileEntryName(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = Write(new(bytes.Buffer), p, append(attachments, File{Name: "../evil"})); err == nil {
+	if err = Write(new(bytes.Buffer), mustDocuments(t, p), append(attachments, File{Name: "../evil"})); err == nil {
 		t.Fatal("Write accepted the entry ../evil")
 	}
 }
@@ -479,4 +479,13 @@ func TestMarkdownEscapesCatalogText(t *testing.T) {
 			t.Errorf("pack.md does not contain %q:\n%s", want, body)
 		}
 	}
+}
+
+func mustDocuments(t *testing.T, p *Pack) []File {
+	t.Helper()
+	docs, err := Documents(p)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return docs
 }

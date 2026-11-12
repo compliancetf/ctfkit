@@ -110,9 +110,9 @@ in the working directory. It writes the formats --format lists (markdown by
 default) to stdout, --out or --out-dir. --readme FILE puts the markdown into the
 marked section of FILE instead of stdout; with --out or --out-dir the files are
 written as well. Spacelift metadata always goes to ctfkit.custom.spacelift.json
-in the working directory. --out-dir also writes evidence-pack.zip, the
-evidence pack of the release for readers who do not run ctfkit; it is
-unsigned. Offline: no network, no credentials; it never runs terraform or
+in the working directory. --out-dir also writes evidence-pack.zip and
+evidence-pack.pdf, the evidence pack of the release for readers who do not run
+ctfkit; it is unsigned and not independently attested. Offline: no network, no credentials; it never runs terraform or
 tofu.
 
 The report says what the modules enforce, what the configuration declares
@@ -160,7 +160,7 @@ Details: docs/commands.md`,
 	opts.formats = formatMarkdown
 	f.VarP(&onceString{target: &opts.formats}, "format", "f", "Comma-separated `LIST` of formats: markdown, receipt, sarif, spacelift")
 	once(&opts.out, "out", outUsage)
-	once(&opts.outDir, "out-dir", "Output `DIR` for report.md, receipt.json, findings.sarif and evidence-pack.zip")
+	once(&opts.outDir, "out-dir", "Output `DIR` for report.md, receipt.json, findings.sarif, evidence-pack.zip and evidence-pack.pdf")
 	once(&opts.readme, "readme", "Rewrite the section between the markers in this `FILE`")
 	once(&opts.markers, "markers", "Marker `PAIR` START,END (default: "+markdown.DefaultStartMarker+","+markdown.DefaultEndMarker+")")
 	once(&opts.failOn, "fail-on", failOnUsage)
@@ -697,8 +697,10 @@ func (c *CLI) write(cmd *cobra.Command, plan outputPlan, opts *reportOptions, ru
 	return nil
 }
 
-// writePack writes evidence-pack.zip into --out-dir: the pack of the release
-// this run reports on, built from the same inputs as the other projections.
+// writePack writes evidence-pack.zip and evidence-pack.pdf into --out-dir:
+// the pack of the release this run reports on, built from the same inputs as
+// the other projections. The PDF beside the zip is the same bytes as the one
+// inside it.
 func (c *CLI) writePack(cmd *cobra.Command, plan outputPlan, run *runResult, receiptDoc, sarifDoc []byte) error {
 	p, attachments, err := pack.Build(pack.Input{
 		Modules:              run.modules,
@@ -716,11 +718,24 @@ func (c *CLI) writePack(cmd *cobra.Command, plan outputPlan, run *runResult, rec
 	if err != nil {
 		return environmentError(err)
 	}
-	var zipped bytes.Buffer
-	if err = pack.Write(&zipped, p, attachments); err != nil {
+	docs, err := pack.Documents(p)
+	if err != nil {
 		return inputError("%v", err)
 	}
-	return c.emit(cmd, plan, pack.ZipName, zipped.Bytes())
+	var zipped bytes.Buffer
+	if err = pack.Write(&zipped, docs, attachments); err != nil {
+		return inputError("%v", err)
+	}
+	if err = c.emit(cmd, plan, pack.ZipName, zipped.Bytes()); err != nil {
+		return err
+	}
+	// Auditors open the PDF directly, so it also lands beside the zip.
+	for _, f := range docs {
+		if f.Name == pack.FilePDF {
+			return c.emit(cmd, plan, pack.FilePDF, f.Body)
+		}
+	}
+	return nil
 }
 
 // renderReportSARIF renders the run as SARIF from the same inputs scan hands
