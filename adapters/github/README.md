@@ -233,8 +233,9 @@ steps:
   write access.
 - A missing PDF is skipped with a notice and the zip is uploaded alone. A missing zip fails the
   step: use `command: report`.
-- The upload runs before the exit code is re-applied, so a report with findings still attaches
-  its pack. The pack is unsigned.
+- The upload runs before the exit code is re-applied, so a report with findings (exit `1`) still
+  attaches its pack. After any other exit code, or when ctfkit did not run, nothing is uploaded and
+  the step fails. The pack is unsigned.
 
 ## Scanning one root of several
 

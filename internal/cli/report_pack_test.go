@@ -17,6 +17,11 @@ import (
 // golden; internal/render/pack tests its structure and determinism.
 func TestReportEvidencePack(t *testing.T) {
 	t.Chdir(goldenRoot(t))
+	// A CI runner names the repository it runs in, which the recorded release
+	// name must not depend on.
+	for _, k := range []string{"GITHUB_RUN_ID", "TF_VAR_spacelift_run_id", "CI_PIPELINE_ID"} {
+		t.Setenv(k, "")
+	}
 
 	for _, name := range recordedCases(t) {
 		if packExempt[name] {
