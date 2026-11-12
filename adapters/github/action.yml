@@ -778,7 +778,7 @@ runs:
           if command -v jq > /dev/null 2>&1; then
             upload="${out_dir}/findings.upload.sarif"
             jq --arg base "${prefix}" '
-              .runs[] |= (.results |= map(select((.suppressions // []) | length == 0)))
+              .runs[] |= (.results = ((.results // []) | map(select((.suppressions // []) | length == 0))))
               | .runs[].results[]?.locations[]? |= (
                 if $base != "" and (.physicalLocation.artifactLocation.uri? | type) == "string"
                 then .physicalLocation.artifactLocation.uri |=
