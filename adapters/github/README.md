@@ -97,6 +97,7 @@ and examples, an init step that holds the registry token, a test run, then both 
 | `sarif` | `true` | Upload the findings to the Security tab. Set `'false'` on a private repository without code scanning |
 | `pr-comment` | `false` | Keep one comment with the job summary on the pull request; see [Pull request comment](#pull-request-comment) |
 | `comment-token` | `${{ github.token }}` | Token for the pull request comment only, never used for the download |
+| `release-assets` | `false` | `true` uploads `evidence-pack.zip` and `evidence-pack.pdf` of `report` to the release the run is for, with `github-token`; needs `contents: write`. See [Evidence pack on the release](#evidence-pack-on-the-release) |
 | `format` | `receipt,sarif,markdown` | Comma-separated report formats. `report` only; `spacelift` is refused |
 | `artifacts` | none | Artifact set directory. `plan` creates it; `sign` and `apply` read it. Required for those three |
 | `workspace`, `environment`, `tf-bin`, `org`, `profile`, `floor`, `bundle-dir` | none | Passed as the gate flags of the same names (`--tf-bin` an absolute path). `plan`, `sign` and `apply` |
@@ -200,6 +201,40 @@ checkout and names its own repository:
           plan: plan.json
           repository: ${{ github.repository }}
 ```
+
+## Evidence pack on the release
+
+`report` writes `evidence-pack.zip` (and `evidence-pack.pdf` where the ctfkit release renders
+one) into the output directory. With `release-assets: 'true'`, the action uploads both to the
+GitHub release the workflow runs for, with `gh release upload --clobber`, so QA staff and auditors
+download the pack from the release page. A re-run replaces the files.
+
+```yaml
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write          # required to upload release assets
+
+steps:
+  - uses: actions/checkout@v7
+  - run: tofu init -input=false
+  - uses: compliancetf/ctfkit-action@v0
+    with:
+      release-assets: 'true'
+      sarif: 'false'
+```
+
+- A `release` event counts, and so does a push of a tag whose release already exists. Any other
+  run with `release-assets: 'true'` fails the step with an error.
+- The upload uses `github-token`, which then needs `contents: write` on the repository the
+  workflow runs in; the default job token has it when the job grants it. Nothing else needs
+  write access.
+- A missing PDF is skipped with a notice and the zip is uploaded alone. A missing zip fails the
+  step: use `command: report`.
+- The upload runs before the exit code is re-applied, so a report with findings still attaches
+  its pack. The pack is unsigned.
 
 ## Scanning one root of several
 

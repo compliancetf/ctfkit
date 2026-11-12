@@ -138,6 +138,8 @@ inputs:
       of the repository the workflow runs in; a permissions block that omits contents: read takes
       that away. The default repository, compliancetf/ctfkit, is public, so the default token reads
       it; for a private copy named in repository, pass a token with Contents: read on it.
+      With release-assets, the same token uploads the evidence pack to the release of the
+      repository the workflow runs in, so it needs contents: write there.
     required: false
     default: ${{ github.token }}
   fail-on:
@@ -217,6 +219,15 @@ inputs:
       passed to ctfkit as --stage; pre_plan reads the configuration in chdir with no plan file.
     required: false
     default: ""
+  release-assets:
+    description: >-
+      Upload evidence-pack.zip and evidence-pack.pdf from the output directory of command: report
+      to the GitHub release the workflow runs for, with gh release upload --clobber and the
+      github-token input. A release event, or a tag ref whose release already exists, counts as a
+      release; any other run fails the step. A missing PDF is skipped with a notice. Needs
+      contents: write. One of true, false.
+    required: false
+    default: "false"
 
 outputs:
   ctfkit-version:
@@ -266,6 +277,7 @@ runs:
         CTFKIT_ACTION_PATH: ${{ github.action_path }}
         CTFKIT_REPOSITORY: ${{ inputs.repository }}
         CTFKIT_PR_COMMENT: ${{ inputs.pr-comment }}
+        CTFKIT_RELEASE_ASSETS: ${{ inputs.release-assets }}
         CTFKIT_SHA256: ${{ inputs.sha256 }}
         CTFKIT_VERIFY_ATTESTATION: ${{ inputs.verify-attestation }}
         CTFKIT_ARTIFACTS: ${{ inputs.artifacts }}
@@ -283,12 +295,21 @@ runs:
           echo "CTFKIT_SARIF="
           echo "CTFKIT_SARIF_UPLOAD="
           echo "CTFKIT_COMMENT_KEY="
+          echo "CTFKIT_OUT_DIR="
         } >> "${GITHUB_ENV}"
 
         case "${CTFKIT_PR_COMMENT}" in
           true|false) ;;
           *)
             echo "::error::input 'pr-comment' is '${CTFKIT_PR_COMMENT}'; use true or false." >&2
+            exit 1
+            ;;
+        esac
+
+        case "${CTFKIT_RELEASE_ASSETS}" in
+          true|false) ;;
+          *)
+            echo "::error::input 'release-assets' is '${CTFKIT_RELEASE_ASSETS}'; use true or false." >&2
             exit 1
             ;;
         esac
@@ -579,6 +600,7 @@ runs:
         # files, and anything found below was written by this run of ctfkit.
         mkdir -p "${RUNNER_TEMP}/ctfkit"
         out_dir="$(mktemp -d "${RUNNER_TEMP}/ctfkit/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-XXXXXX")"
+        echo "CTFKIT_OUT_DIR=${out_dir}" >> "${GITHUB_ENV}"
 
         # Every policy input is passed explicitly, the two files falling back to the copies bundled
         # with this action. ctfkit is never left to discover one of these from the checkout.
@@ -859,6 +881,38 @@ runs:
             || fail "could not comment on pull request #${pr}"
           result created
         fi
+
+    # Runs before the exit code is re-applied: a report with findings still publishes its pack.
+    - name: Upload the evidence pack to the release
+      if: ${{ always() && inputs.release-assets == 'true' }}
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+      run: |
+        set -euo pipefail
+        tag=""
+        if [ "${GITHUB_EVENT_NAME:-}" = "release" ]; then
+          tag="$(jq -r '.release.tag_name // empty' "${GITHUB_EVENT_PATH:-/nonexistent}")"
+        elif [ "${GITHUB_REF_TYPE:-}" = "tag" ] \
+          && gh release view "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" > /dev/null 2>&1; then
+          tag="${GITHUB_REF_NAME}"
+        fi
+        if [ -z "${tag}" ]; then
+          echo "::error::release-assets is true, but this ${GITHUB_EVENT_NAME:-unknown} run on ${GITHUB_REF:-unknown ref} is not for a release. Run it on a release event or on a tag whose release exists, or set release-assets to false." >&2
+          exit 1
+        fi
+        files=()
+        for f in evidence-pack.zip evidence-pack.pdf; do
+          if [ -n "${CTFKIT_OUT_DIR:-}" ] && [ -f "${CTFKIT_OUT_DIR}/${f}" ]; then
+            files+=("${CTFKIT_OUT_DIR}/${f}")
+          elif [ "${f}" = evidence-pack.pdf ]; then
+            echo "::notice::no ${f} was written; uploading the zip only."
+          else
+            echo "::error::no ${f} was written; release-assets needs command: report, and ctfkit must complete." >&2
+            exit 1
+          fi
+        done
+        gh release upload "${tag}" "${files[@]}" --clobber --repo "${GITHUB_REPOSITORY}"
 
     - name: Apply the ctfkit exit code
       if: ${{ always() }}

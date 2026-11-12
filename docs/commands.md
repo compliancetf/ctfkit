@@ -212,6 +212,10 @@ not hold reads "None" or "Not set".
 The pack is not signed and every rendering reads "Unsigned. Not independently attested." It is
 not independently attested, and compliance.tf does not sign, attest or verify it.
 
+In GitHub Actions, the action's `release-assets: 'true'` input attaches the pack to the GitHub
+release the workflow runs for, so readers download it from the release page
+([GitHub Action](../adapters/github/README.md#evidence-pack-on-the-release)).
+
 ## ctfkit verify-lock
 
 Check that lock files install the compliance.tf provider wrappers (since
