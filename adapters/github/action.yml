@@ -1,6 +1,6 @@
 name: ctfkit by compliance.tf
 description: >-
-  Run ctfkit by compliance.tf on Terraform or OpenTofu and publish its findings, evidence receipt
+  Run ctfkit by compliance.tf on Terraform or OpenTofu and publish findings, an evidence receipt
   and a markdown summary.
 author: compliance.tf
 
