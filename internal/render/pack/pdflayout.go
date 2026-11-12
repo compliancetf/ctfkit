@@ -241,7 +241,8 @@ func (d *pdfDoc) wrap(runs []run, size, w float64) [][]piece {
 			if x+p.w > w && len(cur) > 0 && strings.TrimSpace(word) != "" {
 				flush()
 			}
-			for p.w > w && x == 0 {
+			// An empty tail ends the loop even when w is zero or less.
+			for p.text != "" && p.w > w && x == 0 {
 				head, tail := d.breakWord(p, size, w-extra)
 				hp := p
 				hp.text, hp.w = head, d.width(p.face, size, head)+extra
@@ -267,17 +268,15 @@ func (d *pdfDoc) wrap(runs []run, size, w float64) [][]piece {
 
 // breakWord splits the longest head of p that fits in w.
 func (d *pdfDoc) breakWord(p piece, size, w float64) (head, tail string) {
-	n := 1
+	// At least one whole rune, so a cut never lands inside one.
+	_, n := utf8.DecodeRuneInString(p.text)
 	for i := range p.text {
 		if i > 0 && d.width(p.face, size, p.text[:i]) > w {
 			break
 		}
-		if i > 0 {
+		if i > n {
 			n = i
 		}
-	}
-	if n >= len(p.text) {
-		_, n = utf8.DecodeRuneInString(p.text)
 	}
 	return p.text[:n], p.text[n:]
 }

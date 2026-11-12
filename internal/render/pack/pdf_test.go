@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"unicode/utf8"
 )
 
 // pageObject matches a page object and not the page tree (/Type /Pages).
@@ -160,5 +161,37 @@ func TestWrapBreaksALongWord(t *testing.T) {
 	}
 	if joined != strings.Repeat("a", 64) {
 		t.Errorf("wrapping lost characters: %q", joined)
+	}
+}
+
+func TestWrapNarrowColumns(t *testing.T) {
+	d, err := newPDFDoc("", 0)
+	if err != nil {
+		t.Fatal(err)
+	}
+	d.newPage()
+	tests := []struct {
+		name, text string
+		w          float64
+	}{
+		{"negative width", "s3_bucket encryption", -0.1},
+		{"zero width", "abc", 0},
+		{"multibyte first rune wider than the column", "ééé", 0.5},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			var joined string
+			for _, ln := range d.wrap([]run{txt(tc.text)}, sizeTable, tc.w) {
+				for _, pc := range ln {
+					if !utf8.ValidString(pc.text) {
+						t.Errorf("piece %q is not valid UTF-8", pc.text)
+					}
+					joined += pc.text
+				}
+			}
+			if strings.ReplaceAll(joined, " ", "") != strings.ReplaceAll(tc.text, " ", "") {
+				t.Errorf("wrapping lost characters: %q", joined)
+			}
+		})
 	}
 }
