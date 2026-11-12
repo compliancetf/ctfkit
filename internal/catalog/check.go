@@ -17,6 +17,9 @@ type document struct {
 	DefaultHost string            `yaml:"defaultHost"`
 	Controls    []documentControl `yaml:"controls"`
 	Modules     []documentModule  `yaml:"modules"`
+	// NotApplicableClauses maps a framework id to the clauses of it no control
+	// applies to, each with its reason. Optional.
+	NotApplicableClauses map[string]map[string]string `yaml:"notApplicableClauses"`
 }
 
 type documentControl struct {
@@ -24,6 +27,17 @@ type documentControl struct {
 	Name               string              `yaml:"name"`
 	ResourceTypes      []string            `yaml:"resourceTypes"`
 	ClausesByFramework map[string][]string `yaml:"clausesByFramework"`
+	// Enforcement and NotApplicable are optional; a catalog without them
+	// loads as before. The layer is kept as written, not checked against the
+	// layers this build knows: a newer catalog may add one, and an older
+	// ctfkit must still read it. schemacheck holds producers to the enum.
+	Enforcement   *documentEnforcement `yaml:"enforcement"`
+	NotApplicable map[string]string    `yaml:"notApplicable"`
+}
+
+type documentEnforcement struct {
+	Layer  string `yaml:"layer"`
+	Reason string `yaml:"reason"`
 }
 
 type documentModule struct {

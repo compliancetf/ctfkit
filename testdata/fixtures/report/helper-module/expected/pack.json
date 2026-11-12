@@ -1,0 +1,491 @@
+{
+  "schema": "ctf.evidence.pack/1",
+  "notice": "Unsigned. Not independently attested.",
+  "release": {
+    "name": "input",
+    "root": "testdata/fixtures/report/helper-module/input",
+    "commit": "0000000000000000000000000000000000000000",
+    "platform": "local",
+    "runId": "ctfkit-fixture-run"
+  },
+  "generator": {
+    "name": "ctfkit",
+    "version": "1.0.0"
+  },
+  "generatedAt": "2026-09-20T00:00:00Z",
+  "catalog": {
+    "version": "2026.11.1",
+    "source": "embedded",
+    "embeddedSubset": true
+  },
+  "frameworks": [
+    {
+      "id": "soc_2",
+      "name": "SOC 2"
+    }
+  ],
+  "summary": {
+    "modules": 2,
+    "modulesWithManifest": 1,
+    "controlsEnforced": 10,
+    "controlsDelegated": 2,
+    "perFramework": [
+      {
+        "framework": "soc_2",
+        "withClause": 12,
+        "of": 12
+      }
+    ],
+    "noClause": 0,
+    "noClauseWithReason": 0,
+    "notEnforced": 5,
+    "findingsAtError": 0
+  },
+  "scope": [
+    {
+      "key": "naming",
+      "source": "./modules/naming",
+      "version": "",
+      "manifestSha256": "",
+      "manifestFile": "",
+      "declaresNoResources": true
+    },
+    {
+      "key": "s3_bucket",
+      "source": "bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws",
+      "version": "5.16.1-1e4b692ae5e0a847",
+      "manifestSha256": "561d28c33b3778847004ceec25f125c2a3dbbfccbd947742dbd050dd001a5c39",
+      "manifestFile": "manifests/s3_bucket/compliancetf-manifest.json",
+      "declaresNoResources": false
+    }
+  ],
+  "shows": [
+    "Which compliance controls each installed compliance.tf module enforced when it was built, as the module manifest records them.",
+    "The framework clauses each control is mapped to, with supporting clauses marked as partial or indirect evidence.",
+    "Catalog controls for the same resource types that these modules do not enforce, and the layer that owns each one.",
+    "The results of the enforcement tests supplied with this release, when tests were supplied."
+  ],
+  "doesNotShow": [
+    "The state of resources running in AWS. Check that with AWS Config or Audit Manager.",
+    "Organizational or process controls.",
+    "Operation after deployment.",
+    "Computer system validation: no CSV, IQ, OQ or PQ activities, e-signature logic or audit-trail business logic."
+  ],
+  "mapping": [
+    {
+      "module": "s3_bucket",
+      "frameworks": [
+        "soc_2"
+      ],
+      "controls": [
+        {
+          "id": "s3_bucket_cross_region_replication_enabled",
+          "name": "S3 buckets should have cross-region replication enabled",
+          "status": "enforced",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "A1.2",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "s3_bucket_default_encryption_enabled_kms",
+          "name": "S3 buckets should have default encryption enabled using KMS",
+          "status": "enforced",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "PI1.4",
+                  "supporting": false
+                },
+                {
+                  "id": "PI1.5",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "s3_bucket_event_notifications_enabled",
+          "name": "S3 buckets should have event notifications enabled",
+          "status": "delegated",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "CC7.3",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "s3_bucket_logging_enabled",
+          "name": "S3 buckets should have logging enabled",
+          "status": "enforced",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "A1.2",
+                  "supporting": false
+                },
+                {
+                  "id": "CC7.2",
+                  "supporting": false
+                },
+                {
+                  "id": "CC7.3",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "s3_bucket_not_accessible_to_all_authenticated_user",
+          "name": "S3 buckets should not be accessible to all authenticated users",
+          "status": "enforced",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "CC6.1",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "s3_bucket_object_lock_enabled",
+          "name": "S3 buckets should have object lock enabled",
+          "status": "enforced",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "C1.1",
+                  "supporting": false
+                },
+                {
+                  "id": "PI1.5",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "s3_bucket_policy_restrict_public_access",
+          "name": "S3 buckets should have policies that prohibit public access",
+          "status": "enforced",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "CC6.1",
+                  "supporting": false
+                },
+                {
+                  "id": "CC6.6",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "s3_bucket_restrict_public_read_access",
+          "name": "S3 buckets should prohibit public read access",
+          "status": "enforced",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "CC6.1",
+                  "supporting": false
+                },
+                {
+                  "id": "CC6.6",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "s3_bucket_restrict_public_write_access",
+          "name": "S3 buckets should prohibit public write access",
+          "status": "enforced",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "CC6.1",
+                  "supporting": false
+                },
+                {
+                  "id": "CC6.6",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "s3_bucket_versioning_and_lifecycle_policy_enabled",
+          "name": "S3 buckets with versioning enabled should have lifecycle policies configured",
+          "status": "enforced",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "C1.1",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "s3_bucket_versioning_enabled",
+          "name": "S3 buckets should have versioning enabled",
+          "status": "enforced",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "A1.2",
+                  "supporting": false
+                },
+                {
+                  "id": "C1.2",
+                  "supporting": false
+                },
+                {
+                  "id": "CC7.4",
+                  "supporting": false
+                },
+                {
+                  "id": "PI1.5",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "s3_public_access_block_account",
+          "name": "S3 public access should be blocked at account level",
+          "status": "delegated",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "CC6.6",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "noClause": [],
+  "notEnforced": [
+    {
+      "id": "cloudtrail_s3_logging_enabled",
+      "name": "CloudTrail S3 buckets should have access logging enabled",
+      "resourceTypes": [
+        "aws_cloudtrail",
+        "aws_s3_bucket",
+        "aws_s3_bucket_logging"
+      ],
+      "layer": "",
+      "reason": "",
+      "supersededBy": ""
+    },
+    {
+      "id": "cloudtrail_s3_object_read_events_audit_enabled",
+      "name": "S3 buckets should have object-level read event logging enabled in CloudTrail",
+      "resourceTypes": [
+        "aws_s3_bucket"
+      ],
+      "layer": "",
+      "reason": "",
+      "supersededBy": ""
+    },
+    {
+      "id": "cloudtrail_s3_object_write_events_audit_enabled",
+      "name": "S3 buckets should have object-level write event logging enabled in CloudTrail",
+      "resourceTypes": [
+        "aws_s3_bucket"
+      ],
+      "layer": "",
+      "reason": "",
+      "supersededBy": ""
+    },
+    {
+      "id": "s3_bucket_enforces_ssl",
+      "name": "S3 buckets should enforce SSL",
+      "resourceTypes": [
+        "aws_s3_bucket"
+      ],
+      "layer": "",
+      "reason": "",
+      "supersededBy": ""
+    },
+    {
+      "id": "s3_public_access_block_bucket_account",
+      "name": "S3 public access should be blocked at account and bucket levels",
+      "resourceTypes": [
+        "aws_s3_bucket"
+      ],
+      "layer": "",
+      "reason": "",
+      "supersededBy": ""
+    }
+  ],
+  "tests": {
+    "supplied": false,
+    "file": "",
+    "sha256": "",
+    "runs": 0,
+    "passed": 0,
+    "failed": 0,
+    "errored": 0,
+    "skipped": 0,
+    "cases": []
+  },
+  "register": [
+    {
+      "framework": "soc_2",
+      "name": "SOC 2",
+      "clauses": [
+        {
+          "id": "A1.2",
+          "title": "The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data back-up processes, and recovery infrastructure to meet its objectives",
+          "controls": [
+            "s3_bucket_cross_region_replication_enabled",
+            "s3_bucket_logging_enabled",
+            "s3_bucket_versioning_enabled"
+          ]
+        },
+        {
+          "id": "C1.1",
+          "title": "The entity identifies and maintains confidential information to meet the entity's objectives related to confidentiality",
+          "controls": [
+            "s3_bucket_object_lock_enabled",
+            "s3_bucket_versioning_and_lifecycle_policy_enabled"
+          ]
+        },
+        {
+          "id": "C1.2",
+          "title": "The entity disposes of confidential information to meet the entity's objectives related to confidentiality",
+          "controls": [
+            "s3_bucket_versioning_enabled"
+          ]
+        },
+        {
+          "id": "CC6.1",
+          "title": "The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives",
+          "controls": [
+            "s3_bucket_not_accessible_to_all_authenticated_user",
+            "s3_bucket_policy_restrict_public_access",
+            "s3_bucket_restrict_public_read_access",
+            "s3_bucket_restrict_public_write_access"
+          ]
+        },
+        {
+          "id": "CC6.6",
+          "title": "The entity implements logical access security measures to protect against threats from sources outside its system boundaries.",
+          "controls": [
+            "s3_bucket_policy_restrict_public_access",
+            "s3_bucket_restrict_public_read_access",
+            "s3_bucket_restrict_public_write_access",
+            "s3_public_access_block_account"
+          ]
+        },
+        {
+          "id": "CC7.2",
+          "title": "The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity's ability to meet its objectives; anomalies are analyzed to determine whether they represent security events.",
+          "controls": [
+            "s3_bucket_logging_enabled"
+          ]
+        },
+        {
+          "id": "CC7.3",
+          "title": "The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives (security incidents) and, if so, takes actions to prevent or address such failures",
+          "controls": [
+            "s3_bucket_event_notifications_enabled",
+            "s3_bucket_logging_enabled"
+          ]
+        },
+        {
+          "id": "CC7.4",
+          "title": "The entity responds to identified security incidents by executing a defined incident response program to understand, contain, remediate, and communicate security incidents, as appropriate",
+          "controls": [
+            "s3_bucket_versioning_enabled"
+          ]
+        },
+        {
+          "id": "PI1.4",
+          "title": "System outputs are complete, accurate, distributed only to intended parties, and retained to meet the entity's processing integrity commitments and system requirements",
+          "controls": [
+            "s3_bucket_default_encryption_enabled_kms"
+          ]
+        },
+        {
+          "id": "PI1.5",
+          "title": "Stored data is maintained complete, accurate, and protected from unauthorized modification to meet the entity's processing integrity commitments and system requirements",
+          "controls": [
+            "s3_bucket_default_encryption_enabled_kms",
+            "s3_bucket_object_lock_enabled",
+            "s3_bucket_versioning_enabled"
+          ]
+        }
+      ],
+      "notApplicable": []
+    }
+  ],
+  "files": [
+    {
+      "path": "findings.sarif",
+      "sha256": "e122a2ec46298ecee144e4010ccbb3487a47a991b70aa562ea48d3492e1ea34d"
+    },
+    {
+      "path": "manifests/s3_bucket/compliancetf-manifest.json",
+      "sha256": "561d28c33b3778847004ceec25f125c2a3dbbfccbd947742dbd050dd001a5c39"
+    },
+    {
+      "path": "pack-1.schema.json",
+      "sha256": "5431e87e416ee3f6900b8568846f79f50321f30e8764ab286ad5a73dda818dd3"
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "c2f03c79962d12911b656d1f9ab9124f1f244151ed21428d7c7c95cd398688c9"
+    }
+  ]
+}

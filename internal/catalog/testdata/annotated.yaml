@@ -1,0 +1,35 @@
+# small.yaml with the optional fields a catalog may carry: an enforcement
+# record and not-applicable reasons per control, and not-applicable clauses at
+# the top level. It is an example, not the release catalog.
+schema: ctf.catalog/1
+version: "2026.9.0"
+hosts:
+  soc_2: soc2
+  pci_dss_v40: pcidss
+  hipaa: hipaa
+defaultHost: soc_2
+controls:
+  - id: s3_bucket_versioning_enabled
+    name: S3 bucket versioning enabled
+    resourceTypes: [aws_s3_bucket]
+    clausesByFramework:
+      soc_2: [CC6.1]
+      pci_dss_v40: ["3.4"]
+    notApplicable:
+      hipaa: No HIPAA clause asks for object versions.
+  - id: s3_bucket_mfa_delete_enabled
+    name: S3 bucket MFA delete enabled
+    resourceTypes: [aws_s3_bucket]
+    clausesByFramework:
+      soc_2: [CC6.1]
+    enforcement:
+      layer: runtime
+      reason: MFA delete needs the root user's credentials.
+notApplicableClauses:
+  soc_2:
+    CC1.1: An organizational criterion; no configuration evidences it.
+modules:
+  - resourceTypes: [aws_s3_bucket]
+    source: "{host}.compliance.tf/terraform-aws-modules/s3-bucket/aws"
+    version: "~> 4.6"
+    controls: [s3_bucket_versioning_enabled]

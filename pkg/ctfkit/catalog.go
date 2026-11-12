@@ -29,6 +29,36 @@ type ControlRef struct {
 	// ClausesByFramework maps a framework id in the catalog spelling, for
 	// example "pci_dss_v40", to the clauses this control satisfies in it.
 	ClausesByFramework map[string][]string
+	// Enforcement names the layer that owns this control and why, nil when
+	// the catalog records none.
+	//
+	// Additive field, v0.x: added after ControlRef shipped, and a reader
+	// written against the earlier shape keeps compiling.
+	Enforcement *ControlEnforcement
+	// NotApplicable maps a framework id to the reason this control has no
+	// applicable clause in it. Nil when the catalog records none.
+	//
+	// Additive field, v0.x.
+	NotApplicable map[string]string
+}
+
+// Enforcement layers a catalog may record for a control, in the catalog
+// spelling.
+const (
+	LayerProviderLocal  = "provider-local"
+	LayerCompanionLocal = "companion-local"
+	LayerGraph          = "graph"
+	LayerRuntime        = "runtime"
+)
+
+// ControlEnforcement is the enforcement record of a catalog control.
+//
+// Additive type, v0.x: reachable only through ControlRef.Enforcement.
+type ControlEnforcement struct {
+	// Layer is one of the Layer constants.
+	Layer string
+	// Reason says why the control sits at that layer, empty when unrecorded.
+	Reason string
 }
 
 // ModuleRef is one modules entry of the control catalog: the compliance.tf

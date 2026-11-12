@@ -186,7 +186,7 @@ func TestInstallStepAuthenticatesTheDownload(t *testing.T) {
 				"CTFKIT_CHDIR=", "CTFKIT_FORMAT=receipt,sarif,markdown", "CTFKIT_CONFIG=",
 				"CTFKIT_EXCEPTIONS=", "CTFKIT_CATALOG=embedded", "CTFKIT_TESTS_JSON=",
 				"CTFKIT_ACTION_PATH=" + actionPath, "CTFKIT_REPOSITORY=compliancetf/ctfkit",
-				"CTFKIT_PR_COMMENT=false", "CTFKIT_SHA256=" + tc.sha256,
+				"CTFKIT_PR_COMMENT=false", "CTFKIT_RELEASE_ASSETS=false", "CTFKIT_SHA256=" + tc.sha256,
 				"CTFKIT_VERIFY_ATTESTATION=" + verify, "GH_TOKEN=unused",
 			}
 			out, err := cmd.CombinedOutput()
@@ -514,6 +514,104 @@ exit 0
 			got, _ := os.ReadFile(outFile) //nolint:gosec // test temp file
 			if !strings.Contains(string(got), "exit-code="+tc.wantCode+"\n") {
 				t.Errorf("outputs = %q, want exit-code=%s\n%s", got, tc.wantCode, out)
+			}
+		})
+	}
+}
+
+// TestReleaseAssetsInput pins the release-assets input: off by default, and the
+// upload step runs only when it is true.
+func TestReleaseAssetsInput(t *testing.T) {
+	var action struct {
+		Inputs map[string]struct{ Default string } `yaml:"inputs"`
+		Runs   struct {
+			Steps []struct {
+				Name string `yaml:"name"`
+				If   string `yaml:"if"`
+			} `yaml:"steps"`
+		} `yaml:"runs"`
+	}
+	readYAML(t, "action.yml", &action)
+	if got := action.Inputs["release-assets"].Default; got != "false" {
+		t.Errorf("release-assets default = %q, want false", got)
+	}
+	for _, s := range action.Runs.Steps {
+		if s.Name == "Upload the evidence pack to the release" {
+			if !strings.Contains(s.If, "inputs.release-assets == 'true'") {
+				t.Errorf("upload step if = %q, want it conditioned on release-assets", s.If)
+			}
+			return
+		}
+	}
+	t.Fatal("action.yml has no release upload step")
+}
+
+// TestReleaseAssetsStep runs the release upload step with a gh stand-in that
+// records its argv and knows one release, v1.0.0.
+func TestReleaseAssetsStep(t *testing.T) {
+	bin := t.TempDir()
+	write(t, filepath.Join(bin, "gh"), `#!/bin/sh
+case "$1 $2" in
+  "release view") [ "$3" = v1.0.0 ] ;;
+  "release upload") printf '%s\n' "$*" > "$ARGV_FILE" ;;
+  *) exit 64 ;;
+esac
+`, 0o700)
+	script := filepath.Join(t.TempDir(), "release.sh")
+	write(t, script, actionStep(t, "Upload the evidence pack to the release"), 0o600)
+	event := filepath.Join(t.TempDir(), "event.json")
+	write(t, event, `{"release":{"tag_name":"v1.0.0"}}`, 0o600)
+
+	for name, tc := range map[string]struct {
+		event, refType, refName, exit string
+		pdf                           bool
+		wantErr                       string
+	}{
+		"release event":      {event: "release", refType: "tag", refName: "v1.0.0", exit: "0", pdf: true},
+		"tag with release":   {event: "push", refType: "tag", refName: "v1.0.0", exit: "1"},
+		"tag, no release":    {event: "push", refType: "tag", refName: "v2.0.0", exit: "0", pdf: true, wantErr: "is not for a release"},
+		"branch push":        {event: "push", refType: "branch", refName: "main", exit: "0", pdf: true, wantErr: "is not for a release"},
+		"pull request":       {event: "pull_request", refType: "branch", refName: "1/merge", exit: "0", pdf: true, wantErr: "is not for a release"},
+		"ctfkit errored":     {event: "release", refType: "tag", refName: "v1.0.0", exit: "2", pdf: true, wantErr: "did not complete (exit 2)"},
+		"ctfkit did not run": {event: "release", refType: "tag", refName: "v1.0.0", pdf: true, wantErr: "did not complete (exit unset)"},
+	} {
+		t.Run(name, func(t *testing.T) {
+			outDir, argv := t.TempDir(), filepath.Join(t.TempDir(), "argv")
+			zip, pdf := filepath.Join(outDir, "evidence-pack.zip"), filepath.Join(outDir, "evidence-pack.pdf")
+			write(t, zip, "zip", 0o600)
+			if tc.pdf {
+				write(t, pdf, "pdf", 0o600)
+			}
+			c := exec.Command("bash", "--noprofile", "--norc", script)
+			c.Env = []string{
+				"PATH=" + bin + string(os.PathListSeparator) + os.Getenv("PATH"), "ARGV_FILE=" + argv,
+				"GITHUB_EVENT_NAME=" + tc.event, "GITHUB_EVENT_PATH=" + event, "GITHUB_REF_TYPE=" + tc.refType,
+				"GITHUB_REF_NAME=" + tc.refName, "GITHUB_REF=refs/x/" + tc.refName,
+				"GITHUB_REPOSITORY=bobthecorp/blueprint", "CTFKIT_OUT_DIR=" + outDir,
+			}
+			if tc.exit != "" {
+				c.Env = append(c.Env, "CTFKIT_EXIT="+tc.exit)
+			}
+			out, err := c.CombinedOutput()
+			if tc.wantErr != "" {
+				if err == nil || !strings.Contains(string(out), tc.wantErr) {
+					t.Fatalf("step passed or gave no reason: %v\n%s", err, out)
+				}
+				return
+			}
+			if err != nil {
+				t.Fatalf("step: %v\n%s", err, out)
+			}
+			want := "release upload v1.0.0 " + zip
+			if tc.pdf {
+				want += " " + pdf
+			} else if !strings.Contains(string(out), "::notice::no evidence-pack.pdf") {
+				t.Errorf("missing PDF gave no notice:\n%s", out)
+			}
+			want += " --clobber --repo bobthecorp/blueprint"
+			got, _ := os.ReadFile(argv) //nolint:gosec // test temp file
+			if strings.TrimSpace(string(got)) != want {
+				t.Errorf("gh %s\nwant gh %s", got, want)
 			}
 		})
 	}

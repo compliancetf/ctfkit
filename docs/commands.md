@@ -147,7 +147,7 @@ manifest.
 | `--path DIR` | module root or example directory (repeatable; default `.`) |
 | `-f`, `--format LIST` | `markdown` (default), `receipt`, `sarif`, `spacelift` |
 | `--out FILE` | output for a single format; `-` is stdout |
-| `--out-dir DIR` | directory for `report.md`, `receipt.json` and `findings.sarif` |
+| `--out-dir DIR` | directory for `report.md`, `receipt.json` and `findings.sarif`, and always `evidence-pack.pdf` and `evidence-pack.zip` ([evidence pack](#evidence-pack)) |
 | `--readme FILE` | inject the markdown section between the markers in this file |
 | `--markers START,END` | marker pair (default `<!-- CTFKIT_REPORT_START -->,<!-- CTFKIT_REPORT_END -->`) |
 | `--tests-json FILE` | `tofu test -json` or `terraform test -json` output for this root, written by an earlier step; report runs no tests |
@@ -171,6 +171,53 @@ release may add optional properties within `/1`. Validate a receipt against the
 `schema/receipt-1.schema.json` shipped with the ctfkit release that wrote it: the schema closes
 its objects, so an older copy rejects a property added later. The receipt is not signed; receipt
 signing is planned.
+
+### Evidence pack
+
+With `--out-dir`, `report` also writes the evidence pack, one pack for the release it reports
+on, for readers who do not run ctfkit: QA and compliance staff and external auditors. It writes
+two files:
+
+- `evidence-pack.pdf`, the pack as an A4 PDF, for an auditor to open directly. It is the same
+  file as the `evidence-pack.pdf` inside the zip.
+- `evidence-pack.zip`, the whole pack.
+
+The zip holds:
+
+| Entry | What it is |
+|---|---|
+| `evidence-pack.pdf` | the pack as a PDF: a cover, a contents page, the sections below and annex A; every page has a running header, the unsigned notice and "Page n of N" |
+| `pack.md` | the pack as Markdown |
+| `pack.json` | the same content as data, schema `ctf.evidence.pack/1` |
+| `pack-1.schema.json` | the schema of `pack.json` |
+| `manifests/<module key>/compliancetf-manifest.json` | a copy of each module manifest the run read; `pack.json` lists its sha256 |
+| `receipt.json`, `findings.sarif` | the receipt and the SARIF of the same run, whatever `--format` names |
+
+The pack has a cover (release, commit, ctfkit version, catalog version and source, generation
+time) and these sections: 1 Summary, 2 Scope (the installed modules), 3 What the pack shows and
+what it does not (fixed text), 4 Control-to-clause mapping per module, with supporting clauses
+marked, 5 Controls with no clause in a framework, with the catalog's reason, 6 Catalog controls
+for the same resource types that these modules do not enforce, with the enforcement layer and
+reason, 7 Enforcement tests, and annex A, the clause register per framework. A value the inputs do
+not hold reads "None" or "Not set".
+
+- Section 7 lists the results of `--tests-json` when it is given, and otherwise says no tests
+  were supplied. `--tests-json` names the `tofu test -json` or `terraform test -json` output an
+  earlier CI step wrote; report runs no tests, and the pack records the file's sha256.
+- The coverage view uses the catalog the run loaded. With the full catalog from
+  `ctfkit catalog pull` it is complete; with the embedded catalog, which holds the CIS v6.0
+  controls only, the pack says so. Enforcement layers and not-applicable reasons come from the
+  optional catalog fields ([configuration](configuration.md#catalog)).
+- Entries are sorted and carry a fixed timestamp, so the same inputs give the same entries. The
+  PDF is deterministic too: its creation date is the pack's generation time, with a fixed
+  producer and no random ids.
+
+The pack is not signed and every rendering reads "Unsigned. Not independently attested." It is
+not independently attested, and compliance.tf does not sign, attest or verify it.
+
+In GitHub Actions, the action's `release-assets: 'true'` input attaches the pack to the GitHub
+release the workflow runs for, so readers download it from the release page
+([GitHub Action](../adapters/github/README.md#evidence-pack-on-the-release)).
 
 ## ctfkit verify-lock
 

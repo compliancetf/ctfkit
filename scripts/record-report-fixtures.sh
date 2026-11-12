@@ -145,7 +145,7 @@ done
 "$fp" pin "$fresh" "$live/PIN.json" "$host" "$tofu_version" "$(date -u +%F)" || die "writing PIN.json failed"
 
 # --- regenerate every expected file from the fresh inputs, twice ---
-golden='^(TestReportProjections|TestReportSARIFParity|TestReportSpaceliftParity|TestReportRecordedExitCodes|TestReportEnvironmentDiagnostic)$'
+golden='^(TestReportProjections|TestReportSARIFParity|TestReportSpaceliftParity|TestReportRecordedExitCodes|TestReportEnvironmentDiagnostic|TestReportEvidencePack)$'
 regenerate() {
   run_go CTFKIT_RERECORD=1 CTFKIT_FIXTURE_ROOT="$fresh_root" \
     "$go_bin" test -count=1 ./internal/cli -run "$golden" >"$scratch/tmp/regen.log" 2>&1 \

@@ -137,9 +137,11 @@ func TestRecorderEndToEnd(t *testing.T) {
 			t.Fatal(err)
 		}
 		// PIN.json gains the tofu version; helper-module's hand-assembled
-		// modules.json takes tofu's encoding, and its receipt hashes it.
+		// modules.json takes tofu's encoding, its receipt hashes it, and its
+		// evidence pack lists the receipt's digest.
 		want := []string{
 			"changed: PIN.json",
+			"changed: helper-module/expected/pack.json",
 			"changed: helper-module/expected/receipt.json",
 			"changed: helper-module/input/.terraform/modules/modules.json",
 		}
