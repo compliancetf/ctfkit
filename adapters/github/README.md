@@ -96,6 +96,7 @@ and examples, an init step that holds the registry token, a test run, then both 
 | `exceptions` | bundled | Exception registry |
 | `catalog` | `embedded` | Control catalog: `embedded` pins the one in the binary, `pull` downloads the full catalog (paid plan, token in `TF_TOKEN_registry_compliance_tf`), or a path; see [Nothing is read from the checkout](#nothing-is-read-from-the-checkout) |
 | `sarif` | `true` | Upload the findings to the Security tab. Set `'false'` on a private repository without code scanning |
+| `category` | `ctfkit` | Code scanning category of the upload. Each upload replaces the previous analysis with the same category on the same commit, so give each ctfkit step of a workflow its own, for example `ctfkit/pre_plan` and `ctfkit/post_plan`. Findings an approved exception covers are left out of the uploaded copy |
 | `pr-comment` | `false` | Keep one comment with the job summary on the pull request; see [Pull request comment](#pull-request-comment) |
 | `comment-token` | `${{ github.token }}` | Token for the pull request comment only, never used for the download |
 | `release-assets` | `false` | `true` uploads `evidence-pack.zip` and `evidence-pack.pdf` of `report` to the release the run is for, with `github-token`; needs `contents: write`. See [Evidence pack on the release](#evidence-pack-on-the-release) |

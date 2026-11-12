@@ -176,9 +176,18 @@ inputs:
   sarif:
     description: >-
       Upload the SARIF findings to the GitHub Security tab. The upload runs even when ctfkit
-      reported findings, before the exit code is re-applied.
+      reported findings, before the exit code is re-applied. Findings covered by an approved
+      exception are left out of the uploaded copy: code scanning ignores SARIF suppressions and
+      would show them as open alerts.
     required: false
     default: "true"
+  category:
+    description: >-
+      Code scanning category of the SARIF upload. Each upload replaces the previous analysis of the
+      same category on the same commit, so give every ctfkit step of a workflow its own value, for
+      example ctfkit/pre_plan and ctfkit/post_plan.
+    required: false
+    default: ctfkit
   pr-comment:
     description: >-
       On a pull_request or pull_request_target event, keep one comment on the pull request with the
@@ -744,32 +753,49 @@ runs:
         emit markdown report.md MARKDOWN
         emit sarif findings.sarif SARIF
 
-        # ctfkit writes a location relative to --chdir, and code scanning resolves one against the
-        # repository root. The uploaded copy gets the chdir prefix back; the sarif output stays
-        # ctfkit's own file. Absolute and scheme-qualified URIs are left as they are.
+        # The Security tab gets a copy; the sarif output stays ctfkit's own file. The copy differs
+        # in two ways:
+        # - ctfkit writes a location relative to --chdir, and code scanning resolves one against
+        #   the repository root, so locations get the chdir prefix back. Absolute and
+        #   scheme-qualified URIs are left as they are.
+        # - Results an approved exception covers are left out. Code scanning ignores the SARIF
+        #   suppressions member and would open them as alerts; the waiver stays in the sarif
+        #   output, the receipt and the job summary.
         upload=""
-        [ -f "${out_dir}/findings.sarif" ] && upload="${out_dir}/findings.sarif"
-        # An absolute chdir (the install step allows one only inside the workspace) is made
-        # relative to the checkout first, so the prefix never carries a runner path.
-        base="${CTFKIT_CHDIR%/}"
-        if [ -n "${GITHUB_WORKSPACE:-}" ]; then
-          [ "${base}" != "${GITHUB_WORKSPACE%/}" ] || base="."
-          base="${base#"${GITHUB_WORKSPACE%/}"/}"
-        fi
-        base="${base#./}"
-        if [ -n "${upload}" ] && [ "${CTFKIT_COMMAND}" = "scan" ] && [ -n "${base}" ] && [ "${base}" != "." ]; then
-          if ! command -v jq > /dev/null 2>&1; then
+        if [ -f "${out_dir}/findings.sarif" ]; then
+          # An absolute chdir (the install step allows one only inside the workspace) is made
+          # relative to the checkout first, so the prefix never carries a runner path.
+          base="${CTFKIT_CHDIR%/}"
+          if [ -n "${GITHUB_WORKSPACE:-}" ]; then
+            [ "${base}" != "${GITHUB_WORKSPACE%/}" ] || base="."
+            base="${base#"${GITHUB_WORKSPACE%/}"/}"
+          fi
+          base="${base#./}"
+          prefix=""
+          if [ "${CTFKIT_COMMAND}" = "scan" ] && [ -n "${base}" ] && [ "${base}" != "." ]; then
+            prefix="${base}/"
+          fi
+          if command -v jq > /dev/null 2>&1; then
+            upload="${out_dir}/findings.upload.sarif"
+            jq --arg base "${prefix}" '
+              .runs[] |= (.results |= map(select((.suppressions // []) | length == 0)))
+              | .runs[].results[]?.locations[]? |= (
+                if $base != "" and (.physicalLocation.artifactLocation.uri? | type) == "string"
+                then .physicalLocation.artifactLocation.uri |=
+                  (if test("^/|^[A-Za-z][A-Za-z0-9+.-]*:") then . else $base + . end)
+                else . end)
+            ' "${out_dir}/findings.sarif" > "${upload}"
+            waived=$(jq '[.runs[].results[]? | select((.suppressions // []) | length > 0)] | length' "${out_dir}/findings.sarif")
+            if [ "${waived}" -gt 0 ]; then
+              echo "::notice::${waived} finding(s) covered by an approved exception are not uploaded to the Security tab; see the job summary."
+            fi
+          elif [ -n "${prefix}" ]; then
             echo "::error::jq is required to prepare the upload when chdir is set; it is preinstalled on GitHub-hosted runners." >&2
             exit 2
+          else
+            upload="${out_dir}/findings.sarif"
+            echo "::warning::jq is not installed, so findings covered by an approved exception are uploaded and show as open alerts."
           fi
-          upload="${out_dir}/findings.upload.sarif"
-          jq --arg base "${base}/" '
-            .runs[].results[]?.locations[]? |= (
-              if (.physicalLocation.artifactLocation.uri? | type) == "string"
-              then .physicalLocation.artifactLocation.uri |=
-                (if test("^/|^[A-Za-z][A-Za-z0-9+.-]*:") then . else $base + . end)
-              else . end)
-          ' "${out_dir}/findings.sarif" > "${upload}"
         fi
         echo "CTFKIT_SARIF_UPLOAD=${upload}" >> "${GITHUB_ENV}"
 
@@ -786,7 +812,7 @@ runs:
       uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
       with:
         sarif_file: ${{ env.CTFKIT_SARIF_UPLOAD }}
-        category: ctfkit
+        category: ${{ inputs.category }}
 
     - name: Write the markdown report to the job summary
       if: ${{ always() && env.CTFKIT_MARKDOWN != '' }}
