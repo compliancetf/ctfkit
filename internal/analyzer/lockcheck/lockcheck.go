@@ -55,14 +55,14 @@ var unwrappedSiblings = map[string][]string{"google": {"google-beta"}}
 
 // Descriptors returns the tool.driver.rules entries of the family.
 func Descriptors() []sarif.RuleDescriptor {
-	return []sarif.RuleDescriptor{
+	return sarif.WithHelpURI(sarif.AnalyzerDocs+"#lock-file-rules", []sarif.RuleDescriptor{
 		{ID: ruleMissing, ShortDescription: "A deployable root has no dependency lock file", Level: ctfkit.LevelError},
 		{ID: ruleUpstreamPresent, ShortDescription: "The lock file installs the upstream provider of a wrapped type", Level: ctfkit.LevelError},
 		{ID: ruleWrapperMissing, ShortDescription: "The lock file has no compliance.tf wrapper entry for a wrapped type the root uses", Level: ctfkit.LevelError},
 		{ID: ruleWrapperUnhashed, ShortDescription: "The compliance.tf wrapper entry of the lock file records no zh: hash", Level: ctfkit.LevelError},
 		{ID: ruleSourceMismatch, ShortDescription: "A required_providers entry names, or a missing entry implies, the upstream source of a wrapped type", Level: ctfkit.LevelError},
 		{ID: ruleUnwrapped, ShortDescription: "The lock file installs an upstream provider that bypasses a wrapped type", Level: ctfkit.LevelWarning},
-	}
+	})
 }
 
 // Register adds the family to r, in emission order.

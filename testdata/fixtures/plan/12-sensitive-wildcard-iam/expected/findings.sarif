@@ -11,11 +11,29 @@
           "rules": [
             {
               "id": "ctf.risk.sensitive_change_wildcard_iam",
+              "name": "risk.sensitive_change_wildcard_iam",
               "shortDescription": {
                 "text": "An IAM policy allows wildcard actions on every resource with no condition"
               },
+              "fullDescription": {
+                "text": "An IAM policy allows wildcard actions on every resource with no condition"
+              },
+              "help": {
+                "text": "An IAM policy allows wildcard actions on every resource with no condition. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#sensitive-changes",
+                "markdown": "**An IAM policy allows wildcard actions on every resource with no condition.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.risk.sensitive_change_wildcard_iam\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#sensitive-changes)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#sensitive-changes",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "risk"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             }
           ]

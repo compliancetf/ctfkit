@@ -11,29 +11,83 @@
           "rules": [
             {
               "id": "ctf.coverage.delegation_unresolved",
+              "name": "coverage.delegation_unresolved",
               "shortDescription": {
                 "text": "A delegated control has no instantiated sibling scope enforcing it"
               },
+              "fullDescription": {
+                "text": "A delegated control has no instantiated sibling scope enforcing it"
+              },
+              "help": {
+                "text": "A delegated control has no instantiated sibling scope enforcing it. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
+                "markdown": "**A delegated control has no instantiated sibling scope enforcing it.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.coverage.delegation_unresolved\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#coverage-report)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "coverage"
+                ],
+                "precision": "very-high",
+                "security-severity": "5.0"
               }
             },
             {
               "id": "ctf.coverage.obligation_unknown",
+              "name": "coverage.obligation_unknown",
               "shortDescription": {
                 "text": "A manifest obligation token is not in the shipped list"
               },
+              "fullDescription": {
+                "text": "A manifest obligation token is not in the shipped list"
+              },
+              "help": {
+                "text": "A manifest obligation token is not in the shipped list. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
+                "markdown": "**A manifest obligation token is not in the shipped list.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.coverage.obligation_unknown\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#coverage-report)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
               "defaultConfiguration": {
                 "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "coverage"
+                ],
+                "precision": "very-high",
+                "security-severity": "2.0"
               }
             },
             {
               "id": "ctf.coverage.posture_degraded",
+              "name": "coverage.posture_degraded",
               "shortDescription": {
                 "text": "The served build reports a degraded posture"
               },
+              "fullDescription": {
+                "text": "The served build reports a degraded posture"
+              },
+              "help": {
+                "text": "The served build reports a degraded posture. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
+                "markdown": "**The served build reports a degraded posture.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.coverage.posture_degraded\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#coverage-report)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "coverage"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             }
           ]

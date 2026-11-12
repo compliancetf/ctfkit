@@ -465,7 +465,7 @@
   "files": [
     {
       "path": "findings.sarif",
-      "sha256": "7051397daec2e8568ee9325000dc52742705f44e9f2dd79662a64093ea0ceb09"
+      "sha256": "ec9e8b7b3671eef0d80c3179fa9a7e1c27502334db29bfbc2a3f77528a2b6e8c"
     },
     {
       "path": "manifests/s3_bucket/compliancetf-manifest.json",

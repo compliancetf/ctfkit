@@ -65,7 +65,7 @@ const (
 // Descriptors returns the tool.driver.rules entries of the family, for the
 // runner to hand to the SARIF renderer.
 func Descriptors() []sarif.RuleDescriptor {
-	return []sarif.RuleDescriptor{
+	return sarif.WithHelpURI(sarif.AnalyzerDocs+"#code-that-runs-on-the-machine-that-plans-or-applies", []sarif.RuleDescriptor{
 		{
 			ID:               ruleProvisioner,
 			ShortDescription: "The configuration or a module it installs declares a provisioner",
@@ -86,7 +86,7 @@ func Descriptors() []sarif.RuleDescriptor {
 			ShortDescription: "A module call leads to no directory that was read, so its files were not inspected",
 			Level:            ctfkit.LevelWarning,
 		},
-	}
+	})
 }
 
 // schemaVersion is the findings format version every finding of this family

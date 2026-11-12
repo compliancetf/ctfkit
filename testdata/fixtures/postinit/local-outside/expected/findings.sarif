@@ -11,20 +11,56 @@
           "rules": [
             {
               "id": "ctf.exec.external_data",
+              "name": "exec.external_data",
               "shortDescription": {
                 "text": "The configuration or a module it installs declares a data source, ephemeral resource or action that runs a local program"
               },
+              "fullDescription": {
+                "text": "The configuration or a module it installs declares a data source, ephemeral resource or action that runs a local program"
+              },
+              "help": {
+                "text": "The configuration or a module it installs declares a data source, ephemeral resource or action that runs a local program. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
+                "markdown": "**The configuration or a module it installs declares a data source, ephemeral resource or action that runs a local program.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.exec.external_data\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "exec"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             },
             {
               "id": "ctf.exec.provisioner",
+              "name": "exec.provisioner",
               "shortDescription": {
                 "text": "The configuration or a module it installs declares a provisioner"
               },
+              "fullDescription": {
+                "text": "The configuration or a module it installs declares a provisioner"
+              },
+              "help": {
+                "text": "The configuration or a module it installs declares a provisioner. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
+                "markdown": "**The configuration or a module it installs declares a provisioner.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.exec.provisioner\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "exec"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             }
           ]

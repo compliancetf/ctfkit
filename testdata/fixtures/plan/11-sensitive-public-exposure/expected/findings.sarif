@@ -11,11 +11,29 @@
           "rules": [
             {
               "id": "ctf.risk.sensitive_change_public_exposure",
+              "name": "risk.sensitive_change_public_exposure",
               "shortDescription": {
                 "text": "A change opens a resource to public or unrestricted access"
               },
+              "fullDescription": {
+                "text": "A change opens a resource to public or unrestricted access"
+              },
+              "help": {
+                "text": "A change opens a resource to public or unrestricted access. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#sensitive-changes",
+                "markdown": "**A change opens a resource to public or unrestricted access.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.risk.sensitive_change_public_exposure\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#sensitive-changes)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#sensitive-changes",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "risk"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             }
           ]

@@ -11,11 +11,29 @@
           "rules": [
             {
               "id": "ctf.exec.module_endpoint",
+              "name": "exec.module_endpoint",
               "shortDescription": {
                 "text": "A module called from inside another module is installed from a source outside the allowed module endpoints"
               },
+              "fullDescription": {
+                "text": "A module called from inside another module is installed from a source outside the allowed module endpoints"
+              },
+              "help": {
+                "text": "A module called from inside another module is installed from a source outside the allowed module endpoints. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
+                "markdown": "**A module called from inside another module is installed from a source outside the allowed module endpoints.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.exec.module_endpoint\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "exec"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             }
           ]

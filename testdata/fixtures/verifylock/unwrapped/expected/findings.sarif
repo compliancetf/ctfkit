@@ -11,11 +11,29 @@
           "rules": [
             {
               "id": "ctf.lock.unwrapped",
+              "name": "lock.unwrapped",
               "shortDescription": {
                 "text": "The lock file installs an upstream provider that bypasses a wrapped type"
               },
+              "fullDescription": {
+                "text": "The lock file installs an upstream provider that bypasses a wrapped type"
+              },
+              "help": {
+                "text": "The lock file installs an upstream provider that bypasses a wrapped type. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules",
+                "markdown": "**The lock file installs an upstream provider that bypasses a wrapped type.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.lock.unwrapped\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules",
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "lock"
+                ],
+                "precision": "very-high",
+                "security-severity": "5.0"
               }
             }
           ]

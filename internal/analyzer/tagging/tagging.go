@@ -48,7 +48,7 @@ const (
 // runner to hand to the SARIF renderer. The texts of the rule ids a recorded
 // fixture carries are that fixture's bytes.
 func Descriptors() []sarif.RuleDescriptor {
-	return []sarif.RuleDescriptor{
+	return sarif.WithHelpURI(sarif.AnalyzerDocs+"#tagging", []sarif.RuleDescriptor{
 		{
 			ID:               ruleMissing,
 			ShortDescription: "A resource is missing tags the organisation requires", //nolint:misspell // recorded fixture bytes
@@ -64,7 +64,7 @@ func Descriptors() []sarif.RuleDescriptor {
 			ShortDescription: "A resource has tags whose values are not known until apply",
 			Level:            ctfkit.LevelNote,
 		},
-	}
+	})
 }
 
 // schemaVersion is the findings format version every finding states.

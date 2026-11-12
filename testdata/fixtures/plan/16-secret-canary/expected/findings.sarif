@@ -11,20 +11,56 @@
           "rules": [
             {
               "id": "ctf.coverage.module_source",
+              "name": "coverage.module_source",
               "shortDescription": {
                 "text": "Module sources outside compliance.tf endpoints, and raw resources a compliance.tf module covers"
               },
+              "fullDescription": {
+                "text": "Module sources outside compliance.tf endpoints, and raw resources a compliance.tf module covers"
+              },
+              "help": {
+                "text": "Module sources outside compliance.tf endpoints, and raw resources a compliance.tf module covers. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#module-source-coverage",
+                "markdown": "**Module sources outside compliance.tf endpoints, and raw resources a compliance.tf module covers.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.coverage.module_source\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#module-source-coverage)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#module-source-coverage",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "coverage"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             },
             {
               "id": "ctf.origin.provider",
+              "name": "origin.provider",
               "shortDescription": {
                 "text": "A provider outside the approved list is in use"
               },
+              "fullDescription": {
+                "text": "A provider outside the approved list is in use"
+              },
+              "help": {
+                "text": "A provider outside the approved list is in use. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#provider-and-module-origin",
+                "markdown": "**A provider outside the approved list is in use.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.origin.provider\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#provider-and-module-origin)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#provider-and-module-origin",
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "origin"
+                ],
+                "precision": "very-high",
+                "security-severity": "5.0"
               }
             }
           ]

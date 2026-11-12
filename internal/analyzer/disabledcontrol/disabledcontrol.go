@@ -47,7 +47,7 @@ var (
 // Descriptors returns the tool.driver.rules entries of the family, for the
 // runner to hand to the SARIF renderer.
 func Descriptors() []sarif.RuleDescriptor {
-	return []sarif.RuleDescriptor{
+	return sarif.WithHelpURI(sarif.AnalyzerDocs+"#disabled-controls", []sarif.RuleDescriptor{
 		{
 			ID:               ruleDisabledControl,
 			ShortDescription: "A compliance.tf module source disables a control",
@@ -58,7 +58,7 @@ func Descriptors() []sarif.RuleDescriptor {
 			ShortDescription: "A compliance.tf module source disables a token the control catalog does not hold",
 			Level:            ctfkit.LevelError,
 		},
-	}
+	})
 }
 
 // The rule ids of the family.

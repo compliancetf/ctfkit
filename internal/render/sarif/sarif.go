@@ -104,6 +104,26 @@ type RuleDescriptor struct {
 	Help string
 	// Level is the rule's default level.
 	Level string
+	// HelpURI is the documentation page of the rule, written as helpUri and
+	// linked from the help text. Empty omits the member and the link.
+	HelpURI string
+}
+
+// AnalyzerDocs is the base of the analyzer reference on the documentation
+// site; an analyzer family appends the anchor of its section.
+const AnalyzerDocs = "https://compliance.tf/docs/ctfkit/analyzers/"
+
+// WithHelpURI returns ds with HelpURI set to uri on every descriptor that has
+// none, so an analyzer family names its documentation section once.
+func WithHelpURI(uri string, ds []RuleDescriptor) []RuleDescriptor {
+	out := make([]RuleDescriptor, len(ds))
+	for i, d := range ds {
+		if d.HelpURI == "" {
+			d.HelpURI = uri
+		}
+		out[i] = d
+	}
+	return out
 }
 
 // Input is everything the renderer needs. It takes findings rather than a
@@ -193,12 +213,49 @@ type driver struct {
 	Rules   []rule `json:"rules"`
 }
 
+// rule is one tool.driver.rules entry. name, fullDescription, help, helpUri
+// and properties are what GitHub code scanning shows on an alert: the rule
+// filter, the description beside the result, the help panel, and the tags and
+// severity badge. cff-1 leaves SARIF objects open, so they validate there too.
 type rule struct {
-	ID                   string          `json:"id"`
-	ShortDescription     ctfkit.Message  `json:"shortDescription"`
-	Help                 *ctfkit.Message `json:"help,omitempty"`
-	DefaultConfiguration ruleConfig      `json:"defaultConfiguration"`
+	ID                   string         `json:"id"`
+	Name                 string         `json:"name"`
+	ShortDescription     ctfkit.Message `json:"shortDescription"`
+	FullDescription      ctfkit.Message `json:"fullDescription"`
+	Help                 ruleHelp       `json:"help"`
+	HelpURI              string         `json:"helpUri,omitempty"`
+	DefaultConfiguration ruleConfig     `json:"defaultConfiguration"`
+	Properties           ruleProperties `json:"properties"`
 }
+
+// ruleHelp is the multiformat help message: GitHub shows markdown when it is
+// present and text otherwise.
+type ruleHelp struct {
+	Text     string `json:"text"`
+	Markdown string `json:"markdown"`
+}
+
+// ruleProperties is the rule property bag GitHub code scanning reads.
+// SecuritySeverity is a decimal string from 0.1 to 10.0: GitHub labels 7.0 to
+// 8.9 high, 4.0 to 6.9 medium and 0.1 to 3.9 low.
+type ruleProperties struct {
+	Tags             []string `json:"tags"`
+	Precision        string   `json:"precision"`
+	SecuritySeverity string   `json:"security-severity"`
+}
+
+// securitySeverity maps a rule's default level onto the GitHub severity
+// badge. The level is the only severity ctfkit has; the scores sit in the
+// middle of GitHub's bands so the badge reads high, medium or low.
+var securitySeverity = map[string]string{
+	ctfkit.LevelError:   "7.5",
+	ctfkit.LevelWarning: "5.0",
+	ctfkit.LevelNote:    "2.0",
+}
+
+// precisionVeryHigh is the precision of every ctfkit rule: the analyzers are
+// deterministic reads of the configuration, the plan and the manifests.
+const precisionVeryHigh = "very-high"
 
 type ruleConfig struct {
 	Level string `json:"level"`
@@ -525,17 +582,58 @@ func firedRules(in Input) ([]rule, error) {
 				id, d.Level, ctfkit.LevelNote, ctfkit.LevelWarning, ctfkit.LevelError)
 		}
 
-		r := rule{
+		short := ctfkit.Message{Text: d.ShortDescription}
+		rules = append(rules, rule{
 			ID:                   d.ID,
-			ShortDescription:     ctfkit.Message{Text: d.ShortDescription},
+			Name:                 strings.TrimPrefix(d.ID, "ctf."),
+			ShortDescription:     short,
+			FullDescription:      short,
+			Help:                 renderHelp(d),
+			HelpURI:              d.HelpURI,
 			DefaultConfiguration: ruleConfig{Level: d.Level},
-		}
-		if d.Help != "" {
-			r.Help = &ctfkit.Message{Text: d.Help}
-		}
-		rules = append(rules, r)
+			Properties: ruleProperties{
+				Tags:             ruleTags(d.ID),
+				Precision:        precisionVeryHigh,
+				SecuritySeverity: securitySeverity[d.Level],
+			},
+		})
 	}
 	return rules, nil
+}
+
+// ruleTags are the filter tags of a rule: the product, the language and the
+// rule family, the second segment of the id (coverage, policy, origin, ...).
+func ruleTags(id string) []string {
+	tags := []string{"compliance", "terraform"}
+	if parts := strings.Split(id, "."); len(parts) > 2 {
+		tags = append(tags, parts[1])
+	}
+	return tags
+}
+
+// renderHelp writes the help panel of a rule: what it reports, the rule's own
+// help when it has one, how to waive a finding that is intended, and the
+// documentation link. Text and markdown say the same; markdown adds the
+// exception snippet and the link.
+func renderHelp(d RuleDescriptor) ruleHelp {
+	short := strings.TrimSuffix(d.ShortDescription, ".")
+	text := []string{short + "."}
+	md := []string{"**" + short + ".**"}
+	if d.Help != "" {
+		text = append(text, d.Help)
+		md = append(md, d.Help)
+	}
+	const waiver = "When the finding is intended, record an exception with an approver and a review date " +
+		"in the ctfkit exception registry; ctfkit then suppresses it until the review date passes."
+	text = append(text, waiver)
+	md = append(md, "### When the finding is intended", waiver,
+		"```yaml\nexceptions:\n  - rule: "+d.ID+"\n    resource: <address in the finding>\n"+
+			"    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```")
+	if d.HelpURI != "" {
+		text = append(text, "Documentation: "+d.HelpURI)
+		md = append(md, "[ctfkit by compliance.tf: rule reference]("+d.HelpURI+")")
+	}
+	return ruleHelp{Text: strings.Join(text, " "), Markdown: strings.Join(md, "\n\n")}
 }
 
 // checkAgainstSchema holds a finding to the cff-1 constraints that

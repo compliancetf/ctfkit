@@ -977,7 +977,7 @@
   "files": [
     {
       "path": "findings.sarif",
-      "sha256": "09f9184269139dd5a2e024a46104a48799b96a60f3bbea58c84b1626e9af4e74"
+      "sha256": "90cffa7220db6755da466c523d05e2e5ddf226494321209d6225372186f49fa9"
     },
     {
       "path": "manifests/archive/compliancetf-manifest.json",
