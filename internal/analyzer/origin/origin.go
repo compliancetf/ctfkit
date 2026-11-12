@@ -40,7 +40,7 @@ const (
 // runner to hand to the SARIF renderer. The texts of the rule ids a recorded
 // fixture carries are that fixture's bytes.
 func Descriptors() []sarif.RuleDescriptor {
-	return []sarif.RuleDescriptor{
+	return sarif.WithHelpURI(sarif.AnalyzerDocs+"#provider-and-module-origin", []sarif.RuleDescriptor{
 		{
 			ID:               ruleProvider,
 			ShortDescription: "A provider outside the approved list is in use",
@@ -72,7 +72,7 @@ func Descriptors() []sarif.RuleDescriptor {
 			ShortDescription: "A registry module source has no upper-bounded version constraint",
 			Level:            ctfkit.LevelWarning,
 		},
-	}
+	})
 }
 
 // Message templates. They are formatted with provider sources, module

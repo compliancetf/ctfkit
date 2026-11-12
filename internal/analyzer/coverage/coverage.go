@@ -47,7 +47,7 @@ const (
 // runner to hand to the SARIF renderer. The texts are the recorded report
 // fixtures' bytes.
 func Descriptors() []sarif.RuleDescriptor {
-	return []sarif.RuleDescriptor{
+	return sarif.WithHelpURI(sarif.AnalyzerDocs+"#coverage-report", []sarif.RuleDescriptor{
 		{
 			ID:               ruleManifestMissing,
 			ShortDescription: "An instantiated module has no compliancetf-manifest.json",
@@ -78,7 +78,7 @@ func Descriptors() []sarif.RuleDescriptor {
 			ShortDescription: "Imported test results report failed or errored runs",
 			Level:            ctfkit.LevelError,
 		},
-	}
+	})
 }
 
 // Message templates. They are analyzer constants formatted with module keys,

@@ -11,11 +11,29 @@
           "rules": [
             {
               "id": "ctf.policy.disabled_control_unknown",
+              "name": "policy.disabled_control_unknown",
               "shortDescription": {
                 "text": "A compliance.tf module source disables a token the control catalog does not hold"
               },
+              "fullDescription": {
+                "text": "A compliance.tf module source disables a token the control catalog does not hold"
+              },
+              "help": {
+                "text": "A compliance.tf module source disables a token the control catalog does not hold. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#disabled-controls",
+                "markdown": "**A compliance.tf module source disables a token the control catalog does not hold.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.policy.disabled_control_unknown\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#disabled-controls)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#disabled-controls",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "policy"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             }
           ]

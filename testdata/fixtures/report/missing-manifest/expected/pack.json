@@ -473,7 +473,7 @@
   "files": [
     {
       "path": "findings.sarif",
-      "sha256": "8e06409b1cc652be509d36d6142e271725612031fc8394de02e5ba857000ef14"
+      "sha256": "4378d7b1787d9bac5033c0512d3b556c86e2a6d7d0c446c7439f5b3bce23176c"
     },
     {
       "path": "manifests/s3_bucket/compliancetf-manifest.json",

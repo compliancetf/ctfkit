@@ -11,29 +11,83 @@
           "rules": [
             {
               "id": "ctf.lock.source_mismatch",
+              "name": "lock.source_mismatch",
               "shortDescription": {
                 "text": "A required_providers entry names, or a missing entry implies, the upstream source of a wrapped type"
               },
+              "fullDescription": {
+                "text": "A required_providers entry names, or a missing entry implies, the upstream source of a wrapped type"
+              },
+              "help": {
+                "text": "A required_providers entry names, or a missing entry implies, the upstream source of a wrapped type. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules",
+                "markdown": "**A required_providers entry names, or a missing entry implies, the upstream source of a wrapped type.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.lock.source_mismatch\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "lock"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             },
             {
               "id": "ctf.lock.upstream_present",
+              "name": "lock.upstream_present",
               "shortDescription": {
                 "text": "The lock file installs the upstream provider of a wrapped type"
               },
+              "fullDescription": {
+                "text": "The lock file installs the upstream provider of a wrapped type"
+              },
+              "help": {
+                "text": "The lock file installs the upstream provider of a wrapped type. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules",
+                "markdown": "**The lock file installs the upstream provider of a wrapped type.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.lock.upstream_present\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "lock"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             },
             {
               "id": "ctf.lock.wrapper_missing",
+              "name": "lock.wrapper_missing",
               "shortDescription": {
                 "text": "The lock file has no compliance.tf wrapper entry for a wrapped type the root uses"
               },
+              "fullDescription": {
+                "text": "The lock file has no compliance.tf wrapper entry for a wrapped type the root uses"
+              },
+              "help": {
+                "text": "The lock file has no compliance.tf wrapper entry for a wrapped type the root uses. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules",
+                "markdown": "**The lock file has no compliance.tf wrapper entry for a wrapped type the root uses.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.lock.wrapper_missing\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#lock-file-rules",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "lock"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             }
           ]

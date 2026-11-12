@@ -11,47 +11,137 @@
           "rules": [
             {
               "id": "ctf.coverage.manifest_missing",
+              "name": "coverage.manifest_missing",
               "shortDescription": {
                 "text": "An instantiated module has no compliancetf-manifest.json"
               },
+              "fullDescription": {
+                "text": "An instantiated module has no compliancetf-manifest.json"
+              },
+              "help": {
+                "text": "An instantiated module has no compliancetf-manifest.json. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
+                "markdown": "**An instantiated module has no compliancetf-manifest.json.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.coverage.manifest_missing\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#coverage-report)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "coverage"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             },
             {
               "id": "ctf.coverage.resource_unattested",
+              "name": "coverage.resource_unattested",
               "shortDescription": {
                 "text": "The configuration declares its own resources and no imported test run covers them"
               },
+              "fullDescription": {
+                "text": "The configuration declares its own resources and no imported test run covers them"
+              },
+              "help": {
+                "text": "The configuration declares its own resources and no imported test run covers them. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
+                "markdown": "**The configuration declares its own resources and no imported test run covers them.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.coverage.resource_unattested\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#coverage-report)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
               "defaultConfiguration": {
                 "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "coverage"
+                ],
+                "precision": "very-high",
+                "security-severity": "2.0"
               }
             },
             {
               "id": "ctf.exec.external_data",
+              "name": "exec.external_data",
               "shortDescription": {
                 "text": "The configuration or a module it installs declares a data source, ephemeral resource or action that runs a local program"
               },
+              "fullDescription": {
+                "text": "The configuration or a module it installs declares a data source, ephemeral resource or action that runs a local program"
+              },
+              "help": {
+                "text": "The configuration or a module it installs declares a data source, ephemeral resource or action that runs a local program. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
+                "markdown": "**The configuration or a module it installs declares a data source, ephemeral resource or action that runs a local program.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.exec.external_data\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "exec"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             },
             {
               "id": "ctf.exec.module_endpoint",
+              "name": "exec.module_endpoint",
               "shortDescription": {
                 "text": "A module called from inside another module is installed from a source outside the allowed module endpoints"
               },
+              "fullDescription": {
+                "text": "A module called from inside another module is installed from a source outside the allowed module endpoints"
+              },
+              "help": {
+                "text": "A module called from inside another module is installed from a source outside the allowed module endpoints. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
+                "markdown": "**A module called from inside another module is installed from a source outside the allowed module endpoints.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.exec.module_endpoint\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "exec"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             },
             {
               "id": "ctf.exec.provisioner",
+              "name": "exec.provisioner",
               "shortDescription": {
                 "text": "The configuration or a module it installs declares a provisioner"
               },
+              "fullDescription": {
+                "text": "The configuration or a module it installs declares a provisioner"
+              },
+              "help": {
+                "text": "The configuration or a module it installs declares a provisioner. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
+                "markdown": "**The configuration or a module it installs declares a provisioner.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.exec.provisioner\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#code-that-runs-on-the-machine-that-plans-or-applies",
               "defaultConfiguration": {
                 "level": "error"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "exec"
+                ],
+                "precision": "very-high",
+                "security-severity": "7.5"
               }
             }
           ]

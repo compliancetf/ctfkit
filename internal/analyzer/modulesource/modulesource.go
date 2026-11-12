@@ -55,7 +55,7 @@ const (
 // runner to hand to the SARIF renderer. The texts of the rule ids a recorded
 // fixture carries are that fixture's bytes.
 func Descriptors() []sarif.RuleDescriptor {
-	return []sarif.RuleDescriptor{
+	return sarif.WithHelpURI(sarif.AnalyzerDocs+"#module-source-coverage", []sarif.RuleDescriptor{
 		{
 			ID:               ruleModuleSource,
 			ShortDescription: "Module sources outside compliance.tf endpoints, and raw resources a compliance.tf module covers",
@@ -66,7 +66,7 @@ func Descriptors() []sarif.RuleDescriptor {
 			ShortDescription: "A module source names a registry host ctfkit cannot classify",
 			Level:            ctfkit.LevelWarning,
 		},
-	}
+	})
 }
 
 // schemaVersion is the findings format version every finding of this family

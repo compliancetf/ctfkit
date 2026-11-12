@@ -55,8 +55,18 @@ so that validation can run offline.
 | `invocations` | no | plain SARIF; ctfkit uses it only for run-level notices such as `ctf.catalog.stale`, written as `toolExecutionNotifications` of one invocation |
 
 Each `tool.driver.rules` entry needs `id` (a rule id, pattern below),
-`shortDescription.text` (non-empty) and `defaultConfiguration.level`. A rule with help text
-also carries `help.text`, plain SARIF; `ctf.origin.provider_unpinned` is the first to have one.
+`shortDescription.text` (non-empty) and `defaultConfiguration.level`. ctfkit also writes the
+plain SARIF members GitHub code scanning shows on an alert:
+
+| Member | Value |
+|---|---|
+| `name` | the rule id without `ctf.`, for example `coverage.module_source`; the rule filter |
+| `fullDescription.text` | the same text as `shortDescription.text` |
+| `help.text`, `help.markdown` | what the rule reports, the rule's own help where it has one (`ctf.origin.provider_unpinned`), how to waive an intended finding with an exception entry, and the documentation link |
+| `helpUri` | the rule's section of the [analyzer reference](https://compliance.tf/docs/ctfkit/analyzers/) |
+| `properties.tags` | `compliance`, `terraform` and the rule family (the second id segment: `coverage`, `policy`, `origin`, ...) |
+| `properties.precision` | `very-high`: the analyzers are deterministic reads |
+| `properties.security-severity` | from the default level: `error` 7.5 (GitHub shows high), `warning` 5.0 (medium), `note` 2.0 (low) |
 
 ### Run-level property bag
 

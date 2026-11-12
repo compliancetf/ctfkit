@@ -11,20 +11,56 @@
           "rules": [
             {
               "id": "ctf.coverage.delegation_unresolved",
+              "name": "coverage.delegation_unresolved",
               "shortDescription": {
                 "text": "A delegated control has no instantiated sibling scope enforcing it"
               },
+              "fullDescription": {
+                "text": "A delegated control has no instantiated sibling scope enforcing it"
+              },
+              "help": {
+                "text": "A delegated control has no instantiated sibling scope enforcing it. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
+                "markdown": "**A delegated control has no instantiated sibling scope enforcing it.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.coverage.delegation_unresolved\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#coverage-report)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
               "defaultConfiguration": {
                 "level": "warning"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "coverage"
+                ],
+                "precision": "very-high",
+                "security-severity": "5.0"
               }
             },
             {
               "id": "ctf.coverage.resource_unattested",
+              "name": "coverage.resource_unattested",
               "shortDescription": {
                 "text": "The configuration declares its own resources and no imported test run covers them"
               },
+              "fullDescription": {
+                "text": "The configuration declares its own resources and no imported test run covers them"
+              },
+              "help": {
+                "text": "The configuration declares its own resources and no imported test run covers them. When the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes. Documentation: https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
+                "markdown": "**The configuration declares its own resources and no imported test run covers them.**\n\n### When the finding is intended\n\nWhen the finding is intended, record an exception with an approver and a review date in the ctfkit exception registry; ctfkit then suppresses it until the review date passes.\n\n```yaml\nexceptions:\n  - rule: ctf.coverage.resource_unattested\n    resource: <address in the finding>\n    justification: <why>\n    approved_by: <approver>\n    review_date: \"YYYY-MM-DD\"\n```\n\n[ctfkit by compliance.tf: rule reference](https://compliance.tf/docs/ctfkit/analyzers/#coverage-report)"
+              },
+              "helpUri": "https://compliance.tf/docs/ctfkit/analyzers/#coverage-report",
               "defaultConfiguration": {
                 "level": "note"
+              },
+              "properties": {
+                "tags": [
+                  "compliance",
+                  "terraform",
+                  "coverage"
+                ],
+                "precision": "very-high",
+                "security-severity": "2.0"
               }
             }
           ]

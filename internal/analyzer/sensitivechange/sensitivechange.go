@@ -71,13 +71,13 @@ func Register(r ctfkit.Registry) {
 // runner to hand to the SARIF renderer. The texts are the recorded fixture
 // texts, byte for byte.
 func Descriptors() []sarif.RuleDescriptor {
-	return []sarif.RuleDescriptor{
+	return sarif.WithHelpURI(sarif.AnalyzerDocs+"#sensitive-changes", []sarif.RuleDescriptor{
 		{ID: rulePublicExposure, ShortDescription: "A change opens a resource to public or unrestricted access", Level: ctfkit.LevelError},
 		{ID: ruleWildcardIAM, ShortDescription: "An IAM policy allows wildcard actions on every resource with no condition", Level: ctfkit.LevelError},
 		{ID: ruleAuditLogRemoval, ShortDescription: "A change removes or narrows audit logging", Level: ctfkit.LevelError},
 		{ID: ruleEncryptionDisablement, ShortDescription: "A change turns off encryption at rest", Level: ctfkit.LevelError},
 		{ID: ruleDestructiveStateful, ShortDescription: "A change deletes or replaces a stateful resource, or removes its deletion safeguard", Level: ctfkit.LevelError},
-	}
+	})
 }
 
 // PublicExposure reports class 1.

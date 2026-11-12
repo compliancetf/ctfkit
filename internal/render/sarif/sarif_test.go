@@ -90,7 +90,7 @@ func TestRenderGolden(t *testing.T) {
 			dir := filepath.Join(reportFixtures, name, "expected")
 
 			in := fixtureInput(t, dir)
-			in.Rules = reportRules
+			in.Rules = sarif.WithHelpURI(sarif.AnalyzerDocs+"#coverage-report", reportRules)
 			in.Watermark = receiptWatermark(t, dir)
 			// The recorded report runs read the embedded release catalog, and
 			// the run object records which one.
