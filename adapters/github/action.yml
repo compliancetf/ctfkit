@@ -901,6 +901,12 @@ runs:
           echo "::error::release-assets is true, but this ${GITHUB_EVENT_NAME:-unknown} run on ${GITHUB_REF:-unknown ref} is not for a release. Run it on a release event or on a tag whose release exists, or set release-assets to false." >&2
           exit 1
         fi
+        # 0 and 1 mean the report completed; anything else may have left a partial pack.
+        code="${CTFKIT_EXIT:-}"
+        if [ "${code}" != 0 ] && [ "${code}" != 1 ]; then
+          echo "::error::ctfkit did not complete (exit ${code:-unset}); the evidence pack is not uploaded." >&2
+          exit 1
+        fi
         files=()
         for f in evidence-pack.zip evidence-pack.pdf; do
           if [ -n "${CTFKIT_OUT_DIR:-}" ] && [ -f "${CTFKIT_OUT_DIR}/${f}" ]; then

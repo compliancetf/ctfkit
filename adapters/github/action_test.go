@@ -563,14 +563,17 @@ esac
 	write(t, event, `{"release":{"tag_name":"v1.0.0"}}`, 0o600)
 
 	for name, tc := range map[string]struct {
-		event, refType, refName string
-		pdf, wantOK             bool
+		event, refType, refName, exit string
+		pdf                           bool
+		wantErr                       string
 	}{
-		"release event":    {event: "release", refType: "tag", refName: "v1.0.0", pdf: true, wantOK: true},
-		"tag with release": {event: "push", refType: "tag", refName: "v1.0.0", wantOK: true},
-		"tag, no release":  {event: "push", refType: "tag", refName: "v2.0.0", pdf: true},
-		"branch push":      {event: "push", refType: "branch", refName: "main", pdf: true},
-		"pull request":     {event: "pull_request", refType: "branch", refName: "1/merge", pdf: true},
+		"release event":      {event: "release", refType: "tag", refName: "v1.0.0", exit: "0", pdf: true},
+		"tag with release":   {event: "push", refType: "tag", refName: "v1.0.0", exit: "1"},
+		"tag, no release":    {event: "push", refType: "tag", refName: "v2.0.0", exit: "0", pdf: true, wantErr: "is not for a release"},
+		"branch push":        {event: "push", refType: "branch", refName: "main", exit: "0", pdf: true, wantErr: "is not for a release"},
+		"pull request":       {event: "pull_request", refType: "branch", refName: "1/merge", exit: "0", pdf: true, wantErr: "is not for a release"},
+		"ctfkit errored":     {event: "release", refType: "tag", refName: "v1.0.0", exit: "2", pdf: true, wantErr: "did not complete (exit 2)"},
+		"ctfkit did not run": {event: "release", refType: "tag", refName: "v1.0.0", pdf: true, wantErr: "did not complete (exit unset)"},
 	} {
 		t.Run(name, func(t *testing.T) {
 			outDir, argv := t.TempDir(), filepath.Join(t.TempDir(), "argv")
@@ -586,9 +589,12 @@ esac
 				"GITHUB_REF_NAME=" + tc.refName, "GITHUB_REF=refs/x/" + tc.refName,
 				"GITHUB_REPOSITORY=bobthecorp/blueprint", "CTFKIT_OUT_DIR=" + outDir,
 			}
+			if tc.exit != "" {
+				c.Env = append(c.Env, "CTFKIT_EXIT="+tc.exit)
+			}
 			out, err := c.CombinedOutput()
-			if !tc.wantOK {
-				if err == nil || !strings.Contains(string(out), "is not for a release") {
+			if tc.wantErr != "" {
+				if err == nil || !strings.Contains(string(out), tc.wantErr) {
 					t.Fatalf("step passed or gave no reason: %v\n%s", err, out)
 				}
 				return
