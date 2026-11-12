@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/compliancetf/ctfkit/compare/v0.7.1...v0.8.0) (2026-11-12)
+
+
+### Features
+
+* **report:** write an evidence pack with a PDF to --out-dir ([#41](https://github.com/compliancetf/ctfkit/issues/41)) ([ee23fc0](https://github.com/compliancetf/ctfkit/commit/ee23fc085c93c3f93b91e2fed1d2026035b4f624))
+
 ## [0.7.1](https://github.com/compliancetf/ctfkit/compare/v0.7.0...v0.7.1) (2026-11-11)
 
 
