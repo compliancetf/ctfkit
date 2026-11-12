@@ -2,7 +2,7 @@
   "schema": "ctf.evidence.pack/1",
   "notice": "Unsigned. Not independently attested.",
   "release": {
-    "name": "testdata/fixtures/report/blueprint-wrapper/input",
+    "name": "input",
     "root": "testdata/fixtures/report/blueprint-wrapper/input",
     "commit": "0000000000000000000000000000000000000000",
     "platform": "local",

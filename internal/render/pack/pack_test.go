@@ -140,7 +140,7 @@ func TestBuild(t *testing.T) {
 		{"frameworks sorted by id", p.Frameworks, []Framework{{"hipaa", "HIPAA"}, {"soc_2", "SOC 2"}}},
 		{"root entry left out of scope", len(p.Scope), 2},
 		{"helper without manifest", p.Scope[1].ManifestFile, ""},
-		{"release falls back to the root", p.Release.Name, in.Root},
+		{"release falls back to the base name of the root", p.Release.Name, filepath.Base(in.Root)},
 		{"supporting clause marked", mapped.Clauses[0].Clauses, []ClauseRef{{"CC6.1", false}, {"A1.2", true}}},
 		{"no-clause control with catalog reason", p.NoClause, []NoClauseControl{{
 			ID: "s3_bucket_logging_enabled", Name: "S3 bucket logging enabled",
@@ -385,6 +385,11 @@ func TestCheckEntryName(t *testing.T) {
 		{"manifests//x", false},
 		{"manifests/./x", false},
 		{"manifests/x/", false},
+		{"C:x", false},
+		{"manifests/C:/x", false},
+		{"manifests/a\x00b", false},
+		{"manifests/a\nb", false},
+		{"manifests/a\x7fb", false},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -488,4 +493,26 @@ func mustDocuments(t *testing.T, p *Pack) []File {
 		t.Fatal(err)
 	}
 	return docs
+}
+
+func TestRootName(t *testing.T) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		root, want string
+	}{
+		{"testdata/fixtures/report/blueprint-wrapper/input", "input"},
+		{"/home/user/work/estate/", "estate"},
+		{".", filepath.Base(cwd)},
+		{"/", "/"},
+	}
+	for _, tc := range tests {
+		t.Run(tc.root, func(t *testing.T) {
+			if got := rootName(tc.root); got != tc.want {
+				t.Errorf("rootName(%q) = %q, want %q", tc.root, got, tc.want)
+			}
+		})
+	}
 }

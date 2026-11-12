@@ -98,7 +98,8 @@ type Pack struct {
 
 // Release identifies what the pack reports on.
 type Release struct {
-	// Name is the repository the run detected, else the root report read.
+	// Name is the repository the run detected, else the base name of the
+	// root report read, so a local path never prints on the cover.
 	Name     string `json:"name"`
 	Root     string `json:"root"`
 	Commit   string `json:"commit"`
@@ -337,9 +338,21 @@ func release(in Input) Release {
 		RunID:    in.Metadata.RunID,
 	}
 	if r.Name == "" {
-		r.Name = in.Root
+		r.Name = rootName(in.Root)
 	}
 	return r
+}
+
+// rootName is the last element of root, resolved against the working
+// directory when root is "." or another path with no name of its own.
+func rootName(root string) string {
+	if abs, err := filepath.Abs(root); err == nil {
+		root = abs
+	}
+	if name := filepath.Base(root); name != string(filepath.Separator) && name != "." {
+		return name
+	}
+	return root
 }
 
 func catalogFacts(v ctfkit.CatalogVersion) Catalog {

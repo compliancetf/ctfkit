@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| Release | testdata/fixtures/report/helper-module/input |
+| Release | input |
 | Commit | `0000000000000000000000000000000000000000` |
 | Generated | 2026-09-20T00:00:00Z by ctfkit 1.0.0 |
 | Control catalog | 2026.11.1, the catalog embedded in ctfkit, which holds the CIS v6.0 controls only; `ctfkit catalog pull` fetches the full catalog |
