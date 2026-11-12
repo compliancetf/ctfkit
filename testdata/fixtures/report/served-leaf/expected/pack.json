@@ -1,0 +1,139 @@
+{
+  "schema": "ctf.evidence.pack/1",
+  "notice": "Unsigned. Not independently attested.",
+  "release": {
+    "name": "testdata/fixtures/report/served-leaf/input",
+    "root": "testdata/fixtures/report/served-leaf/input",
+    "commit": "0000000000000000000000000000000000000000",
+    "platform": "local",
+    "runId": "ctfkit-fixture-run"
+  },
+  "generator": {
+    "name": "ctfkit",
+    "version": "1.0.0"
+  },
+  "generatedAt": "2026-09-20T00:00:00Z",
+  "catalog": {
+    "version": "2026.11.1",
+    "source": "embedded",
+    "embeddedSubset": true
+  },
+  "frameworks": [
+    {
+      "id": "soc_2",
+      "name": "SOC 2"
+    }
+  ],
+  "summary": {
+    "modules": 1,
+    "modulesWithManifest": 1,
+    "controlsEnforced": 1,
+    "controlsDelegated": 0,
+    "perFramework": [
+      {
+        "framework": "soc_2",
+        "withClause": 1,
+        "of": 1
+      }
+    ],
+    "noClause": 0,
+    "noClauseWithReason": 0,
+    "notEnforced": 0,
+    "findingsAtError": 0
+  },
+  "scope": [
+    {
+      "key": "s3_bucket_notification",
+      "source": "bobthecorp.compliance.tf/terraform-aws-modules/s3-bucket/aws//modules/notification",
+      "version": "5.16.1-1e4b692ae5e0a847",
+      "manifestSha256": "bd6add96ced9ccad50c15d3e6e68d0a90efc227f4a23ae8fe5b909eac4e2ce95",
+      "manifestFile": "manifests/s3_bucket_notification/compliancetf-manifest.json",
+      "declaresNoResources": false
+    }
+  ],
+  "shows": [
+    "Which compliance controls each installed compliance.tf module enforced when it was built, as the module manifest records them.",
+    "The framework clauses each control is mapped to, with supporting clauses marked as partial or indirect evidence.",
+    "Catalog controls for the same resource types that these modules do not enforce, and the layer that owns each one.",
+    "The results of the enforcement tests supplied with this release, when tests were supplied."
+  ],
+  "doesNotShow": [
+    "The state of resources running in AWS. Check that with AWS Config or Audit Manager.",
+    "Organizational or process controls.",
+    "Operation after deployment.",
+    "Computer system validation: no CSV, IQ, OQ or PQ activities, e-signature logic or audit-trail business logic."
+  ],
+  "mapping": [
+    {
+      "module": "s3_bucket_notification",
+      "frameworks": [
+        "soc_2"
+      ],
+      "controls": [
+        {
+          "id": "s3_bucket_event_notifications_enabled",
+          "name": "S3 buckets should have event notifications enabled",
+          "status": "enforced",
+          "clauses": [
+            {
+              "framework": "soc_2",
+              "clauses": [
+                {
+                  "id": "CC7.3",
+                  "supporting": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "noClause": [],
+  "notEnforced": [],
+  "tests": {
+    "supplied": false,
+    "file": "",
+    "sha256": "",
+    "runs": 0,
+    "passed": 0,
+    "failed": 0,
+    "errored": 0,
+    "skipped": 0,
+    "cases": []
+  },
+  "register": [
+    {
+      "framework": "soc_2",
+      "name": "SOC 2",
+      "clauses": [
+        {
+          "id": "CC7.3",
+          "title": "The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives (security incidents) and, if so, takes actions to prevent or address such failures",
+          "controls": [
+            "s3_bucket_event_notifications_enabled"
+          ]
+        }
+      ],
+      "notApplicable": []
+    }
+  ],
+  "files": [
+    {
+      "path": "findings.sarif",
+      "sha256": "9a8215ec3bcf11d9ae5eb4af1d6f20d145cd3798cc4cfc5ebc79eaea3ef824ba"
+    },
+    {
+      "path": "manifests/s3_bucket_notification/compliancetf-manifest.json",
+      "sha256": "bd6add96ced9ccad50c15d3e6e68d0a90efc227f4a23ae8fe5b909eac4e2ce95"
+    },
+    {
+      "path": "pack-1.schema.json",
+      "sha256": "677cbb98d915ee045b2d5ca23767f8b375f391230e7cd4e0b7e5e50357b3962d"
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "5d2ad5e5e379e2fbc3f847d772eee559eeac3ba2cce7cd84f606860e556411d7"
+    }
+  ]
+}

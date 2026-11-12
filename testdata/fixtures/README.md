@@ -364,12 +364,13 @@ CTFKIT_RERECORD=1 go test ./internal/cli -run TestScanFixtureParity
 CTFKIT_RERECORD=1 go test ./internal/cli -run TestReportSARIFParity
 
 # report cases, every expected file (report.md, receipt.json, findings.sarif,
-# ctfkit.custom.spacelift.json, exit-code, and schema-4-stub's stderr.txt)
+# ctfkit.custom.spacelift.json, pack.md, pack.json, exit-code, and
+# schema-4-stub's stderr.txt)
 CTFKIT_RERECORD=1 go test -count=1 ./internal/cli -run \
-  '^(TestReportProjections|TestReportSARIFParity|TestReportSpaceliftParity|TestReportRecordedExitCodes|TestReportEnvironmentDiagnostic)$'
+  '^(TestReportProjections|TestReportSARIFParity|TestReportSpaceliftParity|TestReportRecordedExitCodes|TestReportEnvironmentDiagnostic|TestReportEvidencePack)$'
 ```
 
-Those five are the named report golden tests. With `CTFKIT_RERECORD=1` each
+Those six are the named report golden tests. With `CTFKIT_RERECORD=1` each
 writes what it renders over the expected file and then compares, and renders
 every case directory whether or not the expected file exists yet, so an empty
 `expected/` is filled completely. `CTFKIT_FIXTURE_ROOT=<absolute dir>` points

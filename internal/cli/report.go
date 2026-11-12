@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -20,6 +21,7 @@ import (
 	"github.com/compliancetf/ctfkit/internal/inventory"
 	"github.com/compliancetf/ctfkit/internal/loader"
 	"github.com/compliancetf/ctfkit/internal/render/markdown"
+	"github.com/compliancetf/ctfkit/internal/render/pack"
 	"github.com/compliancetf/ctfkit/internal/render/receipt"
 	"github.com/compliancetf/ctfkit/internal/render/sarif"
 	"github.com/compliancetf/ctfkit/internal/render/spacelift"
@@ -108,8 +110,10 @@ in the working directory. It writes the formats --format lists (markdown by
 default) to stdout, --out or --out-dir. --readme FILE puts the markdown into the
 marked section of FILE instead of stdout; with --out or --out-dir the files are
 written as well. Spacelift metadata always goes to ctfkit.custom.spacelift.json
-in the working directory. Offline: no network, no credentials; it never runs
-terraform or tofu.
+in the working directory. --out-dir also writes evidence-pack.zip, the
+evidence pack of the release for readers who do not run ctfkit; it is
+unsigned. Offline: no network, no credentials; it never runs terraform or
+tofu.
 
 The report says what the modules enforce, what the configuration declares
 itself and what the report does not prove, and names code that runs before a
@@ -156,7 +160,7 @@ Details: docs/commands.md`,
 	opts.formats = formatMarkdown
 	f.VarP(&onceString{target: &opts.formats}, "format", "f", "Comma-separated `LIST` of formats: markdown, receipt, sarif, spacelift")
 	once(&opts.out, "out", outUsage)
-	once(&opts.outDir, "out-dir", "Output `DIR` for report.md, receipt.json and findings.sarif")
+	once(&opts.outDir, "out-dir", "Output `DIR` for report.md, receipt.json, findings.sarif and evidence-pack.zip")
 	once(&opts.readme, "readme", "Rewrite the section between the markers in this `FILE`")
 	once(&opts.markers, "markers", "Marker `PAIR` START,END (default: "+markdown.DefaultStartMarker+","+markdown.DefaultEndMarker+")")
 	once(&opts.failOn, "fail-on", failOnUsage)
@@ -418,6 +422,8 @@ type runResult struct {
 	// catalog is the version of the catalog the run read, which the SARIF
 	// run records and which decides whether it carries a stale-catalog notice.
 	catalog ctfkit.CatalogVersion
+	// controls is the catalog itself, which the evidence pack reads.
+	controls *catalog.FileCatalog
 }
 
 // analyze loads every input, runs the post_init analyzers and returns the
@@ -499,6 +505,7 @@ func (c *CLI) analyze(ctx context.Context, root string, opts *reportOptions, set
 		tests:    tests,
 		root:     root,
 		catalog:  version,
+		controls: cat,
 	}, nil
 }
 
@@ -621,8 +628,10 @@ func digestModulesJSON(root string) (string, error) {
 // before any file is written, so an analyzer defect never leaves a partial set
 // of projections.
 func (c *CLI) write(cmd *cobra.Command, plan outputPlan, opts *reportOptions, run *runResult) error {
+	// --out-dir also writes the evidence pack, which carries the SARIF and the
+	// receipt whatever --format named.
 	var sarifDoc []byte
-	if plan.wants(formatSARIF) {
+	if plan.wants(formatSARIF) || plan.dir != "" {
 		var err error
 		if sarifDoc, err = renderReportSARIF(c.version, opts, run); err != nil {
 			return err
@@ -635,8 +644,10 @@ func (c *CLI) write(cmd *cobra.Command, plan outputPlan, opts *reportOptions, ru
 		}
 	}
 
-	if plan.wants(formatReceipt) {
-		body, err := receipt.Render(receipt.Input{
+	var receiptDoc []byte
+	if plan.wants(formatReceipt) || plan.dir != "" {
+		var err error
+		receiptDoc, err = receipt.Render(receipt.Input{
 			Inventory:         run.record,
 			Modules:           run.modules,
 			ModulesJSONSHA256: run.digest,
@@ -649,7 +660,9 @@ func (c *CLI) write(cmd *cobra.Command, plan outputPlan, opts *reportOptions, ru
 		if err != nil {
 			return inputError("%v", err)
 		}
-		if err = c.emit(cmd, plan, fileReceipt, body); err != nil {
+	}
+	if plan.wants(formatReceipt) {
+		if err := c.emit(cmd, plan, fileReceipt, receiptDoc); err != nil {
 			return err
 		}
 	}
@@ -671,13 +684,43 @@ func (c *CLI) write(cmd *cobra.Command, plan outputPlan, opts *reportOptions, ru
 		}
 	}
 
-	if sarifDoc != nil {
+	if plan.wants(formatSARIF) {
 		if err := c.emit(cmd, plan, fileSARIF, sarifDoc); err != nil {
 			return err
 		}
 	}
 
+	if plan.dir != "" {
+		return c.writePack(cmd, plan, run, receiptDoc, sarifDoc)
+	}
+
 	return nil
+}
+
+// writePack writes evidence-pack.zip into --out-dir: the pack of the release
+// this run reports on, built from the same inputs as the other projections.
+func (c *CLI) writePack(cmd *cobra.Command, plan outputPlan, run *runResult, receiptDoc, sarifDoc []byte) error {
+	p, attachments, err := pack.Build(pack.Input{
+		Modules:              run.modules,
+		Catalog:              run.controls,
+		CatalogVersion:       run.catalog,
+		NotApplicableClauses: run.controls.NotApplicableClauses(),
+		Findings:             run.findings,
+		Tests:                run.tests,
+		Metadata:             run.metadata,
+		Root:                 run.root,
+		Generator:            pack.Generator{Name: "ctfkit", Version: c.version},
+		Receipt:              receiptDoc,
+		SARIF:                sarifDoc,
+	})
+	if err != nil {
+		return environmentError(err)
+	}
+	var zipped bytes.Buffer
+	if err = pack.Write(&zipped, p, attachments); err != nil {
+		return inputError("%v", err)
+	}
+	return c.emit(cmd, plan, pack.ZipName, zipped.Bytes())
 }
 
 // renderReportSARIF renders the run as SARIF from the same inputs scan hands
