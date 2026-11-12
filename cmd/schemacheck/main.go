@@ -45,6 +45,7 @@ var byFileName = map[string]string{
 	"consume-receipt.json":         "consume-receipt-1.schema.json",
 	"migrate-plan.json":            "migrate-plan-1.schema.json",
 	"journal.json":                 "migrate-journal-1.schema.json",
+	"pack.json":                    "pack-1.schema.json",
 }
 
 // catalogSchema validates a control catalog. A catalog is found by its content

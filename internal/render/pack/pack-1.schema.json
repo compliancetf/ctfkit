@@ -1,0 +1,579 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compliance.tf/schema/pack-1.schema.json",
+  "title": "ctf.evidence.pack/1",
+  "description": "pack.json of the evidence pack that ctfkit report --out-dir writes into evidence-pack.zip. Every rendering in the zip (pack.md, and any later one) is rendered from this document. The pack is unsigned and not independently attested. An empty string means the value is not set.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "notice",
+    "release",
+    "generator",
+    "generatedAt",
+    "catalog",
+    "frameworks",
+    "summary",
+    "scope",
+    "shows",
+    "doesNotShow",
+    "mapping",
+    "noClause",
+    "notEnforced",
+    "tests",
+    "register",
+    "files"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ctf.evidence.pack/1"
+    },
+    "notice": {
+      "const": "Unsigned. Not independently attested."
+    },
+    "release": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "root",
+        "commit",
+        "platform",
+        "runId"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The repository the run detected, else the report root."
+        },
+        "root": {
+          "type": "string"
+        },
+        "commit": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "runId": {
+          "type": "string"
+        }
+      }
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "catalog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "source",
+        "embeddedSubset"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "embedded",
+            "home",
+            "file"
+          ],
+          "description": "embedded: built into ctfkit; home: ~/.ctf/control-requirements.yaml, which ctfkit catalog pull writes; file: named with --catalog."
+        },
+        "embeddedSubset": {
+          "type": "boolean",
+          "description": "true when the catalog is the embedded release, which holds the CIS v6.0 controls only."
+        }
+      }
+    },
+    "frameworks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "modules",
+        "modulesWithManifest",
+        "controlsEnforced",
+        "controlsDelegated",
+        "perFramework",
+        "noClause",
+        "noClauseWithReason",
+        "notEnforced",
+        "findingsAtError"
+      ],
+      "properties": {
+        "modules": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "modulesWithManifest": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "controlsEnforced": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "controlsDelegated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "perFramework": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "framework",
+              "withClause",
+              "of"
+            ],
+            "properties": {
+              "framework": {
+                "type": "string"
+              },
+              "withClause": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "of": {
+                "type": "integer",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "noClause": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "noClauseWithReason": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "notEnforced": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "findingsAtError": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "scope": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key",
+          "source",
+          "version",
+          "manifestSha256",
+          "manifestFile",
+          "declaresNoResources"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "manifestSha256": {
+            "type": "string",
+            "pattern": "^([0-9a-f]{64})?$"
+          },
+          "manifestFile": {
+            "type": "string",
+            "description": "Path of the manifest copy inside the zip."
+          },
+          "declaresNoResources": {
+            "type": "boolean"
+          }
+        }
+      },
+      "description": "Section 2: the installed module instances."
+    },
+    "shows": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "doesNotShow": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mapping": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "module",
+          "frameworks",
+          "controls"
+        ],
+        "properties": {
+          "module": {
+            "type": "string"
+          },
+          "frameworks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "controls": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "name",
+                "status",
+                "clauses"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "clauses": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "framework",
+                      "clauses"
+                    ],
+                    "properties": {
+                      "framework": {
+                        "type": "string"
+                      },
+                      "clauses": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "required": [
+                            "id",
+                            "supporting"
+                          ],
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "supporting": {
+                              "type": "boolean"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Section 4: the control-to-clause mapping per module. A framework entry with no clauses is a gap that noClause explains."
+    },
+    "noClause": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "frameworks"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "frameworks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "framework",
+                "reason"
+              ],
+              "properties": {
+                "framework": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Section 5: controls with no clause in a framework, with the catalog's notApplicable reason."
+    },
+    "notEnforced": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "resourceTypes",
+          "layer",
+          "reason",
+          "supersededBy"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "resourceTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "layer": {
+            "enum": [
+              "",
+              "provider-local",
+              "companion-local",
+              "graph",
+              "runtime"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "supersededBy": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Section 6: catalog controls for the same resource types that no module manifest lists."
+    },
+    "tests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supplied",
+        "file",
+        "sha256",
+        "runs",
+        "passed",
+        "failed",
+        "errored",
+        "skipped",
+        "cases"
+      ],
+      "properties": {
+        "supplied": {
+          "type": "boolean"
+        },
+        "file": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^([0-9a-f]{64})?$"
+        },
+        "runs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "passed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "failed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "errored": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "status",
+              "moduleKey"
+            ],
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "moduleKey": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "register": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "framework",
+          "name",
+          "clauses",
+          "notApplicable"
+        ],
+        "properties": {
+          "framework": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "clauses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "title",
+                "controls"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "controls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "notApplicable": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "reason"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "description": "Annex A: the clause register per framework."
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^([0-9a-f]{64})?$"
+          }
+        }
+      },
+      "description": "The attachments of the zip and the SHA-256 of their bytes."
+    }
+  }
+}
