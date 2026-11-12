@@ -1,7 +1,7 @@
-name: ctfkit report
+name: ctfkit by compliance.tf
 description: >-
-  Run ctfkit by compliance.tf over an initialized Terraform or OpenTofu root and publish its
-  findings, its evidence receipt and a markdown summary.
+  Run ctfkit by compliance.tf on Terraform or OpenTofu and publish its findings, evidence receipt
+  and a markdown summary.
 author: compliance.tf
 
 branding:

@@ -29,8 +29,9 @@ here, plus ctfkit's text output for the job summary. `stage` is `auto` (the defa
 
 ## Usage
 
-The action lives in the public `compliancetf/ctfkit-action` repository, and it downloads the
-binary from the releases of the public `compliancetf/ctfkit` repository with the default job
+The action lives in the public `compliancetf/ctfkit-action` repository, listed on the GitHub
+Marketplace as [ctfkit by compliance.tf](https://github.com/marketplace/actions/ctfkit-by-compliance-tf),
+and it downloads the binary from the releases of the public `compliancetf/ctfkit` repository with the default job
 token; to install from a private copy, see
 [Installing from a private copy](#installing-from-a-private-copy).
 

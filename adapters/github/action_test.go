@@ -53,6 +53,24 @@ func TestRepositoryDefaultIsTheReleaseTarget(t *testing.T) {
 	}
 }
 
+// TestMarketplaceMetadata pins the listing name and keeps the description
+// under the GitHub Marketplace limit: publishing a release fails with
+// "Description must be less than 125 characters" otherwise.
+func TestMarketplaceMetadata(t *testing.T) {
+	var action struct {
+		Name        string `yaml:"name"`
+		Description string `yaml:"description"`
+	}
+	readYAML(t, "action.yml", &action)
+
+	if action.Name != "ctfkit by compliance.tf" {
+		t.Errorf("action.yml name = %q, want %q (the Marketplace listing name)", action.Name, "ctfkit by compliance.tf")
+	}
+	if n := len(action.Description); n == 0 || n >= 125 {
+		t.Errorf("action.yml description is %d characters; the Marketplace needs 1 to 124", n)
+	}
+}
+
 func readYAML(t *testing.T, path string, v any) {
 	t.Helper()
 	raw, err := os.ReadFile(path) //nolint:gosec // fixed repository paths
