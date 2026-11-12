@@ -37,8 +37,9 @@ var zipTime = time.Date(1980, 1, 1, 0, 0, 0, 0, time.UTC)
 // key from modules.json is part of a manifest's entry name, so this is where
 // a hostile key stops.
 func checkEntryName(name string) error {
-	bad := name == "" || strings.HasPrefix(name, "/") || strings.Contains(name, `\`) ||
-		path.Clean(name) != name
+	// A colon covers Windows drive names (C:x); control bytes include NUL.
+	bad := name == "" || strings.HasPrefix(name, "/") || strings.ContainsAny(name, `\:`) ||
+		path.Clean(name) != name || strings.ContainsFunc(name, func(r rune) bool { return r < 0x20 || r == 0x7f })
 	for _, seg := range strings.Split(name, "/") {
 		if seg == "" || seg == "." || seg == ".." {
 			bad = true

@@ -255,7 +255,7 @@ func code(s string) string {
 	if s == "" {
 		return ""
 	}
-	return "`" + strings.NewReplacer("`", "'", "|", `\|`, "\n", " ").Replace(s) + "`"
+	return "`" + strings.NewReplacer("`", "'", "|", `\|`, "\r", " ", "\n", " ").Replace(s) + "`"
 }
 
 func codes(list []string) string {
