@@ -240,6 +240,27 @@ modules:`, 1)
 			},
 			want: "catalog-1.schema.json",
 		},
+		"the optional enforcement and not-applicable fields": {
+			edit: func(s string) string {
+				return strings.Replace(s, "modules:", `    enforcement: {layer: runtime, reason: "Set per object at write time."}
+    notApplicable: {hipaa: "No clause applies."}
+notApplicableClauses:
+  soc_2: {CC1.1: "An organizational criterion."}
+modules:`, 1)
+			},
+		},
+		"an enforcement layer outside the enum": {
+			edit: func(s string) string {
+				return strings.Replace(s, "modules:", "    enforcement: {layer: account}\nmodules:", 1)
+			},
+			want: "catalog-1.schema.json",
+		},
+		"an enforcement with no layer": {
+			edit: func(s string) string {
+				return strings.Replace(s, "modules:", "    enforcement: {reason: \"none\"}\nmodules:", 1)
+			},
+			want: "catalog-1.schema.json",
+		},
 		"modules entry names no resource type": {
 			edit: func(s string) string {
 				return strings.Replace(s, "  - resourceTypes: [aws_s3_bucket]\n    source:", "  - resourceTypes: []\n    source:", 1)

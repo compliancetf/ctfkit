@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"gopkg.in/yaml.v3"
+
+	"github.com/compliancetf/ctfkit/pkg/ctfkit"
 )
 
 // document is the ctf.catalog/1 file as written. Unknown fields are ignored,
@@ -17,6 +19,9 @@ type document struct {
 	DefaultHost string            `yaml:"defaultHost"`
 	Controls    []documentControl `yaml:"controls"`
 	Modules     []documentModule  `yaml:"modules"`
+	// NotApplicableClauses maps a framework id to the clauses of it no control
+	// applies to, each with its reason. Optional.
+	NotApplicableClauses map[string]map[string]string `yaml:"notApplicableClauses"`
 }
 
 type documentControl struct {
@@ -24,6 +29,23 @@ type documentControl struct {
 	Name               string              `yaml:"name"`
 	ResourceTypes      []string            `yaml:"resourceTypes"`
 	ClausesByFramework map[string][]string `yaml:"clausesByFramework"`
+	// Enforcement and NotApplicable are optional; a catalog without them
+	// loads as before.
+	Enforcement   *documentEnforcement `yaml:"enforcement"`
+	NotApplicable map[string]string    `yaml:"notApplicable"`
+}
+
+type documentEnforcement struct {
+	Layer  string `yaml:"layer"`
+	Reason string `yaml:"reason"`
+}
+
+// enforcementLayers are the values enforcement.layer may take.
+var enforcementLayers = map[string]bool{
+	ctfkit.LayerProviderLocal:  true,
+	ctfkit.LayerCompanionLocal: true,
+	ctfkit.LayerGraph:          true,
+	ctfkit.LayerRuntime:        true,
 }
 
 type documentModule struct {
@@ -150,6 +172,16 @@ func checkDocument(doc document) []string {
 		}
 	}
 	add("a source may carry "+hostPlaceholder+" at most once", multiPlaceholder)
+
+	// An enforcement layer outside the enum would reach a reader as a layer
+	// nobody defined.
+	var badLayers []string
+	for _, c := range doc.Controls {
+		if c.Enforcement != nil && !enforcementLayers[c.Enforcement.Layer] {
+			badLayers = append(badLayers, fmt.Sprintf("%s has %q", c.ID, c.Enforcement.Layer))
+		}
+	}
+	add("enforcement.layer must be one of provider-local, companion-local, graph, runtime", badLayers)
 
 	return msgs
 }

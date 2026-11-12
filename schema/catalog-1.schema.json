@@ -44,8 +44,32 @@
               "type": "array",
               "items": { "type": "string", "minLength": 1 }
             }
+          },
+          "enforcement": {
+            "type": "object",
+            "description": "Optional. The layer that owns this control, and why. A catalog without it loads as before; a reader shows the layer as not set.",
+            "required": ["layer"],
+            "properties": {
+              "layer": { "enum": ["provider-local", "companion-local", "graph", "runtime"] },
+              "reason": { "type": "string" }
+            }
+          },
+          "notApplicable": {
+            "type": "object",
+            "description": "Optional. Framework id to the reason this control has no applicable clause in that framework.",
+            "propertyNames": { "$ref": "#/$defs/frameworkId" },
+            "additionalProperties": { "type": "string", "minLength": 1 }
           }
         }
+      }
+    },
+    "notApplicableClauses": {
+      "type": "object",
+      "description": "Optional. Framework id to the clauses of that framework no control applies to, each mapped to its reason.",
+      "propertyNames": { "$ref": "#/$defs/frameworkId" },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": { "type": "string", "minLength": 1 }
       }
     },
     "modules": {

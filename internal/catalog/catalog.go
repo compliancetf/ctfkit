@@ -20,6 +20,7 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"maps"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -95,6 +96,8 @@ type FileCatalog struct {
 	moduleByType map[string]int
 	hosts        map[string]string
 	defaultHost  string
+	// notApplicableClauses is framework id to clause to reason.
+	notApplicableClauses map[string]map[string]string
 }
 
 // EmbeddedBytes returns the raw bytes of the embedded release catalog, which
@@ -231,6 +234,9 @@ func parse(b []byte, provenance string) (*FileCatalog, error) {
 	for k, v := range doc.Hosts {
 		c.hosts[k] = v
 	}
+	if doc.NotApplicableClauses != nil {
+		c.notApplicableClauses = copyClauseReasons(doc.NotApplicableClauses)
+	}
 
 	for _, dc := range doc.Controls {
 		id := ctfkit.ControlID(dc.ID)
@@ -242,6 +248,12 @@ func parse(b []byte, provenance string) (*FileCatalog, error) {
 		}
 		for fw, clauses := range dc.ClausesByFramework {
 			ref.ClausesByFramework[fw] = append([]string(nil), clauses...)
+		}
+		if dc.Enforcement != nil {
+			ref.Enforcement = &ctfkit.ControlEnforcement{Layer: dc.Enforcement.Layer, Reason: dc.Enforcement.Reason}
+		}
+		if dc.NotApplicable != nil {
+			ref.NotApplicable = maps.Clone(dc.NotApplicable)
 		}
 		c.controls[id] = ref
 		for _, rt := range dc.ResourceTypes {
@@ -372,6 +384,24 @@ func (c FileCatalog) DefaultHost() string { return c.defaultHost }
 // Version returns the version and provenance of the loaded catalog.
 func (c FileCatalog) Version() ctfkit.CatalogVersion { return c.version }
 
+// NotApplicableClauses returns, per framework id, the clauses the catalog
+// records as having no applicable control, each with its reason. It is nil
+// when the catalog records none.
+func (c FileCatalog) NotApplicableClauses() map[string]map[string]string {
+	if c.notApplicableClauses == nil {
+		return nil
+	}
+	return copyClauseReasons(c.notApplicableClauses)
+}
+
+func copyClauseReasons(in map[string]map[string]string) map[string]map[string]string {
+	out := make(map[string]map[string]string, len(in))
+	for fw, clauses := range in {
+		out[fw] = maps.Clone(clauses)
+	}
+	return out
+}
+
 func copyControl(ref ctfkit.ControlRef) ctfkit.ControlRef {
 	out := ctfkit.ControlRef{
 		ID:                 ref.ID,
@@ -381,6 +411,13 @@ func copyControl(ref ctfkit.ControlRef) ctfkit.ControlRef {
 	}
 	for fw, clauses := range ref.ClausesByFramework {
 		out.ClausesByFramework[fw] = append([]string(nil), clauses...)
+	}
+	if ref.Enforcement != nil {
+		e := *ref.Enforcement
+		out.Enforcement = &e
+	}
+	if ref.NotApplicable != nil {
+		out.NotApplicable = maps.Clone(ref.NotApplicable)
 	}
 	return out
 }

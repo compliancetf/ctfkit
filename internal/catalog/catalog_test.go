@@ -463,3 +463,82 @@ func TestEmbeddedSubsetNoteFollowsTheEmbeddedVersion(t *testing.T) {
 		})
 	}
 }
+
+// The enforcement, notApplicable and notApplicableClauses fields are
+// optional: a catalog without them loads with the fields empty, and a catalog
+// with them hands them back as copies.
+func TestOptionalCoverageFields(t *testing.T) {
+	cases := []struct {
+		file          string
+		control       ctfkit.ControlID
+		wantLayer     string
+		wantNA        map[string]string
+		wantNAClauses map[string]map[string]string
+	}{
+		{file: "small.yaml", control: "s3_bucket_versioning_enabled"},
+		{
+			file:          "annotated.yaml",
+			control:       "s3_bucket_versioning_enabled",
+			wantNA:        map[string]string{"hipaa": "No HIPAA clause asks for object versions."},
+			wantNAClauses: map[string]map[string]string{"soc_2": {"CC1.1": "An organizational criterion; no configuration evidences it."}},
+		},
+		{
+			file:          "annotated.yaml",
+			control:       "s3_bucket_mfa_delete_enabled",
+			wantLayer:     ctfkit.LayerRuntime,
+			wantNAClauses: map[string]map[string]string{"soc_2": {"CC1.1": "An organizational criterion; no configuration evidences it."}},
+		},
+	}
+	for _, tc := range cases {
+		t.Run(tc.file+"/"+string(tc.control), func(t *testing.T) {
+			c, err := catalog.Load(filepath.Join("testdata", tc.file))
+			if err != nil {
+				t.Fatalf("Load: %v", err)
+			}
+			ref, ok := c.Control(tc.control)
+			if !ok {
+				t.Fatalf("no control %s", tc.control)
+			}
+			gotLayer := ""
+			if ref.Enforcement != nil {
+				gotLayer = ref.Enforcement.Layer
+			}
+			if gotLayer != tc.wantLayer {
+				t.Errorf("enforcement layer = %q, want %q", gotLayer, tc.wantLayer)
+			}
+			if !reflect.DeepEqual(ref.NotApplicable, tc.wantNA) {
+				t.Errorf("NotApplicable = %v, want %v", ref.NotApplicable, tc.wantNA)
+			}
+			if got := c.NotApplicableClauses(); !reflect.DeepEqual(got, tc.wantNAClauses) {
+				t.Errorf("NotApplicableClauses = %v, want %v", got, tc.wantNAClauses)
+			}
+
+			// Copies, not the catalog's own state.
+			if ref.Enforcement != nil {
+				ref.Enforcement.Layer = "clobbered"
+			}
+			for k := range ref.NotApplicable {
+				ref.NotApplicable[k] = "clobbered"
+			}
+			again, _ := c.Control(tc.control)
+			if !reflect.DeepEqual(again.NotApplicable, tc.wantNA) || (again.Enforcement != nil && again.Enforcement.Layer != tc.wantLayer) {
+				t.Error("Control shares its enforcement or not-applicable state with the catalog")
+			}
+		})
+	}
+}
+
+func TestLoadRejectsAnUnknownEnforcementLayer(t *testing.T) {
+	body, err := os.ReadFile(filepath.Join("testdata", "annotated.yaml"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(t.TempDir(), "catalog.yaml")
+	if err = os.WriteFile(path, []byte(strings.Replace(string(body), "layer: runtime", "layer: account", 1)), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	_, err = catalog.Load(path)
+	if err == nil || !errors.Is(err, catalog.ErrCatalog) || !strings.Contains(err.Error(), `"account"`) {
+		t.Fatalf("Load = %v, want a catalog error naming the layer", err)
+	}
+}
