@@ -399,13 +399,8 @@
             }
           },
           "layer": {
-            "enum": [
-              "",
-              "provider-local",
-              "companion-local",
-              "graph",
-              "runtime"
-            ]
+            "type": "string",
+            "description": "The catalog's enforcement layer as written, empty when the catalog records none. A newer catalog may name a layer this schema does not list, so any string is accepted."
           },
           "reason": {
             "type": "string"

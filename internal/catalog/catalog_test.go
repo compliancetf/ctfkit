@@ -528,7 +528,9 @@ func TestOptionalCoverageFields(t *testing.T) {
 	}
 }
 
-func TestLoadRejectsAnUnknownEnforcementLayer(t *testing.T) {
+// A layer this build does not know is kept as written, so an older ctfkit
+// still reads a catalog that a newer producer extended.
+func TestLoadKeepsAnUnknownEnforcementLayer(t *testing.T) {
 	body, err := os.ReadFile(filepath.Join("testdata", "annotated.yaml"))
 	if err != nil {
 		t.Fatal(err)
@@ -537,8 +539,12 @@ func TestLoadRejectsAnUnknownEnforcementLayer(t *testing.T) {
 	if err = os.WriteFile(path, []byte(strings.Replace(string(body), "layer: runtime", "layer: account", 1)), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	_, err = catalog.Load(path)
-	if err == nil || !errors.Is(err, catalog.ErrCatalog) || !strings.Contains(err.Error(), `"account"`) {
-		t.Fatalf("Load = %v, want a catalog error naming the layer", err)
+	c, err := catalog.Load(path)
+	if err != nil {
+		t.Fatalf("Load refused an unknown layer: %v", err)
+	}
+	ref, _ := c.Control("s3_bucket_mfa_delete_enabled")
+	if ref.Enforcement == nil || ref.Enforcement.Layer != "account" {
+		t.Errorf("Enforcement = %+v, want layer account as written", ref.Enforcement)
 	}
 }

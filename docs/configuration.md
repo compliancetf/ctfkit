@@ -195,7 +195,7 @@ A catalog may also record, per control, the layer that owns it (`enforcement: {l
 with layer `provider-local`, `companion-local`, `graph` or `runtime`) and, per framework, why the
 control has no applicable clause (`notApplicable`), and at the top level the clauses of a
 framework no control applies to (`notApplicableClauses`). All three are optional; a catalog
-without them loads as before. The evidence pack of `report --out-dir` reads them and shows
+without them loads as before, and a layer this ctfkit does not know is kept and shown as written. The evidence pack of `report --out-dir` reads them and shows
 "Not set" where a catalog has none. `schema/catalog-1.schema.json` documents the shape.
 
 A `ctf.coverage.module_source` finding on a raw resource lists only the controls the suggested

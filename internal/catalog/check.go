@@ -6,8 +6,6 @@ import (
 	"strings"
 
 	"gopkg.in/yaml.v3"
-
-	"github.com/compliancetf/ctfkit/pkg/ctfkit"
 )
 
 // document is the ctf.catalog/1 file as written. Unknown fields are ignored,
@@ -30,7 +28,9 @@ type documentControl struct {
 	ResourceTypes      []string            `yaml:"resourceTypes"`
 	ClausesByFramework map[string][]string `yaml:"clausesByFramework"`
 	// Enforcement and NotApplicable are optional; a catalog without them
-	// loads as before.
+	// loads as before. The layer is kept as written, not checked against the
+	// layers this build knows: a newer catalog may add one, and an older
+	// ctfkit must still read it. schemacheck holds producers to the enum.
 	Enforcement   *documentEnforcement `yaml:"enforcement"`
 	NotApplicable map[string]string    `yaml:"notApplicable"`
 }
@@ -38,14 +38,6 @@ type documentControl struct {
 type documentEnforcement struct {
 	Layer  string `yaml:"layer"`
 	Reason string `yaml:"reason"`
-}
-
-// enforcementLayers are the values enforcement.layer may take.
-var enforcementLayers = map[string]bool{
-	ctfkit.LayerProviderLocal:  true,
-	ctfkit.LayerCompanionLocal: true,
-	ctfkit.LayerGraph:          true,
-	ctfkit.LayerRuntime:        true,
 }
 
 type documentModule struct {
@@ -172,16 +164,6 @@ func checkDocument(doc document) []string {
 		}
 	}
 	add("a source may carry "+hostPlaceholder+" at most once", multiPlaceholder)
-
-	// An enforcement layer outside the enum would reach a reader as a layer
-	// nobody defined.
-	var badLayers []string
-	for _, c := range doc.Controls {
-		if c.Enforcement != nil && !enforcementLayers[c.Enforcement.Layer] {
-			badLayers = append(badLayers, fmt.Sprintf("%s has %q", c.ID, c.Enforcement.Layer))
-		}
-	}
-	add("enforcement.layer must be one of provider-local, companion-local, graph, runtime", badLayers)
 
 	return msgs
 }
