@@ -95,7 +95,7 @@ Output formats: SARIF ([CFF](docs/cff.md)), JSON, text, pretty, JUnit and Spacel
 ```yaml
 repos:
   - repo: https://github.com/compliancetf/ctfkit
-    rev: v0.9.0
+    rev: v0.10.0
     hooks:
       - id: ctfkit
 ```

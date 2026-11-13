@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/compliancetf/ctfkit/compare/v0.9.0...v0.10.0) (2026-11-13)
+
+
+### Features
+
+* **action:** name the action ctfkit by compliance.tf for the Marketplace listing ([#46](https://github.com/compliancetf/ctfkit/issues/46)) ([a0e3ad5](https://github.com/compliancetf/ctfkit/commit/a0e3ad5eda1436ab9e3d6b9a43374689b3e1d768))
+
 ## [0.9.0](https://github.com/compliancetf/ctfkit/compare/v0.8.0...v0.9.0) (2026-11-12)
 
 
