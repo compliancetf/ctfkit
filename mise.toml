@@ -43,3 +43,15 @@ version = "1.12.6"
 [tools."http:tofu".platforms]
 linux-x64 = { url = 'https://github.com/opentofu/opentofu/releases/download/v{{version}}/tofu_{{version}}_linux_amd64.tar.gz', checksum = 'sha256:50a6106fa4de523d09c87af85f3db1dd47535fc005727fdca6852146476b88ec' }
 macos-arm64 = { url = 'https://github.com/opentofu/opentofu/releases/download/v{{version}}/tofu_{{version}}_darwin_arm64.tar.gz', checksum = 'sha256:f958ec5e511063be9feb180ca015a4cb7977566a9cf6a8550bba8c2a9b5aba74' }
+
+# `go test ./adapters/github` lints the copyable workflow templates with actionlint and skips
+# when it is not on PATH. This version and the linux-x64 checksum MUST equal the
+# `Install actionlint` step in .github/workflows/test.yml, which also lints this
+# repository's own workflows. The checksums are the release's checksums.txt lines.
+[tools."http:actionlint"]
+version = "1.7.12"
+bin = "actionlint"
+
+[tools."http:actionlint".platforms]
+linux-x64 = { url = 'https://github.com/rhysd/actionlint/releases/download/v{{version}}/actionlint_{{version}}_linux_amd64.tar.gz', checksum = 'sha256:8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8' }
+macos-arm64 = { url = 'https://github.com/rhysd/actionlint/releases/download/v{{version}}/actionlint_{{version}}_darwin_arm64.tar.gz', checksum = 'sha256:aba9ced2dee8d27fecca3dc7feb1a7f9a52caefa1eb46f3271ea66b6e0e6953f' }
