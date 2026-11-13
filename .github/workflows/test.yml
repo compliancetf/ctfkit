@@ -280,9 +280,11 @@ jobs:
             [ -n "${f}" ] && [ -s "${f}" ] || bad "report output '${f}' is not a non-empty file"
           done
           # The second invocation replaced the first one's upload file: a later upload step
-          # never sends the scan's findings as the report's.
-          [ "${CTFKIT_SARIF_UPLOAD:-}" = "${REPORT_SARIF}" ] \
-            || bad "upload file after the report step is '${CTFKIT_SARIF_UPLOAD:-}', want the report sarif '${REPORT_SARIF}'"
+          # never sends the scan's findings as the report's. The upload is the filtered copy
+          # written beside the report's SARIF.
+          want_upload="$(dirname "${REPORT_SARIF}")/findings.upload.sarif"
+          [ "${CTFKIT_SARIF_UPLOAD:-}" = "${want_upload}" ] && [ -s "${want_upload}" ] \
+            || bad "upload file after the report step is '${CTFKIT_SARIF_UPLOAD:-}', want '${want_upload}'"
           exit "${status}"
 
       # Master runs only: the cross-compile is the expensive step and its output is not
