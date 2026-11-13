@@ -283,7 +283,8 @@ jobs:
           # never sends the scan's findings as the report's. The upload is the filtered copy
           # written beside the report's SARIF.
           want_upload="$(dirname "${REPORT_SARIF}")/findings.upload.sarif"
-          [ "${CTFKIT_SARIF_UPLOAD:-}" = "${want_upload}" ] && [ -s "${want_upload}" ] \
+          [ -s "${want_upload}" ] || bad "upload copy '${want_upload}' is not a non-empty file"
+          [ "${CTFKIT_SARIF_UPLOAD:-}" = "${want_upload}" ] \
             || bad "upload file after the report step is '${CTFKIT_SARIF_UPLOAD:-}', want '${want_upload}'"
           exit "${status}"
 
