@@ -260,13 +260,13 @@ jobs:
 
           [ "${PASS_EXIT}" = 0 ] || bad "pre_plan scan of testdata/pass exit code is '${PASS_EXIT}', want 0"
           [ "${PASS_OUTCOME}" = success ] || bad "pre_plan scan of testdata/pass outcome is '${PASS_OUTCOME}', want success"
-          [ -n "${PASS_MARKDOWN}" ] && [ -s "${PASS_MARKDOWN}" ] || bad "pre_plan scan markdown '${PASS_MARKDOWN}' is not a non-empty file"
+          [ -s "${PASS_MARKDOWN}" ] || bad "pre_plan scan markdown '${PASS_MARKDOWN}' is not a non-empty file"
           want_comment=""
           [ "${EVENT_NAME}" = pull_request ] || want_comment=skipped
           [ "${PASS_COMMENT}" = "${want_comment}" ] || bad "pr-comment result is '${PASS_COMMENT}', want '${want_comment}'"
           [ "${FAIL_EXIT}" = 1 ] || bad "pre_plan scan of testdata/fail exit code is '${FAIL_EXIT}', want 1"
           [ "${FAIL_OUTCOME}" = failure ] || bad "pre_plan scan of testdata/fail outcome is '${FAIL_OUTCOME}', want failure"
-          [ -n "${FAIL_SARIF}" ] && [ -s "${FAIL_SARIF}" ] || bad "pre_plan scan sarif '${FAIL_SARIF}' is not a non-empty file"
+          [ -s "${FAIL_SARIF}" ] || bad "pre_plan scan sarif '${FAIL_SARIF}' is not a non-empty file"
 
           [ "${SCAN_EXIT}" = 1 ] || bad "scan exit code is '${SCAN_EXIT}', want 1"
           [ "${SCAN_OUTCOME}" = failure ] || bad "scan step outcome is '${SCAN_OUTCOME}', want failure"
@@ -279,13 +279,13 @@ jobs:
                      and .locations[0].logicalLocations[0].fullyQualifiedName == "aws_s3_bucket.raw"
                      and .locations[0].physicalLocation.artifactLocation.uri == $uri)' "$1" > /dev/null
           }
-          if [ -n "${SCAN_SARIF}" ] && [ -s "${SCAN_SARIF}" ]; then
+          if [ -s "${SCAN_SARIF}" ]; then
             only_sample "${SCAN_SARIF}" main.tf \
               || bad "scan SARIF is not exactly ctf.coverage.module_source at error on aws_s3_bucket.raw in main.tf"
           else
             bad "scan sarif output '${SCAN_SARIF}' is not a non-empty file"
           fi
-          if [ -n "${SCAN_UPLOAD}" ] && [ -s "${SCAN_UPLOAD}" ] && [ "${SCAN_UPLOAD}" != "${SCAN_SARIF}" ]; then
+          if [ -s "${SCAN_UPLOAD}" ] && [ "${SCAN_UPLOAD}" != "${SCAN_SARIF}" ]; then
             only_sample "${SCAN_UPLOAD}" adapters/sample-repo/main.tf \
               || bad "scan upload copy does not locate the finding at adapters/sample-repo/main.tf"
           else
@@ -298,7 +298,7 @@ jobs:
           [ "${REPORT_EXIT}" = "${want}" ] || bad "report exit code is '${REPORT_EXIT}', want ${want}"
           [ "${REPORT_OUTCOME}" = "${want_outcome}" ] || bad "report step outcome is '${REPORT_OUTCOME}', want ${want_outcome}"
           for f in "${REPORT_RECEIPT}" "${REPORT_SARIF}" "${REPORT_MARKDOWN}"; do
-            [ -n "${f}" ] && [ -s "${f}" ] || bad "report output '${f}' is not a non-empty file"
+            [ -s "${f}" ] || bad "report output '${f}' is not a non-empty file"
           done
           # The second invocation replaced the first one's upload file: a later upload step
           # never sends the scan's findings as the report's.
