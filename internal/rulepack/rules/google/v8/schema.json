@@ -1,6 +1,6 @@
 {
   "provider": "registry.terraform.io/hashicorp/google",
-  "version": "8.10.0",
+  "version": "8.11.0",
   "resources": {
     "google_active_directory_domain": {
       "deletion_protection": "bool"
