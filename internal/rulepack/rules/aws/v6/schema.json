@@ -1,6 +1,6 @@
 {
   "provider": "registry.terraform.io/hashicorp/aws",
-  "version": "6.72.0",
+  "version": "6.73.0",
   "resources": {
     "aws_agentregistry_registry": {
       "encryption_configuration": {
@@ -1890,6 +1890,9 @@
       "deletion_protection_enabled": "bool"
     },
     "aws_pinpointsmsvoicev2_pool": {
+      "deletion_protection_enabled": "bool"
+    },
+    "aws_pinpointsmsvoicev2_protect_configuration": {
       "deletion_protection_enabled": "bool"
     },
     "aws_pinpointsmsvoicev2_sender_id": {
