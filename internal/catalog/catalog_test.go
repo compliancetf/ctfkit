@@ -18,8 +18,8 @@ import (
 func TestEmbeddedAnswersEveryInterfaceMethod(t *testing.T) {
 	c := catalog.Embedded()
 
-	if got := c.Version(); got.Version != "2026.11.1" || got.Provenance != "embedded" {
-		t.Errorf("Version() = %+v, want version 2026.11.1 from embedded", got)
+	if got := c.Version(); got.Version != "2026.1122.0" || got.Provenance != "embedded" {
+		t.Errorf("Version() = %+v, want version 2026.1122.0 from embedded", got)
 	}
 
 	// The embedded catalog holds the CIS v6.0 controls only. A control sits on

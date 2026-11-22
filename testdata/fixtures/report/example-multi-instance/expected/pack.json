@@ -14,7 +14,7 @@
   },
   "generatedAt": "2026-09-20T00:00:00Z",
   "catalog": {
-    "version": "2026.11.1",
+    "version": "2026.1122.0",
     "source": "embedded",
     "embeddedSubset": true
   },
@@ -811,8 +811,8 @@
         "aws_s3_bucket",
         "aws_s3_bucket_logging"
       ],
-      "layer": "",
-      "reason": "",
+      "layer": "graph",
+      "reason": "the bucket named by the trail's s3_bucket_name needs an aws_s3_bucket_logging",
       "supersededBy": ""
     },
     {
@@ -821,8 +821,8 @@
       "resourceTypes": [
         "aws_s3_bucket"
       ],
-      "layer": "",
-      "reason": "",
+      "layer": "runtime",
+      "reason": "account posture: some trail in the account must capture S3 object read data events; not a bucket attribute",
       "supersededBy": ""
     },
     {
@@ -831,8 +831,8 @@
       "resourceTypes": [
         "aws_s3_bucket"
       ],
-      "layer": "",
-      "reason": "",
+      "layer": "runtime",
+      "reason": "account posture: some trail in the account must capture S3 object write data events; not a bucket attribute",
       "supersededBy": ""
     },
     {
@@ -841,8 +841,8 @@
       "resourceTypes": [
         "aws_s3_bucket"
       ],
-      "layer": "",
-      "reason": "",
+      "layer": "graph",
+      "reason": "each bucket needs an aws_s3_bucket_policy that denies aws:SecureTransport false (companion presence plus content)",
       "supersededBy": ""
     },
     {
@@ -851,8 +851,8 @@
       "resourceTypes": [
         "aws_s3_bucket"
       ],
-      "layer": "",
-      "reason": "",
+      "layer": "graph",
+      "reason": "per flag, each of the four flags must be true on the bucket's aws_s3_bucket_public_access_block or on a declared aws_s3_account_public_access_block (the mapped query ORs bucket and account per flag); an account block set outside the plan is not visible",
       "supersededBy": ""
     }
   ],
@@ -977,7 +977,7 @@
   "files": [
     {
       "path": "findings.sarif",
-      "sha256": "90cffa7220db6755da466c523d05e2e5ddf226494321209d6225372186f49fa9"
+      "sha256": "e9eef1447af4ff237fb3b76c95e6b2d8b3d9b7b7d3c1a4d6fd85752de060dbd4"
     },
     {
       "path": "manifests/archive/compliancetf-manifest.json",
@@ -997,7 +997,7 @@
     },
     {
       "path": "receipt.json",
-      "sha256": "bc5919900de4ddf5dbb927d80fa59a5bf9d46c171d84f92d47f5b4f8dfc843e4"
+      "sha256": "211672905e7c56b855b6c2d8037e2030bb4c71d1fead97b1c0fef369c5cf0e36"
     }
   ]
 }

@@ -7,7 +7,7 @@
 | Release | input |
 | Commit | `0000000000000000000000000000000000000000` |
 | Generated | 2026-09-20T00:00:00Z by ctfkit 1.0.0 |
-| Control catalog | 2026.11.1, the catalog embedded in ctfkit, which holds the CIS v6.0 controls only; `ctfkit catalog pull` fetches the full catalog |
+| Control catalog | 2026.1122.0, the catalog embedded in ctfkit, which holds the CIS v6.0 controls only; `ctfkit catalog pull` fetches the full catalog |
 | Frameworks | SOC 2 |
 
 ## 1 Summary
@@ -83,11 +83,11 @@ Controls the catalog lists for the resource types of these modules that no modul
 
 | Control | Resource types | Layer | Reason |
 |---|---|---|---|
-| `cloudtrail_s3_logging_enabled` CloudTrail S3 buckets should have access logging enabled | `aws_cloudtrail`, `aws_s3_bucket`, `aws_s3_bucket_logging` | Not set | Not set |
-| `cloudtrail_s3_object_read_events_audit_enabled` S3 buckets should have object-level read event logging enabled in CloudTrail | `aws_s3_bucket` | Not set | Not set |
-| `cloudtrail_s3_object_write_events_audit_enabled` S3 buckets should have object-level write event logging enabled in CloudTrail | `aws_s3_bucket` | Not set | Not set |
-| `s3_bucket_enforces_ssl` S3 buckets should enforce SSL | `aws_s3_bucket` | Not set | Not set |
-| `s3_public_access_block_bucket_account` S3 public access should be blocked at account and bucket levels | `aws_s3_bucket` | Not set | Not set |
+| `cloudtrail_s3_logging_enabled` CloudTrail S3 buckets should have access logging enabled | `aws_cloudtrail`, `aws_s3_bucket`, `aws_s3_bucket_logging` | graph | the bucket named by the trail's s3_bucket_name needs an aws_s3_bucket_logging |
+| `cloudtrail_s3_object_read_events_audit_enabled` S3 buckets should have object-level read event logging enabled in CloudTrail | `aws_s3_bucket` | runtime | account posture: some trail in the account must capture S3 object read data events; not a bucket attribute |
+| `cloudtrail_s3_object_write_events_audit_enabled` S3 buckets should have object-level write event logging enabled in CloudTrail | `aws_s3_bucket` | runtime | account posture: some trail in the account must capture S3 object write data events; not a bucket attribute |
+| `s3_bucket_enforces_ssl` S3 buckets should enforce SSL | `aws_s3_bucket` | graph | each bucket needs an aws_s3_bucket_policy that denies aws:SecureTransport false (companion presence plus content) |
+| `s3_public_access_block_bucket_account` S3 public access should be blocked at account and bucket levels | `aws_s3_bucket` | graph | per flag, each of the four flags must be true on the bucket's aws_s3_bucket_public_access_block or on a declared aws_s3_account_public_access_block (the mapped query ORs bucket and account per flag); an account block set outside the plan is not visible |
 
 ## 7 Enforcement tests
 

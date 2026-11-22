@@ -14,7 +14,7 @@
   },
   "generatedAt": "2026-09-20T00:00:00Z",
   "catalog": {
-    "version": "2026.11.1",
+    "version": "2026.1122.0",
     "source": "embedded",
     "embeddedSubset": true
   },
@@ -121,7 +121,7 @@
   "files": [
     {
       "path": "findings.sarif",
-      "sha256": "9a8215ec3bcf11d9ae5eb4af1d6f20d145cd3798cc4cfc5ebc79eaea3ef824ba"
+      "sha256": "fced46b123f1b0271d87c453c281b369db818129798afb71aa5c0238fa070bc4"
     },
     {
       "path": "manifests/s3_bucket_notification/compliancetf-manifest.json",
