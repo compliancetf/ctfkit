@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/compliancetf/ctfkit/compare/v0.10.0...v0.11.0) (2026-11-22)
+
+
+### Features
+
+* **catalog:** refresh the embedded catalog to 2026.1122.0 ([#51](https://github.com/compliancetf/ctfkit/issues/51)) ([cf4bdfb](https://github.com/compliancetf/ctfkit/commit/cf4bdfbb8daada43b47783116a914c28a3b9bedc))
+
 ## [0.10.0](https://github.com/compliancetf/ctfkit/compare/v0.9.0...v0.10.0) (2026-11-13)
 
 
