@@ -7,7 +7,7 @@
 # hosts maps each to the host label of its registry endpoint, which is what
 # {host} in a module source is replaced with.
 schema: ctf.catalog/1
-version: "2026.11.1"
+version: "2026.1122.0"
 hosts:
   acsc_essential_eight: acscessentialeight
   acsc_ism_2023: acscism2023
@@ -20,10 +20,13 @@ hosts:
   cis_v600: cis
   cis_v71_ig1: cisv71ig1
   cis_v80_ig1: cisv80ig1
+  cis_v80_ig2: cisv80ig2
+  cis_v80_ig3: cisv80ig3
   cisa_cyber_essentials: cisacyberessentials
   eu_gmp_annex_11: eugmpannex11
-  fedramp_low_rev_4: fedramplow
-  fedramp_moderate_rev_4: fedrampmoderate
+  fedramp_high_rev_5: fedramphigh
+  fedramp_low_rev_5: fedramplow
+  fedramp_moderate_rev_5: fedrampmoderate
   ffiec: ffiec
   gdpr: gdpr
   hipaa_final_omnibus_2013: hipaa
@@ -44,432 +47,762 @@ hosts:
   soc_2: soc2
 defaultHost: soc_2
 controls:
-  - id: account_alternate_contact_security_registered
-    name: "AWS accounts should have security contact information provided"
-    resourceTypes: [aws_account_alternate_contact]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: account_maintain_current_contact_details
-    name: "AWS accounts should have current contact information"
-    resourceTypes: [aws_account_alternate_contact, aws_account_primary_contact]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: cloudtrail_multi_region_read_write_enabled
-    name: "CloudTrail trails should be enabled in all regions"
-    resourceTypes: [aws_cloudtrail]
-    clausesByFramework:
-      cis_v600:
-        - "4 Logging"
-  - id: cloudtrail_s3_logging_enabled
-    name: "CloudTrail S3 buckets should have access logging enabled"
-    resourceTypes: [aws_cloudtrail, aws_s3_bucket, aws_s3_bucket_logging]
-    clausesByFramework:
-      cis_v600:
-        - "4 Logging"
-  - id: cloudtrail_s3_object_read_events_audit_enabled
-    name: "S3 buckets should have object-level read event logging enabled in CloudTrail"
-    resourceTypes: [aws_s3_bucket]
-    clausesByFramework:
-      cis_v600:
-        - "4 Logging"
-  - id: cloudtrail_s3_object_write_events_audit_enabled
-    name: "S3 buckets should have object-level write event logging enabled in CloudTrail"
-    resourceTypes: [aws_s3_bucket]
-    clausesByFramework:
-      cis_v600:
-        - "4 Logging"
-  - id: cloudtrail_trail_enabled_account
-    name: "CloudTrail trails should have at least one trail enabled in the AWS account"
-    resourceTypes: [aws_cloudtrail]
-    clausesByFramework:
-      cis_v600:
-        - "4 Logging"
-  - id: cloudtrail_trail_logs_encrypted_with_kms_cmk
-    name: "CloudTrail trails should have logs encrypted using a customer managed KMS key"
-    resourceTypes: [aws_cloudtrail]
-    clausesByFramework:
-      cis_v600:
-        - "4 Logging"
-  - id: cloudtrail_trail_validation_enabled
-    name: "CloudTrail trails should have log file validation enabled"
-    resourceTypes: [aws_cloudtrail]
-    clausesByFramework:
-      cis_v600:
-        - "4 Logging"
-  - id: config_configuration_recorder_no_failed_deliver_logs
-    name: "Config configuration recorders should not fail to deliver logs"
-    resourceTypes: [aws_config_delivery_channel]
-    clausesByFramework:
-      cis_v600:
-        - "4 Logging"
-  - id: config_enabled_all_regions
-    name: "AWS Config should be enabled in all regions"
-    resourceTypes: [aws_config_configuration_recorder, aws_config_configuration_recorder_status, aws_config_delivery_channel]
-    clausesByFramework:
-      cis_v600:
-        - "4 Logging"
-  - id: ebs_attached_volume_encryption_enabled
-    name: "Attached EBS volumes should have encryption enabled"
-    resourceTypes: [aws_ebs_volume]
-    clausesByFramework:
-      cis_v600:
-        - "6 Networking"
-  - id: ebs_encryption_by_default_enabled
-    name: "EBS encryption by default should be enabled"
-    resourceTypes: [aws_ebs_encryption_by_default, aws_instance]
-    clausesByFramework:
-      cis_v600:
-        - "6.1 Elastic Compute Cloud (EC2)"
-  - id: ec2_instance_iam_profile_attached
-    name: "EC2 instances should have IAM profile attached"
-    resourceTypes: [aws_instance]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: ec2_instance_publicly_accessible_iam_profile_attached
-    name: "Public EC2 instances should have IAM profile attached"
-    resourceTypes: [aws_instance]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: ec2_instance_uses_imdsv2
-    name: "EC2 instances should use IMDSv2"
-    resourceTypes: [aws_instance]
-    clausesByFramework:
-      cis_v600:
-        - "6 Networking"
-  - id: efs_file_system_encrypt_data_at_rest
-    name: "EFS file systems should have encryption at rest enabled"
-    resourceTypes: [aws_efs_file_system]
-    clausesByFramework:
-      cis_v600:
-        - "3 Storage"
-        - "3.3 Elastic File System (EFS)"
-  - id: iam_access_analyzer_enabled
-    name: "IAM Access Analyzer should be enabled for all regions"
-    resourceTypes: [aws_accessanalyzer_analyzer]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_account_password_policy_min_length_14
-    name: "IAM password policies should have minimum length set to 14 or greater"
-    resourceTypes: [aws_iam_account_password_policy]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_account_password_policy_reuse_24
-    name: "IAM password policies should prevent password reuse"
-    resourceTypes: [aws_iam_account_password_policy]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_check_saml_providers_sts
-    name: "AWS accounts should have IAM SAML providers"
-    resourceTypes: [aws_iam_saml_provider]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_policy_all_attached_no_star_star
-    name: "IAM policies should not allow full administrative privileges"
-    resourceTypes: [aws_iam_group, aws_iam_group_policy, aws_iam_policy, aws_iam_role, aws_iam_role_policy, aws_iam_user, aws_iam_user_policy, aws_ssoadmin_permission_set_inline_policy]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_policy_custom_attached_no_star_star
-    name: "IAM policies should not allow full '*' administrative privileges"
-    resourceTypes: [aws_iam_policy, aws_iam_role_policy]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_policy_no_star_star
-    name: "IAM policy should not have statements with admin access"
-    resourceTypes: [aws_iam_group, aws_iam_group_policy, aws_iam_policy, aws_iam_role, aws_iam_role_policy, aws_iam_user, aws_iam_user_policy, aws_ssoadmin_permission_set_inline_policy]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_root_user_no_access_keys
-    name: "IAM root user should not have access keys"
-    resourceTypes: [aws_iam_access_key]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_server_certificate_not_expired
-    name: "IAM SSL/TLS certificates should not be expired"
-    resourceTypes: [aws_iam_server_certificate]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_support_role
-    name: "IAM support roles should be created to manage incidents with AWS Support"
-    resourceTypes: [aws_iam_role, aws_iam_role_policy_attachment]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_user_access_key_age_90
-    name: "IAM user access keys should be rotated at least every 90 days"
-    resourceTypes: [aws_iam_access_key]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_user_access_keys_and_password_at_setup
-    name: "IAM users with a console password should not have access keys created at initial setup"
-    resourceTypes: [aws_iam_access_key, aws_iam_user_login_profile]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_user_console_access_mfa_enabled
-    name: "IAM users with console access should have MFA enabled"
-    resourceTypes: [aws_iam_user]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_user_group_role_cloudshell_fullaccess_restricted
-    name: "IAM users should have restricted access to AWSCloudShellFullAccess"
-    resourceTypes: [aws_iam_group_policy_attachment, aws_iam_role_policy_attachment, aws_iam_user_policy_attachment]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_user_no_inline_attached_policies
-    name: "IAM user should not have any inline or attached policies"
-    resourceTypes: [aws_iam_policy, aws_iam_policy_attachment, aws_iam_user, aws_iam_user_policy, aws_iam_user_policy_attachment]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_user_no_policies
-    name: "IAM policies should be attached only to groups or roles"
-    resourceTypes: [aws_iam_policy, aws_iam_policy_attachment, aws_iam_user, aws_iam_user_policy, aws_iam_user_policy_attachment]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: iam_user_one_active_key
-    name: "IAM users should have only one active access key"
-    resourceTypes: [aws_iam_access_key]
-    clausesByFramework:
-      cis_v600:
-        - "2 Identity and Access Management"
-  - id: kms_cmk_rotation_enabled
-    name: "KMS CMK rotation should be enabled"
-    resourceTypes: [aws_kms_key]
-    clausesByFramework:
-      cis_v600:
-        - "4 Logging"
-  - id: log_metric_filter_bucket_policy
-    name: "CloudWatch log metric filters should be configured for S3 bucket policy changes"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_cloudtrail_configuration
-    name: "CloudWatch log metric filters should be configured for CloudTrail configuration changes"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_config_configuration
-    name: "CloudWatch log metric filters should be configured for AWS Config configuration changes"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_console_authentication_failure
-    name: "CloudWatch log metric filters should be configured for AWS Management Console authentication failures"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_console_login_mfa
-    name: "CloudWatch log metric filters should be configured for AWS Management Console sign-in without MFA"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_disable_or_delete_cmk
-    name: "CloudWatch log metric filters should be configured for disabling or scheduled deletion of customer managed keys"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_iam_policy
-    name: "CloudWatch log metric filters should be configured for IAM policy changes"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_network_acl
-    name: "CloudWatch log metric filters should be configured for changes to Network Access Control Lists (NACL)"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_network_gateway
-    name: "CloudWatch log metric filters should be configured for changes to network gateways"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_organization
-    name: "CloudWatch log metric filters should monitor AWS Organizations changes"
-    resourceTypes: [aws_cloudwatch_log_metric_filter]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_root_login
-    name: "CloudWatch log metric filters should be configured for usage of root account"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_route_table
-    name: "CloudWatch log metric filters should be configured for route table changes"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_security_group
-    name: "CloudWatch log metric filters should be configured for security group changes"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_unauthorized_api
-    name: "CloudWatch log metric filters should be configured for unauthorized API calls"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: log_metric_filter_vpc
-    name: "CloudWatch log metric filters should be configured for VPC changes"
-    resourceTypes: [aws_cloudwatch_log_metric_filter, aws_cloudwatch_metric_alarm]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: macie_is_enabled
-    name: "Macie should be enabled"
-    resourceTypes: [aws_macie2_account]
-    clausesByFramework:
-      cis_v600:
-        - "3 Storage"
-  - id: rds_db_cluster_multiple_az_enabled
-    name: "RDS DB clusters should be configured for multiple Availability Zones"
-    resourceTypes: [aws_rds_cluster]
-    clausesByFramework:
-      cis_v600:
-        - "3 Storage"
-  - id: rds_db_instance_automatic_minor_version_upgrade_enabled
-    name: "RDS DB instance automatic minor version upgrade should be enabled"
-    resourceTypes: [aws_db_instance]
-    clausesByFramework:
-      cis_v600:
-        - "3 Storage"
-        - "3.2 Relational Database Service (RDS)"
-  - id: rds_db_instance_encryption_at_rest_enabled
-    name: "RDS DB instance encryption at rest should be enabled"
-    resourceTypes: [aws_db_instance]
-    clausesByFramework:
-      cis_v600:
-        - "3 Storage"
-        - "3.2 Relational Database Service (RDS)"
-  - id: rds_db_instance_multiple_az_enabled
-    name: "RDS DB instances should have multiple AZ enabled"
-    resourceTypes: [aws_db_instance]
-    clausesByFramework:
-      cis_v600:
-        - "3 Storage"
-        - "3.2 Relational Database Service (RDS)"
-  - id: rds_db_instance_prohibit_public_access
-    name: "RDS DB instances should prohibit public access"
-    resourceTypes: [aws_db_instance]
-    clausesByFramework:
-      cis_v600:
-        - "3.2 Relational Database Service (RDS)"
-  - id: s3_bucket_enforces_ssl
-    name: "S3 buckets should enforce SSL"
-    resourceTypes: [aws_s3_bucket]
-    clausesByFramework:
-      cis_v600:
-        - "3.1 Simple Storage Service (S3)"
-  - id: s3_bucket_mfa_delete_enabled
-    name: "S3 buckets should have MFA delete enabled"
-    resourceTypes: [aws_s3_bucket_versioning]
-    clausesByFramework:
-      cis_v600:
-        - "3 Storage"
-        - "3.1 Simple Storage Service (S3)"
-  - id: s3_bucket_protected_by_macie
-    name: "S3 buckets should be discovered, classified, and secured by Macie"
-    resourceTypes: [aws_macie2_account, aws_macie2_classification_job]
-    clausesByFramework:
-      cis_v600:
-        - "3.1 Simple Storage Service (S3)"
-  - id: s3_bucket_restrict_public_write_access
-    name: "S3 buckets should prohibit public write access"
-    resourceTypes: [aws_s3_bucket_public_access_block]
-    clausesByFramework:
-      cis_v600:
-        - "3 Storage"
-  - id: s3_public_access_block_bucket_account
-    name: "S3 public access should be blocked at account and bucket levels"
-    resourceTypes: [aws_s3_bucket]
-    clausesByFramework:
-      cis_v600:
-        - "3.1 Simple Storage Service (S3)"
-  - id: securityhub_enabled
-    name: "Security Hub should be enabled for an AWS account"
-    resourceTypes: [aws_securityhub_account]
-    clausesByFramework:
-      cis_v600:
-        - "5 Monitoring"
-  - id: vpc_default_security_group_restricts_all_traffic
-    name: "VPC default security group should not allow inbound and outbound traffic"
-    resourceTypes: [aws_default_security_group, aws_instance, aws_vpc]
-    clausesByFramework:
-      cis_v600:
-        - "6 Networking"
-  - id: vpc_flow_logs_enabled
-    name: "VPC flow logs should be enabled"
-    resourceTypes: [aws_instance, aws_vpc]
-    clausesByFramework:
-      cis_v600:
-        - "4 Logging"
-  - id: vpc_network_acl_remote_administration
-    name: "Network ACLs should not allow ingress from 0.0.0.0/0 to port 22 or port 3389"
-    resourceTypes: [aws_instance]
-    clausesByFramework:
-      cis_v600:
-        - "6 Networking"
-  - id: vpc_peering_connection_route_table_least_privilege
-    name: "VPCs peering connection route tables should have least privilege"
-    resourceTypes: [aws_route]
-    clausesByFramework:
-      cis_v600:
-        - "6 Networking"
-  - id: vpc_security_group_remote_administration_ipv4
-    name: "VPC security groups should not allow ingress from 0.0.0.0/0 to remote server administration ports (IPv4)"
-    resourceTypes: [aws_instance]
-    clausesByFramework:
-      cis_v600:
-        - "6 Networking"
-  - id: vpc_security_group_remote_administration_ipv6
-    name: "VPC security groups should not allow ingress from ::/0 to remote server administration ports"
-    resourceTypes: [aws_instance]
-    clausesByFramework:
-      cis_v600:
-        - "6 Networking"
-  - id: vpc_security_group_restrict_ingress_cifs_port_all
-    name: "VPC security groups should restrict ingress CIFS access from 0.0.0.0/0 and ::/0"
-    resourceTypes: [aws_security_group, aws_vpc_security_group_ingress_rule]
-    clausesByFramework:
-      cis_v600:
-        - "6.1 Elastic Compute Cloud (EC2)"
+- id: account_alternate_contact_security_registered
+  name: AWS accounts should have security contact information provided
+  resourceTypes:
+  - aws_account_alternate_contact
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: runtime
+    reason: 'account posture: the account must have a SECURITY alternate contact; absence is not visible in a plan and the resource fields are schema-required'
+- id: account_maintain_current_contact_details
+  name: AWS accounts should have current contact information
+  resourceTypes:
+  - aws_account_alternate_contact
+  - aws_account_primary_contact
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: runtime
+    reason: 'account posture: primary and all alternate contacts must exist and be current; absence and currency are not visible in a plan'
+- id: cloudtrail_multi_region_read_write_enabled
+  name: CloudTrail trails should be enabled in all regions
+  resourceTypes:
+  - aws_cloudtrail
+  clausesByFramework:
+    cis_v600:
+    - 4 Logging
+  enforcement:
+    layer: runtime
+    reason: 'account posture: at least one multi-region trail logging all read and write events; single-region trails stay legitimate, so no per-trail rule'
+- id: cloudtrail_s3_logging_enabled
+  name: CloudTrail S3 buckets should have access logging enabled
+  resourceTypes:
+  - aws_cloudtrail
+  - aws_s3_bucket
+  - aws_s3_bucket_logging
+  clausesByFramework:
+    cis_v600:
+    - 4 Logging
+  enforcement:
+    layer: graph
+    reason: the bucket named by the trail's s3_bucket_name needs an aws_s3_bucket_logging
+- id: cloudtrail_s3_object_read_events_audit_enabled
+  name: S3 buckets should have object-level read event logging enabled in CloudTrail
+  resourceTypes:
+  - aws_s3_bucket
+  clausesByFramework:
+    cis_v600:
+    - 4 Logging
+  enforcement:
+    layer: runtime
+    reason: 'account posture: some trail in the account must capture S3 object read data events; not a bucket attribute'
+- id: cloudtrail_s3_object_write_events_audit_enabled
+  name: S3 buckets should have object-level write event logging enabled in CloudTrail
+  resourceTypes:
+  - aws_s3_bucket
+  clausesByFramework:
+    cis_v600:
+    - 4 Logging
+  enforcement:
+    layer: runtime
+    reason: 'account posture: some trail in the account must capture S3 object write data events; not a bucket attribute'
+- id: cloudtrail_trail_enabled_account
+  name: CloudTrail trails should have at least one trail enabled in the AWS account
+  resourceTypes:
+  - aws_cloudtrail
+  clausesByFramework:
+    cis_v600:
+    - 4 Logging
+  enforcement:
+    layer: runtime
+    reason: 'account posture: at least one logging trail in the account; per-trail enable_logging is the compliance.tf control cloudtrail_trail_enabled'
+- id: cloudtrail_trail_logs_encrypted_with_kms_cmk
+  name: CloudTrail trails should have logs encrypted using a customer managed KMS key
+  resourceTypes:
+  - aws_cloudtrail
+  clausesByFramework:
+    cis_v600:
+    - 4 Logging
+  enforcement:
+    layer: provider-local
+    reason: kms_key_id set
+- id: cloudtrail_trail_validation_enabled
+  name: CloudTrail trails should have log file validation enabled
+  resourceTypes:
+  - aws_cloudtrail
+  clausesByFramework:
+    cis_v600:
+    - 4 Logging
+  enforcement:
+    layer: provider-local
+    reason: enable_log_file_validation = true
+- id: config_configuration_recorder_no_failed_deliver_logs
+  name: Config configuration recorders should not fail to deliver logs
+  resourceTypes:
+  - aws_config_delivery_channel
+  clausesByFramework:
+    cis_v600:
+    - 4 Logging
+  enforcement:
+    layer: runtime
+    reason: delivery failure is live delivery channel status, not config
+- id: config_enabled_all_regions
+  name: AWS Config should be enabled in all regions
+  resourceTypes:
+  - aws_config_configuration_recorder
+  - aws_config_configuration_recorder_status
+  - aws_config_delivery_channel
+  clausesByFramework:
+    cis_v600:
+    - 4 Logging
+  enforcement:
+    layer: provider-local
+    reason: declared recorder records all supported types and its status is_enabled true; a region without a recorder is not checked
+- id: ebs_attached_volume_encryption_enabled
+  name: Attached EBS volumes should have encryption enabled
+  resourceTypes:
+  - aws_ebs_volume
+  clausesByFramework:
+    cis_v600:
+    - 6 Networking
+  enforcement:
+    layer: provider-local
+    reason: encrypted = true on the volume
+- id: ebs_encryption_by_default_enabled
+  name: EBS encryption by default should be enabled
+  resourceTypes:
+  - aws_ebs_encryption_by_default
+  - aws_instance
+  clausesByFramework:
+    cis_v600:
+    - 6.1 Elastic Compute Cloud (EC2)
+  enforcement:
+    layer: provider-local
+    reason: enabled = true on the regional setting; an undeclared setting is not checked
+- id: ec2_instance_iam_profile_attached
+  name: EC2 instances should have IAM profile attached
+  resourceTypes:
+  - aws_instance
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: provider-local
+    reason: iam_instance_profile set
+- id: ec2_instance_publicly_accessible_iam_profile_attached
+  name: Public EC2 instances should have IAM profile attached
+  resourceTypes:
+  - aws_instance
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: graph
+    reason: iam_instance_profile required when the instance is public; public addressing can come from the subnet default or an aws_eip
+- id: ec2_instance_uses_imdsv2
+  name: EC2 instances should use IMDSv2
+  resourceTypes:
+  - aws_instance
+  clausesByFramework:
+    cis_v600:
+    - 6 Networking
+  enforcement:
+    layer: provider-local
+    reason: metadata_options.http_tokens = required
+- id: efs_file_system_encrypt_data_at_rest
+  name: EFS file systems should have encryption at rest enabled
+  resourceTypes:
+  - aws_efs_file_system
+  clausesByFramework:
+    cis_v600:
+    - 3 Storage
+    - 3.3 Elastic File System (EFS)
+  enforcement:
+    layer: provider-local
+    reason: encrypted = true
+- id: iam_access_analyzer_enabled
+  name: IAM Access Analyzer should be enabled for all regions
+  resourceTypes:
+  - aws_accessanalyzer_analyzer
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: runtime
+    reason: 'region posture: an analyzer must exist in every region; an analyzer has no disabled setting, so only absence fails'
+- id: iam_account_password_policy_min_length_14
+  name: IAM password policies should have minimum length set to 14 or greater
+  resourceTypes:
+  - aws_iam_account_password_policy
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: provider-local
+    reason: minimum_password_length >= 14
+- id: iam_account_password_policy_reuse_24
+  name: IAM password policies should prevent password reuse
+  resourceTypes:
+  - aws_iam_account_password_policy
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: provider-local
+    reason: password_reuse_prevention >= 24
+- id: iam_check_saml_providers_sts
+  name: AWS accounts should have IAM SAML providers
+  resourceTypes:
+  - aws_iam_saml_provider
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: runtime
+    reason: 'account posture: at least one SAML provider in the account; absence is not visible in a plan'
+- id: iam_policy_all_attached_no_star_star
+  name: IAM policies should not allow full administrative privileges
+  resourceTypes:
+  - aws_iam_group
+  - aws_iam_group_policy
+  - aws_iam_policy
+  - aws_iam_role
+  - aws_iam_role_policy
+  - aws_iam_user
+  - aws_iam_user_policy
+  - aws_ssoadmin_permission_set_inline_policy
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: graph
+    reason: attached policies only, including AWS managed AdministratorAccess attached by ARN (single, exclusive or role managed_policy_arns); needs attachments joined with policy documents
+- id: iam_policy_custom_attached_no_star_star
+  name: IAM policies should not allow full '*' administrative privileges
+  resourceTypes:
+  - aws_iam_policy
+  - aws_iam_role_policy
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: provider-local
+    reason: no Allow statement with Action * on Resource * in a customer managed policy (iam.parse)
+- id: iam_policy_no_star_star
+  name: IAM policy should not have statements with admin access
+  resourceTypes:
+  - aws_iam_group
+  - aws_iam_group_policy
+  - aws_iam_policy
+  - aws_iam_role
+  - aws_iam_role_policy
+  - aws_iam_user
+  - aws_iam_user_policy
+  - aws_ssoadmin_permission_set_inline_policy
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: provider-local
+    reason: no policy document Allow statement with Action * on Resource * (iam.parse)
+- id: iam_root_user_no_access_keys
+  name: IAM root user should not have access keys
+  resourceTypes:
+  - aws_iam_access_key
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: runtime
+    reason: root access keys cannot be created through Terraform (aws_iam_access_key is for IAM users); live account state
+- id: iam_server_certificate_not_expired
+  name: IAM SSL/TLS certificates should not be expired
+  resourceTypes:
+  - aws_iam_server_certificate
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: runtime
+    reason: expiry (expiration) is computed from the certificate and compared with the current date; live state
+- id: iam_support_role
+  name: IAM support roles should be created to manage incidents with AWS Support
+  resourceTypes:
+  - aws_iam_role
+  - aws_iam_role_policy_attachment
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: runtime
+    reason: 'account posture: at least one role with AWSSupportAccess in the account; absence is not visible in a plan'
+- id: iam_user_access_key_age_90
+  name: IAM user access keys should be rotated at least every 90 days
+  resourceTypes:
+  - aws_iam_access_key
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: runtime
+    reason: key age is live state; Terraform has no max-age argument
+- id: iam_user_access_keys_and_password_at_setup
+  name: IAM users with a console password should not have access keys created at initial setup
+  resourceTypes:
+  - aws_iam_access_key
+  - aws_iam_user_login_profile
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: runtime
+    reason: CIS initial-setup check compares key and user creation times in the credential report; live state
+- id: iam_user_console_access_mfa_enabled
+  name: IAM users with console access should have MFA enabled
+  resourceTypes:
+  - aws_iam_user
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: runtime
+    reason: MFA device activation for a console user happens out of band; live state
+- id: iam_user_group_role_cloudshell_fullaccess_restricted
+  name: IAM users should have restricted access to AWSCloudShellFullAccess
+  resourceTypes:
+  - aws_iam_group_policy_attachment
+  - aws_iam_role_policy_attachment
+  - aws_iam_user_policy_attachment
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: provider-local
+    reason: no attachment (single, exclusive or role managed_policy_arns) of arn:aws:iam::aws:policy/AWSCloudShellFullAccess
+- id: iam_user_no_inline_attached_policies
+  name: IAM user should not have any inline or attached policies
+  resourceTypes:
+  - aws_iam_policy
+  - aws_iam_policy_attachment
+  - aws_iam_user
+  - aws_iam_user_policy
+  - aws_iam_user_policy_attachment
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: provider-local
+    reason: no user inline policy or user attachment resource; aws_iam_policy_attachment users empty; an aws_iam_user_policy_attachments_exclusive with empty policy_arns declares none and passes
+- id: iam_user_no_policies
+  name: IAM policies should be attached only to groups or roles
+  resourceTypes:
+  - aws_iam_policy
+  - aws_iam_policy_attachment
+  - aws_iam_user
+  - aws_iam_user_policy
+  - aws_iam_user_policy_attachment
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: provider-local
+    reason: no user inline policy or user attachment resource; aws_iam_policy_attachment users empty; an aws_iam_user_policy_attachments_exclusive with empty policy_arns declares none and passes
+- id: iam_user_one_active_key
+  name: IAM users should have only one active access key
+  resourceTypes:
+  - aws_iam_access_key
+  clausesByFramework:
+    cis_v600:
+    - 2 Identity and Access Management
+  enforcement:
+    layer: graph
+    reason: counts active aws_iam_access_key instances per user; keys created outside the plan are not visible
+- id: kms_cmk_rotation_enabled
+  name: KMS CMK rotation should be enabled
+  resourceTypes:
+  - aws_kms_key
+  clausesByFramework:
+    cis_v600:
+    - 4 Logging
+  enforcement:
+    layer: provider-local
+    reason: enable_key_rotation = true
+- id: log_metric_filter_bucket_policy
+  name: CloudWatch log metric filters should be configured for S3 bucket policy changes
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_cloudtrail_configuration
+  name: CloudWatch log metric filters should be configured for CloudTrail configuration changes
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_config_configuration
+  name: CloudWatch log metric filters should be configured for AWS Config configuration changes
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_console_authentication_failure
+  name: CloudWatch log metric filters should be configured for AWS Management Console authentication failures
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_console_login_mfa
+  name: CloudWatch log metric filters should be configured for AWS Management Console sign-in without MFA
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_disable_or_delete_cmk
+  name: CloudWatch log metric filters should be configured for disabling or scheduled deletion of customer managed keys
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_iam_policy
+  name: CloudWatch log metric filters should be configured for IAM policy changes
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_network_acl
+  name: CloudWatch log metric filters should be configured for changes to Network Access Control Lists (NACL)
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_network_gateway
+  name: CloudWatch log metric filters should be configured for changes to network gateways
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_organization
+  name: CloudWatch log metric filters should monitor AWS Organizations changes
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_root_login
+  name: CloudWatch log metric filters should be configured for usage of root account
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_route_table
+  name: CloudWatch log metric filters should be configured for route table changes
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_security_group
+  name: CloudWatch log metric filters should be configured for security group changes
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_unauthorized_api
+  name: CloudWatch log metric filters should be configured for unauthorized API calls
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: log_metric_filter_vpc
+  name: CloudWatch log metric filters should be configured for VPC changes
+  resourceTypes:
+  - aws_cloudwatch_log_metric_filter
+  - aws_cloudwatch_metric_alarm
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: a metric filter and alarm for this event class must exist on the CloudTrail log group; other filters stay legitimate, so only absence fails'
+- id: macie_is_enabled
+  name: Macie should be enabled
+  resourceTypes:
+  - aws_macie2_account
+  clausesByFramework:
+    cis_v600:
+    - 3 Storage
+  enforcement:
+    layer: provider-local
+    reason: status is not PAUSED on a declared account; a region without aws_macie2_account is not checked
+- id: rds_db_cluster_multiple_az_enabled
+  name: RDS DB clusters should be configured for multiple Availability Zones
+  resourceTypes:
+  - aws_rds_cluster
+  clausesByFramework:
+    cis_v600:
+    - 3 Storage
+  enforcement:
+    layer: graph
+    reason: needs two or more aws_rds_cluster_instance of the cluster across AZs
+- id: rds_db_instance_automatic_minor_version_upgrade_enabled
+  name: RDS DB instance automatic minor version upgrade should be enabled
+  resourceTypes:
+  - aws_db_instance
+  clausesByFramework:
+    cis_v600:
+    - 3 Storage
+    - 3.2 Relational Database Service (RDS)
+  enforcement:
+    layer: provider-local
+    reason: auto_minor_version_upgrade = true
+- id: rds_db_instance_encryption_at_rest_enabled
+  name: RDS DB instance encryption at rest should be enabled
+  resourceTypes:
+  - aws_db_instance
+  clausesByFramework:
+    cis_v600:
+    - 3 Storage
+    - 3.2 Relational Database Service (RDS)
+  enforcement:
+    layer: provider-local
+    reason: storage_encrypted = true
+- id: rds_db_instance_multiple_az_enabled
+  name: RDS DB instances should have multiple AZ enabled
+  resourceTypes:
+  - aws_db_instance
+  clausesByFramework:
+    cis_v600:
+    - 3 Storage
+    - 3.2 Relational Database Service (RDS)
+  enforcement:
+    layer: provider-local
+    reason: multi_az = true
+- id: rds_db_instance_prohibit_public_access
+  name: RDS DB instances should prohibit public access
+  resourceTypes:
+  - aws_db_instance
+  clausesByFramework:
+    cis_v600:
+    - 3.2 Relational Database Service (RDS)
+  enforcement:
+    layer: provider-local
+    reason: publicly_accessible = false
+- id: s3_bucket_enforces_ssl
+  name: S3 buckets should enforce SSL
+  resourceTypes:
+  - aws_s3_bucket
+  clausesByFramework:
+    cis_v600:
+    - 3.1 Simple Storage Service (S3)
+  enforcement:
+    layer: graph
+    reason: each bucket needs an aws_s3_bucket_policy that denies aws:SecureTransport false (companion presence plus content)
+- id: s3_bucket_mfa_delete_enabled
+  name: S3 buckets should have MFA delete enabled
+  resourceTypes:
+  - aws_s3_bucket_versioning
+  clausesByFramework:
+    cis_v600:
+    - 3 Storage
+    - 3.1 Simple Storage Service (S3)
+  enforcement:
+    layer: companion-local
+    reason: versioning_configuration.mfa_delete = Enabled
+- id: s3_bucket_protected_by_macie
+  name: S3 buckets should be discovered, classified, and secured by Macie
+  resourceTypes:
+  - aws_macie2_account
+  - aws_macie2_classification_job
+  clausesByFramework:
+    cis_v600:
+    - 3.1 Simple Storage Service (S3)
+  enforcement:
+    layer: runtime
+    reason: coverage of each bucket by a Macie classification job (bucket lists or criteria) is evaluated against live inventory
+- id: s3_bucket_restrict_public_write_access
+  name: S3 buckets should prohibit public write access
+  resourceTypes:
+  - aws_s3_bucket_public_access_block
+  clausesByFramework:
+    cis_v600:
+    - 3 Storage
+  enforcement:
+    layer: companion-local
+    reason: all four public access block flags true
+- id: s3_public_access_block_bucket_account
+  name: S3 public access should be blocked at account and bucket levels
+  resourceTypes:
+  - aws_s3_bucket
+  clausesByFramework:
+    cis_v600:
+    - 3.1 Simple Storage Service (S3)
+  enforcement:
+    layer: graph
+    reason: per flag, each of the four flags must be true on the bucket's aws_s3_bucket_public_access_block or on a declared aws_s3_account_public_access_block (the mapped query ORs bucket and account per flag); an account block set outside the plan is not visible
+- id: securityhub_enabled
+  name: Security Hub should be enabled for an AWS account
+  resourceTypes:
+  - aws_securityhub_account
+  clausesByFramework:
+    cis_v600:
+    - 5 Monitoring
+  enforcement:
+    layer: runtime
+    reason: 'account posture: an aws_securityhub_account has no disabled setting, so only absence fails'
+- id: vpc_default_security_group_restricts_all_traffic
+  name: VPC default security group should not allow inbound and outbound traffic
+  resourceTypes:
+  - aws_default_security_group
+  - aws_instance
+  - aws_vpc
+  clausesByFramework:
+    cis_v600:
+    - 6 Networking
+  enforcement:
+    layer: graph
+    reason: every VPC has a default group; it needs an adopting aws_default_security_group without rules and no standalone rules on it
+- id: vpc_flow_logs_enabled
+  name: VPC flow logs should be enabled
+  resourceTypes:
+  - aws_instance
+  - aws_vpc
+  clausesByFramework:
+    cis_v600:
+    - 4 Logging
+  enforcement:
+    layer: graph
+    reason: each VPC needs an aws_flow_log whose vpc_id is the VPC
+- id: vpc_network_acl_remote_administration
+  name: Network ACLs should not allow ingress from 0.0.0.0/0 to port 22 or port 3389
+  resourceTypes:
+  - aws_instance
+  clausesByFramework:
+    cis_v600:
+    - 6 Networking
+  enforcement:
+    layer: provider-local
+    reason: no allow ingress from 0.0.0.0/0 or ::/0 covering port 22 or 3389; a VPC whose default network ACL is not adopted by aws_default_network_acl keeps the allow-all default and is not checked
+- id: vpc_peering_connection_route_table_least_privilege
+  name: VPCs peering connection route tables should have least privilege
+  resourceTypes:
+  - aws_route
+  clausesByFramework:
+    cis_v600:
+    - 6 Networking
+  enforcement:
+    layer: graph
+    reason: a peering route must not target 0.0.0.0/0, ::/0 or the whole peer VPC CIDR (Powerpipe query); the CIDR lives on the peer VPC
+- id: vpc_security_group_remote_administration_ipv4
+  name: VPC security groups should not allow ingress from 0.0.0.0/0 to remote server administration ports (IPv4)
+  resourceTypes:
+  - aws_vpc_security_group_ingress_rule
+  clausesByFramework:
+    cis_v600:
+    - 6 Networking
+  enforcement:
+    layer: provider-local
+    reason: no ingress from 0.0.0.0/0 covering port 22 or 3389
+- id: vpc_security_group_remote_administration_ipv6
+  name: VPC security groups should not allow ingress from ::/0 to remote server administration ports
+  resourceTypes:
+  - aws_vpc_security_group_ingress_rule
+  clausesByFramework:
+    cis_v600:
+    - 6 Networking
+  enforcement:
+    layer: provider-local
+    reason: no ingress from ::/0 covering port 22 or 3389
+- id: vpc_security_group_restrict_ingress_cifs_port_all
+  name: VPC security groups should restrict ingress CIFS access from 0.0.0.0/0 and ::/0
+  resourceTypes:
+  - aws_security_group
+  - aws_vpc_security_group_ingress_rule
+  clausesByFramework:
+    cis_v600:
+    - 6.1 Elastic Compute Cloud (EC2)
+  enforcement:
+    layer: provider-local
+    reason: no ingress from 0.0.0.0/0 or ::/0 covering port 445
 modules:
-  - resourceTypes: [aws_s3_bucket]
-    source: "{host}.compliance.tf/terraform-aws-modules/s3-bucket/aws"
-    version: "~> 5.0"
-    controls:
-      - s3_bucket_restrict_public_write_access
-  - resourceTypes: [aws_sqs_queue]
-    source: "{host}.compliance.tf/terraform-aws-modules/sqs/aws"
-    version: "~> 4.0"
-    controls: []
+- resourceTypes:
+  - aws_s3_bucket
+  source: '{host}.compliance.tf/terraform-aws-modules/s3-bucket/aws'
+  version: ~> 5.0
+  controls:
+  - s3_bucket_restrict_public_write_access
+- resourceTypes:
+  - aws_sqs_queue
+  source: '{host}.compliance.tf/terraform-aws-modules/sqs/aws'
+  version: ~> 4.0
+  controls: []
