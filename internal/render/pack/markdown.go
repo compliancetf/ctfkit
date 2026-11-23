@@ -125,7 +125,7 @@ func RenderMarkdown(p *Pack) (File, error) {
 	}
 
 	w("## 6 Catalog controls not enforced by these modules\n\n")
-	w("Controls the catalog lists for the resource types of these modules that no module manifest lists, and the layer that owns each one.")
+	w("Controls the catalog lists for the resource types and frameworks of these modules that no module manifest lists, and the layer that owns each one.")
 	if p.Catalog.EmbeddedSubset {
 		w(" The catalog is the embedded one, which holds the CIS v6.0 controls only, so this list is not complete.")
 	}

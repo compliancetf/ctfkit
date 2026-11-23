@@ -365,7 +365,7 @@ func (d *pdfDoc) noClause(p *Pack, fwName func(string) string) {
 }
 
 func (d *pdfDoc) notEnforced(p *Pack) {
-	leadText := "Controls the catalog lists for the resource types of these modules that no module manifest lists, and the layer that owns each one."
+	leadText := "Controls the catalog lists for the resource types and frameworks of these modules that no module manifest lists, and the layer that owns each one."
 	if p.Catalog.EmbeddedSubset {
 		leadText += " The catalog is the embedded one, which holds the CIS v6.0 controls only, so this list is not complete."
 	}

@@ -197,17 +197,20 @@ The pack has a cover (release, commit, ctfkit version, catalog version and sourc
 time) and these sections: 1 Summary, 2 Scope (the installed modules), 3 What the pack shows and
 what it does not (fixed text), 4 Control-to-clause mapping per module, with supporting clauses
 marked, 5 Controls with no clause in a framework, with the catalog's reason, 6 Catalog controls
-for the same resource types that these modules do not enforce, with the enforcement layer and
-reason, 7 Enforcement tests, and annex A, the clause register per framework. A value the inputs do
-not hold reads "None" or "Not set".
+of the same frameworks and resource types that these modules do not enforce, with the enforcement
+layer and reason, 7 Enforcement tests, and annex A, the clause register per framework. A value the
+inputs do not hold reads "None" or "Not set".
 
 - Section 7 lists the results of `--tests-json` when it is given, and otherwise says no tests
   were supplied. `--tests-json` names the `tofu test -json` or `terraform test -json` output an
   earlier CI step wrote; report runs no tests, and the pack records the file's sha256.
 - The coverage view uses the catalog the run loaded. With the full catalog from
   `ctfkit catalog pull` it is complete; with the embedded catalog, which holds the CIS v6.0
-  controls only, the pack says so. Enforcement layers and not-applicable reasons come from the
-  optional catalog fields ([configuration](configuration.md#catalog)).
+  controls only, the pack says so. Whether a catalog is that subset is read from its content (CIS
+  v6.0 clauses only), not from its version, so a full catalog that shares the embedded version is
+  named as the full catalog. Section 6 lists only controls that map to a framework of the
+  installed modules. Enforcement layers and not-applicable reasons come from the optional catalog
+  fields ([configuration](configuration.md#catalog)).
 - Entries are sorted and carry a fixed timestamp, so the same inputs give the same entries. The
   PDF is deterministic too: its creation date is the pack's generation time, with a fixed
   producer and no random ids.
