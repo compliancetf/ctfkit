@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.1](https://github.com/compliancetf/ctfkit/compare/v0.11.0...v0.11.1) (2026-11-23)
+
+
+### Bug fixes
+
+* **report:** tell a full catalog from the embedded subset by content, list only the pack's frameworks in section 6 ([#54](https://github.com/compliancetf/ctfkit/issues/54)) ([8a49370](https://github.com/compliancetf/ctfkit/commit/8a49370e799ff746587f0be7bfcf918fe30e9cb5))
+
 ## [0.11.0](https://github.com/compliancetf/ctfkit/compare/v0.10.0...v0.11.0) (2026-11-22)
 
 
