@@ -1,6 +1,6 @@
 {
   "provider": "registry.terraform.io/hashicorp/google",
-  "version": "8.11.0",
+  "version": "8.12.0",
   "resources": {
     "google_active_directory_domain": {
       "deletion_protection": "bool"
@@ -88,7 +88,8 @@
         "cloud_logging_settings": "object",
         "conversation_logging_settings": "object",
         "metric_analysis_settings": "object",
-        "redaction_config": "object"
+        "redaction_config": "object",
+        "required_recording_consent": "bool"
       }
     },
     "google_chronicle_environment": {
@@ -522,6 +523,7 @@
         "active_environment": "string",
         "delete_old_source_on_destroy": "bool",
         "deployment_name": "string",
+        "description": "string",
         "old_source_instance_connection_name": "string",
         "old_source_instance_name": "string",
         "target_database_version": "string",
