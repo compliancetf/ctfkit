@@ -21,7 +21,7 @@ Counts are taken from the module manifests and the control catalog named above.
 | Controls delegated to another scope | 2 |
 | With a SOC 2 clause | 12 of 12 |
 | Framework gaps with a recorded reason | 0 of 0 |
-| Catalog controls for these resource types not enforced here | 5 |
+| Catalog controls for these resource types not enforced here | 0 |
 | Control enforcement tests | No tests supplied |
 | Findings at error level | None |
 
@@ -39,7 +39,7 @@ It shows:
 
 - Which compliance controls each installed compliance.tf module enforced when it was built, as the module manifest records them.
 - The framework clauses each control is mapped to, with supporting clauses marked as partial or indirect evidence.
-- Catalog controls for the same resource types that these modules do not enforce, and the layer that owns each one.
+- Catalog controls of the same frameworks and resource types that these modules do not enforce, and the layer that owns each one.
 - The results of the enforcement tests supplied with this release, when tests were supplied.
 
 It does not show:
@@ -78,15 +78,9 @@ None.
 
 ## 6 Catalog controls not enforced by these modules
 
-Controls the catalog lists for the resource types of these modules that no module manifest lists, and the layer that owns each one. The catalog is the embedded one, which holds the CIS v6.0 controls only, so this list is not complete.
+Controls the catalog lists for the resource types and frameworks of these modules that no module manifest lists, and the layer that owns each one. The catalog is the embedded one, which holds the CIS v6.0 controls only, so this list is not complete.
 
-| Control | Resource types | Layer | Reason |
-|---|---|---|---|
-| `cloudtrail_s3_logging_enabled` CloudTrail S3 buckets should have access logging enabled | `aws_cloudtrail`, `aws_s3_bucket`, `aws_s3_bucket_logging` | graph | the bucket named by the trail's s3_bucket_name needs an aws_s3_bucket_logging |
-| `cloudtrail_s3_object_read_events_audit_enabled` S3 buckets should have object-level read event logging enabled in CloudTrail | `aws_s3_bucket` | runtime | account posture: some trail in the account must capture S3 object read data events; not a bucket attribute |
-| `cloudtrail_s3_object_write_events_audit_enabled` S3 buckets should have object-level write event logging enabled in CloudTrail | `aws_s3_bucket` | runtime | account posture: some trail in the account must capture S3 object write data events; not a bucket attribute |
-| `s3_bucket_enforces_ssl` S3 buckets should enforce SSL | `aws_s3_bucket` | graph | each bucket needs an aws_s3_bucket_policy that denies aws:SecureTransport false (companion presence plus content) |
-| `s3_public_access_block_bucket_account` S3 public access should be blocked at account and bucket levels | `aws_s3_bucket` | graph | per flag, each of the four flags must be true on the bucket's aws_s3_bucket_public_access_block or on a declared aws_s3_account_public_access_block (the mapped query ORs bucket and account per flag); an account block set outside the plan is not visible |
+None.
 
 ## 7 Enforcement tests
 

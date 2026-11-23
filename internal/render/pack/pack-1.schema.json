@@ -102,7 +102,7 @@
         },
         "embeddedSubset": {
           "type": "boolean",
-          "description": "true when the catalog is the embedded release, which holds the CIS v6.0 controls only."
+          "description": "true when the catalog holds the CIS v6.0 controls only, as the embedded release does, whatever its version or source."
         }
       }
     },

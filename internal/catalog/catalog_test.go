@@ -440,27 +440,49 @@ func contains[T comparable](haystack []T, needle T) bool {
 	return false
 }
 
-// The CIS-subset hint belongs only to the embedded catalog's content: a copy
-// of it read as a file gets the hint, and a catalog of any other version,
-// such as the full one, does not, since telling its user to pass --catalog
-// would be wrong.
-func TestEmbeddedSubsetNoteFollowsTheEmbeddedVersion(t *testing.T) {
+// The CIS-subset hint follows what a catalog holds, not its version: a copy
+// of the embedded catalog read as a file gets it, a CIS-only catalog of another
+// version gets it, and a full catalog gets none even when it shares the
+// embedded version, since telling its user to pass --catalog would be wrong.
+func TestEmbeddedSubsetFollowsTheContent(t *testing.T) {
 	embedded := catalog.Embedded().Version().Version
+	doc := func(version, clauses string) []byte {
+		return []byte("schema: ctf.catalog/1\nversion: \"" + version + "\"\nhosts: {cis_v600: cis, pci_dss_v40: pcidss}\n" +
+			"defaultHost: cis_v600\ncontrols:\n  - id: s3_bucket_versioning_enabled\n    name: S3 bucket versioning enabled\n" +
+			"    resourceTypes: [aws_s3_bucket]\n    clausesByFramework: {" + clauses + "}\nmodules: []\n")
+	}
 	for _, tc := range []struct {
-		name     string
-		version  ctfkit.CatalogVersion
-		wantNote bool
+		name string
+		body []byte
+		want bool
 	}{
-		{"embedded", ctfkit.CatalogVersion{Version: embedded, Provenance: "embedded"}, true},
-		{"a file copy of it", ctfkit.CatalogVersion{Version: embedded, Provenance: "file"}, true},
-		{"another catalog", ctfkit.CatalogVersion{Version: "2099.1.0", Provenance: "home"}, false},
+		{"a file copy of the embedded catalog", catalog.EmbeddedBytes(), true},
+		{"CIS only, another version", doc("2099.1.0", "cis_v600: ['2.1.1']"), true},
+		{"full, the embedded version", doc(embedded, "cis_v600: ['2.1.1'], pci_dss_v40: ['3.5.1']"), false},
+		{"full, another version", doc("2099.1.0", "pci_dss_v40: ['3.5.1']"), false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			note := catalog.EmbeddedSubsetNote(tc.version)
-			if got := strings.Contains(note, "CIS v6.0"); got != tc.wantNote {
-				t.Errorf("EmbeddedSubsetNote(%+v) = %q, want a CIS note: %v", tc.version, note, tc.wantNote)
+			path := filepath.Join(t.TempDir(), "catalog.yaml")
+			if err := os.WriteFile(path, tc.body, 0o600); err != nil {
+				t.Fatal(err)
+			}
+			cat, err := catalog.Load(path)
+			if err != nil {
+				t.Fatalf("Load: %v", err)
+			}
+			if got := catalog.IsEmbeddedSubset(cat); got != tc.want {
+				t.Errorf("IsEmbeddedSubset = %v, want %v", got, tc.want)
+			}
+			if got := strings.Contains(catalog.EmbeddedSubsetNote(cat), "CIS v6.0"); got != tc.want {
+				t.Errorf("EmbeddedSubsetNote has a CIS note: %v, want %v", got, tc.want)
 			}
 		})
+	}
+	if !catalog.IsEmbeddedSubset(catalog.Embedded()) {
+		t.Error("IsEmbeddedSubset(Embedded()) = false")
+	}
+	if catalog.IsEmbeddedSubset(nil) {
+		t.Error("IsEmbeddedSubset(nil) = true")
 	}
 }
 

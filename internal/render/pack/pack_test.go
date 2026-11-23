@@ -21,7 +21,7 @@ import (
 // clause at the top level.
 const testCatalog = `schema: ctf.catalog/1
 version: "2026.9.0"
-hosts: {soc_2: soc2, hipaa: hipaa}
+hosts: {soc_2: soc2, hipaa: hipaa, pci_dss_v40: pcidss}
 defaultHost: soc_2
 controls:
   - id: s3_bucket_versioning_enabled
@@ -42,6 +42,13 @@ controls:
     name: S3 bucket default encryption enabled
     resourceTypes: [aws_s3_bucket]
     clausesByFramework: {soc_2: [CC6.1]}
+  - id: s3_bucket_object_lock_enabled
+    name: S3 bucket object lock enabled
+    resourceTypes: [aws_s3_bucket]
+    clausesByFramework: {pci_dss_v40: ['3.5.1']}
+  - id: s3_bucket_event_notifications_enabled
+    name: S3 bucket event notifications enabled
+    resourceTypes: [aws_s3_bucket]
 notApplicableClauses:
   soc_2: {CC1.1: An organizational criterion.}
 modules:
@@ -146,7 +153,7 @@ func TestBuild(t *testing.T) {
 			ID: "s3_bucket_logging_enabled", Name: "S3 bucket logging enabled",
 			Frameworks: []NoClauses{{Framework: "hipaa", Reason: "No HIPAA clause asks for access logs."}},
 		}}},
-		{"not enforced, with layer, reason and supersession", p.NotEnforced, []NotEnforced{
+		{"not enforced: same frameworks only, with layer, reason and supersession", p.NotEnforced, []NotEnforced{
 			{
 				ID: "s3_bucket_default_encryption_enabled", Name: "S3 bucket default encryption enabled",
 				ResourceTypes: []string{"aws_s3_bucket"}, SupersededBy: "s3_bucket_default_encryption_enabled_kms",

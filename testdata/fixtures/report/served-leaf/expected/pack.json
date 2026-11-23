@@ -54,7 +54,7 @@
   "shows": [
     "Which compliance controls each installed compliance.tf module enforced when it was built, as the module manifest records them.",
     "The framework clauses each control is mapped to, with supporting clauses marked as partial or indirect evidence.",
-    "Catalog controls for the same resource types that these modules do not enforce, and the layer that owns each one.",
+    "Catalog controls of the same frameworks and resource types that these modules do not enforce, and the layer that owns each one.",
     "The results of the enforcement tests supplied with this release, when tests were supplied."
   ],
   "doesNotShow": [
@@ -129,7 +129,7 @@
     },
     {
       "path": "pack-1.schema.json",
-      "sha256": "5431e87e416ee3f6900b8568846f79f50321f30e8764ab286ad5a73dda818dd3"
+      "sha256": "8c6caf21f9f255f4fa9b1c9de06a77d148508f3f069c6cbd5213da844b3b77e3"
     },
     {
       "path": "receipt.json",

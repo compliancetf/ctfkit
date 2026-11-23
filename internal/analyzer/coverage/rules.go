@@ -147,7 +147,7 @@ func (r DelegationUnresolved) Analyze(ctx context.Context, in ctfkit.AnalyzerInp
 			// finding is still reported, rather than failing the run.
 			if cat := a.input.Catalog; cat != nil {
 				if _, known := cat.Control(controlIDs[0]); !known {
-					text += fmt.Sprintf(msgControlNotInCatalog, cat.Version().Version, catalogpkg.EmbeddedSubsetNote(cat.Version()))
+					text += fmt.Sprintf(msgControlNotInCatalog, cat.Version().Version, catalogpkg.EmbeddedSubsetNote(cat))
 					controlIDs = nil
 				}
 			}

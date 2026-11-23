@@ -39,7 +39,7 @@ It shows:
 
 - Which compliance controls each installed compliance.tf module enforced when it was built, as the module manifest records them.
 - The framework clauses each control is mapped to, with supporting clauses marked as partial or indirect evidence.
-- Catalog controls for the same resource types that these modules do not enforce, and the layer that owns each one.
+- Catalog controls of the same frameworks and resource types that these modules do not enforce, and the layer that owns each one.
 - The results of the enforcement tests supplied with this release, when tests were supplied.
 
 It does not show:
@@ -67,7 +67,7 @@ None.
 
 ## 6 Catalog controls not enforced by these modules
 
-Controls the catalog lists for the resource types of these modules that no module manifest lists, and the layer that owns each one. The catalog is the embedded one, which holds the CIS v6.0 controls only, so this list is not complete.
+Controls the catalog lists for the resource types and frameworks of these modules that no module manifest lists, and the layer that owns each one. The catalog is the embedded one, which holds the CIS v6.0 controls only, so this list is not complete.
 
 None.
 

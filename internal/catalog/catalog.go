@@ -62,14 +62,30 @@ const (
 	provenanceHome     = "home"
 )
 
+// subsetFramework is the only framework whose clauses the embedded release
+// catalog carries.
+const subsetFramework = "cis_v600"
+
+// IsEmbeddedSubset reports whether cat holds what the embedded release catalog
+// holds: controls with CIS v6.0 clauses only. The test is the content, not the
+// version or the provenance, so a file copy of the embedded catalog is a
+// subset, and a full catalog that shares the embedded version is not.
+func IsEmbeddedSubset(cat ctfkit.ControlCatalog) bool {
+	switch c := cat.(type) {
+	case *FileCatalog:
+		return c != nil && c.cisSubset
+	case FileCatalog:
+		return c.cisSubset
+	}
+	return false
+}
+
 // EmbeddedSubsetNote is what a finding message adds about a control id the
-// loaded catalog lacks: when that catalog is the embedded one, which holds the
-// CIS v6.0 controls only, it says so and names the way to a full catalog. The
-// test is the version, not the provenance, so a file copy of the embedded
-// catalog gets the same text. Any other catalog gets nothing, since the hint
-// would be wrong for it.
-func EmbeddedSubsetNote(v ctfkit.CatalogVersion) string {
-	if v.Version != Embedded().Version().Version {
+// loaded catalog lacks: when that catalog holds the CIS v6.0 controls only
+// (IsEmbeddedSubset), it says so and names the way to a full catalog. Any
+// other catalog gets nothing, since the hint would be wrong for it.
+func EmbeddedSubsetNote(cat ctfkit.ControlCatalog) string {
+	if !IsEmbeddedSubset(cat) {
 		return ""
 	}
 	return " (the embedded catalog holds the CIS v6.0 controls only; name a full catalog with --catalog)"
@@ -98,6 +114,9 @@ type FileCatalog struct {
 	defaultHost  string
 	// notApplicableClauses is framework id to clause to reason.
 	notApplicableClauses map[string]map[string]string
+	// cisSubset is true when every control cites CIS v6.0 clauses only, as
+	// the embedded release catalog does (IsEmbeddedSubset).
+	cisSubset bool
 }
 
 // EmbeddedBytes returns the raw bytes of the embedded release catalog, which
@@ -238,7 +257,13 @@ func parse(b []byte, provenance string) (*FileCatalog, error) {
 		c.notApplicableClauses = copyClauseReasons(doc.NotApplicableClauses)
 	}
 
+	c.cisSubset = len(doc.Controls) > 0
 	for _, dc := range doc.Controls {
+		for fw := range dc.ClausesByFramework {
+			if fw != subsetFramework {
+				c.cisSubset = false
+			}
+		}
 		id := ctfkit.ControlID(dc.ID)
 		ref := ctfkit.ControlRef{
 			ID:                 id,

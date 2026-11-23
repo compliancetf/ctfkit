@@ -58,7 +58,7 @@ var (
 	Shows = []string{
 		"Which compliance controls each installed compliance.tf module enforced when it was built, as the module manifest records them.",
 		"The framework clauses each control is mapped to, with supporting clauses marked as partial or indirect evidence.",
-		"Catalog controls for the same resource types that these modules do not enforce, and the layer that owns each one.",
+		"Catalog controls of the same frameworks and resource types that these modules do not enforce, and the layer that owns each one.",
 		"The results of the enforcement tests supplied with this release, when tests were supplied.",
 	}
 	DoesNotShow = []string{
@@ -119,8 +119,8 @@ type Catalog struct {
 	// Source is embedded, home (the file catalog pull writes) or file (named
 	// with --catalog).
 	Source string `json:"source"`
-	// EmbeddedSubset is true when the catalog is the embedded release, which
-	// holds the CIS v6.0 controls only.
+	// EmbeddedSubset is true when the catalog holds the CIS v6.0 controls only,
+	// as the embedded release does, whatever its version or source.
 	EmbeddedSubset bool `json:"embeddedSubset"`
 }
 
@@ -212,7 +212,7 @@ type NoClauses struct {
 }
 
 // NotEnforced is a catalog control for a resource type of these modules that
-// no module manifest lists (section 6). Layer and Reason are empty when the
+// maps to one of their frameworks and that no module manifest lists (section 6). Layer and Reason are empty when the
 // catalog records no enforcement; SupersededBy names the stricter control a
 // manifest records in its place.
 type NotEnforced struct {
@@ -300,7 +300,7 @@ func Build(in Input) (*Pack, []File, error) {
 		Release:     release(in),
 		Generator:   in.Generator,
 		GeneratedAt: in.Metadata.Now.UTC().Format(time.RFC3339),
-		Catalog:     catalogFacts(in.CatalogVersion),
+		Catalog:     catalogFacts(in.CatalogVersion, in.Catalog),
 		Shows:       Shows,
 		DoesNotShow: DoesNotShow,
 		Tests:       tests(in.Tests),
@@ -355,13 +355,14 @@ func rootName(root string) string {
 	return root
 }
 
-func catalogFacts(v ctfkit.CatalogVersion) Catalog {
+func catalogFacts(v ctfkit.CatalogVersion, cat ctfkit.ControlCatalog) Catalog {
 	return Catalog{
 		Version: v.Version,
 		Source:  v.Provenance,
-		// The version test, not the provenance, so a file copy of the
-		// embedded catalog is named for what it holds.
-		EmbeddedSubset: catalog.EmbeddedSubsetNote(v) != "",
+		// The content test, not the version or the provenance: a file copy
+		// of the embedded catalog is named for what it holds, and a full
+		// catalog that shares the embedded version is not.
+		EmbeddedSubset: catalog.IsEmbeddedSubset(cat),
 	}
 }
 
@@ -511,10 +512,22 @@ func (p *Pack) addNoClause(cat ctfkit.ControlCatalog) {
 	sort.Slice(p.NoClause, func(i, j int) bool { return p.NoClause[i].ID < p.NoClause[j].ID })
 }
 
+// mapsToAny reports whether any of a control's frameworks is in want.
+func mapsToAny(controlFrameworks []string, want map[string]bool) bool {
+	for _, fw := range controlFrameworks {
+		if want[fw] {
+			return true
+		}
+	}
+	return false
+}
+
 // addNotEnforced lists the catalog controls for the resource types these
-// modules cover that no manifest lists. The resource types are those the
-// catalog gives for the controls the manifests list, plus those of the catalog
-// module entry whose source path matches an installed module's.
+// modules cover that no manifest lists and that map to a framework of these
+// modules (p.Frameworks): a control of another framework is not a gap of this
+// release. The resource types are those the catalog gives for the controls the
+// manifests list, plus those of the catalog module entry whose source path
+// matches an installed module's.
 func (p *Pack) addNotEnforced(inv *ctfkit.ModuleInventory, cat ctfkit.ControlCatalog) {
 	p.NotEnforced = []NotEnforced{}
 	listed := map[string]bool{}
@@ -546,10 +559,14 @@ func (p *Pack) addNotEnforced(inv *ctfkit.ModuleInventory, cat ctfkit.ControlCat
 		}
 	}
 
+	frameworks := map[string]bool{}
+	for _, fw := range p.Frameworks {
+		frameworks[fw.ID] = true
+	}
 	added := map[ctfkit.ControlID]bool{}
 	for _, rt := range sortedKeys(types) {
 		for _, id := range cat.ControlsFor(rt) {
-			if listed[string(id)] || added[id] {
+			if listed[string(id)] || added[id] || !mapsToAny(cat.Frameworks(id), frameworks) {
 				continue
 			}
 			added[id] = true

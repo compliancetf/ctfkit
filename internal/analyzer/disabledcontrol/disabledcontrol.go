@@ -183,7 +183,7 @@ func newFinding(d disable, ref ctfkit.ControlRef, known bool, cat ctfkit.Control
 
 	if !known {
 		return ctfkit.NewFinding(ruleUnknown, ctfkit.LevelError, ctfkit.KindFail,
-			ctfkit.Message{Text: fmt.Sprintf(msgUnknown, d.token, cat.Version().Version, catalog.EmbeddedSubsetNote(cat.Version()))},
+			ctfkit.Message{Text: fmt.Sprintf(msgUnknown, d.token, cat.Version().Version, catalog.EmbeddedSubsetNote(cat))},
 			locations,
 			ctfkit.Properties{Schema: schemaVersion, Stage: ctfkit.PrePlan})
 	}
