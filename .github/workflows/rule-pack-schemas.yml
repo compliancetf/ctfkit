@@ -45,7 +45,7 @@ jobs:
       # No Go cache: this job runs third-party provider binaries, and a cache it saved would be
       # restored by jobs that hold write scope.
       - name: Setup Go
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
         with:
           go-version: '1.27.x'
           cache: false
@@ -143,7 +143,7 @@ jobs:
       # The job token's pull request starts no Test run, so the tests that read the snapshots run
       # here, on exactly the files the pull request commits, in a job that runs no provider binary.
       - name: Setup Go
-        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        uses: actions/setup-go@d8cbb8045d7f43706b9177cceb36c1f91a6644d5 # v7.1.0
         with:
           go-version: '1.27.x'
           cache: true
@@ -157,7 +157,7 @@ jobs:
 
       - name: Open or update the pull request
         id: cpr
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.3
         with:
           branch: chore/rule-pack-schemas
           delete-branch: true
